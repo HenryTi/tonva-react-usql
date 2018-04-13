@@ -18,7 +18,7 @@ export interface UsqlHomeProps {
     uiMappers?:{[api:string]: EntitiesMapper}
 }
 
-interface State {
+export interface State {
     uiLoaded: boolean;
 }
 export class UsqlHome extends React.Component<UsqlHomeProps, State> {
