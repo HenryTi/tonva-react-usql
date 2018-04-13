@@ -37,6 +37,7 @@ export class AppUI {
             let {apiOwner, apiName, url, ws, access, token} = appApi;
             let api = apiOwner + '/' + apiName;
             let mapper = this.uiMappers && this.uiMappers[api];
+            if (mapper === null) continue;
             let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
             this.apiUIs.push(apiUI);
             await apiUI.loadEntities();
