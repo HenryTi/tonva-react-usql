@@ -3,6 +3,7 @@ import { EditPage } from './editPage';
 import { ListPage } from './listPage';
 import { GeneralTuidInput } from './input';
 import { EntityLink } from '../entityLink';
+export * from './input';
 export const mapperContainer = {
     caption: '数据字典',
     icon: 'book',
