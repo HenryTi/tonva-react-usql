@@ -1,0 +1,55 @@
+import { Tuid } from './tuid';
+import { Action } from './action';
+import { Sheet } from './sheet';
+import { Query } from './query';
+import { Book } from './book';
+import { History } from './history';
+export interface Field {
+    name: string;
+    type: string;
+    tuid?: string;
+    url?: string;
+    _tuid: Tuid;
+}
+export declare class Entities {
+    private tvApi;
+    private ws;
+    private tuids;
+    private actions;
+    private sheets;
+    private queries;
+    private books;
+    private histories;
+    private cacheTimer;
+    constructor(url: string, ws: string, token: string, api: string, access?: string);
+    tuidArr: Tuid[];
+    actionArr: Action[];
+    sheetArr: Sheet[];
+    queryArr: Query[];
+    bookArr: Book[];
+    historyArr: History[];
+    loadEntities(): Promise<void>;
+    close(): void;
+    wsConnect(): Promise<void>;
+    onWsReceive(type: string, onWsReceive: (data: any) => void): number;
+    onWsReceiveAny(onWsReceive: (data: any) => void): number;
+    endWsReceive(handlerId: number): void;
+    getTuid(name: string, tuidUrl: string): Tuid;
+    cacheTuids(): void;
+    private clearCacheTimer();
+    private loadIds();
+    private buildAccess(api, access);
+    private fromType(api, name, type);
+    private fromObj(api, name, obj);
+    private buildSheet(api, name, obj);
+    private createSheetState(name, obj);
+    pack(schema: any, data: any): string;
+    private escape(d);
+    private packRow(result, fields, data);
+    private packArr(result, fields, data);
+    unpackSheet(schema: any, data: string): any;
+    unpackReturns(schema: any, data: string): any;
+    private unpackRow(ret, fields, data, p);
+    private to(ret, v, f);
+    private unpackArr(ret, arr, data, p);
+}

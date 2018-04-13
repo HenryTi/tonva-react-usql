@@ -1,0 +1,38 @@
+{
+  "name": "tonva-react-usql",
+  "version": "1.0.0",
+  "description": "react usql ui from Tonva",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "set PORT=3200 && node dist/test.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Henry",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "font-awesome": "^4.7.0",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.4",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
+    "react-popper": "^0.7.4",
+    "react-transition-group": "^2.2.1",
+    "reactstrap": "^5.0.0-alpha.4"
+  },
+  "peerDependencies": {
+    "mobx": "^4.1.0",
+    "mobx-react": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.3",
+    "@types/jwt-decode": "^2.2.1",
+    "@types/lodash": "^4.14.85",
+    "@types/node": "^8.0.53",
+    "@types/react": "^16.3.9",
+    "@types/react-dom": "^16.0.5",
+    "@types/reactstrap": "^5.0.6"
+  }
+}
