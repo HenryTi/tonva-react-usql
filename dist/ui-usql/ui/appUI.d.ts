@@ -20,5 +20,6 @@ export declare class MainPage extends React.Component<{
     private entityRender(ui, index);
     private entityClick<E, U>(ui);
     private renderList<E>(entitySet, caption);
+    private logout();
     render(): JSX.Element;
 }

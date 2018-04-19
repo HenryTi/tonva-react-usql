@@ -69,9 +69,12 @@ export class MainPage extends React.Component<{appUI:AppUI}> {
                 items={entitySet.list} 
                 item={{render: this.entityRender, onClick:this.entityClick}} />;
     }
+    private async logout() {
+        await nav.logout();
+    }
     render() {
         let {appUI} = this.props;
-        return <Page header='同花默认界面-2'>
+        return <Page header='同花默认界面-2' logout={this.logout}>
             {
                 appUI.apiUIs.map((v, index) => {
                     let {api, tuid, action, sheet, query, book, history} = v;

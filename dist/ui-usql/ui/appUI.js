@@ -67,9 +67,14 @@ export class MainPage extends React.Component {
             return;
         return React.createElement(List, { className: 'my-2', header: React.createElement(Muted, null, entitySet.caption || caption), items: entitySet.list, item: { render: this.entityRender, onClick: this.entityClick } });
     }
+    logout() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield nav.logout();
+        });
+    }
     render() {
         let { appUI } = this.props;
-        return React.createElement(Page, { header: '\u540C\u82B1\u9ED8\u8BA4\u754C\u9762-2' }, appUI.apiUIs.map((v, index) => {
+        return React.createElement(Page, { header: '\u540C\u82B1\u9ED8\u8BA4\u754C\u9762-2', logout: this.logout }, appUI.apiUIs.map((v, index) => {
             let { api, tuid, action, sheet, query, book, history } = v;
             return React.createElement(React.Fragment, { key: index },
                 React.createElement("div", { className: "px-3 pt-1" },
