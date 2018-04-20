@@ -36,21 +36,26 @@ export class ListPage extends React.Component<TuidUIProps, State> {
     }
 
     mapper(row:any, index:number) {
-        let {name, discription, d2} = row;
+        //let {name, discription, d2} = row;
         return <div className='app-row'>
             <label>
                 <img src={config.appIcon} />
             </label>
             <div>
-                <div>{name}</div>
-                <span>{discription}</span>
+                {JSON.stringify(row)}
             </div>
-            <footer>
-                <span style={{color:'red'}}>{d2.toFixed(2)}</span>
-                <span style={{fontSize:'smaller'}}>&nbsp;元</span>
-            </footer>
         </div>
     }
+/*
+    <div>
+    <div>{name}</div>
+    <span>{discription}</span>
+</div>
+<footer>
+    <span style={{color:'red'}}>{d2.toFixed(2)}</span>
+    <span style={{fontSize:'smaller'}}>&nbsp;元</span>
+</footer>
+*/
 
     render() {
         let {ui} = this.props;

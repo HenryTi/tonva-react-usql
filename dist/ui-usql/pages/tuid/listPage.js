@@ -34,17 +34,22 @@ export class ListPage extends React.Component {
         nav.push(React.createElement(EditPage, { ui: this.props.ui, data: row }));
     }
     mapper(row, index) {
-        let { name, discription, d2 } = row;
+        //let {name, discription, d2} = row;
         return React.createElement("div", { className: 'app-row' },
             React.createElement("label", null,
                 React.createElement("img", { src: config.appIcon })),
-            React.createElement("div", null,
-                React.createElement("div", null, name),
-                React.createElement("span", null, discription)),
-            React.createElement("footer", null,
-                React.createElement("span", { style: { color: 'red' } }, d2.toFixed(2)),
-                React.createElement("span", { style: { fontSize: 'smaller' } }, "\u00A0\u5143")));
+            React.createElement("div", null, JSON.stringify(row)));
     }
+    /*
+        <div>
+        <div>{name}</div>
+        <span>{discription}</span>
+    </div>
+    <footer>
+        <span style={{color:'red'}}>{d2.toFixed(2)}</span>
+        <span style={{fontSize:'smaller'}}>&nbsp;元</span>
+    </footer>
+    */
     render() {
         let { ui } = this.props;
         let { entity, caption } = ui;
