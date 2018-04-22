@@ -14,8 +14,8 @@ import { AppUI, MainPage } from './ui';
 export class UsqlHome extends React.Component {
     constructor(props) {
         super(props);
-        let { appName, uiMappers } = this.props;
-        this.appUI = new AppUI(appName, uiMappers);
+        let { appName, caption, uiMappers } = this.props;
+        this.appUI = new AppUI(appName, caption, uiMappers);
         this.state = {
             uiLoaded: false
         };

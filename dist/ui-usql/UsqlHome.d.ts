@@ -3,6 +3,7 @@ import * as React from 'react';
 import { EntitiesMapper } from './ui';
 export interface UsqlHomeProps {
     appName: string;
+    caption?: string;
     uiMappers?: {
         [api: string]: EntitiesMapper;
     };

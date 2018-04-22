@@ -14,8 +14,9 @@ const appUI = new AppUI(tonvaApp, {
 */
 
 export interface UsqlHomeProps {
-    appName: string,
-    uiMappers?:{[api:string]: EntitiesMapper}
+    appName: string;
+    caption?: string;
+    uiMappers?:{[api:string]: EntitiesMapper};
 }
 
 export interface State {
@@ -26,8 +27,8 @@ export class UsqlHome extends React.Component<UsqlHomeProps, State> {
 
     constructor(props) {
         super(props);
-        let {appName, uiMappers} = this.props;
-        this.appUI = new AppUI(appName, uiMappers);
+        let {appName, caption, uiMappers} = this.props;
+        this.appUI = new AppUI(appName, caption,  uiMappers);
         this.state = {
             uiLoaded: false
         }

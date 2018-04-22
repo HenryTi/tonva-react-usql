@@ -17,14 +17,17 @@ export class AppUI {
     //private mainPage: new ({appUI:AppUI})=>React.Component;
     private entitiesUICollection = entitiesUICollection;
     private uiMappers?:{[api:string]: EntitiesMapper};
-    
-    constructor(tonvaApp:string, uiMappers?:{[api:string]: EntitiesMapper}) {
+
+    caption:string;
+
+    constructor(tonvaApp:string, caption:string, uiMappers?:{[api:string]: EntitiesMapper}) {
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
+        this.caption = caption;
         //this.mainPage = mainPage || MainPage;
         this.uiMappers = uiMappers;
     }
@@ -74,7 +77,9 @@ export class MainPage extends React.Component<{appUI:AppUI}> {
     }
     render() {
         let {appUI} = this.props;
-        return <Page header='同花默认界面-2' logout={this.logout}>
+        return <Page
+            header={appUI.caption || '同花默认界面-2'}
+            logout={this.logout}>
             {
                 appUI.apiUIs.map((v, index) => {
                     let {api, tuid, action, sheet, query, book, history} = v;

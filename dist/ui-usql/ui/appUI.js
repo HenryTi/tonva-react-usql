@@ -15,7 +15,7 @@ import { EntitiesUI, entitiesUICollection } from './entitiesUI';
 //    AppUI, EntitiesUI, EntitiesUIProps, EntitySet, 
 //    EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from './ui-usql';
 export class AppUI {
-    constructor(tonvaApp, uiMappers) {
+    constructor(tonvaApp, caption, uiMappers) {
         //private mainPage: new ({appUI:AppUI})=>React.Component;
         this.entitiesUICollection = entitiesUICollection;
         this.apiUIs = [];
@@ -25,6 +25,7 @@ export class AppUI {
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
+        this.caption = caption;
         //this.mainPage = mainPage || MainPage;
         this.uiMappers = uiMappers;
     }
@@ -74,7 +75,7 @@ export class MainPage extends React.Component {
     }
     render() {
         let { appUI } = this.props;
-        return React.createElement(Page, { header: '\u540C\u82B1\u9ED8\u8BA4\u754C\u9762-2', logout: this.logout }, appUI.apiUIs.map((v, index) => {
+        return React.createElement(Page, { header: appUI.caption || '同花默认界面-2', logout: this.logout }, appUI.apiUIs.map((v, index) => {
             let { api, tuid, action, sheet, query, book, history } = v;
             return React.createElement(React.Fragment, { key: index },
                 React.createElement("div", { className: "px-3 pt-1" },

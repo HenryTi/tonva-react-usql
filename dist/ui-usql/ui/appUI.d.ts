@@ -7,7 +7,8 @@ export declare class AppUI {
     private appName;
     private entitiesUICollection;
     private uiMappers?;
-    constructor(tonvaApp: string, uiMappers?: {
+    caption: string;
+    constructor(tonvaApp: string, caption: string, uiMappers?: {
         [api: string]: EntitiesMapper;
     });
     apiUIs: EntitiesUI[];
