@@ -5,6 +5,6 @@ import {EntityUI} from './entityUI';
 
 export class TuidUI extends EntityUI<Tuid> {
     editPage?: TuidUIComponent;
-    searchPage?: TuidUIComponent;
+    listPage?: TuidUIComponent;
     input?: TuidInput;
 }

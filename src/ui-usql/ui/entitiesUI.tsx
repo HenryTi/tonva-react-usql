@@ -270,7 +270,7 @@ class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUI, TuidMapper> {
     protected buildUI(entity:Tuid, mapper1:TuidMapper, mapper2:TuidMapper):TuidUI {
         let ret = super.buildUI(entity, mapper1, mapper2);
         ret.editPage = mapper2.editPage || mapper1.editPage;
-        ret.searchPage = mapper2.listPage || mapper1.listPage;
+        ret.listPage = mapper2.listPage || mapper1.listPage;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
         return ret;
     }

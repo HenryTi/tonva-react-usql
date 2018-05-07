@@ -1,68 +1,67 @@
 import * as React from 'react';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
-import {nav, Page} from 'tonva-tools';
-import {List} from 'tonva-react-form';
+import {nav, Page, PagedItems} from 'tonva-tools';
+import {LMR, SearchBox, List} from 'tonva-react-form';
 import {Tuid} from '../../entities';
 import {EntitiesUIProps, TuidUIProps} from '../../ui';
 import {EntitiesUI, TuidUI} from '../../ui';
-import {EditPage} from './editPage';
-import config from '../consts';
+import { EditPage } from './editPage';
 
-export interface State {
-    more: boolean;
-    rows: any[];
+class TuidPagedItems<T> extends PagedItems<T> {
+    private tuidUI: TuidUI;
+    constructor(tuidUI: TuidUI) {
+        super();
+        this.tuidUI = tuidUI;
+    }
+    protected async load():Promise<T[]> {
+        let ret = await this.tuidUI.entity.search(this.param, this.pageStart, this.pageSize);
+        return ret;
+    }
+    protected setPageStart(item:T) {
+        if (item === undefined) this.pageStart = 0;
+    }
 }
-export class ListPage extends React.Component<TuidUIProps, State> {
+
+@observer
+export class ListPage extends React.Component<TuidUIProps> {
+    private pagedItems:TuidPagedItems<any>;
+
     constructor(props) {
         super(props);
-        this.state = {
-            more: false,
-            rows: undefined,
-        }
-        this.mapper = this.mapper.bind(this);
-        this.click = this.click.bind(this);
+        this.pagedItems = new TuidPagedItems<any>(this.props.ui);
+        this.onSearch = this.onSearch.bind(this);
+        this.renderRow = this.renderRow.bind(this);
+        this.rowClick = this.rowClick.bind(this);
     }
-
-    async componentDidMount() {
-        let res = await this.props.ui.entity.search('', 0, 30);
-        this.setState({
-            more: res.more,
-            rows: res.rows
-        });
+    async componentWillMount() {
+        await this.onSearch(this.props.data);
     }
-
-    click(row:any) {
-        nav.push(<EditPage ui={this.props.ui} data={row} />)
+    async onSearch(key:string) {
+        await this.pagedItems.first(key);
     }
-
-    mapper(row:any, index:number) {
-        //let {name, discription, d2} = row;
-        return <div className='app-row'>
-            <label>
-                <img src={config.appIcon} />
-            </label>
-            <div>
-                {JSON.stringify(row)}
-            </div>
-        </div>
+    renderRow(item:any, index:number):JSX.Element {
+        return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
     }
-/*
-    <div>
-    <div>{name}</div>
-    <span>{discription}</span>
-</div>
-<footer>
-    <span style={{color:'red'}}>{d2.toFixed(2)}</span>
-    <span style={{fontSize:'smaller'}}>&nbsp;元</span>
-</footer>
-*/
-
-    render() {
+    async rowClick(item:any) {
         let {ui} = this.props;
+        let data = await ui.entity.load(item.id);
+        nav.push(<EditPage ui={ui} data={data} />);
+    }
+    render() {
+        let {data:initKey, ui} = this.props;
         let {entity, caption} = ui;
-        let {name} = entity;
-        return <Page header={caption || name}>
-            <List items={this.state.rows} item={{render: this.mapper, onClick: this.click}} />
+        let {name, schema} = entity;
+        caption = caption || name;
+        let header = <SearchBox className="mx-1 w-100"
+            initKey={initKey}
+            onSearch={this.onSearch} placeholder={'搜索'+caption} />;
+        return <Page header={header}>
+            <List
+                items={this.pagedItems.items}
+                item={{render:this.renderRow, onClick:this.rowClick}}
+                before={'搜索'+caption+'资料'} />
         </Page>;
     }
 }

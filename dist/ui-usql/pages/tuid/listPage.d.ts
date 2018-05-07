@@ -1,14 +1,12 @@
 /// <reference types="react" />
 import * as React from 'react';
 import { TuidUIProps } from '../../ui';
-export interface State {
-    more: boolean;
-    rows: any[];
-}
-export declare class ListPage extends React.Component<TuidUIProps, State> {
+export declare class ListPage extends React.Component<TuidUIProps> {
+    private pagedItems;
     constructor(props: any);
-    componentDidMount(): Promise<void>;
-    click(row: any): void;
-    mapper(row: any, index: number): JSX.Element;
+    componentWillMount(): Promise<void>;
+    onSearch(key: string): Promise<void>;
+    renderRow(item: any, index: number): JSX.Element;
+    rowClick(item: any): Promise<void>;
     render(): JSX.Element;
 }

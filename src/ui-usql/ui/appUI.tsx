@@ -55,7 +55,7 @@ export class AppUI {
 }
 
 export class MainPage extends React.Component<{appUI:AppUI}> {
-    private entityRender(ui: TuidUI, index: number): JSX.Element {
+    private entityRender(ui: EntityUI<any>, index: number): JSX.Element {
         let {caption} = ui;
         return ui.link?
             <ui.link ui={ui} />:
