@@ -7,7 +7,7 @@ import {EntitiesUI, TuidUI, TuidInputProps, TuidInput, TuidPickPageProps} from '
 import {Tuid} from '../../entities';
 import { POINT_CONVERSION_HYBRID } from 'constants';
 
-interface TuidInputState {
+export interface TuidInputState {
     id: number;
     proxyId: number;
     proxyName: string;
