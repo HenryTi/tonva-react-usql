@@ -44,6 +44,10 @@ export class UsqlApi extends Api {
         return await this.post('tuidids/' + name, ids);
     }
 
+    async proxied(name:string, proxy:string, id:number):Promise<any> {
+        return await this.get('tuid-proxy/' + name + '/' + proxy + '/' + id, undefined);
+    }
+
     async sheetSave(name:string, data:object):Promise<any> {
         return await this.post('sheet/' + name, data);
     }

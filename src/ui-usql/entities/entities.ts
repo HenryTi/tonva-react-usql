@@ -129,9 +129,9 @@ export class Entities {
 
     getTuid(name:string, tuidUrl:string) {return this.tuids[name];}
 
-    cacheTuids() {
+    cacheTuids(defer:number) {
         this.clearCacheTimer();
-        this.cacheTimer = setTimeout(this.loadIds, 100);
+        this.cacheTimer = setTimeout(this.loadIds, defer);
     }
     private clearCacheTimer() {
         if (this.cacheTimer === undefined) return;
@@ -146,13 +146,6 @@ export class Entities {
         }
     }
 
-    // load access
-    /*
-    async loadAccess():Promise<boolean> {
-        let ret = await this.tvApi.loadAccess();
-        this.buildAccess(this.tvApi, ret);
-        return true;
-    }*/
     private buildAccess(api:UsqlApi, access:any) {
         for (let a in access) {
             let v = access[a];
@@ -161,6 +154,7 @@ export class Entities {
                 case 'object': this.fromObj(api, a, v); break;
             }
         }
+        for (let tuid of this.tuidArr) tuid.setProxies(this);
     }
 
     private fromType(api:UsqlApi, name:string, type:string) {
@@ -177,7 +171,8 @@ export class Entities {
             case 'tuid':
                 let tuid = this.tuids[name];
                 if (tuid === undefined) {
-                    this.tuidArr.push(this.tuids[name] = new Tuid(this, api, name, id));
+                    this.tuidArr.push(tuid = this.tuids[name] = new Tuid(this, api, name, id));
+                    tuid.buidProxies(parts);
                 }
                 break;
             case 'query': 
@@ -366,7 +361,7 @@ export class Entities {
                     if (tuid === undefined) {
                         f._tuid = tuid = this.getTuid(tuidKey, tuidUrl);
                     }
-                    tuid.useId(Number(v));
+                    tuid.useId(Number(v), true);
                 }
                 return Number(v);
         }

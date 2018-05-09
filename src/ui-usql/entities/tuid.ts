@@ -1,28 +1,40 @@
 import {observable} from 'mobx';
 import * as _ from 'lodash';
 import {Entity} from './entity';
+import {Entities} from './entities';
 
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
     private queue: number[] = [];               // 每次使用，都排到队头
     private waitingIds: number[] = [];          // 等待loading的
     private cache = observable.map({}, {deep: false});    // 已经缓冲的
+    proxies: {[name:string]: Tuid};
 
     private moveToHead(id:number) {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
         this.queue.push(id);
     }
+    buidProxies(parts:string[]) {
+        let len = parts.length;
+        if (len <= 2) return;
+        this.proxies = {};
+        for (let i=2;i<len;i++) this.proxies[parts[i]] = null;
+    }
+    setProxies(entities:Entities) {
+        if (this.proxies === undefined) return;
+        for (let i in this.proxies) this.proxies[i] = entities.getTuid(i, undefined);
+    }
     getId(id:number):any {
         return this.cache.get(String(id));
     }
-    useId(id:number):void {
+    useId(id:number, defer?:boolean):void {
         let key = String(id);
         if (this.cache.has(key) === true) {
             this.moveToHead(id);
             return;
         }
-        this.entities.cacheTuids();
+        this.entities.cacheTuids(defer===true?100:20);
         this.cache.set(key, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
@@ -53,16 +65,32 @@ export class Tuid extends Entity {
         this.waitingIds.push(id);
         this.queue.push(id);
     }
-
+    async proxied(name:string, id:number):Promise<any> {
+        let proxyTuid = this.entities.getTuid(name, undefined);
+        proxyTuid.useId(id);
+        let proxied = await this.tvApi.proxied(this.name, name, id);
+        this.cacheValue(proxied);
+        return proxied;
+    }
+    private cacheValue(val:any):boolean {
+        if (val === undefined) return false;
+        let id = val.id;
+        if (id === undefined) return false;
+        let index = this.waitingIds.findIndex(v => v === id);
+        if (index>=0) this.waitingIds.splice(index, 1);
+        this.cache.set(String(id), val);
+        return true;
+    }
     async cacheIds():Promise<void> {
         if (this.waitingIds.length === 0) return;
         let tuids = await this.tvApi.tuidIds(this.name, this.waitingIds);
         for (let tuid of tuids) {
-            let id = tuid.id;
-            if (id === undefined) continue;
-            let index = this.waitingIds.findIndex(v => v === id);
-            if (index>=0) this.waitingIds.splice(index, 1);
-            this.cache.set(String(id), tuid);
+            if (this.cacheValue(tuid) === false) continue;
+            if (this.proxies !== undefined) {
+                let {type, $proxy} = tuid;
+                let pTuid = this.proxies[type];
+                pTuid.useId($proxy);
+            }
         }
     }
     async load(id:number):Promise<any> {
