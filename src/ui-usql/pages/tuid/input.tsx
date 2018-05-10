@@ -131,9 +131,10 @@ export class GeneralTuidInput extends React.Component<TuidInputProps, TuidInputS
                 return this.idContent(caption, id);
             }
             let InputContent = input.inputContent;
-            if (InputContent === undefined || val === undefined) {
+            if (val === undefined)
                 return this.idContent(caption, id);
-            }
+            if (InputContent === undefined)
+                return <div>{caption}: {JSON.stringify(val)}</div>;
             return <InputContent value={val} />;
         }
 

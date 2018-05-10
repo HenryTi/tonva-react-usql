@@ -26,10 +26,11 @@ export class MainPage extends React.Component<QueryUIProps> {
 
     render() {
         let {ui} = this.props;
-        let {caption, entity} = ui;
+        let {caption, entity, entitiesUI} = ui;
         let {name, schema} = entity;
         return <Page header={caption || name}>
-            <TonvaForm className="m-3" 
+            <TonvaForm className="m-3"
+                context={entitiesUI}
                 formRows={this.formRows} 
                 onSubmit={this.submit} />
         </Page>;
