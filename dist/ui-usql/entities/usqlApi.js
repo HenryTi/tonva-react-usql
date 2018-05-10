@@ -55,6 +55,11 @@ export class UsqlApi extends Api {
             return yield this.post('tuidids/' + name, ids);
         });
     }
+    proxied(name, proxy, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.get('tuid-proxy/' + name + '/' + proxy + '/' + id, undefined);
+        });
+    }
     sheetSave(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.post('sheet/' + name, data);

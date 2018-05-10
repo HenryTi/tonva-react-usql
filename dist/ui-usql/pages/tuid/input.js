@@ -16,39 +16,66 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
+import { EntityLink } from '../entityLink';
 let GeneralTuidInput = class GeneralTuidInput extends React.Component {
     constructor(props) {
         super(props);
         this.id = 0;
         this.onClick = this.onClick.bind(this);
         this.onPicked = this.onPicked.bind(this);
-        this.inputOnBlure = this.inputOnBlure.bind(this);
+        this.inputOnBlur = this.inputOnBlur.bind(this);
+        this.state = {
+            id: this.props.id,
+            proxyId: undefined,
+            proxyName: undefined,
+        };
         let { id, tuid, entitiesUI } = this.props;
         if (entitiesUI === undefined) {
             console.log('TonvaForm props 应该包含 context=EntitiesUI');
             return;
         }
         this.tuidUI = entitiesUI.tuid.coll[tuid];
+        this.tuid = this.tuidUI.entity;
         if (this.tuidUI === undefined) {
             console.log('Tuid ' + tuid + ' 没有定义');
             return;
         }
     }
+    componentWillMount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.tuid.loadSchema();
+        });
+    }
     onPicked(value) {
         if (value === undefined)
             return;
+        let { id, proxyId, proxyName } = value;
+        this.setState({
+            id: id,
+            proxyId: proxyId,
+            proxyName: proxyName,
+        });
         let { onPicked } = this.props;
-        this.tuidUI.entity.useId(value.id);
+        if (id !== undefined)
+            this.tuidUI.entity.useId(id);
         onPicked(value);
     }
     onClick() {
-        let { id, input, params, onPicked } = this.props;
+        let { input, params, onPicked } = this.props;
+        let id = this.state.id;
+        let tuid = this.tuidUI.entity;
+        let proxies = tuid.schema.proxies;
         let { pickPage: PickPage } = input;
         if (PickPage === undefined)
             PickPage = PickTuidPage;
-        nav.push(React.createElement(PickPage, { id: id, input: input, tuidUI: this.tuidUI, params: params, onPicked: this.onPicked }));
+        if (proxies === undefined) {
+            nav.push(React.createElement(PickPage, { id: id, input: input, tuidUI: this.tuidUI, params: params, onPicked: this.onPicked }));
+        }
+        else {
+            nav.push(React.createElement(SelectTuidPage, { id: id, proxies: proxies, input: input, tuidUI: this.tuidUI, params: params, onPicked: this.onPicked }));
+        }
     }
-    inputOnBlure(evt) {
+    inputOnBlur(evt) {
         let value = evt.currentTarget.value;
         let id = Number(value);
         if (id <= 0) {
@@ -56,52 +83,132 @@ let GeneralTuidInput = class GeneralTuidInput extends React.Component {
             return;
         }
         let { onPicked } = this.props;
-        //this.tuidUI.entity.useId(id);
+        this.tuidUI.entity.useId(id);
         onPicked({ id: id });
     }
     render() {
-        let { id, tuid, input, entitiesUI, params, readOnly } = this.props;
+        let { tuid, input, entitiesUI, params, readOnly } = this.props;
         if (this.tuidUI === undefined) {
             if (readOnly === true)
                 return React.createElement("span", null, tuid + '没有定义或未处理');
-            return React.createElement("input", { className: "form-control", type: "number", step: 1, onBlur: this.inputOnBlure, placeholder: tuid + '没有定义或未处理，可直接输入数字' });
+            return React.createElement("input", { className: "form-control", type: "number", step: 1, onBlur: this.inputOnBlur, placeholder: tuid + '没有定义或未处理，可直接输入数字' });
         }
-        let caption = this.tuidUI.caption;
-        let content;
-        if (id === undefined) {
-            content = React.createElement("div", null,
-                "\u70B9\u51FB\u641C\u7D22",
-                caption);
-        }
-        else {
-            let val = this.tuidUI.entity.getId(id);
-            switch (typeof val) {
-                case 'number':
-                    content = React.createElement("div", null,
-                        caption,
-                        ": ",
-                        id);
-                    break;
-                default:
-                    content = input.inputContent ?
-                        React.createElement(input.inputContent, { value: val }) :
-                        React.createElement(React.Fragment, null,
-                            caption,
-                            ": ",
-                            id);
-                    break;
-            }
-        }
+        let content = this.content(input);
         if (readOnly === true) {
             return React.createElement("span", null, content);
         }
         return React.createElement("button", { className: "form-control btn btn-outline-info", type: "button", style: { textAlign: 'left', paddingLeft: '0.75rem' }, onClick: this.onClick }, content);
+    }
+    content(input) {
+        let { entity, caption, entitiesUI } = this.tuidUI;
+        let id = this.state.id;
+        let content;
+        if (id === undefined) {
+            let { proxyName, proxyId } = this.state;
+            if (proxyId !== undefined) {
+                return this.idContent(proxyName, proxyId);
+            }
+            return React.createElement("div", null,
+                "\u70B9\u51FB\u641C\u7D22",
+                caption);
+        }
+        let proxies = this.tuid.proxies;
+        if (proxies === undefined) {
+            let val = entity.getId(id);
+            if (typeof val === 'number') {
+                return this.idContent(caption, id);
+            }
+            let InputContent = input.inputContent;
+            if (val === undefined)
+                return this.idContent(caption, id);
+            if (InputContent === undefined)
+                return React.createElement("div", null,
+                    caption,
+                    ": ",
+                    JSON.stringify(val));
+            return React.createElement(InputContent, { value: val });
+        }
+        // ==== proxy tuid =====
+        let val = entity.getId(id);
+        if (typeof val === 'number')
+            return this.idContent(caption, id);
+        let { type, $proxy } = val;
+        let tuidUI = entitiesUI.tuid.coll[type];
+        let InputContent = tuidUI.input.inputContent;
+        caption = tuidUI.caption;
+        id = $proxy;
+        val = tuidUI.entity.getId($proxy);
+        if (typeof val === 'number')
+            return this.idContent(caption, id);
+        if (InputContent === undefined || val === undefined) {
+            return this.idContent(caption, id);
+        }
+        return React.createElement(InputContent, { value: val });
+    }
+    idContent(caption, id) {
+        return React.createElement("div", null,
+            caption,
+            ": ",
+            id);
     }
 };
 GeneralTuidInput = __decorate([
     observer
 ], GeneralTuidInput);
 export { GeneralTuidInput };
+class SelectTuidPage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.itemClick = this.itemClick.bind(this);
+        this.itemRender = this.itemRender.bind(this);
+        this.onPicked = this.onPicked.bind(this);
+        this.proxies = [];
+        let { proxies } = this.props;
+        for (let i in proxies) {
+            let p = proxies[i];
+            this.proxies.push({
+                tuidName: p.name,
+            });
+        }
+    }
+    itemRender(proxy, index) {
+        return React.createElement(EntityLink, { ui: this.props.tuidUI.entitiesUI.tuid.coll[proxy.tuidName] });
+        //return <div>{proxy.tuidName}</div>;
+    }
+    itemClick(proxy) {
+        this.proxy = proxy;
+        let { id, tuidUI, input, params, onPicked } = this.props;
+        let proxyTuidUI = tuidUI.entitiesUI.tuid.coll[proxy.tuidName];
+        let proxyTuid = proxyTuidUI.entity;
+        let { pickPage: PickPage } = input;
+        if (PickPage === undefined)
+            PickPage = PickTuidPage;
+        nav.pop();
+        nav.push(React.createElement(PickPage, { id: id, input: input, tuidUI: proxyTuidUI, params: params, onPicked: this.onPicked }));
+    }
+    onPicked(value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (value === undefined)
+                return;
+            let { onPicked, tuidUI } = this.props;
+            let vid = value.id;
+            let proxy = this.proxy.tuidName;
+            onPicked({ id: undefined, proxyId: vid, proxyName: proxy });
+            let proxiedValue = yield tuidUI.entity.proxied(proxy, vid);
+            if (!proxiedValue) {
+                console.log("proxiedValue is null");
+                return;
+            }
+            let { id, $proxy, type } = proxiedValue;
+            onPicked({ id: id, proxyId: $proxy, proxyName: type });
+        });
+    }
+    render() {
+        let { tuidUI, input } = this.props;
+        return React.createElement(Page, { header: "\u9009\u62E9" },
+            React.createElement(List, { items: this.proxies, item: { render: this.itemRender, onClick: this.itemClick } }));
+    }
+}
 class PickTuidPage extends React.Component {
     constructor(props) {
         super(props);

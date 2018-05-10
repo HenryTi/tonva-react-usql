@@ -39,10 +39,10 @@ export class MainPage extends React.Component {
     }
     render() {
         let { ui } = this.props;
-        let { caption, entity } = ui;
+        let { caption, entity, entitiesUI } = ui;
         let { name, schema } = entity;
         return React.createElement(Page, { header: caption || name },
-            React.createElement(TonvaForm, { className: "m-3", formRows: this.formRows, onSubmit: this.submit }));
+            React.createElement(TonvaForm, { className: "m-3", context: entitiesUI, formRows: this.formRows, onSubmit: this.submit }));
     }
 }
 let BookResultPage = class BookResultPage extends React.Component {

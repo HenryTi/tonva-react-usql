@@ -9,6 +9,7 @@ export declare class UsqlApi extends Api {
     tuidSave(name: string, params: any): Promise<any>;
     tuidSearch(name: string, key: string, pageStart: string | number, pageSize: number): Promise<any>;
     tuidIds(name: string, ids: number[]): Promise<any[]>;
+    proxied(name: string, proxy: string, id: number): Promise<any>;
     sheetSave(name: string, data: object): Promise<any>;
     sheetAction(name: string, data: object): Promise<any>;
     stateSheets(name: string, data: object): Promise<any>;

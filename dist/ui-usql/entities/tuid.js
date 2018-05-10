@@ -22,16 +22,30 @@ export class Tuid extends Entity {
         this.queue.splice(index, 1);
         this.queue.push(id);
     }
+    buidProxies(parts) {
+        let len = parts.length;
+        if (len <= 2)
+            return;
+        this.proxies = {};
+        for (let i = 2; i < len; i++)
+            this.proxies[parts[i]] = null;
+    }
+    setProxies(entities) {
+        if (this.proxies === undefined)
+            return;
+        for (let i in this.proxies)
+            this.proxies[i] = entities.getTuid(i, undefined);
+    }
     getId(id) {
         return this.cache.get(String(id));
     }
-    useId(id) {
+    useId(id, defer) {
         let key = String(id);
         if (this.cache.has(key) === true) {
             this.moveToHead(id);
             return;
         }
-        this.entities.cacheTuids();
+        this.entities.cacheTuids(defer === true ? 100 : 20);
         this.cache.set(key, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
@@ -60,19 +74,40 @@ export class Tuid extends Entity {
         this.waitingIds.push(id);
         this.queue.push(id);
     }
+    proxied(name, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let proxyTuid = this.entities.getTuid(name, undefined);
+            proxyTuid.useId(id);
+            let proxied = yield this.tvApi.proxied(this.name, name, id);
+            this.cacheValue(proxied);
+            return proxied;
+        });
+    }
+    cacheValue(val) {
+        if (val === undefined)
+            return false;
+        let id = val.id;
+        if (id === undefined)
+            return false;
+        let index = this.waitingIds.findIndex(v => v === id);
+        if (index >= 0)
+            this.waitingIds.splice(index, 1);
+        this.cache.set(String(id), val);
+        return true;
+    }
     cacheIds() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.waitingIds.length === 0)
                 return;
             let tuids = yield this.tvApi.tuidIds(this.name, this.waitingIds);
             for (let tuid of tuids) {
-                let id = tuid.id;
-                if (id === undefined)
+                if (this.cacheValue(tuid) === false)
                     continue;
-                let index = this.waitingIds.findIndex(v => v === id);
-                if (index >= 0)
-                    this.waitingIds.splice(index, 1);
-                this.cache.set(String(id), tuid);
+                if (this.proxies !== undefined) {
+                    let { type, $proxy } = tuid;
+                    let pTuid = this.proxies[type];
+                    pTuid.useId($proxy);
+                }
             }
         });
     }

@@ -35,7 +35,7 @@ export declare class Entities {
     onWsReceiveAny(onWsReceive: (data: any) => void): number;
     endWsReceive(handlerId: number): void;
     getTuid(name: string, tuidUrl: string): Tuid;
-    cacheTuids(): void;
+    cacheTuids(defer: number): void;
     private clearCacheTimer();
     private loadIds();
     private buildAccess(api, access);

@@ -1,12 +1,21 @@
 /// <reference types="react" />
 import * as React from 'react';
 import { TuidInputProps } from '../../ui';
-export declare class GeneralTuidInput extends React.Component<TuidInputProps> {
+export interface TuidInputState {
+    id: number;
+    proxyId: number;
+    proxyName: string;
+}
+export declare class GeneralTuidInput extends React.Component<TuidInputProps, TuidInputState> {
     private id;
     private tuidUI;
+    private tuid;
     constructor(props: any);
+    componentWillMount(): Promise<void>;
     onPicked(value: any): void;
     onClick(): void;
-    inputOnBlure(evt: any): void;
+    inputOnBlur(evt: any): void;
     render(): JSX.Element;
+    private content(input);
+    private idContent(caption, id);
 }
