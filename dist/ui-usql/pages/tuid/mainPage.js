@@ -11,6 +11,10 @@ import { Button } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
 import { LMR, SearchBox, List, Muted } from 'tonva-react-form';
 export class MainPage extends React.Component {
+    constructor(props) {
+        super(props);
+        console.log('xxx-ooo-xxx-ooo');
+    }
     render() {
         let { entity, caption } = this.props.ui;
         let proxies = entity.schema.proxies;
