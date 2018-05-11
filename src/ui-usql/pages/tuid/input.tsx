@@ -34,11 +34,11 @@ export class GeneralTuidInput extends React.Component<TuidInputProps, TuidInputS
             return;
         }
         this.tuidUI = entitiesUI.tuid.coll[tuid];
-        this.tuid = this.tuidUI.entity;
         if (this.tuidUI === undefined) {
             console.log('Tuid ' + tuid + ' 没有定义');
             return;
         }
+        this.tuid = this.tuidUI.entity;
     }
     async componentWillMount() {
         await this.tuid.loadSchema();

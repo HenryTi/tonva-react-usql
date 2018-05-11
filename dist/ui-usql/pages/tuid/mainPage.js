@@ -68,16 +68,18 @@ class TuidProxyMainPage extends React.Component {
     }
     render() {
         let ui = this.props.ui;
-        let proxies = ui.entity.schema.proxies;
-        let tuids = [];
+        let { entity, entitySet } = ui;
+        let { coll } = entitySet;
+        let proxies = entity.schema.proxies;
+        let tuidUIs = [];
         for (let i in proxies) {
-            let tuidUI = ui.entitySet.coll[i];
-            tuids.push(tuidUI);
+            let tuidUI = coll[i];
+            tuidUIs.push(tuidUI);
         }
         return React.createElement(Page, { header: ui.caption },
             React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
                     ui.caption,
-                    " \u4EE3\u7406\u4E0B\u5217Tuid"), items: tuids, item: { render: this.entityRender, onClick: this.entityClick } }));
+                    " \u4EE3\u7406\u4E0B\u5217Tuid"), items: tuidUIs, item: { render: this.entityRender, onClick: this.entityClick } }));
     }
 }
 //# sourceMappingURL=mainPage.js.map

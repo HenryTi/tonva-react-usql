@@ -71,16 +71,18 @@ class TuidProxyMainPage extends React.Component<TuidUIProps> {
     }
     render() {
         let ui = this.props.ui;
-        let proxies = ui.entity.schema.proxies;
-        let tuids:TuidUI[] = [];
+        let {entity, entitySet} = ui;
+        let {coll} = entitySet;
+        let proxies = entity.schema.proxies;
+        let tuidUIs:TuidUI[] = [];
         for (let i in proxies) {
-            let tuidUI = ui.entitySet.coll[i];
-            tuids.push(tuidUI);
+            let tuidUI = coll[i];
+            tuidUIs.push(tuidUI);
         }
         return <Page header={ui.caption}>
             <List className="my-2"
                 header={<Muted>{ui.caption} 代理下列Tuid</Muted>}
-                items={tuids} 
+                items={tuidUIs} 
                 item={{render: this.entityRender, onClick:this.entityClick}} />
         </Page>
     }

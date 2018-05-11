@@ -35,11 +35,11 @@ let GeneralTuidInput = class GeneralTuidInput extends React.Component {
             return;
         }
         this.tuidUI = entitiesUI.tuid.coll[tuid];
-        this.tuid = this.tuidUI.entity;
         if (this.tuidUI === undefined) {
             console.log('Tuid ' + tuid + ' 没有定义');
             return;
         }
+        this.tuid = this.tuidUI.entity;
     }
     componentWillMount() {
         return __awaiter(this, void 0, void 0, function* () {
