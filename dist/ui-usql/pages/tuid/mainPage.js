@@ -9,12 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Button } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
-import { LMR, SearchBox, List, Muted } from 'tonva-react-form';
+import { SearchBox, List, Muted } from 'tonva-react-form';
 export class MainPage extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log('xxx-ooo-xxx-ooo');
-    }
     render() {
         let { entity, caption } = this.props.ui;
         let proxies = entity.schema.proxies;
@@ -49,12 +45,12 @@ class TuidMainPage extends React.Component {
         let { entity, caption } = this.props.ui;
         let { name, schema } = entity;
         caption = caption || name;
-        let right = React.createElement(SearchBox, { className: "mr-3", onSearch: this.onSearch, placeholder: '搜索' + caption });
-        return React.createElement(Page, { header: caption || name },
-            React.createElement(LMR, { className: "mt-3", right: right },
-                React.createElement("div", null,
-                    React.createElement(Button, { className: "mr-3", color: "primary", onClick: this.addNew }, "\u65B0\u589E"),
-                    React.createElement(Button, { className: "mr-3", color: "primary", onClick: this.list }, "\u5217\u8868"))));
+        let header = React.createElement(SearchBox, { className: "w-100", onSearch: this.onSearch, placeholder: '搜索' + caption });
+        return React.createElement(Page, { header: caption },
+            React.createElement(SearchBox, { className: "w-100", onSearch: this.onSearch, placeholder: '搜索' + caption }),
+            React.createElement("div", { className: 'my-3' },
+                React.createElement(Button, { className: "ml-3", color: "primary", onClick: this.addNew }, "\u65B0\u589E"),
+                React.createElement(Button, { className: "ml-3", color: "primary", onClick: this.list }, "\u5217\u8868")));
     }
 }
 class TuidProxyMainPage extends React.Component {

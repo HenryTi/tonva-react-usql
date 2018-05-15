@@ -7,10 +7,6 @@ import {EntitiesUIProps, TuidUIProps, EntityUI, EntitiesUI, TuidUI} from '../../
 import {Entities, Entity} from '../../entities';
 
 export class MainPage extends React.Component<TuidUIProps> {
-    constructor(props) {
-        super(props);
-        console.log('xxx-ooo-xxx-ooo');
-    }
     render() {
         let {entity, caption} = this.props.ui;
         let proxies = entity.schema.proxies;
@@ -50,14 +46,13 @@ class TuidMainPage extends React.Component<TuidUIProps> {
         let {entity, caption} = this.props.ui;
         let {name, schema} = entity;
         caption = caption || name;
-        let right = <SearchBox className="mr-3" onSearch={this.onSearch} placeholder={'搜索'+caption} />;
-        return <Page header={caption || name}>
-            <LMR className="mt-3" right={right}>
-                <div>
-                    <Button className="mr-3" color="primary" onClick={this.addNew}>新增</Button>
-                    <Button className="mr-3" color="primary" onClick={this.list}>列表</Button>
-                </div>
-            </LMR>
+        let header = <SearchBox className="w-100" onSearch={this.onSearch} placeholder={'搜索'+caption} />;
+        return <Page header={caption}>
+            <SearchBox className="w-100" onSearch={this.onSearch} placeholder={'搜索'+caption} />
+            <div className='my-3'>
+                <Button className="ml-3" color="primary" onClick={this.addNew}>新增</Button>
+                <Button className="ml-3" color="primary" onClick={this.list}>列表</Button>
+            </div>
         </Page>;
     }
 }
