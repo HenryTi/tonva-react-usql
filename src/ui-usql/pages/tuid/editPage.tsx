@@ -7,7 +7,7 @@ import {EntitiesUIProps, EntityUIProps, TuidUIProps} from '../../ui';
 import {EntitiesUI, TuidUI} from '../../ui';
 import config from '../consts';
 
-interface EditProps {
+export interface EditProps {
     master?:TuidUI; 
     masterId?:number;
     onSubmited?:(res:any) => void;

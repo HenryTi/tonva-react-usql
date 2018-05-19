@@ -32,12 +32,12 @@ export class UsqlApi extends Api {
     }
     tuidGet(name, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.get('tuid/' + name + '/' + id, {});
+            return yield this.get('tuid/' + name + '/' + id, {});
         });
     }
     tuidSave(name, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.post('tuid/' + name, params);
+            return yield this.post('tuid/' + name, params);
         });
     }
     tuidSearch(name, key, pageStart, pageSize) {
@@ -45,6 +45,22 @@ export class UsqlApi extends Api {
             let ret = yield this.post('tuids/' + name, {
                 key: key,
                 pageStart: pageStart,
+                pageSize: pageSize
+            });
+            return ret;
+        });
+    }
+    tuidSlaveSave(name, slave, params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.post('tuid-slave/' + name + '/' + slave, params);
+        });
+    }
+    tuidSlaves(name, slave, masterId, order, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.get('tuid-slaves/' + name, {
+                slave: slave,
+                masterId: masterId,
+                pageStart: order,
                 pageSize: pageSize
             });
             return ret;

@@ -24,23 +24,13 @@ export interface TuidInput {
 }
 export interface TuidContentProps {
     id: number;
-    tuidUI: TuidUI;
+    ui: TuidUI;
 }
-export interface TuidInputProps {
-    id: number;
-    tuid: string;
-    input: TuidInput;
-    readOnly: boolean;
-    entitiesUI: EntitiesUI;
-    params: any;
-    onPicked: (value: any) => void;
+export interface TuidInputProps extends TuidContentProps {
+    onFormValues: () => any;
+    onIdChanged: (id: any) => void;
 }
-export interface TuidPickPageProps {
-    id: number;
-    tuidUI: TuidUI;
-    input: TuidInput;
-    params: any;
-    onPicked: (value: any) => void;
+export interface TuidPickPageProps extends TuidInputProps {
 }
 export declare type TuidInputComponent = new (props: TuidInputProps) => React.Component<TuidInputProps>;
 export declare type FieldMapper = (field: any) => any;
@@ -57,6 +47,7 @@ export interface FieldFace {
 export interface FieldFaces {
     [name: string]: FieldFace;
 }
+export declare type TuidUISlaveComponent = new (props: TuidUISlaveProps) => React.Component<TuidUISlaveProps>;
 export interface EntitiesUIProps {
     ui: EntitiesUI;
     data?: any;
@@ -79,6 +70,10 @@ export declare type SheetUIProps = EntityUIProps<Sheet, SheetUI>;
 export declare type SheetUIComponent = new (props: SheetUIProps) => React.Component<SheetUIProps>;
 export declare type TuidUIProps = EntityUIProps<Tuid, TuidUI>;
 export declare type TuidUIComponent = new (props: TuidUIProps) => React.Component<TuidUIProps>;
+export declare type TuidUISlaveProps = TuidUIProps & {
+    slave: TuidUI;
+    masterId?: number;
+};
 export interface EntityMapper<T extends Entity, TUI extends EntityUI<T>> {
     caption?: string;
     icon?: string;
@@ -91,6 +86,7 @@ export interface TuidMapper extends EntityMapper<Tuid, TuidUI> {
     editPage?: TuidUIComponent;
     listPage?: TuidUIComponent;
     input?: TuidInput;
+    slaveInput?: TuidUISlaveComponent;
 }
 export interface ActionMapper extends EntityMapper<Action, ActionUI> {
 }

@@ -84,7 +84,9 @@ let MainDetailsForm = class MainDetailsForm extends React.Component {
     render() {
         let { className, ui } = this.props;
         return React.createElement("div", null,
-            React.createElement(TonvaForm, { className: className, formRows: this.formRows, context: ui.entitiesUI, onSubmit: this.onSubmit }));
+            React.createElement(TonvaForm, { className: className, formRows: this.formRows, 
+                //context={ui.entitiesUI}
+                onSubmit: this.onSubmit }));
     }
 };
 MainDetailsForm = __decorate([
@@ -109,7 +111,9 @@ class DetailPage extends React.Component {
     render() {
         let { entitiesUI, detail, values } = this.props;
         return React.createElement(Page, { header: detail.label || detail.name },
-            React.createElement(TonvaForm, { className: "mx-3 my-2", context: entitiesUI, formRows: detail.fields, onSubmit: this.onSubmit, initValues: values }));
+            React.createElement(TonvaForm, { className: "mx-3 my-2", 
+                //context={entitiesUI}
+                formRows: detail.fields, onSubmit: this.onSubmit, initValues: values }));
     }
 }
 class Success extends React.Component {

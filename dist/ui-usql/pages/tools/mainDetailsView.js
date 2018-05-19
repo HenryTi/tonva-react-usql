@@ -52,7 +52,9 @@ let MainDetailsView = class MainDetailsView extends React.Component {
         if (formRows === undefined)
             return React.createElement("div", null, "...");
         return React.createElement("div", null,
-            React.createElement(TonvaForm, { formRows: formRows, initValues: values, context: ui.entitiesUI, onSubmit: this.onSubmit, readOnly: true }));
+            React.createElement(TonvaForm, { formRows: formRows, initValues: values, 
+                //context={ui.entitiesUI}
+                onSubmit: this.onSubmit, readOnly: true }));
     }
 };
 MainDetailsView = __decorate([

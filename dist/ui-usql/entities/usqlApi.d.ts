@@ -8,6 +8,8 @@ export declare class UsqlApi extends Api {
     tuidGet(name: string, id: number): Promise<any>;
     tuidSave(name: string, params: any): Promise<any>;
     tuidSearch(name: string, key: string, pageStart: string | number, pageSize: number): Promise<any>;
+    tuidSlaveSave(name: string, slave: any, params: any): Promise<any>;
+    tuidSlaves(name: string, slave: string, masterId: number, order: number, pageSize: number): Promise<any>;
     tuidIds(name: string, ids: number[]): Promise<any[]>;
     proxied(name: string, proxy: string, id: number): Promise<any>;
     sheetSave(name: string, data: object): Promise<any>;

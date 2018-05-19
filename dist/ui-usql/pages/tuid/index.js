@@ -4,6 +4,7 @@ import { EditPage } from './editPage';
 import { ListPage } from './listPage';
 import { GeneralTuidInput } from './input';
 import { EntityLink } from '../entityLink';
+import { SlaveInput } from './slaveInput';
 export * from './input';
 export const mapperContainer = {
     caption: '数据字典',
@@ -15,7 +16,8 @@ export const mapperContainer = {
         listPage: ListPage,
         input: {
             component: GeneralTuidInput,
-        }
+        },
+        slaveInput: SlaveInput,
     }
 };
 //# sourceMappingURL=index.js.map

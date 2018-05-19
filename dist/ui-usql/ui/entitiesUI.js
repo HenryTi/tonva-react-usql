@@ -238,6 +238,7 @@ class TuidSetBuilder extends EntitySetBuilder {
         let ret = super.buildUI(entity, mapper1, mapper2);
         ret.editPage = mapper2.editPage || mapper1.editPage;
         ret.listPage = mapper2.listPage || mapper1.listPage;
+        ret.slaveInput = mapper2.slaveInput || mapper1.slaveInput;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
         return ret;
     }

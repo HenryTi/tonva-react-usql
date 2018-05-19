@@ -8,8 +8,6 @@ export interface TuidInputState {
 }
 export declare class GeneralTuidInput extends React.Component<TuidInputProps, TuidInputState> {
     private id;
-    private tuidUI;
-    private tuid;
     constructor(props: any);
     componentWillMount(): Promise<void>;
     onPicked(value: any): void;

@@ -2,9 +2,16 @@
 import * as React from 'react';
 import { SubmitResult } from 'tonva-react-form';
 import { TuidUIProps } from '../../ui';
-export declare class EditPage extends React.Component<TuidUIProps> {
+import { TuidUI } from '../../ui';
+export interface EditProps {
+    master?: TuidUI;
+    masterId?: number;
+    onSubmited?: (res: any) => void;
+}
+export declare class EditPage extends React.Component<TuidUIProps & EditProps> {
     private form;
     private formRows;
+    private slaveUIs;
     constructor(props: any);
     submit(values: any): Promise<SubmitResult | undefined>;
     next(): void;

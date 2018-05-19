@@ -38,7 +38,9 @@ export class MainPage extends React.Component {
         let { caption, entity } = ui;
         let { name, schema } = entity;
         return React.createElement(Page, { header: caption || name },
-            React.createElement(TonvaForm, { className: "m-3", context: ui.entitiesUI, formRows: this.formRows, onSubmit: this.submit }));
+            React.createElement(TonvaForm, { className: "m-3", 
+                //context={ui.entitiesUI}
+                formRows: this.formRows, onSubmit: this.submit }));
     }
 }
 class ActionResultPage extends React.Component {
