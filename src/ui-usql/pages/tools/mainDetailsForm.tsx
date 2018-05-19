@@ -97,7 +97,7 @@ export class MainDetailsForm extends React.Component<MainDetailsFormProps> {
         return <div>
             <TonvaForm className={className}
                 formRows={this.formRows}
-                context={ui.entitiesUI}
+                //context={ui.entitiesUI}
                 onSubmit={this.onSubmit} />
         </div>;
     }
@@ -126,7 +126,7 @@ class DetailPage extends React.Component<DetailPageProps, null> {
         let {entitiesUI, detail, values} = this.props;
         return <Page header={detail.label || detail.name}>
             <TonvaForm className="mx-3 my-2"
-                context={entitiesUI}
+                //context={entitiesUI}
                 formRows={detail.fields} 
                 onSubmit={this.onSubmit}
                 initValues={values} />

@@ -28,6 +28,12 @@ export class Tuid extends Entity {
     getId(id:number):any {
         return this.cache.get(String(id));
     }
+    resetCache(id:number) {
+        this.cache.delete(String(id));
+        let index = this.queue.findIndex(v => v === id);
+        this.queue.splice(index, 1);
+        this.useId(id);
+    }
     useId(id:number, defer?:boolean):void {
         let key = String(id);
         if (this.cache.has(key) === true) {
@@ -104,6 +110,16 @@ export class Tuid extends Entity {
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {
         let ret = await this.tvApi.tuidSearch(this.name, key, pageStart, pageSize);
         return ret;
+    }
+    async slaveSave(slave:string, first:number, masterId:number, id:number, props:any) {
+        let params = _.clone(props);
+        params["$master"] = masterId;
+        params["$first"] = first;
+        params["$id"] = id;
+        return await this.tvApi.tuidSlaveSave(this.name, slave, params);
+    }
+    async slaves(slave:string, masterId:number, order:number, pageSize):Promise<any[]> {
+        return await this.tvApi.tuidSlaves(this.name, slave, masterId, order, pageSize);
     }
     
     // cache放到Tuid里面之后，这个函数不再需要公开调用了

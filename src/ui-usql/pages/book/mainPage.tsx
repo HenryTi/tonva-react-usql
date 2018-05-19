@@ -36,7 +36,7 @@ export class MainPage extends React.Component<BookUIProps> {
         let {name, schema} = entity;
         return <Page header={caption || name}>
             <TonvaForm className="m-3" 
-                context={entitiesUI}
+                //context={entitiesUI}
                 formRows={this.formRows} 
                 onSubmit={this.submit} />
         </Page>;

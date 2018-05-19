@@ -35,7 +35,7 @@ export class MainPage extends React.Component<ActionUIProps> {
         let {name, schema} = entity;
         return <Page header={caption || name}>
             <TonvaForm className="m-3" 
-                context={ui.entitiesUI}
+                //context={ui.entitiesUI}
                 formRows={this.formRows} 
                 onSubmit={this.submit} />
         </Page>;

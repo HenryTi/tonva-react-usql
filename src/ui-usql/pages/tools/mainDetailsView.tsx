@@ -62,7 +62,7 @@ export class MainDetailsView<T extends Entity> extends React.Component<MainDetai
         return <div>
             <TonvaForm formRows={formRows}
                 initValues={values}
-                context={ui.entitiesUI}
+                //context={ui.entitiesUI}
                 onSubmit={this.onSubmit}
                 readOnly={true} />
         </div>;

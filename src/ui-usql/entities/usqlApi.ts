@@ -24,17 +24,30 @@ export class UsqlApi extends Api {
     }
 
     async tuidGet(name:string, id:number):Promise<any> {
-        return this.get('tuid/' + name + '/' + id, {});
+        return await this.get('tuid/' + name + '/' + id, {});
     }
 
     async tuidSave(name:string, params):Promise<any> {
-        return this.post('tuid/' + name, params);
+        return await this.post('tuid/' + name, params);
     }
 
     async tuidSearch(name:string, key:string, pageStart:string|number, pageSize:number):Promise<any> {
         let ret = await this.post('tuids/' + name, {
             key: key,
             pageStart: pageStart,
+            pageSize: pageSize
+        });
+        return ret;
+    }
+    async tuidSlaveSave(name:string, slave, params):Promise<any> {
+        return await this.post('tuid-slave/' + name + '/' + slave, params);
+    }
+
+    async tuidSlaves(name:string, slave:string, masterId:number, order:number, pageSize:number) {
+        let ret = await this.get('tuid-slaves/' + name, {
+            slave: slave,
+            masterId: masterId,
+            pageStart: order,
             pageSize: pageSize
         });
         return ret;

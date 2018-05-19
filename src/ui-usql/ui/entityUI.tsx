@@ -66,9 +66,10 @@ export abstract class EntityUI<E extends Entity> {
                 _.merge(tuidInput, tuidUI.input);
             }
             let input0 = this.entitiesUI.getTuidInput(tuid, url);
-            _.merge(tuidInput, input0);
+            _.merge(tuidInput, input0, face.input);
+            face.ui = tuidUI;
+            face.input = tuidInput;
         }
-        face.input = tuidInput;
         if (sf.null === false) {
             ret.field.required = true;
         }

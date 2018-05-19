@@ -7,6 +7,7 @@ import {EditPage} from './editPage';
 import {ListPage} from './listPage';
 import {GeneralTuidInput} from './input';
 import {EntityLink} from '../entityLink';
+import {SlaveInput} from './slaveInput';
 
 export * from './input';
 
@@ -20,6 +21,7 @@ export const mapperContainer:MapperContainer<Tuid, TuidUI, TuidMapper> = {
         listPage: ListPage,
         input: {
             component: GeneralTuidInput,
-        }
+        },
+        slaveInput: SlaveInput,
     }
 }

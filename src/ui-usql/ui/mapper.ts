@@ -17,23 +17,23 @@ export interface TuidInput {
 }
 export interface TuidContentProps {
     id: number;
-    tuidUI: TuidUI;
+    ui: TuidUI;
 }
-export interface TuidInputProps {
-    id: number;
-    tuid: string;
-    input: TuidInput;
-    readOnly: boolean;
-    entitiesUI: EntitiesUI;
-    params: any;
-    onPicked: (value:any) => void;
+export interface TuidInputProps extends TuidContentProps {
+    //id: number;
+    //tuid: string;
+    //input: TuidInput;
+    //readOnly: boolean;
+    //entitiesUI: EntitiesUI;
+    onFormValues: ()=>any;
+    onIdChanged: (id:any) => void;
 }
-export interface TuidPickPageProps {
-    id: number;
-    tuidUI: TuidUI;
-    input: TuidInput;
-    params: any;
-    onPicked: (value:any) => void;
+export interface TuidPickPageProps extends TuidInputProps {
+    //id: number;
+    //tuidUI: TuidUI;
+    //input: TuidInput;
+    //params: any;
+    //onPicked: (value:any) => void;
 }
 export type TuidInputComponent = new (props:TuidInputProps) => React.Component<TuidInputProps>;
 
@@ -51,6 +51,8 @@ export interface FieldFace {
 export interface FieldFaces {
     [name:string]: FieldFace;
 }
+
+export type TuidUISlaveComponent = new (props:TuidUISlaveProps) => React.Component<TuidUISlaveProps>;
 
 export interface EntitiesUIProps {
     ui: EntitiesUI;
@@ -75,6 +77,7 @@ export type SheetUIProps = EntityUIProps<Sheet, SheetUI>;
 export type SheetUIComponent = new (props:SheetUIProps) => React.Component<SheetUIProps>;
 export type TuidUIProps = EntityUIProps<Tuid, TuidUI>;
 export type TuidUIComponent = new (props:TuidUIProps) => React.Component<TuidUIProps>;
+export type TuidUISlaveProps = TuidUIProps & {slave:TuidUI; masterId?:number};
 
 export interface EntityMapper<T extends Entity, TUI extends EntityUI<T>> {
     caption?: string;
@@ -88,6 +91,7 @@ export interface TuidMapper extends EntityMapper<Tuid, TuidUI> {
     editPage?: TuidUIComponent;
     listPage?: TuidUIComponent;
     input?: TuidInput;
+    slaveInput?: TuidUISlaveComponent;
 }
 
 export interface ActionMapper extends EntityMapper<Action, ActionUI> {
