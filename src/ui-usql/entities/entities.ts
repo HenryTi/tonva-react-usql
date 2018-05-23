@@ -110,7 +110,7 @@ export class Entities {
     }
 
     async wsConnect(): Promise<void> {
-        await this.ws.connect();
+        if (this.ws !== undefined) await this.ws.connect();
     }
 
     onWsReceive(type: string, onWsReceive: (data:any)=>void): number {
