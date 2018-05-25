@@ -2,17 +2,9 @@ import * as React from 'react';
 import {List, Muted, LMR, EasyDate, FA} from 'tonva-react-form';
 import {Page} from 'tonva-tools';
 import {Sheet} from '../../entities';
-import {EntitiesUIProps, SheetUIProps} from '../../ui';
-import {EntitiesUI, SheetUI} from '../../ui';
+import {EntitiesUIProps, SheetUIProps, SheetViewProps, EntitiesUI, SheetUI} from '../../ui';
 import {MainDetails, MainDetailsView} from '../tools';
 
-export interface SheetViewProps {
-    className?: string;
-    ui: SheetUI;
-    sheetState: string;
-    sheetData: any;
-    flows: any;
-}
 export class SheetView extends React.Component<SheetViewProps> {
     private mainDetails: MainDetails; 
     constructor(props) {
@@ -37,7 +29,7 @@ export class SheetView extends React.Component<SheetViewProps> {
         </div>;
     }
     render() {
-        let {className, ui, sheetState, sheetData, flows} = this.props;
+        let {className, ui, sheetState, data, flows} = this.props;
         let {entity:sheet} = ui;
         let removed;
         if (sheetState === '-')
@@ -50,12 +42,8 @@ export class SheetView extends React.Component<SheetViewProps> {
             <MainDetailsView
                 ui={ui}
                 mainDetails={this.mainDetails} 
-                values={sheetData} />
+                values={data} />
             {flow}
         </div>;
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/

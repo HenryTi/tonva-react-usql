@@ -14,7 +14,6 @@ import {TuidUI} from './tuidUI';
 export class AppUI {
     private appOwner:string;
     private appName:string;
-    //private mainPage: new ({appUI:AppUI})=>React.Component;
     private entitiesUICollection = entitiesUICollection;
     private uiMappers?:{[api:string]: EntitiesMapper};
 

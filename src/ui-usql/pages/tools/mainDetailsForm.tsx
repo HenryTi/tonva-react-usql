@@ -133,31 +133,3 @@ class DetailPage extends React.Component<DetailPageProps, null> {
         </Page>;
     }
 }
-
-interface SuccessProps {
-    callback: () => void;
-}
-class Success extends React.Component<SuccessProps, null> {
-    constructor(props) {
-        super(props);
-        this.next = this.next.bind(this);
-        this.return = this.return.bind(this);
-    }
-
-    next() {
-        this.props.callback();
-        nav.pop();
-    }
-    return() {
-        nav.pop(2);
-    }
-    render() {
-        return <Page header='提交成功'>
-            <div>
-                成功提交！
-            </div>
-            <Button onClick={this.next}>继续录入</Button>
-            <Button onClick={this.return}>不继续</Button>
-        </Page>;
-    }
-}

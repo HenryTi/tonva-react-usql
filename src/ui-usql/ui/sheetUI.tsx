@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {UIComponent, FieldMappers, FieldMapper, FieldFaces, FieldFace, DetailFace, 
-    SheetUIComponent, EntitiesUIProps, EntitiesUIComponent,
+    SheetUIComponent, SheetViewComponent, EntitiesUIProps, EntitiesUIComponent,
     SheetUIProps} from './mapper';
 import {Entities, Entity, Tuid, Action, Sheet, Query} from '../entities';
 import {EntitiesUI} from './entitiesUI';
@@ -15,6 +15,13 @@ class SheetDetailRow extends React.Component<SheetUIProps> {
 }
 
 export class SheetUI extends EntityUI<Sheet> {
+    view: SheetViewComponent;
+    archivedList?: SheetUIComponent;
+    archivedSheet?: SheetUIComponent;
+    sheetAction?: SheetUIComponent;
+    sheetNew?: SheetUIComponent;
+    stateSheetList?: SheetUIComponent;
+
     detialFaces?: {
         [detail:string]: DetailFace;
     }

@@ -7,16 +7,7 @@ import {Sheet} from '../../entities';
 import {EntitiesUIProps, SheetUIProps} from '../../ui';
 import {EntitiesUI, SheetUI} from '../../ui';
 import {SchemaPage} from './schemaPage';
-import {SheetNewPage} from './sheetNew';
-import {SheetEditPage} from './sheetEdit';
-import {SheetStatePage} from './sheetState';
-import {ArchivedListPage} from './archivedListPage';
 
-/*
-interface State {
-    result: any;
-    states: any[];
-}*/
 @observer
 export class MainPage extends React.Component<SheetUIProps> {
     private wsHandler:number;
@@ -42,17 +33,9 @@ export class MainPage extends React.Component<SheetUIProps> {
         this.props.ui.entity.onReceive(data);
         //alert('ws msg received: ' + JSON.stringify(data));
     }
-    //onWsAny(data:any) {
-    //    alert('ws msg received: ' + JSON.stringify(data));
-    //}
     newClick() {
-        nav.push(<SheetNewPage ui={this.props.ui} data={{}} />);
-        /*
-        this.props.entity.save('kkk bbb', this.data).then(res => {
-            this.setState({result: res})
-            this.id = res.id;
-            //alert(JSON.stringify(res, undefined, ' '));
-        });*/
+        let {ui} = this.props;
+        nav.push(<ui.sheetNew ui={ui} data={{}} />);
     }
 
     schemaClick() {
@@ -60,12 +43,14 @@ export class MainPage extends React.Component<SheetUIProps> {
     }
 
     sheetStateClick(state:any) {
+        let {ui} = this.props;
         let stateName = state.state==='$'? '新单':state.state;
-        nav.push(<SheetStatePage ui={this.props.ui} data={{state:state, stateName:stateName}} />);
+        nav.push(<ui.stateSheetList ui={ui} data={{state:state, stateName:stateName}} />);
     }
 
     archivesClick() {
-        nav.push(<ArchivedListPage ui={this.props.ui} />);
+        let {ui} = this.props;
+        nav.push(<ui.archivedList ui={ui} />);
     }
 
     renderState(row:any, index:number) {
@@ -96,7 +81,3 @@ export class MainPage extends React.Component<SheetUIProps> {
         </Page>;
     }
 }
-/*
-<pre>{JSON.stringify(this.state.result, undefined, ' ')}</pre>
-<pre>{JSON.stringify(entity.schema, undefined, ' ')}</pre>
-*/

@@ -61,12 +61,8 @@ export class SheetPage extends React.Component<SheetUIProps> {
             <SheetView className="mx-3 my-3"
                 ui={ui} 
                 sheetState={state} 
-                sheetData={sheetData} 
+                data={sheetData} 
                 flows={flows} />
         </Page>;
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/

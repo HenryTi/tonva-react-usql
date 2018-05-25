@@ -15,7 +15,7 @@ export interface State {
     flows: any;
     data: any;
 }
-export class SheetActionPage extends React.Component<SheetUIProps, State> {
+export class SheetAction extends React.Component<SheetUIProps, State> {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,7 +23,6 @@ export class SheetActionPage extends React.Component<SheetUIProps, State> {
             data: undefined
         }
     }
-
     async componentDidMount() {
         let {ui, data} = this.props;
         let {entity:sheet} = ui;
@@ -38,12 +37,9 @@ export class SheetActionPage extends React.Component<SheetUIProps, State> {
         let {ui, data} = this.props;
         let {entity:sheet} = ui;
         let {state, brief} = data;
-        let res = await sheet.action(brief.id, brief.flow, state.state, action.name);
-        //alert(JSON.stringify(res));
+        let {id, flow} = brief;
+        let res = await sheet.action(id, flow, state.state, action.name);
         nav.pop();
-    }
-    mapper(row:any, index:number) {
-        return <li key={index}>id:{row.id}, no:{row.no}, discription:{row.discription}, date:{row.date}</li>
     }
     render() {
         let {ui, data} = this.props;
@@ -66,15 +62,11 @@ export class SheetActionPage extends React.Component<SheetUIProps, State> {
                         </Button>)
                 }
             </div>
-            <SheetView className="mx-3"
+            <ui.view className="mx-3"
                 ui={ui} 
                 sheetState={brief.state} 
-                sheetData={this.state.data} 
+                data={this.state.data} 
                 flows={this.state.flows} />
         </Page>;
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/

@@ -258,6 +258,12 @@ class SheetSetBuilder extends EntitySetBuilder<Sheet, SheetUI, SheetMapper> {
                 ret.detialFaces = _.merge({}, nfm1, nfm2);
             }
         }
+        ret.view = mapper2.view || mapper1.view;
+        ret.archivedList = mapper2.archivedList || mapper1.archivedList;
+        ret.archivedSheet = mapper2.archivedSheet || mapper1.archivedSheet;
+        ret.sheetAction = mapper2.sheetAction || mapper1.sheetAction;
+        ret.sheetNew = mapper2.sheetNew || mapper1.sheetNew;
+        ret.stateSheetList = mapper2.stateSheetList || mapper1.stateSheetList;
         return ret;
     }
 }

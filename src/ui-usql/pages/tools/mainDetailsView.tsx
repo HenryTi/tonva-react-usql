@@ -22,7 +22,7 @@ export class MainDetailsView<T extends Entity> extends React.Component<MainDetai
         super(props);
     }
     private detailRow(item:any, index:number):JSX.Element {
-        return 
+        return;
     }
     private buildMainRows() {
         let {ui, mainDetails} = this.props;

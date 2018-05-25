@@ -74,7 +74,13 @@ export type BookUIComponent = new (props:BookUIProps) => React.Component<BookUIP
 export type HistoryUIProps = EntityUIProps<History, HistoryUI>;
 export type HistoryUIComponent = new (props:HistoryUIProps) => React.Component<HistoryUIProps>;
 export type SheetUIProps = EntityUIProps<Sheet, SheetUI>;
+export type SheetViewProps = EntityUIProps<Sheet, SheetUI> & {
+    className:string;
+    sheetState: any;
+    flows: any
+};
 export type SheetUIComponent = new (props:SheetUIProps) => React.Component<SheetUIProps>;
+export type SheetViewComponent = new (props:SheetViewProps) => React.Component<SheetViewProps>;
 export type TuidUIProps = EntityUIProps<Tuid, TuidUI>;
 export type TuidUIComponent = new (props:TuidUIProps) => React.Component<TuidUIProps>;
 export type TuidUISlaveProps = TuidUIProps & {slave:TuidUI; masterId?:number};
@@ -104,6 +110,12 @@ export interface DetailFace {
 }
 export interface SheetMapper extends EntityMapper<Sheet, SheetUI> {
     detailFaces?: {[detail:string]: DetailFace;}
+    view?: SheetViewComponent;
+    archivedList?: SheetUIComponent;
+    archivedSheet?: SheetUIComponent;
+    sheetAction?: SheetUIComponent;
+    sheetNew?: SheetUIComponent;
+    stateSheetList?: SheetUIComponent;
 }
 
 export interface QueryMapper extends EntityMapper<Query, QueryUI> {
