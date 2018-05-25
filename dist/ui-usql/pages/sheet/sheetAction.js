@@ -10,8 +10,7 @@ import * as React from 'react';
 import { Button } from 'reactstrap';
 import { tonvaDebug } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
-import { SheetView } from './sheetView';
-export class SheetActionPage extends React.Component {
+export class SheetAction extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,21 +35,10 @@ export class SheetActionPage extends React.Component {
             let { ui, data } = this.props;
             let { entity: sheet } = ui;
             let { state, brief } = data;
-            let res = yield sheet.action(brief.id, brief.flow, state.state, action.name);
-            //alert(JSON.stringify(res));
+            let { id, flow } = brief;
+            let res = yield sheet.action(id, flow, state.state, action.name);
             nav.pop();
         });
-    }
-    mapper(row, index) {
-        return React.createElement("li", { key: index },
-            "id:",
-            row.id,
-            ", no:",
-            row.no,
-            ", discription:",
-            row.discription,
-            ", date:",
-            row.date);
     }
     render() {
         let { ui, data } = this.props;
@@ -61,11 +49,7 @@ export class SheetActionPage extends React.Component {
         tonvaDebug();
         return React.createElement(Page, { header: sheet.name + ':' + stateName + '-' + brief.no },
             React.createElement("div", { className: "mx-3 my-2" }, actions.map((v, index) => React.createElement(Button, { key: index, className: "mr-2", color: "primary", onClick: () => this.actionClick(v) }, v.name))),
-            React.createElement(SheetView, { className: "mx-3", ui: ui, sheetState: brief.state, sheetData: this.state.data, flows: this.state.flows }));
+            React.createElement(ui.view, { className: "mx-3", ui: ui, sheetState: brief.state, data: this.state.data, flows: this.state.flows }));
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/
 //# sourceMappingURL=sheetAction.js.map

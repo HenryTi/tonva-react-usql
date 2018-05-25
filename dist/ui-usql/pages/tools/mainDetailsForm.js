@@ -116,24 +116,4 @@ class DetailPage extends React.Component {
                 formRows: detail.fields, onSubmit: this.onSubmit, initValues: values }));
     }
 }
-class Success extends React.Component {
-    constructor(props) {
-        super(props);
-        this.next = this.next.bind(this);
-        this.return = this.return.bind(this);
-    }
-    next() {
-        this.props.callback();
-        nav.pop();
-    }
-    return() {
-        nav.pop(2);
-    }
-    render() {
-        return React.createElement(Page, { header: '\u63D0\u4EA4\u6210\u529F' },
-            React.createElement("div", null, "\u6210\u529F\u63D0\u4EA4\uFF01"),
-            React.createElement(Button, { onClick: this.next }, "\u7EE7\u7EED\u5F55\u5165"),
-            React.createElement(Button, { onClick: this.return }, "\u4E0D\u7EE7\u7EED"));
-    }
-}
 //# sourceMappingURL=mainDetailsForm.js.map

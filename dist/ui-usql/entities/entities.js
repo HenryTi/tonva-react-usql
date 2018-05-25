@@ -95,7 +95,8 @@ export class Entities {
     }
     wsConnect() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.ws.connect();
+            if (this.ws !== undefined)
+                yield this.ws.connect();
         });
     }
     onWsReceive(type, onWsReceive) {

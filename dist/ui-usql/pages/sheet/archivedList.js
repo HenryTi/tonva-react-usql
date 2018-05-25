@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { nav, Page } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { ArchivedPage } from './archivedPage';
-export class ArchivedListPage extends React.Component {
+import { ArchivedSheet } from './archivedSheet';
+export class ArchivedList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             rows: undefined
         };
-        this.mapper = this.mapper.bind(this);
+        this.renderRow = this.renderRow.bind(this);
         this.click = this.click.bind(this);
     }
     componentDidMount() {
@@ -28,9 +28,9 @@ export class ArchivedListPage extends React.Component {
     click(brief) {
         if (brief.processing === 1)
             return;
-        nav.push(React.createElement(ArchivedPage, { ui: this.props.ui, data: brief }));
+        nav.push(React.createElement(ArchivedSheet, { ui: this.props.ui, data: brief }));
     }
-    mapper(row, index) {
+    renderRow(row, index) {
         let left = React.createElement(React.Fragment, null,
             row.processing === 1 ? '... ' : '',
             "id:",
@@ -47,7 +47,7 @@ export class ArchivedListPage extends React.Component {
     render() {
         let { name } = this.props.ui.entity;
         return React.createElement(Page, { header: '已归档' + name },
-            React.createElement(List, { items: this.state.rows, item: { render: this.mapper, onClick: this.click } }));
+            React.createElement(List, { items: this.state.rows, item: { render: this.renderRow, onClick: this.click } }));
     }
 }
-//# sourceMappingURL=archivedListPage.js.map
+//# sourceMappingURL=archivedList.js.map

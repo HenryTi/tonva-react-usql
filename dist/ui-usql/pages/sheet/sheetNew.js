@@ -11,68 +11,13 @@ import { Button } from 'reactstrap';
 import { FA } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
 import { MainDetailsForm } from '../tools';
-export class SheetNewPage extends React.Component {
+export class SheetNew extends React.Component {
     constructor(props) {
         super(props);
-        `{"fields":[
-            {"name":"id1","type":"bigint","tuid":"article"},
-            {"name":"f1","type":"dec","scale":2,"precision":12},
-            {"name":"f2","type":"dec","scale":2,"precision":12}
-        ],"name":"单据","type":"sheet",
-        "states":[{"name":"$","actions":[{"name":"s1","returns":[],"busFaces":[]},{"name":"s2","returns":[],"busFaces":[]}]},{"name":"a","actions":[{"name":"a1","returns":[{"name":"statearet1","fields":[{"name":"c","type":"int"},{"name":"state","type":"char","size":30}]},{"name":"statearet2","fields":[{"name":"dd","type":"datetime"}]}],"busFaces":[]},{"name":"a2","returns":[],"busFaces":[]}]},{"name":"b","actions":[]}],
-        "arrs":[
-            {
-                "name":"arr1",
-                "fields":[
-                    {"name":"f11","type":"char","size":50},
-                    {"name":"f12","type":"char","size":30}
-                ]
-            }
-        ]}`;
         let { ui } = this.props;
         this.mainDetails = ui.mapMainDetails();
-        this.state = {
-            data: undefined
-        };
         this.onSubmit = this.onSubmit.bind(this);
     }
-    /*
-    componentDidMount() {
-        this.packData = new PackData;
-        this.packData.item = {id: 1};
-        this.setState({
-            data: this.packData
-        })
-        this.packData.onChange(d => {
-            this.setState({
-                data: d
-            });
-        });
-    }*/
-    /*
-    componentWillUnmount() {
-        if (this.packData !== undefined) this.packData.clearInterval();
-    }
-
-    async handleValidSubmit(event, values) {
-        let entity = this.props.ui.entity;
-        let schema = entity.schema;
-        let res = await entity.save(undefined, values);
-        let retId = res.id;
-        if (retId < 0) {
-            let unique = schema.unique;
-            if (unique !== undefined) {
-                for (let u of unique) {
-                    //this.form.setError(u, true, '重复');
-                }
-            }
-        }
-        else {
-            let callback = this.callback.bind(this);
-            nav.push(<Success callback={callback} />);
-        }
-    }
-*/
     successCallback() {
     }
     onSubmit(values) {

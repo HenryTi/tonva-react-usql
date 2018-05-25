@@ -67,7 +67,13 @@ export declare type BookUIComponent = new (props: BookUIProps) => React.Componen
 export declare type HistoryUIProps = EntityUIProps<History, HistoryUI>;
 export declare type HistoryUIComponent = new (props: HistoryUIProps) => React.Component<HistoryUIProps>;
 export declare type SheetUIProps = EntityUIProps<Sheet, SheetUI>;
+export declare type SheetViewProps = EntityUIProps<Sheet, SheetUI> & {
+    className: string;
+    sheetState: any;
+    flows: any;
+};
 export declare type SheetUIComponent = new (props: SheetUIProps) => React.Component<SheetUIProps>;
+export declare type SheetViewComponent = new (props: SheetViewProps) => React.Component<SheetViewProps>;
 export declare type TuidUIProps = EntityUIProps<Tuid, TuidUI>;
 export declare type TuidUIComponent = new (props: TuidUIProps) => React.Component<TuidUIProps>;
 export declare type TuidUISlaveProps = TuidUIProps & {
@@ -99,6 +105,12 @@ export interface SheetMapper extends EntityMapper<Sheet, SheetUI> {
     detailFaces?: {
         [detail: string]: DetailFace;
     };
+    view?: SheetViewComponent;
+    archivedList?: SheetUIComponent;
+    archivedSheet?: SheetUIComponent;
+    sheetAction?: SheetUIComponent;
+    sheetNew?: SheetUIComponent;
+    stateSheetList?: SheetUIComponent;
 }
 export interface QueryMapper extends EntityMapper<Query, QueryUI> {
 }

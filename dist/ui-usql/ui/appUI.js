@@ -16,7 +16,6 @@ import { EntitiesUI, entitiesUICollection } from './entitiesUI';
 //    EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from './ui-usql';
 export class AppUI {
     constructor(tonvaApp, caption, uiMappers) {
-        //private mainPage: new ({appUI:AppUI})=>React.Component;
         this.entitiesUICollection = entitiesUICollection;
         this.apiUIs = [];
         let parts = tonvaApp.split('/');

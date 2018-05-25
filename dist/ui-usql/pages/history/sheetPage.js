@@ -46,11 +46,7 @@ export class SheetPage extends React.Component {
         //let s = sheet.schema.states.find(v => v.name === state.state);
         //let actions = s.actions;
         return React.createElement(Page, { header: sheet.name + ':' + no },
-            React.createElement(SheetView, { className: "mx-3 my-3", ui: ui, sheetState: state, sheetData: sheetData, flows: flows }));
+            React.createElement(SheetView, { className: "mx-3 my-3", ui: ui, sheetState: state, data: sheetData, flows: flows }));
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/
 //# sourceMappingURL=sheetPage.js.map

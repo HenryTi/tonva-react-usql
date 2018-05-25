@@ -39,7 +39,7 @@ export class SheetView extends React.Component {
                         React.createElement(EasyDate, { date: date })))));
     }
     render() {
-        let { className, ui, sheetState, sheetData, flows } = this.props;
+        let { className, ui, sheetState, data, flows } = this.props;
         let { entity: sheet } = ui;
         let removed;
         if (sheetState === '-')
@@ -47,12 +47,8 @@ export class SheetView extends React.Component {
         let flow = React.createElement(List, { header: React.createElement(Muted, null, "\u6D41\u7A0B"), items: flows, item: { render: this.flowRow } });
         return React.createElement("div", { className: className },
             removed,
-            React.createElement(MainDetailsView, { ui: ui, mainDetails: this.mainDetails, values: sheetData }),
+            React.createElement(MainDetailsView, { ui: ui, mainDetails: this.mainDetails, values: data }),
             flow);
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/ 
 //# sourceMappingURL=sheetView.js.map

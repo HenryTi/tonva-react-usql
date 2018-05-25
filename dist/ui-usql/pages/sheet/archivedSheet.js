@@ -8,8 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { SheetView } from './sheetView';
-export class ArchivedPage extends React.Component {
+export class ArchivedSheet extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -56,11 +55,7 @@ export class ArchivedPage extends React.Component {
         }
         */
         return React.createElement(Page, { header: sheet.name + ':' + '-' + brief.no },
-            React.createElement(SheetView, { className: "mx-3 my-2", ui: ui, sheetState: brief.state, sheetData: this.state.data, flows: this.state.flows }));
+            React.createElement(ui.view, { ui: ui, data: this.state.data, className: "mx-3 my-2", sheetState: brief.state, flows: this.state.flows }));
     }
 }
-/*
-<pre>{JSON.stringify(this.state.data, undefined, ' ')}</pre>
-<pre>{JSON.stringify(this.state.res, undefined, ' ')}</pre>
-*/ 
-//# sourceMappingURL=archivedPage.js.map
+//# sourceMappingURL=archivedSheet.js.map

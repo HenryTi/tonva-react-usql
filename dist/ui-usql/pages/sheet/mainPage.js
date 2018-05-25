@@ -18,14 +18,6 @@ import { Button, Badge } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
 import { List, LMR, Muted } from 'tonva-react-form';
 import { SchemaPage } from './schemaPage';
-import { SheetNewPage } from './sheetNew';
-import { SheetStatePage } from './sheetState';
-import { ArchivedListPage } from './archivedListPage';
-/*
-interface State {
-    result: any;
-    states: any[];
-}*/
 let MainPage = class MainPage extends React.Component {
     //private wsAny:number;
     constructor(props) {
@@ -51,27 +43,21 @@ let MainPage = class MainPage extends React.Component {
         this.props.ui.entity.onReceive(data);
         //alert('ws msg received: ' + JSON.stringify(data));
     }
-    //onWsAny(data:any) {
-    //    alert('ws msg received: ' + JSON.stringify(data));
-    //}
     newClick() {
-        nav.push(React.createElement(SheetNewPage, { ui: this.props.ui, data: {} }));
-        /*
-        this.props.entity.save('kkk bbb', this.data).then(res => {
-            this.setState({result: res})
-            this.id = res.id;
-            //alert(JSON.stringify(res, undefined, ' '));
-        });*/
+        let { ui } = this.props;
+        nav.push(React.createElement(ui.sheetNew, { ui: ui, data: {} }));
     }
     schemaClick() {
         nav.push(React.createElement(SchemaPage, { ui: this.props.ui }));
     }
     sheetStateClick(state) {
+        let { ui } = this.props;
         let stateName = state.state === '$' ? '新单' : state.state;
-        nav.push(React.createElement(SheetStatePage, { ui: this.props.ui, data: { state: state, stateName: stateName } }));
+        nav.push(React.createElement(ui.stateSheetList, { ui: ui, data: { state: state, stateName: stateName } }));
     }
     archivesClick() {
-        nav.push(React.createElement(ArchivedListPage, { ui: this.props.ui }));
+        let { ui } = this.props;
+        nav.push(React.createElement(ui.archivedList, { ui: ui }));
     }
     renderState(row, index) {
         let { state, count } = row;
@@ -101,8 +87,4 @@ MainPage = __decorate([
     observer
 ], MainPage);
 export { MainPage };
-/*
-<pre>{JSON.stringify(this.state.result, undefined, ' ')}</pre>
-<pre>{JSON.stringify(entity.schema, undefined, ' ')}</pre>
-*/
 //# sourceMappingURL=mainPage.js.map

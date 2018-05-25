@@ -16,8 +16,8 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { nav, Page } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { SheetActionPage } from './sheetAction';
-let SheetStatePage = class SheetStatePage extends React.Component {
+import { SheetAction } from './sheetAction';
+let StateSheetList = class StateSheetList extends React.Component {
     constructor(props) {
         super(props);
         this.renderRow = this.renderRow.bind(this);
@@ -38,7 +38,7 @@ let SheetStatePage = class SheetStatePage extends React.Component {
             let { ui, data } = this.props;
             let { entity: sheet } = ui;
             let { state, stateName } = data;
-            nav.push(React.createElement(SheetActionPage, { ui: ui, data: { stateName: stateName, state: state, brief: brief } }));
+            nav.push(React.createElement(SheetAction, { ui: ui, data: { stateName: stateName, state: state, brief: brief } }));
         });
     }
     renderRow(row, index) {
@@ -64,9 +64,8 @@ let SheetStatePage = class SheetStatePage extends React.Component {
             React.createElement(List, { items: sheets, item: { render: this.renderRow, onClick: this.click } }));
     }
 };
-SheetStatePage = __decorate([
+StateSheetList = __decorate([
     observer
-], SheetStatePage);
-export { SheetStatePage };
-// <pre>{JSON.stringify(state, undefined, ' ')}</pre>
-//# sourceMappingURL=sheetState.js.map
+], StateSheetList);
+export { StateSheetList };
+//# sourceMappingURL=stateSheetList.js.map
