@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
+      "outDir": "./dist",
       "module": "esnext",
       "moduleResolution": "node",
       "target": "es6",
       "declaration": true,
       "lib": ["es2016", "dom"],
-      "outDir": "./dist",
       "sourceMap": true,
       "jsx": "react",
       "rootDir": "src",
@@ -22,7 +22,7 @@
       "src/**/*"
     ],
     "exclude": [
-      "src/old/**",
+      "dist",
       "node_modules"
     ]
 }

@@ -4,6 +4,7 @@ export declare class Tuid extends Entity {
     private queue;
     private waitingIds;
     private cache;
+    all: any[];
     proxies: {
         [name: string]: Tuid;
     };
@@ -17,6 +18,7 @@ export declare class Tuid extends Entity {
     private cacheValue(val);
     cacheIds(): Promise<void>;
     load(id: number): Promise<any>;
+    loadAll(): Promise<any[]>;
     save(id: number, props: any): Promise<any>;
     search(key: string, pageStart: string | number, pageSize: number): Promise<any>;
     slaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;

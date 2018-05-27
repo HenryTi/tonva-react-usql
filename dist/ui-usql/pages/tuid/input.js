@@ -18,8 +18,6 @@ import { SearchBox, List } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
 import { EntityLink } from '../entityLink';
 let GeneralTuidInput = class GeneralTuidInput extends React.Component {
-    //private tuidUI:TuidUI;
-    //private tuid:Tuid;
     constructor(props) {
         super(props);
         this.id = 0;
@@ -31,20 +29,6 @@ let GeneralTuidInput = class GeneralTuidInput extends React.Component {
             proxyId: undefined,
             proxyName: undefined,
         };
-        //let {id, ui} = this.props;
-        /*
-        if (entitiesUI === undefined) {
-            console.log('TonvaForm props 应该包含 context=EntitiesUI')
-            return;
-        }*/
-        //this.tuidUI = entitiesUI.tuid.coll[tuid];
-        /*
-        if (this.tuidUI === undefined) {
-            console.log('Tuid ' + tuid + ' 没有定义');
-            return;
-        }
-        this.tuid = this.tuidUI.entity;
-        */
     }
     componentWillMount() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,18 +36,16 @@ let GeneralTuidInput = class GeneralTuidInput extends React.Component {
         });
     }
     onPicked(value) {
-        if (value === undefined)
-            return;
-        let { id, proxyId, proxyName } = value;
-        this.setState({
-            id: id,
-            proxyId: proxyId,
-            proxyName: proxyName,
-        });
+        let { id, prox } = value;
+        this.setState(value);
+        //id: id,
+        //proxyId: number;
+        //proxyName: string;
+        //})
         let { ui, onIdChanged } = this.props;
         if (id !== undefined)
             ui.entity.useId(id);
-        onIdChanged(value);
+        onIdChanged({ id: id });
     }
     onClick() {
         let { ui } = this.props;
@@ -74,10 +56,10 @@ let GeneralTuidInput = class GeneralTuidInput extends React.Component {
         if (PickPage === undefined)
             PickPage = PickTuidPage;
         if (proxies === undefined) {
-            nav.push(React.createElement(PickPage, Object.assign({}, this.props, { id: id })));
+            nav.push(React.createElement(PickPage, Object.assign({}, this.props, { id: id, onPicked: this.onPicked })));
         }
         else {
-            nav.push(React.createElement(SelectTuidPage, Object.assign({}, this.props, { id: id, proxies: proxies })));
+            nav.push(React.createElement(SelectTuidPage, Object.assign({}, this.props, { id: id, proxies: proxies, onPicked: this.onPicked })));
         }
     }
     inputOnBlur(evt) {
@@ -93,14 +75,6 @@ let GeneralTuidInput = class GeneralTuidInput extends React.Component {
     }
     render() {
         let { ui, onIdChanged } = this.props;
-        /*
-        if (this.tuidUI === undefined) {
-            if (readOnly === true)
-                return <span>{tuid+'没有定义或未处理'}</span>;
-            return <input className="form-control" type="number" step={1}
-                onBlur={this.inputOnBlur}
-                placeholder={tuid+'没有定义或未处理，可直接输入数字'} />
-        }*/
         let content = this.content(ui.input);
         if (onIdChanged === undefined) {
             return React.createElement("span", null, content);
@@ -182,7 +156,6 @@ class SelectTuidPage extends React.Component {
     }
     itemRender(proxy, index) {
         return React.createElement(EntityLink, { ui: this.props.ui.entitiesUI.tuid.coll[proxy.tuidName] });
-        //return <div>{proxy.tuidName}</div>;
     }
     itemClick(proxy) {
         this.proxy = proxy;
@@ -193,29 +166,21 @@ class SelectTuidPage extends React.Component {
         if (PickPage === undefined)
             PickPage = PickTuidPage;
         nav.pop();
-        nav.push(React.createElement(PickPage, Object.assign({}, this.props, { ui: proxyTuidUI })));
-        //id={id}
-        //input={input}
-        //ui={proxyTuidUI} 
-        //params={params} 
-        //onPicked={this.onPicked} />);
+        nav.push(React.createElement(PickPage, Object.assign({}, this.props, { ui: proxyTuidUI, onPicked: this.onPicked })));
     }
     onPicked(value) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (value === undefined)
-                return;
-            let { onIdChanged, ui } = this.props;
-            let vid = value.id;
+            let { onPicked, ui } = this.props;
+            let { id } = value;
             let proxy = this.proxy.tuidName;
-            onIdChanged(undefined); //{id: undefined, proxyId: vid, proxyName: proxy});
-            let proxiedValue = yield ui.entity.proxied(proxy, vid);
+            onPicked({ id: undefined, proxyId: id, proxyName: proxy });
+            let proxiedValue = yield ui.entity.proxied(proxy, id);
             if (!proxiedValue) {
                 console.log("proxiedValue is null");
                 return;
             }
-            let { id, $proxy, type } = proxiedValue;
-            //onPicked({id: id, proxyId: $proxy, proxyName: type});
-            onIdChanged(id);
+            let { id: pid, $proxy, type } = proxiedValue;
+            onPicked({ id: pid });
         });
     }
     render() {
@@ -249,7 +214,7 @@ class PickTuidPage extends React.Component {
         return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
     }
     rowClick(item) {
-        this.props.onIdChanged(item);
+        this.props.onPicked(item);
         nav.pop();
     }
     render() {

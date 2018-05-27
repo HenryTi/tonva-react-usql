@@ -28,12 +28,12 @@ export interface TuidInputProps extends TuidContentProps {
     onFormValues: ()=>any;
     onIdChanged: (id:any) => void;
 }
-export interface TuidPickPageProps extends TuidInputProps {
+export interface TuidPickPageProps extends TuidInputProps { 
     //id: number;
     //tuidUI: TuidUI;
     //input: TuidInput;
     //params: any;
-    //onPicked: (value:any) => void;
+    onPicked: (value:any) => void;
 }
 export type TuidInputComponent = new (props:TuidInputProps) => React.Component<TuidInputProps>;
 

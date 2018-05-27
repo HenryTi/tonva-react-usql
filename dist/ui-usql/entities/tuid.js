@@ -1,3 +1,9 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -16,6 +22,7 @@ export class Tuid extends Entity {
         this.queue = []; // 每次使用，都排到队头
         this.waitingIds = []; // 等待loading的
         this.cache = observable.map({}, { deep: false }); // 已经缓冲的
+        this.all = undefined;
     }
     moveToHead(id) {
         let index = this.queue.findIndex(v => v === id);
@@ -119,7 +126,14 @@ export class Tuid extends Entity {
     }
     load(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (id === undefined || id === 0)
+                return;
             return yield this.tvApi.tuidGet(this.name, id);
+        });
+    }
+    loadAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.all = yield this.tvApi.tuidGetAll(this.name);
         });
     }
     save(id, props) {
@@ -156,4 +170,7 @@ export class Tuid extends Entity {
         });
     }
 }
+__decorate([
+    observable
+], Tuid.prototype, "all", void 0);
 //# sourceMappingURL=tuid.js.map

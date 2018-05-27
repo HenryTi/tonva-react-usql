@@ -6,6 +6,7 @@ export declare class UsqlApi extends Api {
     loadAccess(): Promise<any>;
     schema(name: string): Promise<any>;
     tuidGet(name: string, id: number): Promise<any>;
+    tuidGetAll(name: string): Promise<any[]>;
     tuidSave(name: string, params: any): Promise<any>;
     tuidSearch(name: string, key: string, pageStart: string | number, pageSize: number): Promise<any>;
     tuidSlaveSave(name: string, slave: any, params: any): Promise<any>;

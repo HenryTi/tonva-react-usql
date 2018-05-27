@@ -8,6 +8,7 @@ export class Tuid extends Entity {
     private queue: number[] = [];               // 每次使用，都排到队头
     private waitingIds: number[] = [];          // 等待loading的
     private cache = observable.map({}, {deep: false});    // 已经缓冲的
+    @observable all:any[] = undefined;
     proxies: {[name:string]: Tuid};
 
     private moveToHead(id:number) {
@@ -100,7 +101,11 @@ export class Tuid extends Entity {
         }
     }
     async load(id:number):Promise<any> {
+        if (id === undefined || id === 0) return;
         return await this.tvApi.tuidGet(this.name, id);
+    }
+    async loadAll():Promise<any[]> {
+        return this.all = await this.tvApi.tuidGetAll(this.name);
     }
     async save(id:number, props:any) {
         let params = _.clone(props);

@@ -27,6 +27,10 @@ export class UsqlApi extends Api {
         return await this.get('tuid/' + name + '/' + id, {});
     }
 
+    async tuidGetAll(name:string):Promise<any[]> {
+        return await this.get('tuid-all/' + name + '/', {});
+    }
+
     async tuidSave(name:string, params):Promise<any> {
         return await this.post('tuid/' + name, params);
     }
@@ -54,11 +58,24 @@ export class UsqlApi extends Api {
     }
 
     async tuidIds(name:string, ids:number[]):Promise<any[]> {
-        return await this.post('tuidids/' + name, ids);
+        try {
+            let ret = await this.post('tuidids/' + name, ids);
+            return ret;
+        }
+        catch (e) {
+            console.error(e);
+        }
     }
 
     async proxied(name:string, proxy:string, id:number):Promise<any> {
-        return await this.get('tuid-proxy/' + name + '/' + proxy + '/' + id, undefined);
+        try {
+            let url = 'tuid-proxy/' + name + '/' + proxy + '/' + id;
+            let ret = await this.get(url, undefined);
+            return ret;
+        }
+        catch (e) {
+            console.error(e);
+        }
     }
 
     async sheetSave(name:string, data:object):Promise<any> {

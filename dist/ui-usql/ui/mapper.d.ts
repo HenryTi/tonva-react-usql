@@ -31,6 +31,7 @@ export interface TuidInputProps extends TuidContentProps {
     onIdChanged: (id: any) => void;
 }
 export interface TuidPickPageProps extends TuidInputProps {
+    onPicked: (value: any) => void;
 }
 export declare type TuidInputComponent = new (props: TuidInputProps) => React.Component<TuidInputProps>;
 export declare type FieldMapper = (field: any) => any;

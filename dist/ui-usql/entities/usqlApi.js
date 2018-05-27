@@ -35,6 +35,11 @@ export class UsqlApi extends Api {
             return yield this.get('tuid/' + name + '/' + id, {});
         });
     }
+    tuidGetAll(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.get('tuid-all/' + name + '/', {});
+        });
+    }
     tuidSave(name, params) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.post('tuid/' + name, params);
@@ -68,12 +73,25 @@ export class UsqlApi extends Api {
     }
     tuidIds(name, ids) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('tuidids/' + name, ids);
+            try {
+                let ret = yield this.post('tuidids/' + name, ids);
+                return ret;
+            }
+            catch (e) {
+                console.error(e);
+            }
         });
     }
     proxied(name, proxy, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('tuid-proxy/' + name + '/' + proxy + '/' + id, undefined);
+            try {
+                let url = 'tuid-proxy/' + name + '/' + proxy + '/' + id;
+                let ret = yield this.get(url, undefined);
+                return ret;
+            }
+            catch (e) {
+                console.error(e);
+            }
         });
     }
     sheetSave(name, data) {

@@ -53,6 +53,10 @@ export class EntitiesUI {
         this.history = new HistorySetBuilder(this, this.entities.historyArr, d.history, m.history).build();
     }
     getTuidInput(name, tuidUrl) {
+        let arr = ['currency', 'innerorganization'];
+        if (arr.find(v => name.toLocaleLowerCase() === v)) {
+            let s = null;
+        }
         if (tuidUrl !== undefined) {
             let entitiesUI = entitiesUICollection[tuidUrl];
             if (entitiesUI === undefined)
@@ -60,8 +64,17 @@ export class EntitiesUI {
             return entitiesUI.getTuidInput(name, undefined);
         }
         let ret = { component: undefined };
-        let mc = this.mapper.tuid;
         let mapper, mappers;
+        if (this.defaultMapper !== undefined) {
+            let tuid = this.defaultMapper.tuid;
+            if (tuid !== undefined) {
+                mapper = tuid.mapper;
+                if (mapper !== undefined) {
+                    _.merge(ret, mapper.input);
+                }
+            }
+        }
+        let mc = this.mapper.tuid;
         if (mc !== undefined) {
             mappers = mc.mappers;
             if (mappers !== undefined)
@@ -70,15 +83,6 @@ export class EntitiesUI {
                 mapper = mc.mapper;
             if (mapper !== undefined) {
                 _.merge(ret, mapper.input);
-            }
-        }
-        if (this.defaultMapper !== undefined) {
-            let tuid = this.defaultMapper.tuid;
-            if (tuid !== undefined) {
-                mapper = tuid.mapper;
-                if (mapper !== undefined) {
-                    _.merge(ret, mapper.input);
-                }
             }
         }
         return ret;

@@ -70,6 +70,10 @@ export class EntitiesUI {
     }
 
     getTuidInput(name:string, tuidUrl:string):TuidInput {
+        let arr = ['currency', 'innerorganization'];
+        if (arr.find(v => name.toLocaleLowerCase() === v)) {
+            let s = null;
+        }
         if (tuidUrl !== undefined) {
             let entitiesUI = entitiesUICollection[tuidUrl];
             if (entitiesUI === undefined) return undefined;
@@ -77,8 +81,17 @@ export class EntitiesUI {
         }
 
         let ret:TuidInput = {component:undefined};
-        let mc = this.mapper.tuid;
         let mapper:TuidMapper, mappers:{[name:string]:TuidMapper};
+        if (this.defaultMapper !== undefined) {
+            let tuid = this.defaultMapper.tuid;
+            if (tuid !== undefined) {
+                mapper = tuid.mapper;
+                if (mapper !== undefined) {
+                    _.merge(ret, mapper.input);
+                }
+            }
+        }
+        let mc = this.mapper.tuid;
         if (mc !== undefined) {
             mappers = mc.mappers;
             if (mappers !== undefined)
@@ -87,15 +100,6 @@ export class EntitiesUI {
                 mapper = mc.mapper;
             if (mapper !== undefined) {
                 _.merge(ret, mapper.input);
-            }
-        }
-        if (this.defaultMapper !== undefined) {
-            let tuid = this.defaultMapper.tuid;
-            if (tuid !== undefined) {
-                mapper = tuid.mapper;
-                if (mapper !== undefined) {
-                    _.merge(ret, mapper.input);
-                }
             }
         }
         return ret;
