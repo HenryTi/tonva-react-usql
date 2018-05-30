@@ -4,6 +4,7 @@ import { Sheet } from './sheet';
 import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
+import { ApiBase } from 'tonva-tools';
 export interface Field {
     name: string;
     type: string;
@@ -12,6 +13,7 @@ export interface Field {
     _tuid: Tuid;
 }
 export declare class Entities {
+    private api;
     private tvApi;
     private ws;
     private tuids;
@@ -21,7 +23,7 @@ export declare class Entities {
     private books;
     private histories;
     private cacheTimer;
-    constructor(url: string, ws: string, token: string, api: string, access?: string);
+    constructor(api: ApiBase, access?: string);
     tuidArr: Tuid[];
     actionArr: Action[];
     sheetArr: Sheet[];

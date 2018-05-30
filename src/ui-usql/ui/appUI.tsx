@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {List, Muted} from 'tonva-react-form';
-import {WSChannel, nav, Page, AppApi, loadAppApis} from 'tonva-tools';
+import {WSChannel, nav, Page, AppApi, loadAppApis, meInFrame} from 'tonva-tools';
 import {EntitiesMapper} from './mapper';
 import {defaultMapper} from '../pages';
 import {Entities, Entity} from '../entities';
@@ -34,12 +34,14 @@ export class AppUI {
     apiUIs:EntitiesUI[] = [];
 
     async load(): Promise<void> {
+        let isDebug = process.env.NODE_ENV==='development';
         let appApis = await loadAppApis(this.appOwner, this.appName);
         for (let appApi of appApis) {
-            let {apiOwner, apiName, url, ws, access, token} = appApi;
+            let {apiOwner, apiName, url, urlDebug, ws, access, token} = appApi;
             let api = apiOwner + '/' + apiName;
             let mapper = this.uiMappers && this.uiMappers[api];
             if (mapper === null) continue;
+            if (isDebug === true && urlDebug !== undefined) url = urlDebug;
             let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
             this.apiUIs.push(apiUI);
             await apiUI.loadEntities();
@@ -77,7 +79,7 @@ export class MainPage extends React.Component<{appUI:AppUI}> {
     render() {
         let {appUI} = this.props;
         return <Page
-            header={appUI.caption || '同花默认界面-2'}
+            header={(appUI.caption || '同花默认界面') + (meInFrame.page || '')}
             logout={this.logout}>
             {
                 appUI.apiUIs.map((v, index) => {

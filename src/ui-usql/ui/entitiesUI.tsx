@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import {CenterApi} from 'tonva-tools';
+import {CenterApi, Api} from 'tonva-tools';
 import {Entities, Entity, Tuid, Action, Sheet, Query, Book, History} from '../entities';
 import {EntitiesMapper, FieldMapper, FieldMappers, MapperContainer, 
     EntityMapper, ActionMapper, QueryMapper, SheetMapper, TuidMapper, TuidInput,
@@ -24,7 +24,26 @@ export class EntitiesUI {
         this.api = api;
         entitiesUICollection[api] = this;
         let token = undefined;
-        this.entities = new Entities(url, ws, token, api, access);
+        let apiOwner:string, apiName:string;
+        let p = api.split('/');
+        switch (p.length) {
+            case 1:
+                apiOwner = '$$$';
+                apiName = p[0];
+                break;
+            case 2:
+                apiOwner = p[0];
+                apiName = p[1];
+                break;
+            default:
+                console.log('api must be apiOwner/apiName format');
+                return;
+        }
+        let hash = document.location.hash;
+        let baseUrl = hash===undefined || hash===''? 
+            'debug/':'tv/';
+        let _api = new Api(baseUrl, url, ws, apiOwner, apiName, true);
+        this.entities = new Entities(_api, access);
         this.defaultMapper = defaultMapper;
         this.mapper = mapper || {};
         this.typeFieldMappers = _.clone(defaultMapper.typeFieldMappers);

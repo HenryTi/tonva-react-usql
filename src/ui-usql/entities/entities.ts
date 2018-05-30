@@ -6,7 +6,7 @@ import {Sheet, SheetState, SheetAction} from './sheet';
 import {Query} from './query';
 import {Book} from './book';
 import {History} from './history';
-import { WSChannel } from 'tonva-tools';
+import { WSChannel, ApiBase } from 'tonva-tools';
 
 export interface Field {
     name: string;
@@ -27,10 +27,10 @@ const ln = '\n';
 // api: apiOwner/apiName
 // access: acc1; acc2
 
-const entitiesCollection: {[api:string]: Entities} = {};
+//const entitiesCollection: {[api:string]: Entities} = {};
 
 export class Entities {
-    //private token: string;
+    private api:ApiBase;
     private tvApi: UsqlApi;
     private ws: WSChannel;
     private tuids: {[name:string]: Tuid} = {};
@@ -44,10 +44,9 @@ export class Entities {
     // api: apiOwner/apiName
     // access: acc1;acc2 or *
     //constructor(api:string, access:string) {
-    constructor(url:string, ws:string, token:string, api:string, access?:string) {
-        entitiesCollection[api] = this;
-        //this.token = token;
-        if (ws !== undefined) this.ws = new WSChannel(ws, token);
+    //constructor(url:string, ws:string, token:string, api:string, access?:string) {
+    constructor(api:ApiBase, access?:string) {
+        this.api = api;
         this.loadIds = this.loadIds.bind(this);
 
         let acc: string[];
@@ -57,22 +56,7 @@ export class Entities {
         else {
             acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
         }
-        let apiOwner:string, apiName:string;
-        let p = api.split('/');
-        switch (p.length) {
-            case 1:
-                apiOwner = '$$$';
-                apiName = p[0];
-                break;
-            case 2:
-                apiOwner = p[0];
-                apiName = p[1];
-                break;
-            default:
-                console.log('api must be apiOwner/apiName format');
-                return;
-        }
-        this.tvApi = new UsqlApi(p[0], p[1], url, acc);
+        this.tvApi = new UsqlApi(api, acc);
     }
 
     tuidArr: Tuid[] = [];
@@ -84,25 +68,15 @@ export class Entities {
 
     //async loadEntites(api:string, access:string) {
     async loadEntities() {
-        if (this.ws !== undefined) this.ws.connect();
-        /*
-        let p = api.split('/');
-        if (p.length !== 2) {
-            console.log('api must be apiOwner/apiName format');
-            return;
-        }
-        let acc = access === undefined? ['*'] : access.split(';').map(v=>v.trim());
-        if (acc.length === 1 && acc[0] === '*') acc = [];
-        let tvApi = new UsqlApi(p[0], p[1], acc);
-        */
-
         let accesses = await this.tvApi.loadAccess();
         this.buildAccess(this.tvApi, accesses);
-        //let apis = this.apis[api];
-        //if (apis === undefined) {
-        //    apis = this.apis[api] = {};
-        //}
-        //apis[access] = tvApi;
+        if (this.ws === undefined) {
+            let {ws, token} = this.api;
+            if (ws !== undefined) {
+                this.ws = new WSChannel(ws, token);
+                this.ws.connect();
+            }
+        }
     }
 
     close() {

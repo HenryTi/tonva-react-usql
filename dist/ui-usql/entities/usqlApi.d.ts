@@ -1,7 +1,8 @@
-import { Api } from 'tonva-tools';
-export declare class UsqlApi extends Api {
-    access: string[];
-    constructor(apiOwner: string, apiName: string, url: string, access: string[]);
+import { ApiBase } from 'tonva-tools';
+export declare class UsqlApi {
+    private api;
+    private access;
+    constructor(api: ApiBase, access: string[]);
     update(): Promise<string>;
     loadAccess(): Promise<any>;
     schema(name: string): Promise<any>;

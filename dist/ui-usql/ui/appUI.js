@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { List, Muted } from 'tonva-react-form';
-import { nav, Page, loadAppApis } from 'tonva-tools';
+import { nav, Page, loadAppApis, meInFrame } from 'tonva-tools';
 import { defaultMapper } from '../pages';
 import { EntitiesUI, entitiesUICollection } from './entitiesUI';
 //import {Entities, defaultMapper, Entity, Tuid, Action, Sheet, Query,
@@ -30,13 +30,16 @@ export class AppUI {
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
+            let isDebug = process.env.NODE_ENV === 'development';
             let appApis = yield loadAppApis(this.appOwner, this.appName);
             for (let appApi of appApis) {
-                let { apiOwner, apiName, url, ws, access, token } = appApi;
+                let { apiOwner, apiName, url, urlDebug, ws, access, token } = appApi;
                 let api = apiOwner + '/' + apiName;
                 let mapper = this.uiMappers && this.uiMappers[api];
                 if (mapper === null)
                     continue;
+                if (isDebug === true && urlDebug !== undefined)
+                    url = urlDebug;
                 let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
                 this.apiUIs.push(apiUI);
                 yield apiUI.loadEntities();
@@ -74,7 +77,7 @@ export class MainPage extends React.Component {
     }
     render() {
         let { appUI } = this.props;
-        return React.createElement(Page, { header: appUI.caption || '同花默认界面-2', logout: this.logout }, appUI.apiUIs.map((v, index) => {
+        return React.createElement(Page, { header: (appUI.caption || '同花默认界面') + (meInFrame.page || ''), logout: this.logout }, appUI.apiUIs.map((v, index) => {
             let { api, tuid, action, sheet, query, book, history } = v;
             return React.createElement(React.Fragment, { key: index },
                 React.createElement("div", { className: "px-3 pt-1" },

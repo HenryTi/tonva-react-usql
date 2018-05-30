@@ -18,12 +18,13 @@ const tab = '\t';
 const ln = '\n';
 // api: apiOwner/apiName
 // access: acc1; acc2
-const entitiesCollection = {};
+//const entitiesCollection: {[api:string]: Entities} = {};
 export class Entities {
     // api: apiOwner/apiName
     // access: acc1;acc2 or *
     //constructor(api:string, access:string) {
-    constructor(url, ws, token, api, access) {
+    //constructor(url:string, ws:string, token:string, api:string, access?:string) {
+    constructor(api, access) {
         this.tuids = {};
         this.actions = {};
         this.sheets = {};
@@ -36,10 +37,7 @@ export class Entities {
         this.queryArr = [];
         this.bookArr = [];
         this.historyArr = [];
-        entitiesCollection[api] = this;
-        //this.token = token;
-        if (ws !== undefined)
-            this.ws = new WSChannel(ws, token);
+        this.api = api;
         this.loadIds = this.loadIds.bind(this);
         let acc;
         if (access === undefined || access === '*') {
@@ -48,45 +46,20 @@ export class Entities {
         else {
             acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
         }
-        let apiOwner, apiName;
-        let p = api.split('/');
-        switch (p.length) {
-            case 1:
-                apiOwner = '$$$';
-                apiName = p[0];
-                break;
-            case 2:
-                apiOwner = p[0];
-                apiName = p[1];
-                break;
-            default:
-                console.log('api must be apiOwner/apiName format');
-                return;
-        }
-        this.tvApi = new UsqlApi(p[0], p[1], url, acc);
+        this.tvApi = new UsqlApi(api, acc);
     }
     //async loadEntites(api:string, access:string) {
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.ws !== undefined)
-                this.ws.connect();
-            /*
-            let p = api.split('/');
-            if (p.length !== 2) {
-                console.log('api must be apiOwner/apiName format');
-                return;
-            }
-            let acc = access === undefined? ['*'] : access.split(';').map(v=>v.trim());
-            if (acc.length === 1 && acc[0] === '*') acc = [];
-            let tvApi = new UsqlApi(p[0], p[1], acc);
-            */
             let accesses = yield this.tvApi.loadAccess();
             this.buildAccess(this.tvApi, accesses);
-            //let apis = this.apis[api];
-            //if (apis === undefined) {
-            //    apis = this.apis[api] = {};
-            //}
-            //apis[access] = tvApi;
+            if (this.ws === undefined) {
+                let { ws, token } = this.api;
+                if (ws !== undefined) {
+                    this.ws = new WSChannel(ws, token);
+                    this.ws.connect();
+                }
+            }
         });
     }
     close() {

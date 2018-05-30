@@ -7,47 +7,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as _ from 'lodash';
-import { Api } from 'tonva-tools';
-export class UsqlApi extends Api {
-    constructor(apiOwner, apiName, url, access) {
+export class UsqlApi {
+    /*
+    constructor(apiOwner:string, apiName:string, url:string, access:string[]) {
         let hash = document.location.hash;
-        let baseUrl = hash === undefined || hash === '' ? 'debug/' : 'tv/';
+        let baseUrl = (hash===undefined || hash==='') && apiOwner!=='$$$'?
+            'debug/':'tv/';
         super(baseUrl, url, apiOwner, apiName);
+        this.access = access;
+    }*/
+    constructor(api, access) {
+        this.api = api;
         this.access = access;
     }
     update() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('update', {});
+            return yield this.api.get('update', {});
         });
     }
     loadAccess() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('access', { acc: this.access.join('|') });
+            return yield this.api.get('access', { acc: this.access.join('|') });
         });
     }
     schema(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('schema/' + name, undefined);
+            return yield this.api.get('schema/' + name, undefined);
         });
     }
     tuidGet(name, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('tuid/' + name + '/' + id, {});
+            return yield this.api.get('tuid/' + name + '/' + id, {});
         });
     }
     tuidGetAll(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('tuid-all/' + name + '/', {});
+            return yield this.api.get('tuid-all/' + name + '/', {});
         });
     }
     tuidSave(name, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('tuid/' + name, params);
+            return yield this.api.post('tuid/' + name, params);
         });
     }
     tuidSearch(name, key, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.post('tuids/' + name, {
+            let ret = yield this.api.post('tuids/' + name, {
                 key: key,
                 pageStart: pageStart,
                 pageSize: pageSize
@@ -57,12 +62,12 @@ export class UsqlApi extends Api {
     }
     tuidSlaveSave(name, slave, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('tuid-slave/' + name + '/' + slave, params);
+            return yield this.api.post('tuid-slave/' + name + '/' + slave, params);
         });
     }
     tuidSlaves(name, slave, masterId, order, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.get('tuid-slaves/' + name, {
+            let ret = yield this.api.get('tuid-slaves/' + name, {
                 slave: slave,
                 masterId: masterId,
                 pageStart: order,
@@ -74,7 +79,7 @@ export class UsqlApi extends Api {
     tuidIds(name, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let ret = yield this.post('tuidids/' + name, ids);
+                let ret = yield this.api.post('tuidids/' + name, ids);
                 return ret;
             }
             catch (e) {
@@ -86,7 +91,7 @@ export class UsqlApi extends Api {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let url = 'tuid-proxy/' + name + '/' + proxy + '/' + id;
-                let ret = yield this.get(url, undefined);
+                let ret = yield this.api.get(url, undefined);
                 return ret;
             }
             catch (e) {
@@ -96,42 +101,42 @@ export class UsqlApi extends Api {
     }
     sheetSave(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('sheet/' + name, data);
+            return yield this.api.post('sheet/' + name, data);
         });
     }
     sheetAction(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.put('sheet/' + name, data);
+            return yield this.api.put('sheet/' + name, data);
         });
     }
     stateSheets(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('sheet/' + name + '/states', data);
+            return yield this.api.post('sheet/' + name + '/states', data);
         });
     }
     stateSheetCount(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('sheet/' + name + '/statecount', undefined);
+            return yield this.api.get('sheet/' + name + '/statecount', undefined);
         });
     }
     getSheet(name, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('sheet/' + name + '/get/' + id, undefined);
+            return yield this.api.get('sheet/' + name + '/get/' + id, undefined);
         });
     }
     sheetArchives(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('sheet/' + name + '/archives', data);
+            return yield this.api.post('sheet/' + name + '/archives', data);
         });
     }
     sheetArchive(name, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('sheet/' + name + '/archive/' + id, undefined);
+            return yield this.api.get('sheet/' + name + '/archive/' + id, undefined);
         });
     }
     action(name, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.post('action/' + name, data);
+            return yield this.api.post('action/' + name, data);
         });
     }
     queryPage(queryApi, name, pageStart, pageSize, params) {
@@ -139,7 +144,7 @@ export class UsqlApi extends Api {
             let p = _.clone(params);
             p['$pageStart'] = pageStart;
             p['$pageSize'] = pageSize;
-            return yield this.post(queryApi + '/' + name, p);
+            return yield this.api.post(queryApi + '/' + name, p);
         });
     }
     /*
@@ -161,7 +166,7 @@ export class UsqlApi extends Api {
     */
     user() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.get('user', undefined);
+            return yield this.api.get('user', undefined);
         });
     }
 }
