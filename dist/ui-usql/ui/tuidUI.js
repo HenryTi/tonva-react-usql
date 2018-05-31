@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { EntityUI } from './entityUI';
+export class TuidUIListPage {
+}
 export class TuidUI extends EntityUI {
     /*
         mapMain(): any[] {

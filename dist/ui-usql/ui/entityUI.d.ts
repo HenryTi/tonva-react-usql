@@ -10,8 +10,8 @@ export declare abstract class EntityUI<E extends Entity> {
     typeFieldMappers?: FieldMappers;
     fieldFaces?: FieldFaces;
     mapMain(): any[];
-    onWsReceive(cmd: string, onWsReceive: (data: any) => void): number;
-    onWsReceiveAny(onWsReceive: (data: any) => void): number;
+    onWsReceive(cmd: string, onWsReceive: (data: any) => Promise<void>): number;
+    onWsReceiveAny(onWsReceive: (data: any) => Promise<void>): number;
     endWsReceive(handlerId: number): void;
     protected tfmMap(sf: any, ff: FieldFace): any;
     protected mapFields(schemaFields: any[]): any[];

@@ -4,13 +4,14 @@ import {CenterApi, Api} from 'tonva-tools';
 import {Entities, Entity, Tuid, Action, Sheet, Query, Book, History} from '../entities';
 import {EntitiesMapper, FieldMapper, FieldMappers, MapperContainer, 
     EntityMapper, ActionMapper, QueryMapper, SheetMapper, TuidMapper, TuidInput,
-    BookMapper, HistoryMapper
+    BookMapper, HistoryMapper,
+    TuidListPage
 } from './mapper';
 import {EntityUI} from './entityUI';
 import {ActionUI} from './actionUI';
 import {QueryUI} from './queryUI';
 import {SheetUI} from './sheetUI';
-import {TuidUI} from './tuidUI';
+import {TuidUI, TuidUIListPage} from './tuidUI';
 import {BookUI} from './bookUI';
 import {HistoryUI} from './historyUI';
 
@@ -299,9 +300,27 @@ class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUI, TuidMapper> {
     protected buildUI(entity:Tuid, mapper1:TuidMapper, mapper2:TuidMapper):TuidUI {
         let ret = super.buildUI(entity, mapper1, mapper2);
         ret.editPage = mapper2.editPage || mapper1.editPage;
-        ret.listPage = mapper2.listPage || mapper1.listPage;
+        ret.listPage = this.mergeListPage(mapper2.listPage, mapper1.listPage);
         ret.slaveInput = mapper2.slaveInput || mapper1.slaveInput;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
+        return ret;
+    }
+
+    private mergeListPage(lp2:TuidListPage, lp1:TuidListPage):TuidUIListPage {
+        let ret:TuidUIListPage = {} as TuidUIListPage;
+        if (lp2 !== undefined) {
+            if (typeof (lp2) === 'function') {
+                ret.page = lp2;
+            }
+        }
+        if (lp1 !== undefined) {
+            if (typeof(lp1) === 'function') {
+                ret.page = lp1;
+            }
+            else {
+                ret.row = lp1.row;
+            }
+        }
         return ret;
     }
 }

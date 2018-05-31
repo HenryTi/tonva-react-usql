@@ -42,6 +42,9 @@ export class ListPage extends React.Component<TuidUIProps> {
         await this.pagedItems.first(key);
     }
     renderRow(item:any, index:number):JSX.Element {
+        let {ui} = this.props;
+        let {row:Row} = ui.listPage;
+        if (Row !== undefined) return <Row ui={ui} data={item} />;
         return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
     }
     async rowClick(item:any) {

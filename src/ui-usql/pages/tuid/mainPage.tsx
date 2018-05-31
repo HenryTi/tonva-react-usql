@@ -33,13 +33,13 @@ class TuidMainPage extends React.Component<TuidUIProps> {
     list() {
         //nav.push(<SearchPage ui={this.props.ui} />);
         let ui = this.props.ui;
-        nav.push(<ui.listPage ui={ui} />)
+        nav.push(<ui.listPage.page ui={ui} />)
     }
 
     onSearch(key:string) {
         //nav.push(<SearchPage ui={this.props.ui} data={key} />);
         let ui = this.props.ui;
-        nav.push(<ui.listPage ui={ui} data={key} />)
+        nav.push(<ui.listPage.page ui={ui} data={key} />)
     }
 
     render() {

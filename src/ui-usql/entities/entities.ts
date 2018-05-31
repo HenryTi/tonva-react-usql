@@ -59,6 +59,13 @@ export class Entities {
         this.tvApi = new UsqlApi(api, acc);
     }
 
+    tuid(name:string):Tuid {return this.tuids[name]}
+    action(name:string):Action {return this.actions[name]}
+    sheet(name:string):Sheet {return this.sheets[name]}
+    query(name:string):Query {return this.queries[name]}
+    book(name:string):Book {return this.books[name]}
+    history(name:string):History {return this.histories[name]}
+
     tuidArr: Tuid[] = [];
     actionArr: Action[] = [];
     sheetArr: Sheet[] = [];
@@ -70,13 +77,7 @@ export class Entities {
     async loadEntities() {
         let accesses = await this.tvApi.loadAccess();
         this.buildAccess(this.tvApi, accesses);
-        if (this.ws === undefined) {
-            let {ws, token} = this.api;
-            if (ws !== undefined) {
-                this.ws = new WSChannel(ws, token);
-                this.ws.connect();
-            }
-        }
+        await this.wsConnect();
     }
 
     close() {
@@ -84,15 +85,22 @@ export class Entities {
     }
 
     async wsConnect(): Promise<void> {
-        if (this.ws !== undefined) await this.ws.connect();
+        if (this.ws !== undefined) {
+            this.ws.connect();
+            return;
+        }
+        let {ws, token} = this.api;
+        if (ws === undefined) return;
+        this.ws = new WSChannel(ws, token);
+        this.ws.connect();
     }
 
-    onWsReceive(type: string, onWsReceive: (data:any)=>void): number {
+    onWsReceive(type: string, onWsReceive: (data:any)=>Promise<void>): number {
         if (this.ws === undefined) return 0;
         return this.ws.onWsReceive(type, onWsReceive);
     }
 
-    onWsReceiveAny(onWsReceive: (data:any)=>void): number {
+    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>): number {
         if (this.ws === undefined) return 0;
         return this.ws.onWsReceiveAny(onWsReceive);
     }

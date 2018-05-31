@@ -40,8 +40,10 @@ let MainPage = class MainPage extends React.Component {
         this.props.ui.endWsReceive(this.wsHandler);
     }
     onWsReceive(data) {
-        this.props.ui.entity.onReceive(data);
-        //alert('ws msg received: ' + JSON.stringify(data));
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.props.ui.entity.onReceive(data);
+            //alert('ws msg received: ' + JSON.stringify(data));
+        });
     }
     newClick() {
         let { ui } = this.props;

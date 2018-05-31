@@ -31,7 +31,7 @@ export class Sheet extends Entity {
             s.actions.push(action);
         }
     }
-    onReceive(data) {
+    async onReceive(data):Promise<void> {
         let row = data.data;
         if (row === undefined) return;
         let {id, state, preState} = row;

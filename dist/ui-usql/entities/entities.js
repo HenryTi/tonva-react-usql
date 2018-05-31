@@ -48,18 +48,18 @@ export class Entities {
         }
         this.tvApi = new UsqlApi(api, acc);
     }
+    tuid(name) { return this.tuids[name]; }
+    action(name) { return this.actions[name]; }
+    sheet(name) { return this.sheets[name]; }
+    query(name) { return this.queries[name]; }
+    book(name) { return this.books[name]; }
+    history(name) { return this.histories[name]; }
     //async loadEntites(api:string, access:string) {
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = yield this.tvApi.loadAccess();
             this.buildAccess(this.tvApi, accesses);
-            if (this.ws === undefined) {
-                let { ws, token } = this.api;
-                if (ws !== undefined) {
-                    this.ws = new WSChannel(ws, token);
-                    this.ws.connect();
-                }
-            }
+            yield this.wsConnect();
         });
     }
     close() {
@@ -68,8 +68,15 @@ export class Entities {
     }
     wsConnect() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.ws !== undefined)
-                yield this.ws.connect();
+            if (this.ws !== undefined) {
+                this.ws.connect();
+                return;
+            }
+            let { ws, token } = this.api;
+            if (ws === undefined)
+                return;
+            this.ws = new WSChannel(ws, token);
+            this.ws.connect();
         });
     }
     onWsReceive(type, onWsReceive) {

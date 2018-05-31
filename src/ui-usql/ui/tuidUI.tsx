@@ -4,11 +4,15 @@ import {TuidUIComponent, TuidInputComponent, TuidInput, TuidUISlaveComponent} fr
 import {EntitiesUI, EntitySet} from './entitiesUI';
 import {EntityUI} from './entityUI';
 
+export class TuidUIListPage {
+    page: TuidUIComponent;
+    row?:TuidUIComponent
+}
 export class TuidUI extends EntityUI<Tuid> {
     entitySet: EntitySet<Tuid, TuidUI>;
 
     editPage?: TuidUIComponent;
-    listPage?: TuidUIComponent;
+    listPage?: TuidUIListPage;
     input?: TuidInput;
 
     slaveInput?: TuidUISlaveComponent;

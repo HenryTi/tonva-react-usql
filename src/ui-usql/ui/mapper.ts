@@ -93,9 +93,10 @@ export interface EntityMapper<T extends Entity, TUI extends EntityUI<T>> {
     link?: UIComponent<T, TUI>;
     mainPage?: UIComponent<T, TUI>;
 }
+export type TuidListPage = TuidUIComponent | {row?: TuidUIComponent};
 export interface TuidMapper extends EntityMapper<Tuid, TuidUI> {
     editPage?: TuidUIComponent;
-    listPage?: TuidUIComponent;
+    listPage?: TuidListPage;
     input?: TuidInput;
     slaveInput?: TuidUISlaveComponent;
 }

@@ -16,11 +16,11 @@ export abstract class EntityUI<E extends Entity> {
         return this.mapFields(this.entity.schema.fields);
     }
 
-    onWsReceive(cmd: string, onWsReceive: (data:any)=>void): number {
+    onWsReceive(cmd: string, onWsReceive: (data:any)=>Promise<void>): number {
         return this.entitiesUI.entities.onWsReceive(cmd, onWsReceive);
     }
 
-    onWsReceiveAny(onWsReceive: (data:any)=>void): number {
+    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>): number {
         return this.entitiesUI.entities.onWsReceiveAny(onWsReceive);
     }
 

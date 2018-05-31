@@ -14,7 +14,7 @@ export declare class Sheet extends Entity {
     states: SheetState[];
     setStates(states: SheetState[]): void;
     private setStateAccess(s, s1);
-    onReceive(data: any): void;
+    onReceive(data: any): Promise<void>;
     private changeStateCount(state, delta);
     save(discription: string, data: any): Promise<number>;
     action(id: number, flow: number, state: string, action: string): Promise<any>;

@@ -29,8 +29,8 @@ export class MainPage extends React.Component<SheetUIProps> {
     componentWillUnmount() {
         this.props.ui.endWsReceive(this.wsHandler);
     }
-    onWsReceive(data:any) {
-        this.props.ui.entity.onReceive(data);
+    async onWsReceive(data:any):Promise<void> {
+        await this.props.ui.entity.onReceive(data);
         //alert('ws msg received: ' + JSON.stringify(data));
     }
     newClick() {

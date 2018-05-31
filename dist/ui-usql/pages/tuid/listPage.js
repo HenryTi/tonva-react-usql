@@ -52,6 +52,10 @@ let ListPage = class ListPage extends React.Component {
         });
     }
     renderRow(item, index) {
+        let { ui } = this.props;
+        let { row: Row } = ui.listPage;
+        if (Row !== undefined)
+            return React.createElement(Row, { ui: ui, data: item });
         return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
     }
     rowClick(item) {

@@ -34,12 +34,12 @@ class TuidMainPage extends React.Component {
     list() {
         //nav.push(<SearchPage ui={this.props.ui} />);
         let ui = this.props.ui;
-        nav.push(React.createElement(ui.listPage, { ui: ui }));
+        nav.push(React.createElement(ui.listPage.page, { ui: ui }));
     }
     onSearch(key) {
         //nav.push(<SearchPage ui={this.props.ui} data={key} />);
         let ui = this.props.ui;
-        nav.push(React.createElement(ui.listPage, { ui: ui, data: key }));
+        nav.push(React.createElement(ui.listPage.page, { ui: ui, data: key }));
     }
     render() {
         let { entity, caption } = this.props.ui;

@@ -267,9 +267,26 @@ class TuidSetBuilder extends EntitySetBuilder {
     buildUI(entity, mapper1, mapper2) {
         let ret = super.buildUI(entity, mapper1, mapper2);
         ret.editPage = mapper2.editPage || mapper1.editPage;
-        ret.listPage = mapper2.listPage || mapper1.listPage;
+        ret.listPage = this.mergeListPage(mapper2.listPage, mapper1.listPage);
         ret.slaveInput = mapper2.slaveInput || mapper1.slaveInput;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
+        return ret;
+    }
+    mergeListPage(lp2, lp1) {
+        let ret = {};
+        if (lp2 !== undefined) {
+            if (typeof (lp2) === 'function') {
+                ret.page = lp2;
+            }
+        }
+        if (lp1 !== undefined) {
+            if (typeof (lp1) === 'function') {
+                ret.page = lp1;
+            }
+            else {
+                ret.row = lp1.row;
+            }
+        }
         return ret;
     }
 }

@@ -6,7 +6,7 @@ export declare class MainPage extends React.Component<SheetUIProps> {
     constructor(props: any);
     componentDidMount(): Promise<void>;
     componentWillUnmount(): void;
-    onWsReceive(data: any): void;
+    onWsReceive(data: any): Promise<void>;
     newClick(): void;
     schemaClick(): void;
     sheetStateClick(state: any): void;

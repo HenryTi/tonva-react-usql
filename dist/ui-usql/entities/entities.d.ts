@@ -24,6 +24,12 @@ export declare class Entities {
     private histories;
     private cacheTimer;
     constructor(api: ApiBase, access?: string);
+    tuid(name: string): Tuid;
+    action(name: string): Action;
+    sheet(name: string): Sheet;
+    query(name: string): Query;
+    book(name: string): Book;
+    history(name: string): History;
     tuidArr: Tuid[];
     actionArr: Action[];
     sheetArr: Sheet[];
@@ -33,8 +39,8 @@ export declare class Entities {
     loadEntities(): Promise<void>;
     close(): void;
     wsConnect(): Promise<void>;
-    onWsReceive(type: string, onWsReceive: (data: any) => void): number;
-    onWsReceiveAny(onWsReceive: (data: any) => void): number;
+    onWsReceive(type: string, onWsReceive: (data: any) => Promise<void>): number;
+    onWsReceiveAny(onWsReceive: (data: any) => Promise<void>): number;
     endWsReceive(handlerId: number): void;
     getTuid(name: string, tuidUrl: string): Tuid;
     cacheTuids(defer: number): void;
