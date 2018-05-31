@@ -82,4 +82,7 @@ class TuidProxyMainPage extends React.Component {
                     " \u4EE3\u7406\u4E0B\u5217Tuid"), items: tuidUIs, item: { render: this.entityRender, onClick: this.entityClick } }));
     }
 }
+export function renderRow(item, index) {
+    return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
+}
 //# sourceMappingURL=mainPage.js.map

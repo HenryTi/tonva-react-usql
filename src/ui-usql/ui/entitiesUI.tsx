@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as _ from 'lodash';
 import {CenterApi, Api} from 'tonva-tools';
 import {Entities, Entity, Tuid, Action, Sheet, Query, Book, History} from '../entities';
-import {EntitiesMapper, FieldMapper, FieldMappers, MapperContainer, 
+import {EntitiesMapper, FieldMapper, FieldMappers, MapperContainer,
     EntityMapper, ActionMapper, QueryMapper, SheetMapper, TuidMapper, TuidInput,
     BookMapper, HistoryMapper,
     TuidListPage
@@ -196,11 +196,12 @@ abstract class EntitySetBuilder<E extends Entity, U extends EntityUI<E>, T exten
         ret.link = mapper2.link || mapper1.link;
         ret.mainPage = mapper2.mainPage || mapper1.mainPage;
         ret.typeFieldMappers = this.buildTypeFieldMappers(this.typeFieldMappers, mapper1, mapper2);
+        ret.renderRow = mapper2.renderRow || mapper1.renderRow;
 
         let nfm1 = mapper1.fieldFaces;
         let nfm2 = mapper2.fieldFaces;
         if (nfm1 === undefined) {
-            if (nfm2 !== undefined) 
+            if (nfm2 !== undefined)
                 ret.fieldFaces = nfm2;
         }
         else {
@@ -272,7 +273,7 @@ class SheetSetBuilder extends EntitySetBuilder<Sheet, SheetUI, SheetMapper> {
         let nfm1 = mapper1.detailFaces;
         let nfm2 = mapper2.detailFaces;
         if (nfm1 === undefined) {
-            if (nfm2 !== undefined) 
+            if (nfm2 !== undefined)
                 ret.detialFaces = nfm2;
         }
         else {
@@ -303,6 +304,7 @@ class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUI, TuidMapper> {
         ret.listPage = this.mergeListPage(mapper2.listPage, mapper1.listPage);
         ret.slaveInput = mapper2.slaveInput || mapper1.slaveInput;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
+        ret.autoLoadAllData = mapper2.autoLoadAllData || mapper1.autoLoadAllData;
         return ret;
     }
 

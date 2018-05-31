@@ -12,7 +12,7 @@ import { nav, Page, loadAppApis, meInFrame } from 'tonva-tools';
 import { defaultMapper } from '../pages';
 import { EntitiesUI, entitiesUICollection } from './entitiesUI';
 //import {Entities, defaultMapper, Entity, Tuid, Action, Sheet, Query,
-//    AppUI, EntitiesUI, EntitiesUIProps, EntitySet, 
+//    AppUI, EntitiesUI, EntitiesUIProps, EntitySet,
 //    EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from './ui-usql';
 export class AppUI {
     constructor(tonvaApp, caption, uiMappers) {
@@ -38,8 +38,7 @@ export class AppUI {
                 let mapper = this.uiMappers && this.uiMappers[api];
                 if (mapper === null)
                     continue;
-                if (isDebug === true && urlDebug !== undefined)
-                    url = urlDebug;
+                // if (isDebug === true && urlDebug !== undefined) url = urlDebug;
                 let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
                 this.apiUIs.push(apiUI);
                 yield apiUI.loadEntities();

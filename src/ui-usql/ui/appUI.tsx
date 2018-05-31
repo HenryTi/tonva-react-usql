@@ -8,7 +8,7 @@ import {EntitiesUI, entitiesUICollection, EntitySet} from './entitiesUI';
 import {EntityUI} from './entityUI';
 import {TuidUI} from './tuidUI';
 //import {Entities, defaultMapper, Entity, Tuid, Action, Sheet, Query,
-//    AppUI, EntitiesUI, EntitiesUIProps, EntitySet, 
+//    AppUI, EntitiesUI, EntitiesUIProps, EntitySet,
 //    EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from './ui-usql';
 
 export class AppUI {
@@ -41,7 +41,7 @@ export class AppUI {
             let api = apiOwner + '/' + apiName;
             let mapper = this.uiMappers && this.uiMappers[api];
             if (mapper === null) continue;
-            if (isDebug === true && urlDebug !== undefined) url = urlDebug;
+            // if (isDebug === true && urlDebug !== undefined) url = urlDebug;
             let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
             this.apiUIs.push(apiUI);
             await apiUI.loadEntities();
@@ -70,7 +70,7 @@ export class MainPage extends React.Component<{appUI:AppUI}> {
         if (entitySet.list.length === 0) return;
         return <List className='my-2'
                 header={<Muted>{entitySet.caption || caption}</Muted>}
-                items={entitySet.list} 
+                items={entitySet.list}
                 item={{render: this.entityRender, onClick:this.entityClick}} />;
     }
     private async logout() {

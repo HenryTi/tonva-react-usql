@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { UIComponent, FieldMappers, FieldFaces, FieldFace } from './mapper';
 import { EntitiesUI, EntitySet } from './entitiesUI';
 import { Entity } from '../entities';
@@ -17,4 +18,5 @@ export declare abstract class EntityUI<E extends Entity> {
     protected mapFields(schemaFields: any[]): any[];
     link?: UIComponent<E, EntityUI<E>>;
     mainPage?: UIComponent<E, EntityUI<E>>;
+    renderRow?: (item: any, index: number) => JSX.Element;
 }

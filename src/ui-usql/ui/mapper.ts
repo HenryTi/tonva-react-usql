@@ -28,7 +28,7 @@ export interface TuidInputProps extends TuidContentProps {
     onFormValues: ()=>any;
     onIdChanged: (id:any) => void;
 }
-export interface TuidPickPageProps extends TuidInputProps { 
+export interface TuidPickPageProps extends TuidInputProps {
     //id: number;
     //tuidUI: TuidUI;
     //input: TuidInput;
@@ -92,6 +92,7 @@ export interface EntityMapper<T extends Entity, TUI extends EntityUI<T>> {
     fieldFaces?: FieldFaces;
     link?: UIComponent<T, TUI>;
     mainPage?: UIComponent<T, TUI>;
+    renderRow?: (item: any, index: number) => JSX.Element;
 }
 export type TuidListPage = TuidUIComponent | {row?: TuidUIComponent};
 export interface TuidMapper extends EntityMapper<Tuid, TuidUI> {
@@ -99,6 +100,7 @@ export interface TuidMapper extends EntityMapper<Tuid, TuidUI> {
     listPage?: TuidListPage;
     input?: TuidInput;
     slaveInput?: TuidUISlaveComponent;
+    autoLoadAllData?: boolean;
 }
 
 export interface ActionMapper extends EntityMapper<Action, ActionUI> {

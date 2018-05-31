@@ -16,6 +16,7 @@ export class TuidUI extends EntityUI<Tuid> {
     input?: TuidInput;
 
     slaveInput?: TuidUISlaveComponent;
+    autoLoadAllData?: boolean;
 /*
     mapMain(): any[] {
         let ret =  super.mapMain();

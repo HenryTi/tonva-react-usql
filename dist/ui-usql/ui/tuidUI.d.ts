@@ -12,6 +12,7 @@ export declare class TuidUI extends EntityUI<Tuid> {
     listPage?: TuidUIListPage;
     input?: TuidInput;
     slaveInput?: TuidUISlaveComponent;
+    autoLoadAllData?: boolean;
     private click(slave);
     private slaveField(slave);
 }
