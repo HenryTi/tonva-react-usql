@@ -56,7 +56,7 @@ class TuidMainPage extends React.Component<TuidUIProps> {
         </Page>;
     }
 }
-        
+
 class TuidProxyMainPage extends React.Component<TuidUIProps> {
     private entityRender(ui: EntityUI<any>, index: number): JSX.Element {
         let {caption} = ui;
@@ -81,8 +81,12 @@ class TuidProxyMainPage extends React.Component<TuidUIProps> {
         return <Page header={ui.caption}>
             <List className="my-2"
                 header={<Muted>{ui.caption} 代理下列Tuid</Muted>}
-                items={tuidUIs} 
+                items={tuidUIs}
                 item={{render: this.entityRender, onClick:this.entityClick}} />
         </Page>
     }
+}
+
+export function renderRow(item:any, index:number):JSX.Element {
+    return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
 }

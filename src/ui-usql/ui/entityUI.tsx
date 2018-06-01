@@ -84,4 +84,5 @@ export abstract class EntityUI<E extends Entity> {
 
     link?: UIComponent<E, EntityUI<E>>;
     mainPage?: UIComponent<E, EntityUI<E>>;
+    renderRow?: (item: any, index: number) => JSX.Element;
 }

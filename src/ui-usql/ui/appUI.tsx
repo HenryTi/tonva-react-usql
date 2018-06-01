@@ -8,7 +8,7 @@ import {EntitiesUI, entitiesUICollection, EntitySet} from './entitiesUI';
 import {EntityUI} from './entityUI';
 import {TuidUI} from './tuidUI';
 //import {Entities, defaultMapper, Entity, Tuid, Action, Sheet, Query,
-//    AppUI, EntitiesUI, EntitiesUIProps, EntitySet, 
+//    AppUI, EntitiesUI, EntitiesUIProps, EntitySet,
 //    EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from './ui-usql';
 
 export class AppUI {
@@ -70,7 +70,7 @@ export class MainPage extends React.Component<{appUI:AppUI}> {
         if (entitySet.list.length === 0) return;
         return <List className='my-2'
                 header={<Muted>{entitySet.caption || caption}</Muted>}
-                items={entitySet.list} 
+                items={entitySet.list}
                 item={{render: this.entityRender, onClick:this.entityClick}} />;
     }
     private async logout() {
