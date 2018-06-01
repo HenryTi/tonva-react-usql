@@ -41,7 +41,7 @@ export class AppUI {
             let api = apiOwner + '/' + apiName;
             let mapper = this.uiMappers && this.uiMappers[api];
             if (mapper === null) continue;
-            // if (isDebug === true && urlDebug !== undefined) url = urlDebug;
+            if (isDebug === true && urlDebug !== undefined) url = urlDebug;
             let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
             this.apiUIs.push(apiUI);
             await apiUI.loadEntities();
