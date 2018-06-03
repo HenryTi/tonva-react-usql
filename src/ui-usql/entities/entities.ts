@@ -32,7 +32,7 @@ const ln = '\n';
 export class Entities {
     private api:ApiBase;
     private tvApi: UsqlApi;
-    private ws: WSChannel;
+    //private ws: WSChannel;
     private tuids: {[name:string]: Tuid} = {};
     private actions: {[name:string]: Action} = {};
     private sheets: {[name:string]: Sheet} = {};
@@ -77,9 +77,10 @@ export class Entities {
     async loadEntities() {
         let accesses = await this.tvApi.loadAccess();
         this.buildAccess(this.tvApi, accesses);
-        await this.wsConnect();
+        //await this.wsConnect();
     }
 
+    /*
     close() {
         if (this.ws !== undefined) this.ws.close();
     }
@@ -108,6 +109,7 @@ export class Entities {
     endWsReceive(handlerId: number) {
         if (this.ws !== undefined) this.ws.endWsReceive(handlerId);
     }
+    */
 
     getTuid(name:string, tuidUrl:string) {return this.tuids[name];}
 

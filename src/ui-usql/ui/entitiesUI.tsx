@@ -57,11 +57,11 @@ export class EntitiesUI {
         await this.entities.loadEntities();
         this.buildUI();
     }
-
+    /*
     close() {
         this.entities.close();
     }
-
+    */
     entities:Entities;
     mainPage:JSX.Element;
     caption:string;
@@ -308,17 +308,17 @@ class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUI, TuidMapper> {
 
     private mergeListPage(lp2:TuidListPage, lp1:TuidListPage):TuidUIListPage {
         let ret:TuidUIListPage = {} as TuidUIListPage;
-        if (lp2 !== undefined) {
-            if (typeof (lp2) === 'function') {
-                ret.page = lp2;
-            }
-        }
         if (lp1 !== undefined) {
-            if (typeof(lp1) === 'function') {
+            if (typeof (lp1) === 'function') {
                 ret.page = lp1;
             }
+        }
+        if (lp2 !== undefined) {
+            if (typeof(lp2) === 'function') {
+                ret.page = lp2;
+            }
             else {
-                ret.row = lp1.row;
+                ret.row = lp2.row;
             }
         }
         return ret;

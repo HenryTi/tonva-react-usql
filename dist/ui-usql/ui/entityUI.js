@@ -1,16 +1,24 @@
 import * as _ from 'lodash';
+import { wsBridge } from 'tonva-tools';
 export class EntityUI {
     mapMain() {
         return this.mapFields(this.entity.schema.fields);
     }
     onWsReceive(cmd, onWsReceive) {
-        return this.entitiesUI.entities.onWsReceive(cmd, onWsReceive);
+        if (this.wsHandlers === undefined)
+            this.wsHandlers = [];
+        this.wsHandlers.push(wsBridge.onWsReceive(cmd, onWsReceive));
     }
     onWsReceiveAny(onWsReceive) {
-        return this.entitiesUI.entities.onWsReceiveAny(onWsReceive);
+        if (this.wsHandlers === undefined)
+            this.wsHandlers = [];
+        this.wsHandlers.push(wsBridge.onWsReceiveAny(onWsReceive));
     }
-    endWsReceive(handlerId) {
-        this.entitiesUI.entities.endWsReceive(handlerId);
+    endWsReceive() {
+        if (this.wsHandlers === undefined)
+            return;
+        for (let h of this.wsHandlers)
+            wsBridge.endWsReceive(h);
     }
     tfmMap(sf, ff) {
         let ret;

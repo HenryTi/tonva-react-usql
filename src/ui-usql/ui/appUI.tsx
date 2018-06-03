@@ -47,12 +47,13 @@ export class AppUI {
             await apiUI.loadEntities();
         }
     }
-
+    /*
     close() {
         for (let p in this.entitiesUICollection) {
             this.entitiesUICollection[p].close();
         }
     }
+    */
 }
 
 export class MainPage extends React.Component<{appUI:AppUI}> {

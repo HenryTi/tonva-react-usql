@@ -59,7 +59,7 @@ export class Sheet extends Entity {
     }
     save(discription, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.wsConnect();
+            //await this.entities.wsConnect();
             let text = this.entities.pack(this.schema, data);
             let ret = yield this.tvApi.sheetSave(this.name, { discription: discription, data: text });
             let { id, state } = ret;
@@ -70,7 +70,7 @@ export class Sheet extends Entity {
     }
     action(id, flow, state, action) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.wsConnect();
+            //await this.entities.wsConnect();
             return yield this.tvApi.sheetAction(this.name, { id: id, flow: flow, state: state, action: action });
         });
     }

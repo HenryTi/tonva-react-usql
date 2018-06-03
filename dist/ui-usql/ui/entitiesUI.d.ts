@@ -17,7 +17,6 @@ export declare class EntitiesUI {
     constructor(url: string, ws: string, api: string, access: string, defaultMapper: EntitiesMapper, mapper?: EntitiesMapper);
     api: string;
     loadEntities(): Promise<void>;
-    close(): void;
     entities: Entities;
     mainPage: JSX.Element;
     caption: string;

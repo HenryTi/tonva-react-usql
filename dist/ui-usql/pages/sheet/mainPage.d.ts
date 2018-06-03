@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { SheetUIProps } from '../../ui';
 export declare class MainPage extends React.Component<SheetUIProps> {
-    private wsHandler;
     constructor(props: any);
     componentDidMount(): Promise<void>;
     componentWillUnmount(): void;

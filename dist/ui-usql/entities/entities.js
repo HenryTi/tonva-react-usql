@@ -13,7 +13,6 @@ import { Sheet } from './sheet';
 import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
-import { WSChannel } from 'tonva-tools';
 const tab = '\t';
 const ln = '\n';
 // api: apiOwner/apiName
@@ -25,6 +24,7 @@ export class Entities {
     //constructor(api:string, access:string) {
     //constructor(url:string, ws:string, token:string, api:string, access?:string) {
     constructor(api, access) {
+        //private ws: WSChannel;
         this.tuids = {};
         this.actions = {};
         this.sheets = {};
@@ -59,40 +59,39 @@ export class Entities {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = yield this.tvApi.loadAccess();
             this.buildAccess(this.tvApi, accesses);
-            yield this.wsConnect();
+            //await this.wsConnect();
         });
     }
+    /*
     close() {
-        if (this.ws !== undefined)
-            this.ws.close();
+        if (this.ws !== undefined) this.ws.close();
     }
-    wsConnect() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.ws !== undefined) {
-                this.ws.connect();
-                return;
-            }
-            let { ws, token } = this.api;
-            if (ws === undefined)
-                return;
-            this.ws = new WSChannel(ws, token);
+
+    async wsConnect(): Promise<void> {
+        if (this.ws !== undefined) {
             this.ws.connect();
-        });
+            return;
+        }
+        let {ws, token} = this.api;
+        if (ws === undefined) return;
+        this.ws = new WSChannel(ws, token);
+        this.ws.connect();
     }
-    onWsReceive(type, onWsReceive) {
-        if (this.ws === undefined)
-            return 0;
+
+    onWsReceive(type: string, onWsReceive: (data:any)=>Promise<void>): number {
+        if (this.ws === undefined) return 0;
         return this.ws.onWsReceive(type, onWsReceive);
     }
-    onWsReceiveAny(onWsReceive) {
-        if (this.ws === undefined)
-            return 0;
+
+    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>): number {
+        if (this.ws === undefined) return 0;
         return this.ws.onWsReceiveAny(onWsReceive);
     }
-    endWsReceive(handlerId) {
-        if (this.ws !== undefined)
-            this.ws.endWsReceive(handlerId);
+
+    endWsReceive(handlerId: number) {
+        if (this.ws !== undefined) this.ws.endWsReceive(handlerId);
     }
+    */
     getTuid(name, tuidUrl) { return this.tuids[name]; }
     cacheTuids(defer) {
         this.clearCacheTimer();

@@ -53,9 +53,6 @@ export class EntitiesUI {
             this.buildUI();
         });
     }
-    close() {
-        this.entities.close();
-    }
     buildUI() {
         let d = this.defaultMapper;
         let m = this.mapper;
@@ -274,17 +271,17 @@ class TuidSetBuilder extends EntitySetBuilder {
     }
     mergeListPage(lp2, lp1) {
         let ret = {};
-        if (lp2 !== undefined) {
-            if (typeof (lp2) === 'function') {
-                ret.page = lp2;
-            }
-        }
         if (lp1 !== undefined) {
             if (typeof (lp1) === 'function') {
                 ret.page = lp1;
             }
+        }
+        if (lp2 !== undefined) {
+            if (typeof (lp2) === 'function') {
+                ret.page = lp2;
+            }
             else {
-                ret.row = lp1.row;
+                ret.row = lp2.row;
             }
         }
         return ret;

@@ -10,28 +10,23 @@ import {SchemaPage} from './schemaPage';
 
 @observer
 export class MainPage extends React.Component<SheetUIProps> {
-    private wsHandler:number;
-    //private wsAny:number;
     constructor(props) {
         super(props);
         this.renderState = this.renderState.bind(this);
         this.sheetStateClick = this.sheetStateClick.bind(this);
         this.onWsReceive = this.onWsReceive.bind(this);
-        //this.onWsAny = this.onWsAny.bind(this);
     }
     async componentDidMount() {
-        //ws.onWsReceive('sheetAct', this.onWsReceive);
-        this.wsHandler = this.props.ui.onWsReceive('sheetAct', this.onWsReceive);
         let ui = this.props.ui;
+        ui.onWsReceive('sheetAct', this.onWsReceive);
         let sheet = ui.entity;
         await sheet.getStateSheetCount();
     }
     componentWillUnmount() {
-        this.props.ui.endWsReceive(this.wsHandler);
+        this.props.ui.endWsReceive();
     }
     async onWsReceive(data:any):Promise<void> {
         await this.props.ui.entity.onReceive(data);
-        //alert('ws msg received: ' + JSON.stringify(data));
     }
     newClick() {
         let {ui} = this.props;

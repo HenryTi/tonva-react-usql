@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
+import {wsBridge} from 'tonva-tools';
 import { UIComponent, FieldMappers, FieldMapper, FieldFaces, FieldFace, TuidInput } from './mapper';
 import { EntitiesUI, EntitySet } from './entitiesUI';
 import { Entity } from '../entities';
 
 export abstract class EntityUI<E extends Entity> {
+    private wsHandlers:number[];
     entitiesUI: EntitiesUI;
     entitySet: EntitySet<E, EntityUI<E>>;
     entity: E;
@@ -15,19 +17,21 @@ export abstract class EntityUI<E extends Entity> {
     mapMain(): any[] {
         return this.mapFields(this.entity.schema.fields);
     }
-
-    onWsReceive(cmd: string, onWsReceive: (data:any)=>Promise<void>): number {
-        return this.entitiesUI.entities.onWsReceive(cmd, onWsReceive);
+    onWsReceive(cmd: string, onWsReceive: (data:any)=>Promise<void>) {
+        if (this.wsHandlers === undefined) this.wsHandlers = [];
+        this.wsHandlers.push(wsBridge.onWsReceive(cmd, onWsReceive));
     }
 
-    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>): number {
-        return this.entitiesUI.entities.onWsReceiveAny(onWsReceive);
+    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>) {
+        if (this.wsHandlers === undefined) this.wsHandlers = [];
+        this.wsHandlers.push(wsBridge.onWsReceiveAny(onWsReceive));
     }
 
-    endWsReceive(handlerId: number) {
-        this.entitiesUI.entities.endWsReceive(handlerId);
+    endWsReceive() {
+        if (this.wsHandlers === undefined) return;
+        for (let h of this.wsHandlers)
+            wsBridge.endWsReceive(h);
     }
-
     protected tfmMap(sf: any, ff: FieldFace) {
         let ret: any;
         let { type, tuid, url } = sf;

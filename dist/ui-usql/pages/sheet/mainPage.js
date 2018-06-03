@@ -19,30 +19,26 @@ import { nav, Page } from 'tonva-tools';
 import { List, LMR, Muted } from 'tonva-react-form';
 import { SchemaPage } from './schemaPage';
 let MainPage = class MainPage extends React.Component {
-    //private wsAny:number;
     constructor(props) {
         super(props);
         this.renderState = this.renderState.bind(this);
         this.sheetStateClick = this.sheetStateClick.bind(this);
         this.onWsReceive = this.onWsReceive.bind(this);
-        //this.onWsAny = this.onWsAny.bind(this);
     }
     componentDidMount() {
         return __awaiter(this, void 0, void 0, function* () {
-            //ws.onWsReceive('sheetAct', this.onWsReceive);
-            this.wsHandler = this.props.ui.onWsReceive('sheetAct', this.onWsReceive);
             let ui = this.props.ui;
+            ui.onWsReceive('sheetAct', this.onWsReceive);
             let sheet = ui.entity;
             yield sheet.getStateSheetCount();
         });
     }
     componentWillUnmount() {
-        this.props.ui.endWsReceive(this.wsHandler);
+        this.props.ui.endWsReceive();
     }
     onWsReceive(data) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.props.ui.entity.onReceive(data);
-            //alert('ws msg received: ' + JSON.stringify(data));
         });
     }
     newClick() {

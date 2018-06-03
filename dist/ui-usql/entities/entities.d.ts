@@ -15,7 +15,6 @@ export interface Field {
 export declare class Entities {
     private api;
     private tvApi;
-    private ws;
     private tuids;
     private actions;
     private sheets;
@@ -37,11 +36,6 @@ export declare class Entities {
     bookArr: Book[];
     historyArr: History[];
     loadEntities(): Promise<void>;
-    close(): void;
-    wsConnect(): Promise<void>;
-    onWsReceive(type: string, onWsReceive: (data: any) => Promise<void>): number;
-    onWsReceiveAny(onWsReceive: (data: any) => Promise<void>): number;
-    endWsReceive(handlerId: number): void;
     getTuid(name: string, tuidUrl: string): Tuid;
     cacheTuids(defer: number): void;
     private clearCacheTimer();

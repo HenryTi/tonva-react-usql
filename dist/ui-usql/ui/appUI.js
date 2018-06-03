@@ -46,11 +46,6 @@ export class AppUI {
             }
         });
     }
-    close() {
-        for (let p in this.entitiesUICollection) {
-            this.entitiesUICollection[p].close();
-        }
-    }
 }
 export class MainPage extends React.Component {
     entityRender(ui, index) {

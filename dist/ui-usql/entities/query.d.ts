@@ -10,7 +10,9 @@ export declare class Query extends Entity {
     protected queryApiName: string;
     loaded: boolean;
     list: IObservableArray;
+    private unpackReturns(data);
     resetPage(size: number, params: any): void;
     readonly hasMore: boolean;
     loadPage(): Promise<void>;
+    query(params: any): Promise<any>;
 }

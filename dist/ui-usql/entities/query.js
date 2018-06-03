@@ -20,6 +20,13 @@ export class Query extends Entity {
         this.queryApiName = 'page';
         this.list = observable.array([], { deep: false });
     }
+    unpackReturns(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.schema === undefined)
+                yield this.loadSchema();
+            return this.entities.unpackReturns(this.schema, data);
+        });
+    }
     resetPage(size, params) {
         this.pageStart = undefined;
         this.pageSize = size;
@@ -48,7 +55,7 @@ export class Query extends Entity {
                 }
             }
             let res = yield this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize + 1, this.params);
-            let data = this.entities.unpackReturns(this.schema, res);
+            let data = yield this.unpackReturns(res);
             let page = data['$page'];
             if (page !== undefined) {
                 if (page.length > this.pageSize) {
@@ -64,6 +71,13 @@ export class Query extends Entity {
                 this.list.push(...page);
             }
             this.loaded = true;
+        });
+    }
+    query(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let res = yield this.api.query(this.name, params);
+            let data = yield this.unpackReturns(res);
+            return data;
         });
     }
 }

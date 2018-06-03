@@ -13,6 +13,11 @@ export class Query extends Entity {
     @observable loaded: boolean;
     list:IObservableArray = observable.array([], {deep: false});
 
+    private async unpackReturns(data:any):Promise<any> {
+        if (this.schema === undefined) await this.loadSchema();
+        return this.entities.unpackReturns(this.schema, data);
+    }
+
     resetPage(size:number, params:any) {
         this.pageStart = undefined;
         this.pageSize = size;
@@ -36,7 +41,7 @@ export class Query extends Entity {
             }
         }
         let res = await this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize+1, this.params);
-        let data = this.entities.unpackReturns(this.schema, res);
+        let data = await this.unpackReturns(res);
         let page = data['$page'] as any[];
         if (page !== undefined) {
             if (page.length > this.pageSize) {
@@ -52,5 +57,11 @@ export class Query extends Entity {
             this.list.push(...page);
         }
         this.loaded = true;
+    }
+
+    async query(params:any):Promise<any> {
+        let res = await this.api.query(this.name, params);
+        let data = await this.unpackReturns(res);
+        return data;
     }
 }

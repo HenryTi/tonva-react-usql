@@ -31,7 +31,7 @@ export class UsqlHome extends React.Component {
         });
     }
     componentWillUnmount() {
-        this.appUI.close();
+        //this.appUI.close();
     }
     render() {
         let { uiLoaded } = this.state;

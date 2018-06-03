@@ -13,7 +13,6 @@ export declare class AppUI {
     });
     apiUIs: EntitiesUI[];
     load(): Promise<void>;
-    close(): void;
 }
 export declare class MainPage extends React.Component<{
     appUI: AppUI;

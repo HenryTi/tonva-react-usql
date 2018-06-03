@@ -23,5 +23,6 @@ export declare class UsqlApi {
     sheetArchive(name: string, id: number): Promise<any>;
     action(name: string, data: object): Promise<any>;
     queryPage(queryApi: string, name: string, pageStart: any, pageSize: number, params: any): Promise<string>;
+    query(name: string, params: any): Promise<any>;
     user(): Promise<any>;
 }

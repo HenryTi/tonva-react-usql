@@ -43,7 +43,7 @@ export class UsqlHome extends React.Component<UsqlHomeProps, State> {
 
     }
     componentWillUnmount() {
-        this.appUI.close();
+        //this.appUI.close();
     }
     render() {
         let {uiLoaded} = this.state;

@@ -147,6 +147,12 @@ export class UsqlApi {
             return yield this.api.post(queryApi + '/' + name, p);
         });
     }
+    query(name, params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.api.post('query/' + name, params);
+            return ret;
+        });
+    }
     /*
         async history(name:string, pageStart:any, pageSize:number, params:any):Promise<string> {
             let p = _.clone(params);
