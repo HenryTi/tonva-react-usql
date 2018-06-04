@@ -20,6 +20,11 @@ export class Query extends Entity {
         this.queryApiName = 'page';
         this.list = observable.array([], { deep: false });
     }
+    /*
+    protected lowerCaseSchema() {
+        let {returns} = this.schema;
+        this.lowerCaseReturns(returns);
+    }*/
     unpackReturns(data) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.schema === undefined)

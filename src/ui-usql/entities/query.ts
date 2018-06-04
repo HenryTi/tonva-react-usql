@@ -13,6 +13,12 @@ export class Query extends Entity {
     @observable loaded: boolean;
     list:IObservableArray = observable.array([], {deep: false});
 
+    /*
+    protected lowerCaseSchema() {
+        let {returns} = this.schema;
+        this.lowerCaseReturns(returns);
+    }*/
+
     private async unpackReturns(data:any):Promise<any> {
         if (this.schema === undefined) await this.loadSchema();
         return this.entities.unpackReturns(this.schema, data);

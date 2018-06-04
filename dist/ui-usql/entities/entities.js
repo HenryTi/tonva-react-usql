@@ -48,12 +48,12 @@ export class Entities {
         }
         this.tvApi = new UsqlApi(api, acc);
     }
-    tuid(name) { return this.tuids[name]; }
-    action(name) { return this.actions[name]; }
-    sheet(name) { return this.sheets[name]; }
-    query(name) { return this.queries[name]; }
-    book(name) { return this.books[name]; }
-    history(name) { return this.histories[name]; }
+    tuid(name) { return this.tuids[name.toLowerCase()]; }
+    action(name) { return this.actions[name.toLowerCase()]; }
+    sheet(name) { return this.sheets[name.toLowerCase()]; }
+    query(name) { return this.queries[name.toLowerCase()]; }
+    book(name) { return this.books[name.toLowerCase()]; }
+    history(name) { return this.histories[name.toLowerCase()]; }
     //async loadEntites(api:string, access:string) {
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {

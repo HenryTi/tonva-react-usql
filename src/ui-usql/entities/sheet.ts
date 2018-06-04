@@ -17,6 +17,19 @@ export class Sheet extends Entity {
 
     states: SheetState[] = [];
 
+    /*
+    protected lowerCaseSchema() {
+        let {states} = this.schema;
+        if (states === undefined) return;
+        for (let state of states) {
+            let {actions} = state; 
+            if (actions === undefined) continue;
+            for (let action of actions) {
+                this.lowerCaseReturns(action.returns);
+            }
+        }
+    }*/
+
     setStates(states: SheetState[]) {
         for (let state of states) {
             this.setStateAccess(this.states.find(s=>s.name==state.name), state);

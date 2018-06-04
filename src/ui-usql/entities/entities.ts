@@ -59,12 +59,12 @@ export class Entities {
         this.tvApi = new UsqlApi(api, acc);
     }
 
-    tuid(name:string):Tuid {return this.tuids[name]}
-    action(name:string):Action {return this.actions[name]}
-    sheet(name:string):Sheet {return this.sheets[name]}
-    query(name:string):Query {return this.queries[name]}
-    book(name:string):Book {return this.books[name]}
-    history(name:string):History {return this.histories[name]}
+    tuid(name:string):Tuid {return this.tuids[name.toLowerCase()]}
+    action(name:string):Action {return this.actions[name.toLowerCase()]}
+    sheet(name:string):Sheet {return this.sheets[name.toLowerCase()]}
+    query(name:string):Query {return this.queries[name.toLowerCase()]}
+    book(name:string):Book {return this.books[name.toLowerCase()]}
+    history(name:string):History {return this.histories[name.toLowerCase()]}
 
     tuidArr: Tuid[] = [];
     actionArr: Action[] = [];

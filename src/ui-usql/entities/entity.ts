@@ -22,4 +22,15 @@ export abstract class Entity {
         if (this.schema !== undefined) return;
         this.schema = await this.api.schema(this.name);
     }
+    /*
+    protected lowerCaseSchema() {}
+    protected lowerCaseFields(fields:any) {
+        for (let f of fields) {
+            f._name = (f.name as string).toLowerCase();
+        }
+    }
+    protected lowerCaseReturns(returns:any) {
+        if (returns === undefined) return;
+        for (let ret of returns) this.lowerCaseFields(ret.fields);
+    }*/
 }
