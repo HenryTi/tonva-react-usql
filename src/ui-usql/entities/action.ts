@@ -1,9 +1,10 @@
 import {Entity} from './entity';
 
 export class Action extends Entity {
-    submit(data:object) {
+    async submit(data:object) {
+        await this.loadSchema();
         let text = this.entities.pack(this.schema, data);
-        return this.tvApi.action(this.name, {data:text});
+        return await this.tvApi.action(this.name, {data:text});
     }
 }
 

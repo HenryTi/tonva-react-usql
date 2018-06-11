@@ -21,6 +21,7 @@ export abstract class Entity {
     public async loadSchema():Promise<void> {
         if (this.schema !== undefined) return;
         this.schema = await this.api.schema(this.name);
+        this.entities.schemaRefTuids(this.schema.tuids);
     }
     /*
     protected lowerCaseSchema() {}

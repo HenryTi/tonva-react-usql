@@ -118,7 +118,7 @@ export class UsqlApi {
     }
 
     async queryPage(queryApi:string, name:string, pageStart:any, pageSize:number, params:any):Promise<string> {
-        let p = _.clone(params);
+        let p = _.clone(params||{});
         p['$pageStart'] = pageStart;
         p['$pageSize'] = pageSize;
         return await this.api.post(queryApi + '/' + name, p);

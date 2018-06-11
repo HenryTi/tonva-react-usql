@@ -2,6 +2,7 @@ import {observable} from 'mobx';
 import * as _ from 'lodash';
 import {Entity} from './entity';
 import {Entities} from './entities';
+import { debug } from 'util';
 
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
@@ -15,6 +16,9 @@ export class Tuid extends Entity {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
         this.queue.push(id);
+    }
+    setItemObservable() {
+        this.cache = observable.map({}, {deep: true});
     }
     buidProxies(parts:string[]) {
         let len = parts.length;
@@ -34,6 +38,9 @@ export class Tuid extends Entity {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
         this.useId(id);
+    }
+    cacheItem(id:number, item:any) {
+        this.cache.set(String(id), item);
     }
     useId(id:number, defer?:boolean):void {
         let key = String(id);
@@ -86,6 +93,16 @@ export class Tuid extends Entity {
         let index = this.waitingIds.findIndex(v => v === id);
         if (index>=0) this.waitingIds.splice(index, 1);
         this.cache.set(String(id), val);
+        let {tuids, fields} = this.schema;
+        if (tuids !== undefined && fields !== undefined) {
+            for (let f of fields) {
+                let {name, tuid} = f;
+                if (tuid === undefined) continue;
+                let t = this.entities.tuid(tuid);
+                if (t === undefined) continue;
+                t.useId(val[name]);
+            }
+        }
         return true;
     }
     async cacheIds():Promise<void> {

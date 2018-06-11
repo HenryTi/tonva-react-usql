@@ -7,6 +7,7 @@ import {Query} from './query';
 import {Book} from './book';
 import {History} from './history';
 import { WSChannel, ApiBase } from 'tonva-tools';
+import { debug } from 'util';
 
 export interface Field {
     name: string;
@@ -208,7 +209,16 @@ export class Entities {
         }
         return ret;
     }
-
+    schemaRefTuids(tuidSchemas:any[]) {
+        if (tuidSchemas === undefined) return;
+        for (let schema of tuidSchemas) {
+            let {tuids, name} = schema;
+            let tuid = this.tuids[name];
+            if (tuid === undefined) debugger;
+            if (tuid.schema === undefined) tuid.schema = schema;
+            this.schemaRefTuids(tuids);
+        }
+    }
     pack(schema:any, data:any):string {
         let ret:string[] = [];
         if (schema === undefined || data === undefined) return;
