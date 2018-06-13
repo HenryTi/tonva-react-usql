@@ -214,7 +214,9 @@ export class Entities {
         for (let schema of tuidSchemas) {
             let {tuids, name} = schema;
             let tuid = this.tuids[name];
-            if (tuid === undefined) debugger;
+            if (tuid === undefined) {
+                continue;
+            }
             if (tuid.schema === undefined) tuid.schema = schema;
             this.schemaRefTuids(tuids);
         }

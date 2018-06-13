@@ -141,7 +141,7 @@ export class UsqlApi {
     }
     queryPage(queryApi, name, pageStart, pageSize, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let p = _.clone(params);
+            let p = _.clone(params || {});
             p['$pageStart'] = pageStart;
             p['$pageSize'] = pageSize;
             return yield this.api.post(queryApi + '/' + name, p);

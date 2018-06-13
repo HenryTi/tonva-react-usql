@@ -14,5 +14,6 @@ export declare class Query extends Entity {
     resetPage(size: number, params: any): void;
     readonly hasMore: boolean;
     loadPage(): Promise<void>;
+    page(params: any, pageStart: any, pageSize: number): Promise<any[]>;
     query(params: any): Promise<any>;
 }

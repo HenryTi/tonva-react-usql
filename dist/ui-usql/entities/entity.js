@@ -19,6 +19,7 @@ export class Entity {
             if (this.schema !== undefined)
                 return;
             this.schema = yield this.api.schema(this.name);
+            this.entities.schemaRefTuids(this.schema.tuids);
         });
     }
 }

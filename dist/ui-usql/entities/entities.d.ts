@@ -45,6 +45,7 @@ export declare class Entities {
     private fromObj(api, name, obj);
     private buildSheet(api, name, obj);
     private createSheetState(name, obj);
+    schemaRefTuids(tuidSchemas: any[]): void;
     pack(schema: any, data: any): string;
     private escape(d);
     private packRow(result, fields, data);

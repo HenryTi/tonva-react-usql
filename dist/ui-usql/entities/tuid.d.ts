@@ -9,10 +9,12 @@ export declare class Tuid extends Entity {
         [name: string]: Tuid;
     };
     private moveToHead(id);
+    setItemObservable(): void;
     buidProxies(parts: string[]): void;
     setProxies(entities: Entities): void;
     getId(id: number): any;
     resetCache(id: number): void;
+    cacheItem(id: number, item: any): void;
     useId(id: number, defer?: boolean): void;
     proxied(name: string, id: number): Promise<any>;
     private cacheValue(val);
