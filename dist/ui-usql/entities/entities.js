@@ -161,6 +161,11 @@ export class Entities {
                     this.historyArr.push(this.histories[name] = new History(this, api, name, id));
                 }
                 break;
+            case 'sheet':
+                let sheet = this.sheets[name];
+                if (sheet === undefined) {
+                    this.sheetArr.push(this.sheet[name] = new Sheet(this, api, name, id));
+                }
         }
     }
     fromObj(api, name, obj) {
