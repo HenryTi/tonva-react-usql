@@ -45,9 +45,11 @@ export class AppUI {
                 let lud = urlDebug.toLowerCase();
                 if (lud.startsWith('http://') || lud.startsWith('https://')) {
                     try {
+                        console.log('try urlDebug %s', urlDebug);
                         if (!lud.endsWith('/')) lud += '/';
                         await fetch(lud + 'hello');
                         url = urlDebug;
+                        console.log('urlDebug %s works ok', urlDebug);
                     }
                     catch (e) {
                         console.log('url %s not working', urlDebug);
