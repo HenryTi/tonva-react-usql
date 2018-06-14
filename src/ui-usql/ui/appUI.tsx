@@ -44,7 +44,14 @@ export class AppUI {
             if (isDebug === true && urlDebug !== undefined) {
                 let lud = urlDebug.toLowerCase();
                 if (lud.startsWith('http://') || lud.startsWith('https://')) {
-                    url = urlDebug;
+                    try {
+                        if (!lud.endsWith('/')) lud += '/';
+                        await fetch(lud + 'hello');
+                        url = urlDebug;
+                    }
+                    catch (e) {
+                        console.log('url %s not working', urlDebug);
+                    }
                 }
             }
             let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
