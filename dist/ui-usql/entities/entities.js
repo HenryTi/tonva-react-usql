@@ -19,10 +19,6 @@ const ln = '\n';
 // access: acc1; acc2
 //const entitiesCollection: {[api:string]: Entities} = {};
 export class Entities {
-    // api: apiOwner/apiName
-    // access: acc1;acc2 or *
-    //constructor(api:string, access:string) {
-    //constructor(url:string, ws:string, token:string, api:string, access?:string) {
     constructor(api, access) {
         //private ws: WSChannel;
         this.tuids = {};
@@ -54,7 +50,6 @@ export class Entities {
     query(name) { return this.queries[name.toLowerCase()]; }
     book(name) { return this.books[name.toLowerCase()]; }
     history(name) { return this.histories[name.toLowerCase()]; }
-    //async loadEntites(api:string, access:string) {
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = yield this.tvApi.loadAccess();
@@ -62,37 +57,15 @@ export class Entities {
             //await this.wsConnect();
         });
     }
-    /*
-    close() {
-        if (this.ws !== undefined) this.ws.close();
-    }
-
-    async wsConnect(): Promise<void> {
-        if (this.ws !== undefined) {
-            this.ws.connect();
-            return;
-        }
-        let {ws, token} = this.api;
-        if (ws === undefined) return;
-        this.ws = new WSChannel(ws, token);
-        this.ws.connect();
-    }
-
-    onWsReceive(type: string, onWsReceive: (data:any)=>Promise<void>): number {
-        if (this.ws === undefined) return 0;
-        return this.ws.onWsReceive(type, onWsReceive);
-    }
-
-    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>): number {
-        if (this.ws === undefined) return 0;
-        return this.ws.onWsReceiveAny(onWsReceive);
-    }
-
-    endWsReceive(handlerId: number) {
-        if (this.ws !== undefined) this.ws.endWsReceive(handlerId);
-    }
-    */
     getTuid(name, tuidUrl) { return this.tuids[name]; }
+    loadSchemas(...entityArr) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let schemas = yield this.tvApi.schemas(entityArr.map(v => v.name));
+            for (let i in entityArr) {
+                entityArr[i].schema = schemas[i];
+            }
+        });
+    }
     cacheTuids(defer) {
         this.clearCacheTimer();
         this.cacheTimer = setTimeout(this.loadIds, defer);

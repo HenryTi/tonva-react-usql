@@ -1,3 +1,4 @@
+import { Entity } from './entity';
 import { Tuid } from './tuid';
 import { Action } from './action';
 import { Sheet } from './sheet';
@@ -37,6 +38,7 @@ export declare class Entities {
     historyArr: History[];
     loadEntities(): Promise<void>;
     getTuid(name: string, tuidUrl: string): Tuid;
+    loadSchemas(...entityArr: Entity[]): Promise<void>;
     cacheTuids(defer: number): void;
     private clearCacheTimer();
     private loadIds();

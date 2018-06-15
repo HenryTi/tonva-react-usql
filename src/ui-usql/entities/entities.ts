@@ -1,4 +1,5 @@
 import {observable} from 'mobx';
+import {Entity} from './entity';
 import {UsqlApi} from './usqlApi';
 import {Tuid} from './tuid';
 import {Action} from './action';
@@ -6,8 +7,7 @@ import {Sheet, SheetState, SheetAction} from './sheet';
 import {Query} from './query';
 import {Book} from './book';
 import {History} from './history';
-import { WSChannel, ApiBase } from 'tonva-tools';
-import { debug } from 'util';
+import { ApiBase } from 'tonva-tools';
 
 export interface Field {
     name: string;
@@ -42,10 +42,6 @@ export class Entities {
     private histories: {[name:string]: History} = {};
     private cacheTimer: any;
 
-    // api: apiOwner/apiName
-    // access: acc1;acc2 or *
-    //constructor(api:string, access:string) {
-    //constructor(url:string, ws:string, token:string, api:string, access?:string) {
     constructor(api:ApiBase, access?:string) {
         this.api = api;
         this.loadIds = this.loadIds.bind(this);
@@ -74,45 +70,20 @@ export class Entities {
     bookArr: Book[] = [];
     historyArr: History[] = [];
 
-    //async loadEntites(api:string, access:string) {
     async loadEntities() {
         let accesses = await this.tvApi.loadAccess();
         this.buildAccess(this.tvApi, accesses);
         //await this.wsConnect();
     }
 
-    /*
-    close() {
-        if (this.ws !== undefined) this.ws.close();
-    }
-
-    async wsConnect(): Promise<void> {
-        if (this.ws !== undefined) {
-            this.ws.connect();
-            return;
-        }
-        let {ws, token} = this.api;
-        if (ws === undefined) return;
-        this.ws = new WSChannel(ws, token);
-        this.ws.connect();
-    }
-
-    onWsReceive(type: string, onWsReceive: (data:any)=>Promise<void>): number {
-        if (this.ws === undefined) return 0;
-        return this.ws.onWsReceive(type, onWsReceive);
-    }
-
-    onWsReceiveAny(onWsReceive: (data:any)=>Promise<void>): number {
-        if (this.ws === undefined) return 0;
-        return this.ws.onWsReceiveAny(onWsReceive);
-    }
-
-    endWsReceive(handlerId: number) {
-        if (this.ws !== undefined) this.ws.endWsReceive(handlerId);
-    }
-    */
-
     getTuid(name:string, tuidUrl:string) {return this.tuids[name];}
+
+    async loadSchemas(...entityArr:Entity[]) {
+        let schemas = await this.tvApi.schemas(entityArr.map(v=>v.name));
+        for (let i in entityArr) {
+            entityArr[i].schema = schemas[i];
+        }
+    }
 
     cacheTuids(defer:number) {
         this.clearCacheTimer();

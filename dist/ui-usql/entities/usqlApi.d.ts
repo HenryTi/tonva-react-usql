@@ -6,6 +6,7 @@ export declare class UsqlApi {
     update(): Promise<string>;
     loadAccess(): Promise<any>;
     schema(name: string): Promise<any>;
+    schemas(names: string[]): Promise<any[]>;
     tuidGet(name: string, id: number): Promise<any>;
     tuidGetAll(name: string): Promise<any[]>;
     tuidSave(name: string, params: any): Promise<any>;

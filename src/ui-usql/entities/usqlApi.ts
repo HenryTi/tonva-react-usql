@@ -30,6 +30,10 @@ export class UsqlApi {
         return await this.api.get('schema/' + name, undefined);
     }
 
+    async schemas(names:string[]):Promise<any[]> {
+        return await this.api.post('schema', names);
+    }
+
     async tuidGet(name:string, id:number):Promise<any> {
         return await this.api.get('tuid/' + name + '/' + id, {});
     }

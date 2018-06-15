@@ -47,7 +47,9 @@ export class AppUI {
                     try {
                         console.log('try urlDebug %s', urlDebug);
                         if (!lud.endsWith('/')) lud += '/';
-                        await fetch(lud + 'hello');
+                        let resp = await fetch(lud + 'hello');
+                        let text = await resp.text();
+                        console.log('respond from %s: %s', urlDebug, text);
                         url = urlDebug;
                         console.log('urlDebug %s works ok', urlDebug);
                     }

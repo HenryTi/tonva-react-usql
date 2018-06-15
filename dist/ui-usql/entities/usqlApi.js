@@ -35,6 +35,11 @@ export class UsqlApi {
             return yield this.api.get('schema/' + name, undefined);
         });
     }
+    schemas(names) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.api.post('schema', names);
+        });
+    }
     tuidGet(name, id) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.api.get('tuid/' + name + '/' + id, {});
