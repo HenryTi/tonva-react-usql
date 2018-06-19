@@ -130,6 +130,7 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.waitingIds.length === 0)
                 return;
+            yield this.loadSchema();
             let tuids = yield this.tvApi.tuidIds(this.name, this.waitingIds);
             for (let tuid of tuids) {
                 if (this.cacheValue(tuid) === false)
@@ -188,7 +189,7 @@ export class Tuid extends Entity {
     }
     posArr(arr, owner, id, order) {
         return __awaiter(this, void 0, void 0, function* () {
-            return;
+            return yield this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
         });
     }
     slaveSave(slave, first, masterId, id, props) {

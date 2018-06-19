@@ -107,6 +107,8 @@ export class UsqlApi {
     tuidIds(name, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (ids === undefined || ids.length === 0)
+                    return [];
                 let ret = yield this.api.post('tuidids/' + name, ids);
                 return ret;
             }

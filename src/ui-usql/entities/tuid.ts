@@ -107,6 +107,7 @@ export class Tuid extends Entity {
     }
     async cacheIds():Promise<void> {
         if (this.waitingIds.length === 0) return;
+        await this.loadSchema();
         let tuids = await this.tvApi.tuidIds(this.name, this.waitingIds);
         for (let tuid of tuids) {
             if (this.cacheValue(tuid) === false) continue;
@@ -146,7 +147,7 @@ export class Tuid extends Entity {
         return await this.tvApi.tuidArrSave(this.name, arr, owner, params);
     }
     async posArr(arr:string, owner:number, id:number, order:number) {
-        return 
+        return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
     }
     async slaveSave(slave:string, first:number, masterId:number, id:number, props:any) {
         let params = _.clone(props);

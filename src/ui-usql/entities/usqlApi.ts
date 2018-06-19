@@ -86,6 +86,7 @@ export class UsqlApi {
 
     async tuidIds(name:string, ids:number[]):Promise<any[]> {
         try {
+            if (ids === undefined || ids.length === 0) return [];
             let ret = await this.api.post('tuidids/' + name, ids);
             return ret;
         }
