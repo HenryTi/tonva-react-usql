@@ -23,6 +23,10 @@ export declare class Tuid extends Entity {
     loadAll(): Promise<any[]>;
     save(id: number, props: any): Promise<any>;
     search(key: string, pageStart: string | number, pageSize: number): Promise<any>;
+    loadArr(arr: string, owner: number, id: number): Promise<any>;
+    loadArrAll(owner: number): Promise<any[]>;
+    saveArr(arr: string, owner: number, id: number, props: any): Promise<any>;
+    posArr(arr: string, owner: number, id: number, order: number): Promise<void>;
     slaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;
     slaves(slave: string, masterId: number, order: number, pageSize: any): Promise<any[]>;
     private ids(idArr);

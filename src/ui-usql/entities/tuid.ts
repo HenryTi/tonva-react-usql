@@ -48,7 +48,7 @@ export class Tuid extends Entity {
             this.moveToHead(id);
             return;
         }
-        this.entities.cacheTuids(defer===true?100:20);
+        this.entities.cacheTuids(defer===true?70:20);
         this.cache.set(key, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
@@ -132,6 +132,21 @@ export class Tuid extends Entity {
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {
         let ret = await this.tvApi.tuidSearch(this.name, key, pageStart, pageSize);
         return ret;
+    }
+    async loadArr(arr:string, owner:number, id:number):Promise<any> {
+        if (id === undefined || id === 0) return;
+        return await this.tvApi.tuidArrGet(this.name, arr, owner, id);
+    }
+    async loadArrAll(owner:number):Promise<any[]> {
+        return this.all = await this.tvApi.tuidGetAll(this.name);
+    }
+    async saveArr(arr:string, owner:number, id:number, props:any) {
+        let params = _.clone(props);
+        params["$id"] = id;
+        return await this.tvApi.tuidArrSave(this.name, arr, owner, params);
+    }
+    async posArr(arr:string, owner:number, id:number, order:number) {
+        return 
     }
     async slaveSave(slave:string, first:number, masterId:number, id:number, props:any) {
         let params = _.clone(props);

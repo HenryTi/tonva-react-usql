@@ -65,6 +65,29 @@ export class UsqlApi {
             return ret;
         });
     }
+    tuidArrGet(name, arr, owner, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.api.get('tuid-arr/' + name + '/' + owner + '/' + arr + '/' + id, {});
+        });
+    }
+    tuidArrGetAll(name, arr, owner) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.api.get('tuid-arr-all/' + name + '/' + owner + '/' + arr + '/', {});
+        });
+    }
+    tuidArrSave(name, arr, owner, params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.api.post('tuid-arr/' + name + '/' + owner + '/' + arr + '/', params);
+        });
+    }
+    tuidArrPos(name, arr, owner, id, order) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.api.post('tuid-arr-pos/' + name + '/' + owner + '/' + arr + '/', {
+                id: id,
+                $order: order
+            });
+        });
+    }
     tuidSlaveSave(name, slave, params) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.api.post('tuid-slave/' + name + '/' + slave, params);

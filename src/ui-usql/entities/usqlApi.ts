@@ -54,6 +54,22 @@ export class UsqlApi {
         });
         return ret;
     }
+    async tuidArrGet(name:string, arr:string, owner:number, id:number):Promise<any> {
+        return await this.api.get('tuid-arr/' + name + '/' + owner + '/' + arr + '/' + id, {});
+    }
+    async tuidArrGetAll(name:string, arr:string, owner:number):Promise<any[]> {
+        return await this.api.get('tuid-arr-all/' + name + '/' + owner + '/' + arr + '/', {});
+    }
+    async tuidArrSave(name:string, arr:string, owner:number, params):Promise<any> {
+        return await this.api.post('tuid-arr/' + name + '/' + owner + '/' + arr + '/', params);
+    }
+    async tuidArrPos(name:string, arr:string, owner:number, id:number, order:number):Promise<any> {
+        return await this.api.post('tuid-arr-pos/' + name + '/' + owner + '/' + arr + '/', {
+            id: id,
+            $order: order
+        });
+    }
+
     async tuidSlaveSave(name:string, slave, params):Promise<any> {
         return await this.api.post('tuid-slave/' + name + '/' + slave, params);
     }
