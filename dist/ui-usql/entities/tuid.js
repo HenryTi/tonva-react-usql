@@ -24,6 +24,43 @@ export class Tuid extends Entity {
         this.cache = observable.map({}, { deep: false }); // 已经缓冲的
         this.all = undefined;
     }
+    setSchema(schema) {
+        super.setSchema(schema);
+        let { slaves } = schema;
+        if (slaves === undefined)
+            return;
+        this.slaves = {};
+        for (let i in slaves) {
+            let slave = slaves[i];
+            this.slaves[i] = this.buildSlave(slave);
+        }
+    }
+    buildSlave(slave) {
+        let { tuid, book, page, pageSlave, all, add, del } = slave;
+        let tuidTuid = this.entities.tuid(tuid.name);
+        tuidTuid.setSchema(tuid);
+        let bookBook = this.entities.book(book.name);
+        bookBook.setSchema(book);
+        let pageQuery = this.entities.query(page.name);
+        pageQuery.setSchema(page);
+        let pageSlaveQuery = this.entities.query(pageSlave.name);
+        pageSlaveQuery.setSchema(pageSlave);
+        let allQuery = this.entities.query(all.name);
+        allQuery.setSchema(all);
+        let addAction = this.entities.action(add.name);
+        addAction.setSchema(add);
+        let delAction = this.entities.action(del.name);
+        delAction.setSchema(del);
+        return {
+            tuid: tuidTuid,
+            book: bookBook,
+            page: pageQuery,
+            pageSlave: pageSlaveQuery,
+            all: allQuery,
+            add: addAction,
+            del: delAction,
+        };
+    }
     moveToHead(id) {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
@@ -192,18 +229,18 @@ export class Tuid extends Entity {
             return yield this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
         });
     }
-    slaveSave(slave, first, masterId, id, props) {
+    bindSlaveSave(slave, first, masterId, id, props) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = _.clone(props);
             params["$master"] = masterId;
             params["$first"] = first;
             params["$id"] = id;
-            return yield this.tvApi.tuidSlaveSave(this.name, slave, params);
+            return yield this.tvApi.tuidBindSlaveSave(this.name, slave, params);
         });
     }
-    slaves(slave, masterId, order, pageSize) {
+    bindSlaves(slave, masterId, order, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.tvApi.tuidSlaves(this.name, slave, masterId, order, pageSize);
+            return yield this.tvApi.tuidBindSlaves(this.name, slave, masterId, order, pageSize);
         });
     }
     // cache放到Tuid里面之后，这个函数不再需要公开调用了

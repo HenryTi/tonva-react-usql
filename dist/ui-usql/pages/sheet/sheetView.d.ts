@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { SheetViewProps } from '../../ui';
 export declare class SheetView extends React.Component<SheetViewProps> {

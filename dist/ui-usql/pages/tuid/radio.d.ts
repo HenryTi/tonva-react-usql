@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { TuidInputProps } from '../../ui';
 export interface RadioTuidInputState {
@@ -12,5 +11,5 @@ export declare class RadioTuidInput extends React.Component<TuidInputProps, Radi
     componentWillMount(): Promise<void>;
     onClick(evt: React.ChangeEvent<any>): void;
     render(): JSX.Element;
-    private content(input);
+    private content;
 }

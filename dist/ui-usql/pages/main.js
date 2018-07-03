@@ -23,6 +23,8 @@ export class Main extends React.Component {
     }
     entityRender(ui, index) {
         let { caption } = ui;
+        if (ui.entity.sys === true)
+            return;
         return ui.link ?
             React.createElement(ui.link, { ui: ui }) :
             React.createElement("div", { className: "px-3 py-2" }, caption);

@@ -8,7 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Api } from 'tonva-tools';
+import { Api, nav } from 'tonva-tools';
+import { apiErrors } from '../apiErrors';
 import { Entities } from '../entities';
 import { ActionUI } from './actionUI';
 import { QueryUI } from './queryUI';
@@ -49,8 +50,17 @@ export class EntitiesUI {
     }
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.loadEntities();
-            this.buildUI();
+            try {
+                yield this.entities.loadEntities();
+                this.buildUI();
+            }
+            catch (err) {
+                if (err.no === apiErrors.databaseNotExists) {
+                    alert(err.message + '\nlogout');
+                    nav.logout();
+                    //debugger;
+                }
+            }
         });
     }
     buildUI() {
@@ -133,7 +143,8 @@ class EntitySetBuilder {
         let ret = { caption: undefined, icon: undefined, coll: {}, idColl: {}, list: [] };
         let { coll, idColl, list } = ret;
         for (let entity of this.entityArr) {
-            let { id, name } = entity;
+            let { id, name, sys } = entity;
+            //if (sys === true) continue;
             let mapper1 = getMapper(name, this.d);
             let mapper2 = getMapper(name, this.m);
             let u = this.buildUI(entity, mapper1 || {}, mapper2 || {});
@@ -266,6 +277,7 @@ class TuidSetBuilder extends EntitySetBuilder {
         ret.editPage = mapper2.editPage || mapper1.editPage;
         ret.listPage = this.mergeListPage(mapper2.listPage, mapper1.listPage);
         ret.slaveInput = mapper2.slaveInput || mapper1.slaveInput;
+        ret.bindSlaveInput = mapper2.bindSlaveInput || mapper1.bindSlaveInput;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
         return ret;
     }

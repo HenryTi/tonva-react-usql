@@ -66,14 +66,17 @@ export class AppUI {
 export class MainPage extends React.Component {
     entityRender(ui, index) {
         let { caption } = ui;
+        if (ui.entity.sys === true)
+            return;
         return ui.link ?
             React.createElement(ui.link, { ui: ui }) :
             React.createElement("div", { className: "px-3 py-2" }, caption);
     }
     entityClick(ui) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield ui.entity.loadSchema();
-            nav.push(React.createElement(ui.mainPage, { ui: ui }));
+            yield ui.showMain();
+            //await ui.entity.loadSchema();
+            //nav.push(<ui.mainPage ui={ui} />);
         });
     }
     renderList(entitySet, caption) {

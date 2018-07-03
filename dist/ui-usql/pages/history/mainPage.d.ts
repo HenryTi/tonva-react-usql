@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { SubmitResult } from 'tonva-react-form';
 import { HistoryUIProps } from '../../ui';

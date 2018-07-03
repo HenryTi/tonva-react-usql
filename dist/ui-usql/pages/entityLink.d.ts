@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { Entity } from '../entities';
 import { EntityUIProps, EntityUI } from '../ui';

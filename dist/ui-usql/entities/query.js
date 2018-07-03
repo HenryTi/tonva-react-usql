@@ -18,7 +18,6 @@ export class Query extends Entity {
     constructor() {
         super(...arguments);
         this.queryApiName = 'page';
-        this.list = observable.array([], { deep: false });
     }
     /*
     protected lowerCaseSchema() {
@@ -37,8 +36,7 @@ export class Query extends Entity {
         this.pageSize = size;
         this.params = params;
         this.more = false;
-        this.loaded = false;
-        this.list.clear();
+        this.list = undefined;
     }
     get hasMore() { return this.more; }
     loadPage() {
@@ -61,6 +59,7 @@ export class Query extends Entity {
             }
             let res = yield this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize + 1, this.params);
             let data = yield this.unpackReturns(res);
+            this.list = observable.array([], { deep: false });
             let page = data['$page'];
             if (page !== undefined) {
                 if (page.length > this.pageSize) {
@@ -75,14 +74,14 @@ export class Query extends Entity {
                 }
                 this.list.push(...page);
             }
-            this.loaded = true;
+            //this.loaded = true;
         });
     }
     page(params, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let res = yield this.api.queryPage(this.queryApiName, this.name, pageStart, pageSize + 1, params);
             let data = yield this.unpackReturns(res);
-            return data;
+            return data.$page; // as any[];
         });
     }
     query(params) {
@@ -95,5 +94,5 @@ export class Query extends Entity {
 }
 __decorate([
     observable
-], Query.prototype, "loaded", void 0);
+], Query.prototype, "list", void 0);
 //# sourceMappingURL=query.js.map

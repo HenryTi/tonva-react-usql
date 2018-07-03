@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { SubmitResult } from 'tonva-react-form';
 import { TuidUIProps } from '../../ui';
@@ -11,11 +10,12 @@ export interface EditProps {
 export declare class EditPage extends React.Component<TuidUIProps & EditProps> {
     private form;
     private formRows;
-    private slaveUIs;
+    private bindSlaveUIs;
     constructor(props: any);
     submit(values: any): Promise<SubmitResult | undefined>;
     next(): void;
     finish(): void;
+    private renderSlaveInputs;
     render(): JSX.Element;
-    private buildFormView();
+    private buildFormView;
 }

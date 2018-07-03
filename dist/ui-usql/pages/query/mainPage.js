@@ -52,15 +52,9 @@ let QueryResultPage = class QueryResultPage extends React.Component {
     render() {
         let { ui, data } = this.props;
         let { entity, caption } = ui;
-        let { name, loaded, list } = entity;
-        let content;
-        if (loaded === true) {
-            content = React.createElement(List, { items: list, item: {} });
-        }
-        else {
-            content = React.createElement("div", null, "...");
-        }
-        return React.createElement(Page, { header: caption || name }, content);
+        let { name, list } = entity;
+        return React.createElement(Page, { header: caption || name },
+            React.createElement(List, { items: list, item: {} }));
     }
 };
 QueryResultPage = __decorate([

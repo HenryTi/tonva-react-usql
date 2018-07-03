@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { SubmitResult } from 'tonva-react-form';
 import { Entity } from '../../entities';
@@ -11,8 +10,8 @@ export interface MainDetailsViewProps {
 }
 export declare class MainDetailsView<T extends Entity> extends React.Component<MainDetailsViewProps> {
     constructor(props: any);
-    private detailRow(item, index);
-    private buildMainRows();
+    private detailRow;
+    private buildMainRows;
     onSubmit(values: any): Promise<SubmitResult>;
     render(): JSX.Element;
 }

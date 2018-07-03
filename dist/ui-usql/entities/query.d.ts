@@ -8,9 +8,8 @@ export declare class Query extends Entity {
     private more;
     private startField;
     protected queryApiName: string;
-    loaded: boolean;
     list: IObservableArray;
-    private unpackReturns(data);
+    private unpackReturns;
     resetPage(size: number, params: any): void;
     readonly hasMore: boolean;
     loadPage(): Promise<void>;

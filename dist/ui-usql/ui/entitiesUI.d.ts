@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Entities, Entity, Tuid, Action, Sheet, Query, Book, History } from '../entities';
 import { EntitiesMapper, FieldMappers, TuidInput } from './mapper';
 import { EntityUI } from './entityUI';

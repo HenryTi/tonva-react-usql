@@ -19,9 +19,9 @@ export class EditPage extends React.Component {
         this.next = this.next.bind(this);
         this.finish = this.finish.bind(this);
         let { ui } = this.props;
-        let slaves = ui.entity.schema.slaves;
-        if (slaves !== undefined)
-            this.slaveUIs = slaves.map(s => ui.entitiesUI.tuid.coll[s]);
+        let bindSlaves = ui.entity.schema.bindSlaves;
+        if (bindSlaves !== undefined)
+            this.bindSlaveUIs = bindSlaves.map(s => ui.entitiesUI.tuid.coll[s]);
         this.state = { item: this.props.data || {} };
         this.buildFormView();
     }
@@ -41,7 +41,7 @@ export class EditPage extends React.Component {
             }
             else {
                 let first = 0;
-                res = yield master.entity.slaveSave(ui.entity.name, first, masterId, id, values);
+                res = yield master.entity.bindSlaveSave(ui.entity.name, first, masterId, id, values);
             }
             let retId = res.id;
             if (retId < 0) {
@@ -81,6 +81,18 @@ export class EditPage extends React.Component {
     finish() {
         nav.pop(2);
     }
+    renderSlaveInputs() {
+        let { ui, data } = this.props;
+        let { slaves } = ui;
+        if (slaves === undefined)
+            return;
+        let arr = [];
+        for (let i in slaves) {
+            let s = slaves[i];
+            arr.push(React.createElement(ui.slaveInput, { key: s.name, ui: ui, slave: s, masterId: data.id }));
+        }
+        return React.createElement("div", { className: "px-3 py-1 mb-3 bg-ligh border-bottom border-info" }, arr);
+    }
     render() {
         let { ui, data } = this.props;
         let { entity, caption, entitiesUI } = ui;
@@ -92,14 +104,18 @@ export class EditPage extends React.Component {
         }
         else {
             header = caption + '资料';
-            if (this.slaveUIs !== undefined) {
-                slaveInputs = React.createElement("div", { className: "px-3 py-1 mb-3 bg-ligh border-bottom border-info" }, this.slaveUIs.map(s => {
-                    return React.createElement(ui.slaveInput, { key: s.entity.name, ui: ui, slave: s, masterId: data.id });
-                }));
+            /*
+            if (this.bindSlaveUIs !== undefined) {
+                slaveInputs = <div className="px-3 py-1 mb-3 bg-ligh border-bottom border-info">
+                    {this.bindSlaveUIs.map(s => {
+                        return <ui.slaveInput key={s.entity.name} ui={ui} bindSlave={s} masterId={data.id} />
+                    })}
+                </div>;
             }
+            */
         }
         return React.createElement(Page, { header: header },
-            slaveInputs,
+            this.renderSlaveInputs(),
             React.createElement(TonvaForm
             //context={entitiesUI}
             , { 

@@ -18,4 +18,8 @@ export declare abstract class EntityUI<E extends Entity> {
     protected mapFields(schemaFields: any[]): any[];
     link?: UIComponent<E, EntityUI<E>>;
     mainPage?: UIComponent<E, EntityUI<E>>;
+    showMain(): Promise<void>;
+    data: any;
+    ret: any;
+    submit(): Promise<void>;
 }

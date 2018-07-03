@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { TuidUIProps } from '../../ui';
 export declare class SearchPage extends React.Component<TuidUIProps> {

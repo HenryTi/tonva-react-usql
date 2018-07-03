@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { TuidInputProps } from '../../ui';
 export interface TuidInputState {
@@ -14,6 +13,6 @@ export declare class GeneralTuidInput extends React.Component<TuidInputProps, Tu
     onClick(): void;
     inputOnBlur(evt: any): void;
     render(): JSX.Element;
-    private content(input);
-    private idContent(caption, id);
+    private content;
+    private idContent;
 }

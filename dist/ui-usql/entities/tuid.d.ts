@@ -1,5 +1,8 @@
 import { Entity } from './entity';
 import { Entities } from './entities';
+import { Book } from './book';
+import { Query } from './query';
+import { Action } from './action';
 export declare class Tuid extends Entity {
     private queue;
     private waitingIds;
@@ -8,7 +11,12 @@ export declare class Tuid extends Entity {
     proxies: {
         [name: string]: Tuid;
     };
-    private moveToHead(id);
+    slaves: {
+        [name: string]: Slave;
+    };
+    setSchema(schema: any): void;
+    private buildSlave;
+    private moveToHead;
     setItemObservable(): void;
     buidProxies(parts: string[]): void;
     setProxies(entities: Entities): void;
@@ -17,7 +25,7 @@ export declare class Tuid extends Entity {
     cacheItem(id: number, item: any): void;
     useId(id: number, defer?: boolean): void;
     proxied(name: string, id: number): Promise<any>;
-    private cacheValue(val);
+    private cacheValue;
     cacheIds(): Promise<void>;
     load(id: number): Promise<any>;
     loadAll(): Promise<any[]>;
@@ -27,7 +35,16 @@ export declare class Tuid extends Entity {
     loadArrAll(owner: number): Promise<any[]>;
     saveArr(arr: string, owner: number, id: number, props: any): Promise<any>;
     posArr(arr: string, owner: number, id: number, order: number): Promise<any>;
-    slaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;
-    slaves(slave: string, masterId: number, order: number, pageSize: any): Promise<any[]>;
-    private ids(idArr);
+    bindSlaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;
+    bindSlaves(slave: string, masterId: number, order: number, pageSize: any): Promise<any[]>;
+    private ids;
+}
+export interface Slave {
+    tuid: Tuid;
+    book: Book;
+    page: Query;
+    pageSlave: Query;
+    all: Query;
+    add: Action;
+    del: Action;
 }

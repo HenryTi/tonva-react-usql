@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { SheetUIProps } from '../../ui';
 export declare class SheetNew extends React.Component<SheetUIProps> {

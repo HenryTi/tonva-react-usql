@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { History } from '../entities';
 import { EntityUI } from './entityUI';
 export declare class HistoryUI extends EntityUI<History> {

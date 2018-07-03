@@ -1,0 +1,1 @@
+{"version":3,"file":"vmQuery.js","sourceRoot":"","sources":["../../../../src/ui-usql/vm/query/vmQuery.tsx"],"names":[],"mappings":"AAKA,OAAO,EAAE,QAAQ,EAAE,UAAU,EAAE,MAAM,WAAW,CAAC;AAGjD,MAAM,cAAwB,SAAQ,QAAQ;IAC1C,YAAY,KAAW,EAAE,KAAW;QAChC,KAAK,CAAC,KAAK,EAAE,KAAK,CAAC,CAAC;IACxB,CAAC;IAID,IAAI,IAAI,KAAI,OAAO,UAAU,CAAC,cAAc,EAAE,QAAQ,CAAC,CAAA,CAAA,CAAC;CAC3D"}

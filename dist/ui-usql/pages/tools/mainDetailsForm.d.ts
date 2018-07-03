@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { SheetUI } from '../../ui';
 import { Detail, MainDetails } from './model';
@@ -14,10 +13,10 @@ export declare class MainDetailsForm extends React.Component<MainDetailsFormProp
     private values;
     private formRows;
     constructor(props: any);
-    private onSubmit(values);
+    private onSubmit;
     onDetailEdit(detail: Detail, row: any): void;
     onDetailSubmit(detail: Detail, inValues: any, values: any): void;
     onNew(detail: Detail): void;
-    private buildMainRows();
+    private buildMainRows;
     render(): JSX.Element;
 }

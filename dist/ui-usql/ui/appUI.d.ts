@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import * as React from 'react';
 import { EntitiesMapper } from './mapper';
 import { EntitiesUI } from './entitiesUI';
@@ -17,9 +16,9 @@ export declare class AppUI {
 export declare class MainPage extends React.Component<{
     appUI: AppUI;
 }> {
-    private entityRender(ui, index);
-    private entityClick<E, U>(ui);
-    private renderList<E>(entitySet, caption);
-    private logout();
+    private entityRender;
+    private entityClick;
+    private renderList;
+    private logout;
     render(): JSX.Element;
 }

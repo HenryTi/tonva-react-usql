@@ -12,15 +12,23 @@ export class Entity {
         this.api = api;
         this.name = name;
         this.id = id;
+        this.sys = this.name.indexOf('$') >= 0;
     }
     get tvApi() { return this.api; } //{return this.entities.tvApi;}
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.schema !== undefined)
                 return;
-            this.schema = yield this.api.schema(this.name);
-            this.entities.schemaRefTuids(this.schema.tuids);
+            this.setSchema(yield this.api.schema(this.name));
         });
+    }
+    setSchema(schema) {
+        if (schema === undefined)
+            return;
+        if (this.schema !== undefined)
+            return;
+        this.schema = schema;
+        this.entities.schemaRefTuids(schema.tuids);
     }
 }
 //# sourceMappingURL=entity.js.map

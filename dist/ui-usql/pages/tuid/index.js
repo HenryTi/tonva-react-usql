@@ -4,6 +4,7 @@ import { ListPage } from './listPage';
 import { GeneralTuidInput } from './input';
 import { EntityLink } from '../entityLink';
 import { SlaveInput } from './slaveInput';
+import { BindSlaveInput } from './bindSlaveInput';
 export * from './input';
 export * from './dropDown';
 export * from './radio';
@@ -19,6 +20,7 @@ export const mapperContainer = {
             component: GeneralTuidInput,
         },
         slaveInput: SlaveInput,
+        bindSlaveInput: BindSlaveInput,
     }
 };
 //# sourceMappingURL=index.js.map
