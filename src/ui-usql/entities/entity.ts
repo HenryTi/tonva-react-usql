@@ -4,6 +4,7 @@ import {Entities} from './entities';
 export abstract class Entity {
     protected entities: Entities;
     protected api:UsqlApi;
+    sys?: boolean;
     readonly name: string;
     readonly id: number;
 
@@ -12,16 +13,24 @@ export abstract class Entity {
         this.api = api;
         this.name = name;
         this.id = id;
+        this.sys = this.name.indexOf('$') >= 0;
     }
 
     public schema: any;
+    public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
     protected get tvApi() {return this.api;} //{return this.entities.tvApi;}
 
     public async loadSchema():Promise<void> {
         if (this.schema !== undefined) return;
-        this.schema = await this.api.schema(this.name);
-        this.entities.schemaRefTuids(this.schema.tuids);
+        this.setSchema(await this.api.schema(this.name));
+    }
+
+    public setSchema(schema:any) {
+        if (schema === undefined) return;
+        if (this.schema !== undefined) return;
+        this.schema = schema;
+        this.entities.schemaRefTuids(schema.tuids);
     }
     /*
     protected lowerCaseSchema() {}

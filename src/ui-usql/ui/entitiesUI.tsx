@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import {CenterApi, Api} from 'tonva-tools';
+import {CenterApi, Api, nav} from 'tonva-tools';
+import {apiErrors} from '../apiErrors';
 import {Entities, Entity, Tuid, Action, Sheet, Query, Book, History} from '../entities';
 import {EntitiesMapper, FieldMapper, FieldMappers, MapperContainer, 
     EntityMapper, ActionMapper, QueryMapper, SheetMapper, TuidMapper, TuidInput,
@@ -11,7 +12,7 @@ import {EntityUI} from './entityUI';
 import {ActionUI} from './actionUI';
 import {QueryUI} from './queryUI';
 import {SheetUI} from './sheetUI';
-import {TuidUI, TuidUIListPage} from './tuidUI';
+import {TuidUI, TuidUIListPage, SlaveUI} from './tuidUI';
 import {BookUI} from './bookUI';
 import {HistoryUI} from './historyUI';
 
@@ -54,8 +55,17 @@ export class EntitiesUI {
     api: string;
 
     async loadEntities() {
-        await this.entities.loadEntities();
-        this.buildUI();
+        try {
+            await this.entities.loadEntities();
+            this.buildUI();
+        }
+        catch (err) {
+            if (err.no === apiErrors.databaseNotExists) {
+                alert(err.message + '\nlogout');
+                nav.logout();
+                //debugger;
+            }
+        }
     }
     /*
     close() {
@@ -166,7 +176,8 @@ abstract class EntitySetBuilder<E extends Entity, U extends EntityUI<E>, T exten
         let ret: EntitySet<E, U> = {caption:undefined, icon:undefined, coll:{}, idColl:{}, list:[]};
         let {coll, idColl, list} = ret;
         for (let entity of this.entityArr) {
-            let {id, name} = entity;
+            let {id, name, sys} = entity;
+            //if (sys === true) continue;
             let mapper1:T = getMapper(name, this.d);
             let mapper2:T = getMapper(name, this.m);
             let u = this.buildUI(entity, mapper1 || {} as T, mapper2 || {} as T);
@@ -282,6 +293,7 @@ class SheetSetBuilder extends EntitySetBuilder<Sheet, SheetUI, SheetMapper> {
                 ret.detialFaces = _.merge({}, nfm1, nfm2);
             }
         }
+        
         ret.view = mapper2.view || mapper1.view;
         ret.archivedList = mapper2.archivedList || mapper1.archivedList;
         ret.archivedSheet = mapper2.archivedSheet || mapper1.archivedSheet;
@@ -302,6 +314,7 @@ class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUI, TuidMapper> {
         ret.editPage = mapper2.editPage || mapper1.editPage;
         ret.listPage = this.mergeListPage(mapper2.listPage, mapper1.listPage);
         ret.slaveInput = mapper2.slaveInput || mapper1.slaveInput;
+        ret.bindSlaveInput = mapper2.bindSlaveInput || mapper1.bindSlaveInput;
         ret.input = _.merge({}, mapper1.input, mapper2.input);
         return ret;
     }

@@ -1,5 +1,6 @@
+import * as React from 'react';
 import * as _ from 'lodash';
-import {wsBridge} from 'tonva-tools';
+import {wsBridge, nav} from 'tonva-tools';
 import { UIComponent, FieldMappers, FieldMapper, FieldFaces, FieldFace, TuidInput } from './mapper';
 import { EntitiesUI, EntitySet } from './entitiesUI';
 import { Entity } from '../entities';
@@ -88,4 +89,16 @@ export abstract class EntityUI<E extends Entity> {
 
     link?: UIComponent<E, EntityUI<E>>;
     mainPage?: UIComponent<E, EntityUI<E>>;
+
+    async showMain():Promise<void> {
+        await this.entity.loadSchema();
+        nav.push(<this.mainPage ui={this} />);
+    }
+
+    data: any;          // 当前屏幕正在输入的参数，页面可以绑定
+    ret: any;           // submit之后返回的数据，页面可以绑定
+    async submit():Promise<void> {
+    }
+
+
 }

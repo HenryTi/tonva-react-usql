@@ -13,8 +13,9 @@ export class SlaveInput extends React.Component<TuidUISlaveProps> {
         nav.push(<SlaveList {...this.props} />);
     }
     render() {
+        let {slave, ui} = this.props;
         return <Button className="mr-3" outline={true} color="primary" onClick={this.click}>
-            从属{this.props.slave.caption}
+            从属{slave.tuid.caption}
         </Button>;
     }
 }

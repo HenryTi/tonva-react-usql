@@ -3,6 +3,9 @@ import * as _ from 'lodash';
 import {Entity} from './entity';
 import {Entities} from './entities';
 import { debug } from 'util';
+import { Book } from './book';
+import { Query } from './query';
+import { Action } from './action';
 
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
@@ -10,7 +13,46 @@ export class Tuid extends Entity {
     private waitingIds: number[] = [];          // 等待loading的
     private cache = observable.map({}, {deep: false});    // 已经缓冲的
     @observable all:any[] = undefined;
-    proxies: {[name:string]: Tuid};
+    proxies: {[name:string]: Tuid};    
+    slaves:{[name:string]:Slave};
+
+    public setSchema(schema:any) {
+        super.setSchema(schema);
+        let {slaves} = schema;
+        if (slaves === undefined) return;
+        this.slaves = {};
+        for (let i in slaves) {
+            let slave = slaves[i];
+            this.slaves[i] = this.buildSlave(slave);
+        }
+    }
+
+    private buildSlave(slave:any):Slave {
+        let {tuid, book, page, pageSlave, all, add, del} = slave;
+        let tuidTuid:Tuid = this.entities.tuid(tuid.name);
+        tuidTuid.setSchema(tuid);
+        let bookBook:Book = this.entities.book(book.name);
+        bookBook.setSchema(book);
+        let pageQuery:Query = this.entities.query(page.name);
+        pageQuery.setSchema(page);
+        let pageSlaveQuery:Query = this.entities.query(pageSlave.name);
+        pageSlaveQuery.setSchema(pageSlave);
+        let allQuery:Query = this.entities.query(all.name);
+        allQuery.setSchema(all);
+        let addAction:Action = this.entities.action(add.name);
+        addAction.setSchema(add);
+        let delAction:Action = this.entities.action(del.name);
+        delAction.setSchema(del);
+        return {
+            tuid: tuidTuid,
+            book: bookBook,
+            page: pageQuery,
+            pageSlave: pageSlaveQuery,
+            all: allQuery,
+            add: addAction,
+            del: delAction,
+        };
+    }
 
     private moveToHead(id:number) {
         let index = this.queue.findIndex(v => v === id);
@@ -149,19 +191,29 @@ export class Tuid extends Entity {
     async posArr(arr:string, owner:number, id:number, order:number) {
         return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
     }
-    async slaveSave(slave:string, first:number, masterId:number, id:number, props:any) {
+    async bindSlaveSave(slave:string, first:number, masterId:number, id:number, props:any) {
         let params = _.clone(props);
         params["$master"] = masterId;
         params["$first"] = first;
         params["$id"] = id;
-        return await this.tvApi.tuidSlaveSave(this.name, slave, params);
+        return await this.tvApi.tuidBindSlaveSave(this.name, slave, params);
     }
-    async slaves(slave:string, masterId:number, order:number, pageSize):Promise<any[]> {
-        return await this.tvApi.tuidSlaves(this.name, slave, masterId, order, pageSize);
+    async bindSlaves(slave:string, masterId:number, order:number, pageSize):Promise<any[]> {
+        return await this.tvApi.tuidBindSlaves(this.name, slave, masterId, order, pageSize);
     }
     
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
     private async ids(idArr:number[]) {
         return await this.tvApi.tuidIds(this.name, idArr);
     }
+}
+
+export interface Slave {
+    tuid: Tuid,
+    book: Book;
+    page: Query;
+    pageSlave: Query;
+    all: Query;
+    add: Action;
+    del: Action;
 }

@@ -97,16 +97,9 @@ class HistoryResultPage extends React.Component<HistoryUIProps> {
     render() {
         let {ui, data} = this.props;
         let {entity, caption} = ui;
-        let {name, loaded, list} = entity;
-        let content;
-        if (loaded === true) {
-            content = <List items={list} item={{render:this.renderRow, onClick:this.onRowClick}} />;
-        }
-        else {
-            content = <div>...</div>;
-        }
+        let {name, list} = entity;
         return <Page header={caption || name}>
-            {content}
+            <List items={list} item={{render:this.renderRow, onClick:this.onRowClick}} />
         </Page>;
     }
 }

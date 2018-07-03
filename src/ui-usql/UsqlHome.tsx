@@ -1,9 +1,12 @@
 import * as React from 'react';
+import { observable } from 'mobx';
+import { observer } from 'mobx-react';
 import {List, Muted} from 'tonva-react-form';
 import {WSChannel, nav, Page} from 'tonva-tools';
 //import {pageMapper} from './pages';
 //import {pageMapper as 货主Mapper} from './货主';
 import {AppUI, MainPage, EntitiesMapper} from './ui';
+import {VmApp} from './vm';
 
 /*
 const tonvaApp = process.env.REACT_APP_TONVA_APP;
@@ -16,38 +19,35 @@ const appUI = new AppUI(tonvaApp, {
 export interface UsqlHomeProps {
     appName: string;
     caption?: string;
+    ui?: any;
     uiMappers?:{[api:string]: EntitiesMapper};
 }
 
-export interface State {
-    uiLoaded: boolean;
-}
-export class UsqlHome extends React.Component<UsqlHomeProps, State> {
+@observer
+export class UsqlHome extends React.Component<UsqlHomeProps> {
     private appUI:AppUI;
+    private vmApp:VmApp;
+    @observable private view = <Page><div className="m-3">waiting...</div></Page>;
 
     constructor(props) {
         super(props);
-        let {appName, caption, uiMappers} = this.props;
+        let {appName, caption, ui, uiMappers} = this.props;
         this.appUI = new AppUI(appName, caption,  uiMappers);
         this.state = {
             uiLoaded: false
         }
+        this.vmApp = new VmApp(appName, ui);
     }
     async componentDidMount() {
-        //ws.setToken('aaa');
-        //await ws.connect();
-        await this.appUI.load();
-        this.setState({
-            uiLoaded: true,
-        });
-
+        //await this.appUI.load();
+        //this.view = <MainPage appUI={this.appUI} />;
+        await this.vmApp.load();
+        this.view = this.vmApp.renderView();
     }
     componentWillUnmount() {
         //this.appUI.close();
     }
     render() {
-        let {uiLoaded} = this.state;
-        if (uiLoaded === false) return <Page>loading UI ...</Page>;
-        return <MainPage appUI={this.appUI} />;
+        return this.view
     }
 }

@@ -18,8 +18,9 @@ export class Main extends React.Component<EntitiesUIProps> {
 */
     }
     
-    private entityRender(ui: TuidUI, index: number): JSX.Element {
+    private entityRender(ui: EntityUI<any>, index: number): JSX.Element {
         let {caption} = ui;
+        if (ui.entity.sys === true) return;
         return ui.link?
             <ui.link ui={ui} />:
             <div className="px-3 py-2">{caption}</div>;

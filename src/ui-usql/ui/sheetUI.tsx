@@ -52,5 +52,6 @@ export class SheetUI extends EntityUI<Sheet> {
             details: details,
         }
     }
-}
 
+    
+}

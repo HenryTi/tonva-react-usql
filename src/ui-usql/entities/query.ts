@@ -10,8 +10,8 @@ export class Query extends Entity {
     private more: boolean;
     private startField: Field;
     protected queryApiName = 'page';
-    @observable loaded: boolean;
-    list:IObservableArray = observable.array([], {deep: false});
+    //@observable loaded: boolean;
+    @observable list:IObservableArray; // = observable.array([], {deep: false});
 
     /*
     protected lowerCaseSchema() {
@@ -29,8 +29,7 @@ export class Query extends Entity {
         this.pageSize = size;
         this.params = params;
         this.more = false;
-        this.loaded = false;
-        this.list.clear();
+        this.list = undefined;
     }
     get hasMore() {return this.more;}
     async loadPage():Promise<void> {
@@ -48,6 +47,7 @@ export class Query extends Entity {
         }
         let res = await this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize+1, this.params);
         let data = await this.unpackReturns(res);
+        this.list = observable.array([], {deep: false});
         let page = data['$page'] as any[];
         if (page !== undefined) {
             if (page.length > this.pageSize) {
@@ -62,13 +62,13 @@ export class Query extends Entity {
             }
             this.list.push(...page);
         }
-        this.loaded = true;
+        //this.loaded = true;
     }
 
     async page(params:any, pageStart:any, pageSize:number):Promise<any[]> {
         let res = await this.api.queryPage(this.queryApiName, this.name, pageStart, pageSize+1, params);
         let data = await this.unpackReturns(res);
-        return data as any[];
+        return data.$page;// as any[];
     }
     async query(params:any):Promise<any> {
         let res = await this.api.query(this.name, params);

@@ -7,6 +7,7 @@ import {ListPage} from './listPage';
 import {GeneralTuidInput} from './input';
 import {EntityLink} from '../entityLink';
 import {SlaveInput} from './slaveInput';
+import {BindSlaveInput} from './bindSlaveInput';
 
 export * from './input';
 export * from './dropDown';
@@ -24,5 +25,6 @@ export const mapperContainer:MapperContainer<Tuid, TuidUI, TuidMapper> = {
             component: GeneralTuidInput,
         },
         slaveInput: SlaveInput,
+        bindSlaveInput: BindSlaveInput,
     }
 }

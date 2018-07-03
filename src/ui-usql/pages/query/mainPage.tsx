@@ -47,16 +47,9 @@ class QueryResultPage extends React.Component<QueryUIProps> {
     render() {
         let {ui, data} = this.props;
         let {entity, caption} = ui;
-        let {name, loaded, list} = entity;
-        let content;
-        if (loaded === true) {
-            content = <List items={list} item={{}} />;
-        }
-        else {
-            content = <div>...</div>;
-        }
+        let {name, list} = entity;
         return <Page header={caption || name}>
-            {content}
+            <List items={list} item={{}} />
         </Page>;
     }
 }

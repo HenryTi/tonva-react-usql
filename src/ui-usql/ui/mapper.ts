@@ -1,10 +1,10 @@
-import {Entities, Entity, Tuid, Action, Sheet, Query, Book, History} from "../entities";
+import {Entities, Entity, Tuid, Slave, Action, Sheet, Query, Book, History} from "../entities";
 import {EntitiesUI} from './entitiesUI';
 import {EntityUI} from './entityUI';
 import {ActionUI} from './actionUI';
 import {QueryUI} from './queryUI';
 import {SheetUI} from './sheetUI';
-import {TuidUI} from './tuidUI';
+import {TuidUI, SlaveUI} from './tuidUI';
 import {BookUI} from './bookUI';
 import {HistoryUI} from './historyUI';
 
@@ -53,6 +53,7 @@ export interface FieldFaces {
 }
 
 export type TuidUISlaveComponent = new (props:TuidUISlaveProps) => React.Component<TuidUISlaveProps>;
+export type TuidUIBindSlaveComponent = new (props:TuidUIBindSlaveProps) => React.Component<TuidUIBindSlaveProps>;
 
 export interface EntitiesUIProps {
     ui: EntitiesUI;
@@ -83,7 +84,8 @@ export type SheetUIComponent = new (props:SheetUIProps) => React.Component<Sheet
 export type SheetViewComponent = new (props:SheetViewProps) => React.Component<SheetViewProps>;
 export type TuidUIProps = EntityUIProps<Tuid, TuidUI>;
 export type TuidUIComponent = new (props:TuidUIProps) => React.Component<TuidUIProps>;
-export type TuidUISlaveProps = TuidUIProps & {slave:TuidUI; masterId?:number};
+export type TuidUIBindSlaveProps = TuidUIProps & {bindSlave:TuidUI; masterId?:number};
+export type TuidUISlaveProps = TuidUIProps & {slave:SlaveUI, masterId?:number};
 
 export interface EntityMapper<T extends Entity, TUI extends EntityUI<T>> {
     caption?: string;
@@ -99,6 +101,7 @@ export interface TuidMapper extends EntityMapper<Tuid, TuidUI> {
     listPage?: TuidListPage;
     input?: TuidInput;
     slaveInput?: TuidUISlaveComponent;
+    bindSlaveInput?: TuidUIBindSlaveComponent;
 }
 
 export interface ActionMapper extends EntityMapper<Action, ActionUI> {
