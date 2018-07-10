@@ -6,12 +6,12 @@ import {nav, Page, PagedItems} from 'tonva-tools';
 import {LMR, SearchBox, List} from 'tonva-react-form';
 import {Tuid} from '../../entities';
 import {EntitiesUIProps, TuidUIProps} from '../../ui';
-import {EntitiesUI, TuidUI} from '../../ui';
+import {EntitiesUI, TuidUIO} from '../../ui';
 import { EditPage } from './editPage';
 
 class TuidPagedItems<T> extends PagedItems<T> {
-    private tuidUI: TuidUI;
-    constructor(tuidUI: TuidUI) {
+    private tuidUI: TuidUIO;
+    constructor(tuidUI: TuidUIO) {
         super();
         this.tuidUI = tuidUI;
     }

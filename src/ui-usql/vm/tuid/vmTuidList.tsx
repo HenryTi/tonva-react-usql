@@ -14,8 +14,7 @@ export class VmTuidList extends VmTuid {
         this.pagedItems = new TuidPagedItems(this.entity);
     }
 
-    async load() {
-        await super.load();
+    async beforeStart(param?:any) {
         await this.onSearch(undefined);
     }
     onSearch = async (key:string) => {
@@ -32,7 +31,7 @@ export class VmTuidList extends VmTuid {
         //nav.push(<EditPage ui={ui} data={data} />);
     }
 
-    renderView() {
+    render() {
         return <TuidListPage vm={this} />;
     }
 }
@@ -44,15 +43,15 @@ const Row = (item) => <div className="px-3 py-2">{JSON.stringify(item)}</div>;
 export class TuidListPage extends React.Component<{vm:VmTuidList}> {
     render() {
         let {vm} = this.props;
-        let {caption, values} = this.props.vm;
+        let {label, values} = this.props.vm;
         let header = <SearchBox className="mx-1 w-100"
             initKey={''}
-            onSearch={vm.onSearch} placeholder={'搜索'+caption} />;
+            onSearch={vm.onSearch} placeholder={'搜索'+label} />;
         return <Page header={header}>
             <List
                 items={vm.pagedItems.items}
                 item={{render: vm.renderRow, onClick: vm.rowClick}}
-                before={'搜索'+caption+'资料'} />
+                before={'搜索'+label+'资料'} />
         </Page>;
     }
 }

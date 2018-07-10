@@ -5,15 +5,15 @@ import { observer } from 'mobx-react';
 import {nav, Page, PagedItems} from 'tonva-tools';
 import {List, FA, LMR} from 'tonva-react-form';
 import {Slave, Query} from '../../entities';
-import {EntitiesUIProps, EntityUIProps, TuidUIProps, EntitiesUI, TuidUI, 
+import {EntitiesUIProps, EntityUIProps, TuidUIProps, EntitiesUI, TuidUIO, 
     TuidUISlaveProps} from '../../ui';
 import {EditPage} from './editPage';
 
 class PagedSlaveItems extends PagedItems<any> {
     private masterId: number;
-    private master: TuidUI;
+    private master: TuidUIO;
     private page: Query;
-    constructor(master:TuidUI, page:Query, masterId:number) {
+    constructor(master:TuidUIO, page:Query, masterId:number) {
         super();
         this.master = master;
         this.page = page;

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {List, Muted, LMR, EasyDate, FA} from 'tonva-react-form';
 import {Page} from 'tonva-tools';
 import {Sheet} from '../../entities';
-import {EntitiesUIProps, SheetUIProps, SheetViewProps, EntitiesUI, SheetUI} from '../../ui';
+import {EntitiesUIProps, SheetUIProps, SheetViewProps, EntitiesUI, SheetUIO} from '../../ui';
 import {MainDetails, MainDetailsView} from '../tools';
 
 export class SheetView extends React.Component<SheetViewProps> {

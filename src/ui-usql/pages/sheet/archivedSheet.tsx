@@ -4,7 +4,7 @@ import {List} from 'tonva-react-form';
 import {Page} from 'tonva-tools';
 import {Sheet} from '../../entities';
 import {EntitiesUIProps, SheetUIProps} from '../../ui';
-import {EntitiesUI, SheetUI} from '../../ui';
+import {EntitiesUI, SheetUIO} from '../../ui';
 import {MainDetails, MainDetailsView} from '../tools';
 import {SheetView} from './sheetView';
 

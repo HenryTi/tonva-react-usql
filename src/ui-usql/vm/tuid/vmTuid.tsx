@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Tuid, Entity } from '../../entities';
-import { VmEntity, vmLinkIcon } from '../entity/vmEnity';
+import { VmEntity, vmLinkIcon } from '../vmEntity';
 import { Page, nav } from 'tonva-tools';
 import { VmApi } from '../vmApi';
 

@@ -1,6 +1,6 @@
 import {MapperContainer, QueryMapper} from '../../ui';
 import {Query} from '../../entities';
-import {EntityUI, QueryUI} from '../../ui';
+import {EntityUIO, QueryUI} from '../../ui';
 import {MainPage} from './mainPage';
 import {EntityLink} from '../entityLink';
 

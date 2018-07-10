@@ -1,5 +1,7 @@
 import {UsqlApi} from './usqlApi';
-import {Entities} from './entities';
+import { Entities } from './entities';
+import { Tuid } from './tuid';
+import { Field, Arr } from '../vm/field';
 
 export abstract class Entity {
     protected entities: Entities;
@@ -32,6 +34,25 @@ export abstract class Entity {
         this.schema = schema;
         this.entities.schemaRefTuids(schema.tuids);
     }
+
+    getFieldTuid(fieldName:string, arrName?:string):Tuid {
+        if (this.schema === undefined) return;
+        let {fields, arrs} = this.schema;
+        let entities = this.entities;
+        function getTuid(fn:string, fieldArr:Field[]) {
+            if (fieldArr === undefined) return;
+            let f = fieldArr.find(v => v.name === fn);
+            if (f === undefined) return;
+            return entities.getTuid(f.tuid, undefined);
+        }
+        if (arrName === undefined) return getTuid(fieldName.toLowerCase(), fields);
+        if (arrs === undefined) return;
+        let an = arrName.toLowerCase();
+        let arr = (arrs as Arr[]).find(v => v.name === an);
+        if (arr === undefined) return;
+        return getTuid(fieldName.toLowerCase(), arr.fields);
+    }
+
     /*
     protected lowerCaseSchema() {}
     protected lowerCaseFields(fields:any) {

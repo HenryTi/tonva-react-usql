@@ -1,6 +1,6 @@
 import {MapperContainer,TuidMapper} from '../../ui';
 import {Tuid} from '../../entities';
-import {EntityUI, TuidUI} from '../../ui';
+import {EntityUIO, TuidUIO} from '../../ui';
 import {MainPage} from './mainPage';
 import {EditPage} from './editPage';
 import {ListPage} from './listPage';
@@ -13,7 +13,7 @@ export * from './input';
 export * from './dropDown';
 export * from './radio';
 
-export const mapperContainer:MapperContainer<Tuid, TuidUI, TuidMapper> = {
+export const mapperContainer:MapperContainer<Tuid, TuidUIO, TuidMapper> = {
     caption: '数据字典',
     icon: 'book',
     mapper: {

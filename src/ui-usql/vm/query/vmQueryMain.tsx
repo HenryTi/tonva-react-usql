@@ -6,7 +6,7 @@ import { Tuid, Query, Entity } from '../../entities';
 import { VmQuery } from './vmQuery';
 
 export class VmQueryMain extends VmQuery {
-    protected initValues() {
+    protected buildValuesFromSchema() {
         this.values = this.buildObservableValues(this.entity.schema.fields);
     }
 
@@ -35,22 +35,22 @@ export class VmQueryMain extends VmQuery {
 }
 
 export const QueryPage = ({vm}: {vm:VmQueryMain}) => {
-    let {caption, values} = vm;
-    return <Page header={caption}>
+    let {label, values} = vm;
+    return <Page header={label}>
         {vm.renderForm('mx-3 my-2')}
         {vm.renderExtra()}
     </Page>;
 };
 
 const QueryResultPage = ({vm}:{vm:VmQueryMain}) => {
-    let {entity, caption, close} = vm;
+    let {entity, label, close} = vm;
     let {name, list} = entity;
     let rightClose = <button
         className="btn btn-outline-secondary btn-sm"
         onClick={close}>
         <FA name="close" />
     </button>;
-    return <Page header={caption || name} right={rightClose}>
+    return <Page header={label || name} right={rightClose}>
         <List items={list} item={{}} />
     </Page>;
 };

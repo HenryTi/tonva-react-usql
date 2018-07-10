@@ -4,11 +4,11 @@ import {nav, Page} from 'tonva-tools';
 import {TonvaForm, FormRow, SubmitResult, Fields, FA} from 'tonva-react-form';
 import {Tuid} from '../../entities';
 import {EntitiesUIProps, EntityUIProps, TuidUIProps} from '../../ui';
-import {EntitiesUI, TuidUI} from '../../ui';
+import {EntitiesUI, TuidUIO} from '../../ui';
 import config from '../consts';
 
 export interface EditProps {
-    master?:TuidUI; 
+    master?:TuidUIO; 
     masterId?:number;
     onSubmited?:(res:any) => void;
 };
@@ -17,7 +17,7 @@ export class EditPage extends React.Component<TuidUIProps & EditProps>
 {
     private form: TonvaForm;
     private formRows: FormRow[];
-    private bindSlaveUIs: TuidUI[];
+    private bindSlaveUIs: TuidUIO[];
 
     constructor(props) {
         super(props);

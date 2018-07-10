@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {FA} from 'tonva-react-form';
 import {Entity} from '../entities';
-import {EntitiesUIProps, EntityUIProps, EntitiesUI, EntityUI} from '../ui';
+import {EntitiesUIProps, EntityUIProps, EntitiesUI, EntityUIO} from '../ui';
 
-export class EntityLink<E extends Entity, U extends EntityUI<E>> extends React.Component<EntityUIProps<E, U>> {
+export class EntityLink<E extends Entity, U extends EntityUIO<E>> extends React.Component<EntityUIProps<E, U>> {
     render() {
         let {ui} = this.props;
         let {caption, entitySet} = ui;

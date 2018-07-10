@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {nav, Page} from 'tonva-tools';
 import {List, Muted} from 'tonva-react-form';
 import {Entities, Entity, Tuid, Action, Sheet, Query} from '../entities';
-import {EntitiesUIProps, EntitiesUI, EntitySet, EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from '../ui';
+import {EntitiesUIProps, EntitiesUI, EntitySet, EntityUIO, ActionUIO, QueryUI, SheetUIO, TuidUIO} from '../ui';
 
 export class Main extends React.Component<EntitiesUIProps> {
     constructor(props) {
@@ -18,14 +18,14 @@ export class Main extends React.Component<EntitiesUIProps> {
 */
     }
     
-    private entityRender(ui: EntityUI<any>, index: number): JSX.Element {
+    private entityRender(ui: EntityUIO<any>, index: number): JSX.Element {
         let {caption} = ui;
         if (ui.entity.sys === true) return;
         return ui.link?
             <ui.link ui={ui} />:
             <div className="px-3 py-2">{caption}</div>;
     }
-    private async entityClick<E extends Entity, U extends EntityUI<E>>(ui:U) {
+    private async entityClick<E extends Entity, U extends EntityUIO<E>>(ui:U) {
         await ui.entity.loadSchema();
         nav.push(<ui.mainPage ui={ui} />);
     }
@@ -64,7 +64,7 @@ export class Main extends React.Component<EntitiesUIProps> {
         nav.push(<ui.mainPage ui={ui} />);
     }
 */
-    private renderList<E extends Entity>(entitySet:EntitySet<E,EntityUI<E>>, caption:string) {
+    private renderList<E extends Entity>(entitySet:EntitySet<E,EntityUIO<E>>, caption:string) {
         return <List className='my-2'
                 header={<Muted>{entitySet.caption || caption}</Muted>}
                 items={entitySet.list} 

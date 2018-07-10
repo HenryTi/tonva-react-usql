@@ -3,7 +3,7 @@ import {nav, Page} from 'tonva-tools';
 import {List, LMR, FA} from 'tonva-react-form';
 import {Sheet} from '../../entities';
 import {EntitiesUIProps, SheetUIProps} from '../../ui';
-import {EntitiesUI, SheetUI} from '../../ui';
+import {EntitiesUI, SheetUIO} from '../../ui';
 import {ArchivedSheet} from './archivedSheet';
 
 export interface State {

@@ -5,7 +5,7 @@ import { List, Muted } from 'tonva-react-form';
 import { VmSheet } from './vmSheet';
 import { VmForm } from '../vmForm';
 
-export class VmSheetEdit extends VmSheet {
+export class VmSheetNew extends VmSheet {
     vmForm: VmForm;
 
     async beforeStart(param?:any) {
@@ -15,7 +15,7 @@ export class VmSheetEdit extends VmSheet {
     protected view = Edit;
 }
 
-const Edit = ({vm}:{vm:VmSheetEdit}) => {
+const Edit = ({vm}:{vm:VmSheetNew}) => {
     let {label, vmForm} = vm;
     return <Page header={label}>
         {vmForm.render()}

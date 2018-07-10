@@ -1,6 +1,6 @@
 import {MapperContainer, HistoryMapper} from '../../ui';
 import {History} from '../../entities';
-import {EntityUI, HistoryUI} from '../../ui';
+import {EntityUIO, HistoryUI} from '../../ui';
 import {MainPage} from './mainPage';
 import {EntityLink} from '../entityLink';
 

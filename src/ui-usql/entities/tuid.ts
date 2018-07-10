@@ -2,7 +2,7 @@ import {observable} from 'mobx';
 import * as _ from 'lodash';
 import {Entity} from './entity';
 import {Entities} from './entities';
-import { debug } from 'util';
+import { debug, isNumber } from 'util';
 import { Book } from './book';
 import { Query } from './query';
 import { Action } from './action';
@@ -85,6 +85,7 @@ export class Tuid extends Entity {
         this.cache.set(String(id), item);
     }
     useId(id:number, defer?:boolean):void {
+        if (isNumber(id) === false) return;
         let key = String(id);
         if (this.cache.has(key) === true) {
             this.moveToHead(id);

@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import {TuidPickFace, FormProps, SearchBox, List} from 'tonva-react-form';
 import {nav, Page} from 'tonva-tools';
 import {Tuid} from '../../entities';
-import {EntitiesUI, TuidUI, TuidInputProps, TuidInput} from '../../ui';
+import {EntitiesUI, TuidUIO, TuidInputProps, TuidInput} from '../../ui';
 import {EntityLink} from '../index';
 import { POINT_CONVERSION_HYBRID } from 'constants';
 

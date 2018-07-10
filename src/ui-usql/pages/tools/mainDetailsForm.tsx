@@ -6,12 +6,12 @@ import {observer} from 'mobx-react';
 import {Button, Form, FormGroup, Label, Input, Container, Col} from 'reactstrap';
 import {nav, Page} from 'tonva-tools';
 import {TonvaForm, List, FormRow, SubmitResult} from 'tonva-react-form';
-import {SheetUI, EntitiesUI} from '../../ui';
+import {SheetUIO, EntitiesUI} from '../../ui';
 import {Detail, MainDetails} from './model';
 
 export interface MainDetailsFormProps {
     className?: string;
-    ui: SheetUI;
+    ui: SheetUIO;
     mainDetails: MainDetails;
     values: any;
     confirmLeave?: boolean;

@@ -1,6 +1,6 @@
 import {Entities, Entity, Tuid, Action, Sheet, Query} from '../entities';
 import {EntitiesUI} from './entitiesUI';
-import {EntityUI} from './entityUI';
+import {EntityUIO} from './entityUI';
 
-export class ActionUI extends EntityUI<Action> {
+export class ActionUIO extends EntityUIO<Action> {
 }

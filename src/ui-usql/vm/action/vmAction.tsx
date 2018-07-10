@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Tuid, Action, Entity } from '../../entities';
-import { VmEntity, vmLinkIcon } from '../entity';
+import { VmEntity, vmLinkIcon } from '../vmEntity';
 import { Page, nav, } from 'tonva-tools';
 
 export class VmActionMain extends VmEntity {
@@ -9,7 +9,7 @@ export class VmActionMain extends VmEntity {
 
     get icon() {return vmLinkIcon('text-success', 'hand-o-right')}
 
-    protected initValues() {
+    protected buildValuesFromSchema() {
         this.values = this.buildObservableValues(this.entity.schema.fields);
     }
 
@@ -28,7 +28,7 @@ export class VmActionMain extends VmEntity {
         return vmForm.renderView();
     }*/
 
-    renderView() {
+    render() {
         return <ActionPage vm={this} />;
     }
 }
@@ -37,8 +37,8 @@ export class VmActionMain extends VmEntity {
 export class ActionPage extends React.Component<{vm:VmActionMain}> {
     render() {
         let {vm} = this.props;
-        let {caption, values} = this.props.vm;
-        return <Page header={caption}>
+        let {label, values} = this.props.vm;
+        return <Page header={label}>
             {vm.renderForm('mx-3 my-2')}
         </Page>;
     }
@@ -47,8 +47,8 @@ export class ActionPage extends React.Component<{vm:VmActionMain}> {
 class ResultPage extends React.Component<{vm: VmActionMain}> {
     render() {
         let {vm} = this.props;
-        let {caption, entity, returns} = vm;
-        return <Page header={caption} back="close">
+        let {label, entity, returns} = vm;
+        return <Page header={label} back="close">
             完成！
             <pre>
                 {JSON.stringify(returns, undefined, ' ')}

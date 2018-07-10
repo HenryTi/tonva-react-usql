@@ -5,7 +5,7 @@ import {nav, Page} from 'tonva-tools';
 import {List, LMR, Muted} from 'tonva-react-form';
 import {Sheet} from '../../entities';
 import {EntitiesUIProps, SheetUIProps} from '../../ui';
-import {EntitiesUI, SheetUI} from '../../ui';
+import {EntitiesUI, SheetUIO} from '../../ui';
 import {SchemaPage} from './schemaPage';
 
 @observer

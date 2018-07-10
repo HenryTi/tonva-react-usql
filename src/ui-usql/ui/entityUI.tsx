@@ -5,10 +5,10 @@ import { UIComponent, FieldMappers, FieldMapper, FieldFaces, FieldFace, TuidInpu
 import { EntitiesUI, EntitySet } from './entitiesUI';
 import { Entity } from '../entities';
 
-export abstract class EntityUI<E extends Entity> {
+export abstract class EntityUIO<E extends Entity> {
     private wsHandlers:number[];
     entitiesUI: EntitiesUI;
-    entitySet: EntitySet<E, EntityUI<E>>;
+    entitySet: EntitySet<E, EntityUIO<E>>;
     entity: E;
     caption: string;
     icon?: string;
@@ -87,8 +87,8 @@ export abstract class EntityUI<E extends Entity> {
         return schemaFields.map(sf => this.tfmMap(sf, nfc !== undefined && nfc[sf.name]));
     }
 
-    link?: UIComponent<E, EntityUI<E>>;
-    mainPage?: UIComponent<E, EntityUI<E>>;
+    link?: UIComponent<E, EntityUIO<E>>;
+    mainPage?: UIComponent<E, EntityUIO<E>>;
 
     async showMain():Promise<void> {
         await this.entity.loadSchema();

@@ -8,11 +8,11 @@ import {EntitiesMapper, FieldMapper, FieldMappers, MapperContainer,
     BookMapper, HistoryMapper,
     TuidListPage
 } from './mapper';
-import {EntityUI} from './entityUI';
-import {ActionUI} from './actionUI';
+import {EntityUIO} from './entityUI';
+import {ActionUIO} from './actionUI';
 import {QueryUI} from './queryUI';
-import {SheetUI} from './sheetUI';
-import {TuidUI, TuidUIListPage, SlaveUI} from './tuidUI';
+import {SheetUIO} from './sheetUI';
+import {TuidUIO, TuidUIListPage, SlaveUI} from './tuidUI';
 import {BookUI} from './bookUI';
 import {HistoryUI} from './historyUI';
 
@@ -76,10 +76,10 @@ export class EntitiesUI {
     mainPage:JSX.Element;
     caption:string;
     typeFieldMappers?: FieldMappers;
-    action: EntitySet<Action, ActionUI>;
+    action: EntitySet<Action, ActionUIO>;
     query: EntitySet<Query, QueryUI>;
-    sheet: EntitySet<Sheet, SheetUI>;
-    tuid: EntitySet<Tuid, TuidUI>;
+    sheet: EntitySet<Sheet, SheetUIO>;
+    tuid: EntitySet<Tuid, TuidUIO>;
     book: EntitySet<Book, BookUI>;
     history: EntitySet<History, HistoryUI>;
 
@@ -136,7 +136,7 @@ export class EntitiesUI {
     }
 }
 
-export interface EntitySet<E extends Entity, U extends EntityUI<E>> {
+export interface EntitySet<E extends Entity, U extends EntityUIO<E>> {
     caption: string;
     icon: string;
     coll: {[name:string]: U};
@@ -144,7 +144,7 @@ export interface EntitySet<E extends Entity, U extends EntityUI<E>> {
     list: U[];
 }
 
-abstract class EntitySetBuilder<E extends Entity, U extends EntityUI<E>, T extends EntityMapper<E, U>> {
+abstract class EntitySetBuilder<E extends Entity, U extends EntityUIO<E>, T extends EntityMapper<E, U>> {
     protected entitiesUI:EntitiesUI;
     protected entityArr:E[];
     protected d:MapperContainer<E, U, T>;
@@ -227,13 +227,13 @@ abstract class EntitySetBuilder<E extends Entity, U extends EntityUI<E>, T exten
     protected abstract createUI():U;
 }
 
-class ActionSetBuilder extends EntitySetBuilder<Action, ActionUI, ActionMapper> {
-    build():EntitySet<Action, ActionUI> {
+class ActionSetBuilder extends EntitySetBuilder<Action, ActionUIO, ActionMapper> {
+    build():EntitySet<Action, ActionUIO> {
         let ret = super.build();
         return ret;
     }
-    protected createUI():ActionUI {return new ActionUI();}
-    protected buildUI(entity:Action, mapper1:ActionMapper, mapper2:ActionMapper):ActionUI {
+    protected createUI():ActionUIO {return new ActionUIO();}
+    protected buildUI(entity:Action, mapper1:ActionMapper, mapper2:ActionMapper):ActionUIO {
         let ret = super.buildUI(entity, mapper1, mapper2);
         return ret;
     }
@@ -272,13 +272,13 @@ class HistorySetBuilder extends EntitySetBuilder<History, HistoryUI, HistoryMapp
         return ret;
     }
 }
-class SheetSetBuilder extends EntitySetBuilder<Sheet, SheetUI, SheetMapper> {
-    build():EntitySet<Sheet, SheetUI> {
+class SheetSetBuilder extends EntitySetBuilder<Sheet, SheetUIO, SheetMapper> {
+    build():EntitySet<Sheet, SheetUIO> {
         let ret = super.build();
         return ret;
     }
-    protected createUI():SheetUI {return new SheetUI();}
-    protected buildUI(entity:Sheet, mapper1:SheetMapper, mapper2:SheetMapper):SheetUI {
+    protected createUI():SheetUIO {return new SheetUIO();}
+    protected buildUI(entity:Sheet, mapper1:SheetMapper, mapper2:SheetMapper):SheetUIO {
         let ret = super.buildUI(entity, mapper1, mapper2);
         let nfm1 = mapper1.detailFaces;
         let nfm2 = mapper2.detailFaces;
@@ -303,13 +303,13 @@ class SheetSetBuilder extends EntitySetBuilder<Sheet, SheetUI, SheetMapper> {
         return ret;
     }
 }
-class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUI, TuidMapper> {
-    build():EntitySet<Tuid, TuidUI> {
+class TuidSetBuilder extends EntitySetBuilder<Tuid, TuidUIO, TuidMapper> {
+    build():EntitySet<Tuid, TuidUIO> {
         let ret = super.build();
         return ret;
     }
-    protected createUI():TuidUI {return new TuidUI();}
-    protected buildUI(entity:Tuid, mapper1:TuidMapper, mapper2:TuidMapper):TuidUI {
+    protected createUI():TuidUIO {return new TuidUIO();}
+    protected buildUI(entity:Tuid, mapper1:TuidMapper, mapper2:TuidMapper):TuidUIO {
         let ret = super.buildUI(entity, mapper1, mapper2);
         ret.editPage = mapper2.editPage || mapper1.editPage;
         ret.listPage = this.mergeListPage(mapper2.listPage, mapper1.listPage);

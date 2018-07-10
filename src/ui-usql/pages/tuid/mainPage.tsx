@@ -3,7 +3,7 @@ import {Button, Form, FormGroup, Label, Input} from 'reactstrap';
 import {nav, Page} from 'tonva-tools';
 import {LMR, SearchBox, List, Muted} from 'tonva-react-form';
 import {Tuid} from '../../entities';
-import {EntitiesUIProps, TuidUIProps, EntityUI, EntitiesUI, TuidUI} from '../../ui';
+import {EntitiesUIProps, TuidUIProps, EntityUIO, EntitiesUI, TuidUIO} from '../../ui';
 import {Entities, Entity} from '../../entities';
 
 export class MainPage extends React.Component<TuidUIProps> {
@@ -58,13 +58,13 @@ class TuidMainPage extends React.Component<TuidUIProps> {
 }
         
 class TuidProxyMainPage extends React.Component<TuidUIProps> {
-    private entityRender(ui: EntityUI<any>, index: number): JSX.Element {
+    private entityRender(ui: EntityUIO<any>, index: number): JSX.Element {
         let {caption} = ui;
         return ui.link?
             <ui.link ui={ui} />:
             <div className="px-3 py-2">{caption}</div>;
     }
-    private async entityClick<E extends Entity, U extends EntityUI<E>>(ui:U) {
+    private async entityClick<E extends Entity, U extends EntityUIO<E>>(ui:U) {
         await ui.entity.loadSchema();
         nav.push(<ui.mainPage ui={ui} />);
     }
@@ -73,7 +73,7 @@ class TuidProxyMainPage extends React.Component<TuidUIProps> {
         let {entity, entitySet} = ui;
         let {coll} = entitySet;
         let proxies = entity.schema.proxies;
-        let tuidUIs:TuidUI[] = [];
+        let tuidUIs:TuidUIO[] = [];
         for (let i in proxies) {
             let tuidUI = coll[i];
             tuidUIs.push(tuidUI);

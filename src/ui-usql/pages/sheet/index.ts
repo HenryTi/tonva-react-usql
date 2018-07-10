@@ -1,6 +1,6 @@
 import {MapperContainer, SheetMapper} from '../../ui';
 import {Sheet} from '../../entities';
-import {EntityUI, SheetUI} from '../../ui';
+import {EntityUIO, SheetUIO} from '../../ui';
 import {EntityLink} from '../entityLink';
 import {MainPage} from './mainPage';
 import {SheetView} from './sheetView';
@@ -10,7 +10,7 @@ import {SheetAction} from './sheetAction';
 import {StateSheetList} from './stateSheetList';
 import { SheetNew } from './sheetNew';
 
-export const mapperContainer:MapperContainer<Sheet, SheetUI, SheetMapper> = {
+export const mapperContainer:MapperContainer<Sheet, SheetUIO, SheetMapper> = {
     caption: '凭单',
     icon: 'wpforms',
     mapper: {

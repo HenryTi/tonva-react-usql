@@ -3,7 +3,7 @@ import {observer} from 'mobx-react';
 import {TuidPickFace, FormProps, SearchBox, List} from 'tonva-react-form';
 import {nav, Page} from 'tonva-tools';
 import {EntityLink} from '../entityLink';
-import {EntitiesUI, TuidUI, TuidInputProps, TuidInput, TuidPickPageProps} from '../../ui';
+import {EntitiesUI, TuidUIO, TuidInputProps, TuidInput, TuidPickPageProps} from '../../ui';
 import {Tuid} from '../../entities';
 import { POINT_CONVERSION_HYBRID } from 'constants';
 
@@ -118,7 +118,7 @@ export class GeneralTuidInput extends React.Component<TuidInputProps, TuidInputS
             return this.idContent(caption, id);
 
         let {type, $proxy} = val;
-        let tuidUI:TuidUI = entitiesUI.tuid.coll[type];
+        let tuidUI:TuidUIO = entitiesUI.tuid.coll[type];
         let InputContent = tuidUI.input.inputContent;
         caption = tuidUI.caption;
         id = $proxy;

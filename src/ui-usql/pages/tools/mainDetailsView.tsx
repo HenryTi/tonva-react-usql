@@ -7,11 +7,11 @@ import {Button, Form, FormGroup, Label, Input, Container, Col} from 'reactstrap'
 import {nav, Page} from 'tonva-tools';
 import {TonvaForm, List, FormRow, SubmitResult} from 'tonva-react-form';
 import {Entity} from '../../entities';
-import {EntitiesUI, EntityUI, SheetUI} from '../../ui';
+import {EntitiesUI, EntityUIO, SheetUIO} from '../../ui';
 import {Detail, MainDetails} from './model';
 
 export interface MainDetailsViewProps {
-    ui: SheetUI;
+    ui: SheetUIO;
     mainDetails: MainDetails;
     values: any;
 }

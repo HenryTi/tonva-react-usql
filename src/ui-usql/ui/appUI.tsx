@@ -5,8 +5,8 @@ import {EntitiesMapper} from './mapper';
 import {defaultMapper} from '../pages';
 import {Entities, Entity} from '../entities';
 import {EntitiesUI, entitiesUICollection, EntitySet} from './entitiesUI';
-import {EntityUI} from './entityUI';
-import {TuidUI} from './tuidUI';
+import {EntityUIO} from './entityUI';
+import {TuidUIO} from './tuidUI';
 //import {Entities, defaultMapper, Entity, Tuid, Action, Sheet, Query,
 //    AppUI, EntitiesUI, EntitiesUIProps, EntitySet, 
 //    EntityUI, ActionUI, QueryUI, SheetUI, TuidUI} from './ui-usql';
@@ -73,19 +73,19 @@ export class AppUI {
 }
 
 export class MainPage extends React.Component<{appUI:AppUI}> {
-    private entityRender(ui: EntityUI<any>, index: number): JSX.Element {
+    private entityRender(ui: EntityUIO<any>, index: number): JSX.Element {
         let {caption} = ui;
         if (ui.entity.sys === true) return;
         return ui.link?
             <ui.link ui={ui} />:
             <div className="px-3 py-2">{caption}</div>;
     }
-    private async entityClick<E extends Entity, U extends EntityUI<E>>(ui:U) {
+    private async entityClick<E extends Entity, U extends EntityUIO<E>>(ui:U) {
         await ui.showMain();
         //await ui.entity.loadSchema();
         //nav.push(<ui.mainPage ui={ui} />);
     }
-    private renderList<E extends Entity>(entitySet:EntitySet<E,EntityUI<E>>, caption:string) {
+    private renderList<E extends Entity>(entitySet:EntitySet<E,EntityUIO<E>>, caption:string) {
         if (entitySet.list.length === 0) return;
         return <List className='my-2'
                 header={<Muted>{entitySet.caption || caption}</Muted>}

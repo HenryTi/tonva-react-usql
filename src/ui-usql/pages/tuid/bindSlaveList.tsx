@@ -4,14 +4,14 @@ import {observable} from 'mobx';
 import { observer } from 'mobx-react';
 import {nav, Page, PagedItems} from 'tonva-tools';
 import {List, FA} from 'tonva-react-form';
-import {EntitiesUIProps, EntityUIProps, TuidUIProps, EntitiesUI, TuidUI, TuidUIBindSlaveProps} from '../../ui';
+import {EntitiesUIProps, EntityUIProps, TuidUIProps, EntitiesUI, TuidUIO, TuidUIBindSlaveProps} from '../../ui';
 import {EditPage} from './editPage';
 
 class PagedBindSlaveItems extends PagedItems<any> {
     private masterId: number;
-    private master: TuidUI;
-    private bindSlave: TuidUI;
-    constructor(master:TuidUI, slave:TuidUI, masterId:number) {
+    private master: TuidUIO;
+    private bindSlave: TuidUIO;
+    constructor(master:TuidUIO, slave:TuidUIO, masterId:number) {
         super();
         this.master = master;
         this.bindSlave = slave;

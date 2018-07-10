@@ -4,7 +4,8 @@ import {observer} from 'mobx-react';
 import {Page, loadAppApis} from 'tonva-tools';
 import {Entities} from '../entities';
 import {ViewModel} from './viewModel';
-import { VmApi } from './vmApi';
+import { VmApi, EntityType } from './vmApi';
+import { VmLink } from './link';
 
 export const entitiesCollection: {[api:string]: Entities} = {};
 
@@ -12,7 +13,6 @@ export class VmApp extends ViewModel {
     private appOwner:string;
     private appName:string;
     private ui:any;
-    private vmApiCollection: {[api:string]: VmApi} = {};
 
     constructor(tonvaApp:string, ui:any) {
         super();
@@ -24,7 +24,8 @@ export class VmApp extends ViewModel {
         this.appName = parts[1];
         this.ui = ui;
     }
-    async load(): Promise<void> {
+    vmApiCollection: {[api:string]: VmApi} = {};
+    async loadSchema(): Promise<void> {
         let isDebug = process.env.NODE_ENV==='development';
         let appApis = await loadAppApis(this.appOwner, this.appName);
         for (let appApi of appApis) {
@@ -48,7 +49,7 @@ export class VmApp extends ViewModel {
                 }
             }
             let vmApi = this.newVmApi(url, api, access, this.ui && this.ui[api]);
-            await vmApi.load();
+            await vmApi.loadSchema();
             this.vmApiCollection[api] = vmApi;
         }
     }
@@ -60,31 +61,54 @@ export class VmApp extends ViewModel {
 
     caption = 'View Model 版的 Usql App';
 
+    protected view = AppPage;
+/*
     renderView(): JSX.Element {
         return <AppPage vm={this} />;
     }
-
-    apiViews():JSX.Element[] {
-        let ret:JSX.Element[] = [];
+*/
+    get vmApiArr():VmApi[] {
+        let ret:VmApi[] = [];
         for (let i in this.vmApiCollection) {
-            ret.push(<div key={i}>{this.vmApiCollection[i].renderView()}</div>);
+            ret.push(this.vmApiCollection[i]);
         }
         return ret;
     }
 
-    tuidLink(name:string): JSX.Element {
-        return <div>{name}</div>;
-    }
-
-    tuidView(name:string): JSX.Element {
-        return <div>view: {name}</div>
+    getVmApi(apiName:string):VmApi {
+        return this.vmApiCollection[apiName];
     }
 }
 
-const AppPage = observer((props:{vm:VmApp}) => {
-    let {vm} = props;
-    let {caption} = vm;
+interface SheetLinkProps {
+    vm: VmApp;
+    apiName: string;
+    type: EntityType;
+    entityName: string;
+}
+const SheetLink = ({vm, apiName, type, entityName}:SheetLinkProps) => {
+    let vmApi = vm.getVmApi(apiName);
+    if (vmApi === undefined) {
+        return <div>unkown api: {apiName}</div>;
+    }
+    let vmLink = vmApi.vmLinkFromName(type, entityName);
+    let key = apiName + ':' + entityName;
+    if (vmLink === undefined) {
+        return <div key={key}>unkown {apiName}:{entityName}</div>;
+    }
+    return <div key={key}
+        className="bg-white cursor-pointer border-bottom" 
+        onClick={vmLink.onClick}>
+        {vmLink.render()}
+    </div>;
+}
+
+const AppPage = observer(({vm}:{vm:VmApp}) => {
+    let {caption, vmApiArr, vmApiCollection} = vm;
+    let api = 'DevApp/devappApi';
+    let sheets = ['order', '单据'];
     return <Page header={caption}>
-        {vm.apiViews()}
+        {sheets.map(v => <SheetLink key={v} vm={vm} apiName={api} type="sheet" entityName={v} />)}
+        {vmApiArr.map((v,i) => <div key={i}>{v.render()}</div>)}
     </Page>;
 });

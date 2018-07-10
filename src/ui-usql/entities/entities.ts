@@ -152,7 +152,7 @@ export class Entities {
             case 'sheet':
                 let sheet = this.sheets[name];
                 if (sheet === undefined) {
-                    this.sheetArr.push(this.sheet[name] = new Sheet(this, api, name, id));
+                    this.sheetArr.push(this.sheets[name] = new Sheet(this, api, name, id));
                 }
         }
     }

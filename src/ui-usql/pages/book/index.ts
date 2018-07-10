@@ -1,6 +1,6 @@
 import {MapperContainer, BookMapper} from '../../ui';
 import {Book} from '../../entities';
-import {EntityUI, BookUI} from '../../ui';
+import {EntityUIO, BookUI} from '../../ui';
 import {MainPage} from './mainPage';
 import {EntityLink} from '../entityLink';
 
