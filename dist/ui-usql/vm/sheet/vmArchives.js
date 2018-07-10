@@ -7,20 +7,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { nav, Page } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { VmSheet } from './vmSheet';
+import { VmArchived } from './vmArchived';
 export class VmArchives extends VmSheet {
     constructor() {
         super(...arguments);
-        this.archivedSheet = undefined;
+        //archivedSheet = undefined;
+        //archiveData: any;
+        //brief: any;
         this.archiveClick = (brief) => __awaiter(this, void 0, void 0, function* () {
-            this.brief = brief;
+            //this.brief = brief;
             if (brief.processing === 1)
                 return;
-            this.archiveData = yield this.entity.getArchive(brief.id);
+            //this.archiveData = await this.entity.getArchive(brief.id);
             //let {brief, data:sheetData, flows} = res;
-            nav.push(React.createElement(this.archivedSheet, { vm: this }));
+            this.nav(VmArchived, brief);
         });
         this.archiveRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,
@@ -38,17 +41,15 @@ export class VmArchives extends VmSheet {
         };
         this.view = Archives;
     }
-    load() {
-        const _super = name => super[name];
+    beforeStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("load").call(this);
             this.list = yield this.entity.getArchives(undefined, 10);
         });
     }
 }
 const Archives = ({ vm }) => {
-    let { caption, list, archiveRow, archiveClick } = vm;
-    return React.createElement(Page, { header: '已归档' + caption },
+    let { label, list, archiveRow, archiveClick } = vm;
+    return React.createElement(Page, { header: '已归档' + label },
         React.createElement(List, { items: list, item: { render: archiveRow, onClick: archiveClick } }));
 };
 /*
@@ -78,23 +79,15 @@ export class ArchivedSheet extends React.Component<SheetUIProps, State> {
     }
     render() {
 */
-const ArchivedSheet = ({ vm }) => {
-    let { caption, archiveData, typeSheetView: SheetView } = vm;
-    let { brief, data: sheetData, flows } = archiveData;
+/*
+const ArchivedSheet = ({vm}:{vm: VmArchives}) => {
+    let {label, archiveData, typeSheetView:SheetView} = vm;
+    let {brief, data:sheetData, flows} = archiveData;
     //let {ui, data:brief} = this.props;
     //let {entity:sheet} = ui;
-    /*
-    let removed;
-    if (brief.state === '-')
-        removed = <div className="mx-3 my-2" style={{color:'red'}}>本单据作废</div>;
-    let flow;
-    if (this.state.res !== undefined) {
-        flow = <List className="mx-3" header="流程"
-            items={this.state.res[1]}
-            item={{}}/>
-    }
-    */
-    return React.createElement(Page, { header: caption + ':' + '-' + brief.no },
-        React.createElement(SheetView, { vm: vm }));
-};
+    return <Page header={label + ':' + '-' + brief.no}>
+        <SheetView vm={vm} />
+    </Page>;
+}
+*/
 //# sourceMappingURL=vmArchives.js.map

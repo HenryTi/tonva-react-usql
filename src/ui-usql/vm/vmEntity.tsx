@@ -5,27 +5,16 @@ import { nav } from 'tonva-tools';
 import { Entity, Tuid } from '../entities';
 import { ViewModel, TypeContent } from './viewModel';
 import { VmApi } from './vmApi';
-import { VmForm, TypeVmFieldsForm, VmFormOptions } from './vmForm';
+import { VmForm, VmFormOptions, TypeVmTuidControl, PickerConfig } from './vmForm';
 import { Field } from './field';
-import { VmTuidControl, TypeVmTuidControl, PickerConfig } from './vmForm';
-
-export interface FieldUIO {
-    label?: string;
-    notes?: string;
-    placeholder?: string;
-    input?: any; //TuidInput;
-    //mapper?: FieldMapper;
-}
-export interface FieldUIs {
-    [name:string]: FieldUIO;
-}
+import { VmPage } from './vmPage';
 
 export interface EntityUI {
     label: string;
     res: any;
 }
 
-export abstract class VmEntity extends ViewModel {
+export abstract class VmEntity extends VmPage {
     protected entity: Entity;
     protected ui: EntityUI;
     label: string;
@@ -50,7 +39,7 @@ export abstract class VmEntity extends ViewModel {
     }
 
     protected nav = async <T extends VmEntity>(vmType: new (vmApi:VmApi, entity:Entity, ui:EntityUI) => T, param?:any) => {
-        await this.vmApi.nav(vmType, this.entity, this.ui);
+        await this.vmApi.nav(vmType, this.entity, this.ui, param);
     }
 
     protected createVmFieldsForm() {
@@ -76,15 +65,7 @@ export abstract class VmEntity extends ViewModel {
 
     async start(param?:any):Promise<void> {
         await this.loadSchema();
-        await this.beforeStart(param);
-        await this.show();
-    }
-
-    async beforeStart(param?:any):Promise<void> {
-    }
-
-    async show() {
-        nav.push(this.render());
+        await super.start(param);
     }
 
     values: any;
@@ -111,55 +92,7 @@ export abstract class VmEntity extends ViewModel {
             this.values[i] = null;
         }
     }
-/*
-    protected fieldFaces: FieldUIs;
-    protected mapFields(schemaFields: any[]): any[] {
-        if (schemaFields === undefined) return;
-        let nfc = this.fieldFaces;
-        return schemaFields.map(sf => this.tfmMap(sf, nfc !== undefined && nfc[sf.name]));
-    }
 
-    protected tfmMap(sf: any, ff: FieldUI) {
-        let ret: any;
-        let { type, tuid, url } = sf;
-        //let tuidInput: TuidInput = {};
-        //let tfm = this.typeFieldMappers;
-        let face;
-        if (ff === undefined) {
-            let fm = undefined; //tfm[type];
-            if (fm === undefined) {
-                console.log('type field mapper not defined');
-                return;
-            }
-            ret = fm(sf);
-            face = ret.face;
-            if (face === undefined) ret.face = face = {};
-        }
-        else {
-            let fm = undefined; //ff.mapper || tfm[type];
-            if (fm === undefined) {
-                console.log('type field mapper not defined');
-                return;
-            }
-            ret = fm(sf);
-            let { label, notes, placeholder, input } = ff;
-            if (label !== undefined) ret.label = label;
-            face = ret.face;
-            if (face !== undefined) {
-                if (notes !== undefined) face.notes = notes;
-                if (placeholder !== undefined) face.placeholder = placeholder;
-                //if (input !== undefined) _.merge(tuidInput, input);
-            }
-        }
-        if (tuid !== undefined) {
-            return;
-        }
-        if (sf.null === false) {
-            ret.field.required = true;
-        }
-        return ret;
-    }
-*/
     typeVmTuidControl(field:Field, tuid:Tuid): TypeVmTuidControl {
         return this.vmApi.typeVmTuidControl(tuid);
     }
@@ -171,46 +104,9 @@ export abstract class VmEntity extends ViewModel {
     pickerConfig(field:Field, tuid:Tuid): PickerConfig {
         return this.vmApi.pickerConfig(tuid);
     }
-/*
-    protected newFormRowBuilder(): FormRowBuilder {
-        return new VmEntityFormRowBuilder(this.vmApi, this);
-    }
-
-    get VmForm(): TypeVmFieldsForm {
-        return this.vmApi.VmForm;
-    }
-
-    async submit() {}
-
-    onSubmitClick = async () => {
-        await this.submit();
-    }
-
-    newSubmitButton():JSX.Element {
-        return <SubmitButton onSubmitClick={this.onSubmitClick} />;
-    }
-*/
-
-    /*
-    newVmForm(fields:Field[], fieldUIs:any[], className:string):VmForm {
-        return new this.VmForm(this.values, fields, this.newSubmitButton(), fieldUIs, className, this.newFormRowBuilder());
-    }
-    renderForm = (className) => {
-        let fieldUIs:any[] = undefined;
-        this.vmForm = this.newVmForm(
-            this.entity.schema.fields, fieldUIs, className);
-        return this.vmForm.renderView();
-    }
-    */
     renderForm = (className) => <div>old VMForm</div>;
 }
 
 export function vmLinkIcon(cls:string, faName:string) {
     return <FA className={cls} size="lg" name={faName} fixWidth={true} />;
 }
-
-const SubmitButton = ({onSubmitClick}) => <button className="btn btn-primary"
-    type="button"
-    onClick={onSubmitClick}>
-        提交
-</button>;

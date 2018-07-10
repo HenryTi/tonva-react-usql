@@ -1,17 +1,32 @@
 import { Sheet } from '../../entities';
-import { VmEntity } from '../entity';
+import { VmEntity, EntityUI } from '../vmEntity';
 import { VmApi } from '../vmApi';
+import { VmSheetMain } from './vmMain';
+import { VmSheetNew } from './vmNew';
+import { VmSheetEdit } from './vmEdit';
+export interface ActionUI {
+    label: string;
+}
+export interface StateUI {
+    label: string;
+    actions: {
+        [name: string]: ActionUI;
+    };
+}
+export interface SheetUI extends EntityUI {
+    states: {
+        [name: string]: StateUI;
+    };
+    main: typeof VmSheetMain;
+    new: typeof VmSheetNew;
+    edit: typeof VmSheetEdit;
+}
 export declare abstract class VmSheet extends VmEntity {
-    constructor(vmApi: VmApi, sheet: Sheet);
+    protected ui: SheetUI;
+    constructor(vmApi: VmApi, sheet: Sheet, ui?: SheetUI);
     entity: Sheet;
     readonly icon: JSX.Element;
-    protected typeFlowRow: (item: any) => JSX.Element;
-    flowRow: (item: any, index: number) => JSX.Element;
-    className: string;
-    sheetState: string;
-    data: any;
-    flows: any[];
-    typeSheetView: ({ vm }: {
-        vm: VmSheet;
-    }) => JSX.Element;
+    private getStateUI;
+    getStateLabel(stateName: string): any;
+    getActionLabel(stateName: string, actionName: string): any;
 }

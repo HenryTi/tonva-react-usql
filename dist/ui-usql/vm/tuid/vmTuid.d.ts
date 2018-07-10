@@ -1,5 +1,5 @@
 import { Tuid } from '../../entities';
-import { VmEntity } from '../entity/vmEnity';
+import { VmEntity } from '../vmEntity';
 import { VmApi } from '../vmApi';
 export declare abstract class VmTuid extends VmEntity {
     entity: Tuid;

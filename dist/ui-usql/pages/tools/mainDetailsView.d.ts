@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { SubmitResult } from 'tonva-react-form';
 import { Entity } from '../../entities';
-import { SheetUI } from '../../ui';
+import { SheetUIO } from '../../ui';
 import { MainDetails } from './model';
 export interface MainDetailsViewProps {
-    ui: SheetUI;
+    ui: SheetUIO;
     mainDetails: MainDetails;
     values: any;
 }

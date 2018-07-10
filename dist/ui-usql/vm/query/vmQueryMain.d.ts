@@ -1,6 +1,6 @@
 import { VmQuery } from './vmQuery';
 export declare class VmQueryMain extends VmQuery {
-    protected initValues(): void;
+    protected buildValuesFromSchema(): void;
     submit(): Promise<void>;
     close: () => void;
     renderExtra(): void;

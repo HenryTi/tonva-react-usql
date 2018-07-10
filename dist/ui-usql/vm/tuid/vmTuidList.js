@@ -36,14 +36,12 @@ export class VmTuidList extends VmTuid {
     init() {
         this.pagedItems = new TuidPagedItems(this.entity);
     }
-    load() {
-        const _super = name => super[name];
+    beforeStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("load").call(this);
             yield this.onSearch(undefined);
         });
     }
-    renderView() {
+    render() {
         return React.createElement(TuidListPage, { vm: this });
     }
 }
@@ -51,10 +49,10 @@ const Row = (item) => React.createElement("div", { className: "px-3 py-2" }, JSO
 let TuidListPage = class TuidListPage extends React.Component {
     render() {
         let { vm } = this.props;
-        let { caption, values } = this.props.vm;
-        let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: vm.onSearch, placeholder: '搜索' + caption });
+        let { label, values } = this.props.vm;
+        let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: vm.onSearch, placeholder: '搜索' + label });
         return React.createElement(Page, { header: header },
-            React.createElement(List, { items: vm.pagedItems.items, item: { render: vm.renderRow, onClick: vm.rowClick }, before: '搜索' + caption + '资料' }));
+            React.createElement(List, { items: vm.pagedItems.items, item: { render: vm.renderRow, onClick: vm.rowClick }, before: '搜索' + label + '资料' }));
     }
 };
 TuidListPage = __decorate([

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { EntityUI } from './entityUI';
+import { EntityUIO } from './entityUI';
 export class TuidUIListPage {
 }
-export class TuidUI extends EntityUI {
+export class TuidUIO extends EntityUIO {
     get slaves() {
         if (this._slaves !== undefined)
             return this._slaves;

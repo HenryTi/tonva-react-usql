@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { EntityUI } from './entityUI';
+import { EntityUIO } from './entityUI';
 class SheetDetailRow extends React.Component {
     render() {
         let { data } = this.props;
@@ -9,7 +9,7 @@ class SheetDetailRow extends React.Component {
             JSON.stringify(item));
     }
 }
-export class SheetUI extends EntityUI {
+export class SheetUIO extends EntityUIO {
     mapDetail(name, schemaFields, detailRow) {
         let nfc = this.detialFaces && this.detialFaces[name];
         let fields = schemaFields.map(sf => this.tfmMap(sf, nfc && nfc.fields[sf.name]));

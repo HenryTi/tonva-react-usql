@@ -1,7 +1,7 @@
 import { DetailFace, SheetUIComponent, SheetViewComponent, EntitiesUIComponent } from './mapper';
 import { Sheet } from '../entities';
-import { EntityUI } from './entityUI';
-export declare class SheetUI extends EntityUI<Sheet> {
+import { EntityUIO } from './entityUI';
+export declare class SheetUIO extends EntityUIO<Sheet> {
     view: SheetViewComponent;
     archivedList?: SheetUIComponent;
     archivedSheet?: SheetUIComponent;

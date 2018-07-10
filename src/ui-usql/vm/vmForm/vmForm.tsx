@@ -16,7 +16,6 @@ import { VmArr } from './vmArr';
 const defaultClassName = 'px-3 py-2';
 const defaultSubmitCaption = <><FA name="send-o" /> &nbsp; 提交 &nbsp; </>;
 
-export type TypeVmFieldsForm = typeof VmForm;
 export interface FormValues {
     values: any;
     errors: any;

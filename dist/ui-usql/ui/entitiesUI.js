@@ -11,10 +11,10 @@ import * as _ from 'lodash';
 import { Api, nav } from 'tonva-tools';
 import { apiErrors } from '../apiErrors';
 import { Entities } from '../entities';
-import { ActionUI } from './actionUI';
+import { ActionUIO } from './actionUI';
 import { QueryUI } from './queryUI';
-import { SheetUI } from './sheetUI';
-import { TuidUI } from './tuidUI';
+import { SheetUIO } from './sheetUI';
+import { TuidUIO } from './tuidUI';
 import { BookUI } from './bookUI';
 import { HistoryUI } from './historyUI';
 export const entitiesUICollection = {};
@@ -196,7 +196,7 @@ class ActionSetBuilder extends EntitySetBuilder {
         let ret = super.build();
         return ret;
     }
-    createUI() { return new ActionUI(); }
+    createUI() { return new ActionUIO(); }
     buildUI(entity, mapper1, mapper2) {
         let ret = super.buildUI(entity, mapper1, mapper2);
         return ret;
@@ -241,7 +241,7 @@ class SheetSetBuilder extends EntitySetBuilder {
         let ret = super.build();
         return ret;
     }
-    createUI() { return new SheetUI(); }
+    createUI() { return new SheetUIO(); }
     buildUI(entity, mapper1, mapper2) {
         let ret = super.buildUI(entity, mapper1, mapper2);
         let nfm1 = mapper1.detailFaces;
@@ -271,7 +271,7 @@ class TuidSetBuilder extends EntitySetBuilder {
         let ret = super.build();
         return ret;
     }
-    createUI() { return new TuidUI(); }
+    createUI() { return new TuidUIO(); }
     buildUI(entity, mapper1, mapper2) {
         let ret = super.buildUI(entity, mapper1, mapper2);
         ret.editPage = mapper2.editPage || mapper1.editPage;

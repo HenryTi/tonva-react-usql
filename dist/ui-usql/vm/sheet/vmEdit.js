@@ -9,44 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { VmSheet } from './vmSheet';
-import { VmFieldsForm } from '../vmFieldsForm';
-export class VmEdit extends VmSheet {
+export class VmSheetEdit extends VmSheet {
     constructor() {
         super(...arguments);
-        this.showField1 = () => {
-            this.vmFieldsForm.showBands(['f1'], 'f1');
-        };
-        this.showField2 = () => {
-            this.vmFieldsForm.showBands(['f2'], 'f2');
-        };
-        this.showAll = () => {
-            this.vmFieldsForm.showBands(undefined);
-        };
         this.view = Edit;
     }
-    load() {
-        const _super = name => super[name];
+    beforeStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("load").call(this);
-            let { schema } = this.entity;
-            let { fields, arrs } = schema;
-            this.vmFieldsForm = new VmFieldsForm({
-                fields: fields,
-                arrs: arrs,
-                vmApi: this.vmApi,
-            });
+            this.vmForm = this.createVmFieldsForm();
         });
     }
 }
 const Edit = ({ vm }) => {
-    let { vmFieldsForm, showAll, showField1, showField2 } = vm;
-    return React.createElement(Page, { header: vm.caption },
-        vmFieldsForm.renderView(),
-        React.createElement("div", null,
-            React.createElement("button", { className: "btn btn-primary", onClick: showAll }, "all"),
-            " \u00A0",
-            React.createElement("button", { className: "btn btn-primary", onClick: showField1 }, "f1"),
-            " \u00A0",
-            React.createElement("button", { className: "btn btn-primary", onClick: showField2 }, "f2")));
+    let { label, vmForm } = vm;
+    return React.createElement(Page, { header: label }, vmForm.render());
 };
 //# sourceMappingURL=vmEdit.js.map

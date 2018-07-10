@@ -1,4 +1,4 @@
-import { EntityUI } from './entityUI';
-export class BookUI extends EntityUI {
+import { EntityUIO } from './entityUI';
+export class BookUI extends EntityUIO {
 }
 //# sourceMappingURL=bookUI.js.map

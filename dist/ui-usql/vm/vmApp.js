@@ -17,6 +17,7 @@ export class VmApp extends ViewModel {
         super();
         this.vmApiCollection = {};
         this.caption = 'View Model 版的 Usql App';
+        this.view = AppPage;
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
@@ -25,7 +26,7 @@ export class VmApp extends ViewModel {
         this.appName = parts[1];
         this.ui = ui;
     }
-    load() {
+    loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
             let isDebug = process.env.NODE_ENV === 'development';
             let appApis = yield loadAppApis(this.appOwner, this.appName);
@@ -51,7 +52,7 @@ export class VmApp extends ViewModel {
                     }
                 }
                 let vmApi = this.newVmApi(url, api, access, this.ui && this.ui[api]);
-                yield vmApi.load();
+                yield vmApi.loadSchema();
                 this.vmApiCollection[api] = vmApi;
             }
         });
@@ -60,28 +61,46 @@ export class VmApp extends ViewModel {
         // 这里是可以重载的，写自己的VmApi
         return new VmApi(this, url, api, access, ui);
     }
-    renderView() {
-        return React.createElement(AppPage, { vm: this });
-    }
-    apiViews() {
+    /*
+        renderView(): JSX.Element {
+            return <AppPage vm={this} />;
+        }
+    */
+    get vmApiArr() {
         let ret = [];
         for (let i in this.vmApiCollection) {
-            ret.push(React.createElement("div", { key: i }, this.vmApiCollection[i].renderView()));
+            ret.push(this.vmApiCollection[i]);
         }
         return ret;
     }
-    tuidLink(name) {
-        return React.createElement("div", null, name);
-    }
-    tuidView(name) {
-        return React.createElement("div", null,
-            "view: ",
-            name);
+    getVmApi(apiName) {
+        return this.vmApiCollection[apiName];
     }
 }
-const AppPage = observer((props) => {
-    let { vm } = props;
-    let { caption } = vm;
-    return React.createElement(Page, { header: caption }, vm.apiViews());
+const SheetLink = ({ vm, apiName, type, entityName }) => {
+    let vmApi = vm.getVmApi(apiName);
+    if (vmApi === undefined) {
+        return React.createElement("div", null,
+            "unkown api: ",
+            apiName);
+    }
+    let vmLink = vmApi.vmLinkFromName(type, entityName);
+    let key = apiName + ':' + entityName;
+    if (vmLink === undefined) {
+        return React.createElement("div", { key: key },
+            "unkown ",
+            apiName,
+            ":",
+            entityName);
+    }
+    return React.createElement("div", { key: key, className: "bg-white cursor-pointer border-bottom", onClick: vmLink.onClick }, vmLink.render());
+};
+const AppPage = observer(({ vm }) => {
+    let { caption, vmApiArr, vmApiCollection } = vm;
+    let api = 'DevApp/devappApi';
+    let sheets = ['order', '单据'];
+    return React.createElement(Page, { header: caption },
+        sheets.map(v => React.createElement(SheetLink, { key: v, vm: vm, apiName: api, type: "sheet", entityName: v })),
+        vmApiArr.map((v, i) => React.createElement("div", { key: i }, v.render())));
 });
 //# sourceMappingURL=vmApp.js.map

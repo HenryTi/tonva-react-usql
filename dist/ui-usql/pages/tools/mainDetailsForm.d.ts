@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { SheetUI } from '../../ui';
+import { SheetUIO } from '../../ui';
 import { Detail, MainDetails } from './model';
 export interface MainDetailsFormProps {
     className?: string;
-    ui: SheetUI;
+    ui: SheetUIO;
     mainDetails: MainDetails;
     values: any;
     confirmLeave?: boolean;

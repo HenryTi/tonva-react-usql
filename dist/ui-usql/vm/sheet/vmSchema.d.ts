@@ -1,6 +1,6 @@
 import { VmSheet } from './vmSheet';
-export declare class VmSchema extends VmSheet {
+export declare class VmSheetSchema extends VmSheet {
     protected view: ({ vm }: {
-        vm: VmSchema;
+        vm: VmSheetSchema;
     }) => JSX.Element;
 }

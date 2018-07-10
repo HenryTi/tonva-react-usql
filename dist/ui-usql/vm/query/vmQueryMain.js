@@ -18,7 +18,7 @@ export class VmQueryMain extends VmQuery {
         this.resultPage = observer(QueryResultPage);
         this.view = QueryPage;
     }
-    initValues() {
+    buildValuesFromSchema() {
         this.values = this.buildObservableValues(this.entity.schema.fields);
     }
     submit() {
@@ -40,17 +40,17 @@ export class VmQueryMain extends VmQuery {
     }
 }
 export const QueryPage = ({ vm }) => {
-    let { caption, values } = vm;
-    return React.createElement(Page, { header: caption },
+    let { label, values } = vm;
+    return React.createElement(Page, { header: label },
         vm.renderForm('mx-3 my-2'),
         vm.renderExtra());
 };
 const QueryResultPage = ({ vm }) => {
-    let { entity, caption, close } = vm;
+    let { entity, label, close } = vm;
     let { name, list } = entity;
     let rightClose = React.createElement("button", { className: "btn btn-outline-secondary btn-sm", onClick: close },
         React.createElement(FA, { name: "close" }));
-    return React.createElement(Page, { header: caption || name, right: rightClose },
+    return React.createElement(Page, { header: label || name, right: rightClose },
         React.createElement(List, { items: list, item: {} }));
 };
 //# sourceMappingURL=vmQueryMain.js.map

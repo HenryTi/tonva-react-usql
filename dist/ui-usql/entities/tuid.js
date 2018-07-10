@@ -15,6 +15,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { Entity } from './entity';
+import { isNumber } from 'util';
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
     constructor() {
@@ -96,6 +97,8 @@ export class Tuid extends Entity {
         this.cache.set(String(id), item);
     }
     useId(id, defer) {
+        if (isNumber(id) === false)
+            return;
         let key = String(id);
         if (this.cache.has(key) === true) {
             this.moveToHead(id);

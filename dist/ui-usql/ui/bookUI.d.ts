@@ -1,4 +1,4 @@
 import { Book } from '../entities';
-import { EntityUI } from './entityUI';
-export declare class BookUI extends EntityUI<Book> {
+import { EntityUIO } from './entityUI';
+export declare class BookUI extends EntityUIO<Book> {
 }

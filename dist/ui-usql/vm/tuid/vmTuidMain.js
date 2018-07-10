@@ -3,7 +3,7 @@ import { Page } from 'tonva-tools';
 import { VmTuidEdit } from './vmTuidEdit';
 import { VmTuid } from './vmTuid';
 import { VmTuidList } from './vmTuidList';
-import { VmEntityLinkBase } from '../link';
+import { VmEntityLink } from '../link';
 export class VmTuidMain extends VmTuid {
     constructor() {
         super(...arguments);
@@ -13,21 +13,22 @@ export class VmTuidMain extends VmTuid {
     }
 }
 const MainPage = ({ vm }) => {
-    let { caption, onNew, onList } = vm;
-    return React.createElement(Page, { header: caption },
+    let { label, onNew, onList } = vm;
+    return React.createElement(Page, { header: label },
         "Tuid",
         React.createElement("button", { className: "btn btn-primary", onClick: onNew }, "\u65B0\u5EFA"),
         React.createElement("button", { className: "btn btn-primary", onClick: onList }, "\u5217\u8868"));
 };
+//{new LinkButton<VmTuidEdit>(new VmTuidEdit(vm.vm), '新建')}
+export class LinkButton extends VmEntityLink {
+    constructor(vmEntity, caption) {
+        super(vmEntity);
+        this.view = Button;
+        this.caption = caption;
+    }
+}
 const Button = ({ vm }) => {
     let { caption, onClick } = vm;
     return React.createElement("button", { className: "btn btn-primary", onClick: onClick }, caption);
 };
-//{new LinkButton<VmTuidEdit>(new VmTuidEdit(vm.vm), '新建')}
-export class LinkButton extends VmEntityLinkBase {
-    constructor(vmEntity, caption) {
-        super(vmEntity, Button);
-        this.caption = caption;
-    }
-}
 //# sourceMappingURL=vmTuidMain.js.map

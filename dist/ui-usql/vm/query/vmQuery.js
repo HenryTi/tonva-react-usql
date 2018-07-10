@@ -1,4 +1,4 @@
-import { VmEntity, vmLinkIcon } from '../entity';
+import { VmEntity, vmLinkIcon } from '../vmEntity';
 export class VmQuery extends VmEntity {
     constructor(vmApi, query) {
         super(vmApi, query);

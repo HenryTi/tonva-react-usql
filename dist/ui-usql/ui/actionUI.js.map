@@ -1,1 +1,1 @@
-{"version":3,"file":"actionUI.js","sourceRoot":"","sources":["../../../src/ui-usql/ui/actionUI.tsx"],"names":[],"mappings":"AAEA,OAAO,EAAC,QAAQ,EAAC,MAAM,YAAY,CAAC;AAEpC,MAAM,eAAgB,SAAQ,QAAgB;CAC7C"}
+{"version":3,"file":"actionUI.js","sourceRoot":"","sources":["../../../src/ui-usql/ui/actionUI.tsx"],"names":[],"mappings":"AAEA,OAAO,EAAC,SAAS,EAAC,MAAM,YAAY,CAAC;AAErC,MAAM,gBAAiB,SAAQ,SAAiB;CAC/C"}

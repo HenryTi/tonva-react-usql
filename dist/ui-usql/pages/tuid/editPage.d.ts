@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { SubmitResult } from 'tonva-react-form';
 import { TuidUIProps } from '../../ui';
-import { TuidUI } from '../../ui';
+import { TuidUIO } from '../../ui';
 export interface EditProps {
-    master?: TuidUI;
+    master?: TuidUIO;
     masterId?: number;
     onSubmited?: (res: any) => void;
 }

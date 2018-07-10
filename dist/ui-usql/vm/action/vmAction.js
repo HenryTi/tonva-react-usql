@@ -14,11 +14,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { VmEntity, vmLinkIcon } from '../entity';
+import { VmEntity, vmLinkIcon } from '../vmEntity';
 import { Page, nav, } from 'tonva-tools';
 export class VmActionMain extends VmEntity {
     get icon() { return vmLinkIcon('text-success', 'hand-o-right'); }
-    initValues() {
+    buildValuesFromSchema() {
         this.values = this.buildObservableValues(this.entity.schema.fields);
     }
     submit() {
@@ -36,15 +36,15 @@ export class VmActionMain extends VmEntity {
             this.entity.schema.fields, fieldUIs, className);
         return vmForm.renderView();
     }*/
-    renderView() {
+    render() {
         return React.createElement(ActionPage, { vm: this });
     }
 }
 let ActionPage = class ActionPage extends React.Component {
     render() {
         let { vm } = this.props;
-        let { caption, values } = this.props.vm;
-        return React.createElement(Page, { header: caption }, vm.renderForm('mx-3 my-2'));
+        let { label, values } = this.props.vm;
+        return React.createElement(Page, { header: label }, vm.renderForm('mx-3 my-2'));
     }
 };
 ActionPage = __decorate([
@@ -54,8 +54,8 @@ export { ActionPage };
 class ResultPage extends React.Component {
     render() {
         let { vm } = this.props;
-        let { caption, entity, returns } = vm;
-        return React.createElement(Page, { header: caption, back: "close" },
+        let { label, entity, returns } = vm;
+        return React.createElement(Page, { header: label, back: "close" },
             "\u5B8C\u6210\uFF01",
             React.createElement("pre", null, JSON.stringify(returns, undefined, ' ')));
     }

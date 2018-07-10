@@ -1,7 +1,7 @@
 import { MapperContainer, TuidMapper } from '../../ui';
 import { Tuid } from '../../entities';
-import { TuidUI } from '../../ui';
+import { TuidUIO } from '../../ui';
 export * from './input';
 export * from './dropDown';
 export * from './radio';
-export declare const mapperContainer: MapperContainer<Tuid, TuidUI, TuidMapper>;
+export declare const mapperContainer: MapperContainer<Tuid, TuidUIO, TuidMapper>;

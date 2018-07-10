@@ -7,24 +7,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { nav } from 'tonva-tools';
 import { ViewModel } from '../viewModel';
+/*
+import { nav } from 'tonva-tools';
+import { Entity, Tuid } from '../../entities';
+import { VmActionMain } from '../action';
+import { VmTuidMain } from '../tuid';
+import { VmQueryMain } from '../query';
+import { VmSheetMain } from '../sheet';
+import { VmBookMain } from '../book';
+*/
 export class VmLink extends ViewModel {
 }
-export class VmEntityLinkBase extends VmLink {
-    constructor(vmEntity, link) {
+export class VmEntityLink extends VmLink {
+    constructor(vmEntity) {
         super();
+        this.view = Link;
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
-            yield this.vmEntity.load();
-            nav.push(this.vmEntity.renderView());
+            this.vmEntity.start();
         });
         this.vmEntity = vmEntity;
-        this.view = link;
-    }
-}
-export class VmEntityLink extends VmEntityLinkBase {
-    constructor(vmEntity) {
-        super(vmEntity, Link);
     }
 }
 const Link = ({ vm }) => {
@@ -32,6 +34,6 @@ const Link = ({ vm }) => {
     return React.createElement("div", { className: "px-3 py-2  align-items-center" },
         vmEntity.icon,
         " \u00A0 ",
-        vmEntity.caption);
+        vmEntity.label);
 };
 //# sourceMappingURL=vmLink.js.map

@@ -10,13 +10,12 @@ export class VmSheetList extends VmSheet {
     stateName: string;
     stateLabel: string;
 
-    async start(item:any) {
+    async beforeStart(item:any) {
         this.stateName = item.state;
         this.stateLabel = this.getStateLabel(this.stateName);
         await this.entity.getStateSheets(this.stateName, 0, 30);
-        super.start();
     }
-
+    
     rowClick = async (brief:any) => {
         if (brief.processing===1) return;
         this.nav(VmSheetAction, brief);

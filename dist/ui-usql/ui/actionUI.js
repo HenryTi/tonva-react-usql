@@ -1,4 +1,4 @@
-import { EntityUI } from './entityUI';
-export class ActionUI extends EntityUI {
+import { EntityUIO } from './entityUI';
+export class ActionUIO extends EntityUIO {
 }
 //# sourceMappingURL=actionUI.js.map

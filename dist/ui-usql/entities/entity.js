@@ -30,5 +30,28 @@ export class Entity {
         this.schema = schema;
         this.entities.schemaRefTuids(schema.tuids);
     }
+    getFieldTuid(fieldName, arrName) {
+        if (this.schema === undefined)
+            return;
+        let { fields, arrs } = this.schema;
+        let entities = this.entities;
+        function getTuid(fn, fieldArr) {
+            if (fieldArr === undefined)
+                return;
+            let f = fieldArr.find(v => v.name === fn);
+            if (f === undefined)
+                return;
+            return entities.getTuid(f.tuid, undefined);
+        }
+        if (arrName === undefined)
+            return getTuid(fieldName.toLowerCase(), fields);
+        if (arrs === undefined)
+            return;
+        let an = arrName.toLowerCase();
+        let arr = arrs.find(v => v.name === an);
+        if (arr === undefined)
+            return;
+        return getTuid(fieldName.toLowerCase(), arr.fields);
+    }
 }
 //# sourceMappingURL=entity.js.map

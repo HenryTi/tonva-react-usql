@@ -1,5 +1,6 @@
+import { VmEntity } from '../vmEntity';
 import { VmTuid } from './vmTuid';
-import { VmEntityLinkBase } from '../link';
+import { VmEntityLink } from '../link';
 export declare class VmTuidMain extends VmTuid {
     onNew: () => Promise<void>;
     onList: () => Promise<void>;
@@ -7,7 +8,10 @@ export declare class VmTuidMain extends VmTuid {
         vm: VmTuidMain;
     }) => JSX.Element;
 }
-export declare class LinkButton<T extends VmTuid> extends VmEntityLinkBase<T> {
-    constructor(vmEntity: T, caption: string);
+export declare class LinkButton extends VmEntityLink {
+    constructor(vmEntity: VmEntity, caption: string);
     caption: string;
+    protected view: ({ vm }: {
+        vm: LinkButton;
+    }) => JSX.Element;
 }

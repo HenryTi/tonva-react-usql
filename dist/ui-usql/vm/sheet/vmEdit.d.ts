@@ -1,12 +1,9 @@
 import { VmSheet } from './vmSheet';
-import { VmFieldsForm } from '../vmFieldsForm';
-export declare class VmEdit extends VmSheet {
-    vmFieldsForm: VmFieldsForm;
-    load(): Promise<void>;
-    showField1: () => void;
-    showField2: () => void;
-    showAll: () => void;
+import { VmForm } from '../vmForm';
+export declare class VmSheetEdit extends VmSheet {
+    vmForm: VmForm;
+    beforeStart(param?: any): Promise<void>;
     protected view: ({ vm }: {
-        vm: VmEdit;
+        vm: VmSheetEdit;
     }) => JSX.Element;
 }

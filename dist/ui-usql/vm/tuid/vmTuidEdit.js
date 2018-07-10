@@ -28,17 +28,22 @@ export class VmTuidEdit extends VmTuid {
             return <TuidNewPage vm={this} />;
         }*/
     }
+    beforeStart(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.vmForm = this.createVmFieldsForm();
+        });
+    }
     loadId(id) {
         return __awaiter(this, void 0, void 0, function* () {
             this.id = id;
         });
     }
-    initValues() {
+    buildValuesFromSchema() {
         this.values = this.buildObservableValues(this.entity.schema.fields);
     }
     resetForm() {
         this.resetValues();
-        this.vmFieldsForm.reset();
+        this.vmForm.reset();
     }
     submit() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -46,7 +51,7 @@ export class VmTuidEdit extends VmTuid {
             if (ret) {
                 alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
             }
-            nav.push(React.createElement(Page, { header: this.caption + '提交成功', back: "none" },
+            nav.push(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },
                     React.createElement("span", { className: "text-success" },
                         React.createElement(FA, { name: 'check-circle', size: 'lg' }),
@@ -59,7 +64,7 @@ export class VmTuidEdit extends VmTuid {
     }
 }
 const TuidNewPage = observer(({ vm }) => {
-    let { caption, values, renderForm } = vm;
-    return React.createElement(Page, { header: '新增 - ' + caption }, renderForm('mx-3 my-2'));
+    let { label, values, renderForm } = vm;
+    return React.createElement(Page, { header: '新增 - ' + label }, renderForm('mx-3 my-2'));
 });
 //# sourceMappingURL=vmTuidEdit.js.map

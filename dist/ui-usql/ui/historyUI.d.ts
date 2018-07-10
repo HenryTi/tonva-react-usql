@@ -1,6 +1,6 @@
 import { History } from '../entities';
-import { EntityUI } from './entityUI';
-export declare class HistoryUI extends EntityUI<History> {
+import { EntityUIO } from './entityUI';
+export declare class HistoryUI extends EntityUIO<History> {
     mapKeys(): any[];
     listRow?: new (props: {
         item: any;

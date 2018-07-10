@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import * as _ from 'lodash';
 import { wsBridge, nav } from 'tonva-tools';
-export class EntityUI {
+export class EntityUIO {
     mapMain() {
         return this.mapFields(this.entity.schema.fields);
     }

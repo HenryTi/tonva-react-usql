@@ -1,10 +1,10 @@
 import { UIComponent, FieldMappers, FieldFaces, FieldFace } from './mapper';
 import { EntitiesUI, EntitySet } from './entitiesUI';
 import { Entity } from '../entities';
-export declare abstract class EntityUI<E extends Entity> {
+export declare abstract class EntityUIO<E extends Entity> {
     private wsHandlers;
     entitiesUI: EntitiesUI;
-    entitySet: EntitySet<E, EntityUI<E>>;
+    entitySet: EntitySet<E, EntityUIO<E>>;
     entity: E;
     caption: string;
     icon?: string;
@@ -16,8 +16,8 @@ export declare abstract class EntityUI<E extends Entity> {
     endWsReceive(): void;
     protected tfmMap(sf: any, ff: FieldFace): any;
     protected mapFields(schemaFields: any[]): any[];
-    link?: UIComponent<E, EntityUI<E>>;
-    mainPage?: UIComponent<E, EntityUI<E>>;
+    link?: UIComponent<E, EntityUIO<E>>;
+    mainPage?: UIComponent<E, EntityUIO<E>>;
     showMain(): Promise<void>;
     data: any;
     ret: any;

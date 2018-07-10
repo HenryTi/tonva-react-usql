@@ -1,16 +1,16 @@
 import { Tuid } from '../entities';
 import { TuidUIComponent, TuidInput, TuidUISlaveComponent, TuidUIBindSlaveComponent } from './mapper';
 import { EntitySet } from './entitiesUI';
-import { EntityUI } from './entityUI';
+import { EntityUIO } from './entityUI';
 import { BookUI } from './bookUI';
-import { ActionUI } from './actionUI';
+import { ActionUIO } from './actionUI';
 import { QueryUI } from './queryUI';
 export declare class TuidUIListPage {
     page: TuidUIComponent;
     row?: TuidUIComponent;
 }
-export declare class TuidUI extends EntityUI<Tuid> {
-    entitySet: EntitySet<Tuid, TuidUI>;
+export declare class TuidUIO extends EntityUIO<Tuid> {
+    entitySet: EntitySet<Tuid, TuidUIO>;
     editPage?: TuidUIComponent;
     listPage?: TuidUIListPage;
     input?: TuidInput;
@@ -26,11 +26,11 @@ export declare class TuidUI extends EntityUI<Tuid> {
 }
 export interface SlaveUI {
     name: string;
-    tuid: TuidUI;
+    tuid: TuidUIO;
     book: BookUI;
     page: QueryUI;
     pageSlave: QueryUI;
     all: QueryUI;
-    add: ActionUI;
-    del: ActionUI;
+    add: ActionUIO;
+    del: ActionUIO;
 }
