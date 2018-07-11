@@ -33,7 +33,6 @@ const ln = '\n';
 export class Entities {
     private api:ApiBase;
     private tvApi: UsqlApi;
-    //private ws: WSChannel;
     private tuids: {[name:string]: Tuid} = {};
     private actions: {[name:string]: Action} = {};
     private sheets: {[name:string]: Sheet} = {};

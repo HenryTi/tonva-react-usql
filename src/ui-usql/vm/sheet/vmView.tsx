@@ -22,7 +22,7 @@ export class VmView extends VmSheet {
         this.state = state;
         this.flows = flows;
         this.vmForm = this.createVmFieldsForm();
-        this.vmForm.setValues(data);
+        this.vmForm.values = data;
     }
 
     protected get fieldsFormOptions():VmFormOptions {

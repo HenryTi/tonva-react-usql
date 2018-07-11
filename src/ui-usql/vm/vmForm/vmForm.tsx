@@ -24,7 +24,6 @@ export interface FormValues {
 export interface VmFormOptions {
     fields: Field[];
     arrs?: Arr[];
-    //onSubmit?: (values:any) => Promise<void>;
     ui?: FormUI;
     readOnly?: boolean;
     vmApi?: VmApi;                  // 主要用于tuid control的生成，也可以没有
@@ -54,7 +53,7 @@ export class VmForm extends ViewModel {
     defaultSubmitCaption: any;
     submitCaption: any;
 
-    getValues() {
+    get values() {
         let values:any = {};
         _.merge(values, this.formValues.values);
         for (let i in this.vmArrs) {
@@ -63,7 +62,7 @@ export class VmForm extends ViewModel {
         return values;
     }
 
-    setValues(initValues:any) {
+    set values(initValues:any) {
         let {values, errors} = this.formValues;
         for (let f of this.fields) {
             let fn = f.name;
@@ -77,7 +76,7 @@ export class VmForm extends ViewModel {
     }
 
     onSubmitButtonClick = async () => {
-        let values = this.getValues();
+        let values = this.values;
         if (this.onFieldsInputed !== undefined) {
             await this.onFieldsInputed(values);
             return;
@@ -100,6 +99,10 @@ export class VmForm extends ViewModel {
             let fn = f.name;
             values[fn] = null;
             errors[fn] = undefined;
+        }
+        for (let i in this.controls) {
+            let ctrl = this.controls[i];
+            ctrl.value = null;
         }
         for (let i in this.vmArrs) {
             let vmArr = this.vmArrs[i];
@@ -289,7 +292,7 @@ export class VmForm extends ViewModel {
         if (this.arrs === undefined) return ret;
         let arr = this.arrs.find(v => v.name === name);
         if (arr === undefined) return ret;
-        ret.vmList = this.buildArrList(arr, ret);
+        ret.vmArr = this.buildVmArr(arr, ret);
         return ret;
     }
 
@@ -343,12 +346,12 @@ export class VmForm extends ViewModel {
             key: name,
             label: name,
             row: RowContent,
-            bands: undefined, //fieldsBandUIs,
+            bands: undefined, // fieldBandUIs,
             band: ArrBand,
             form: this,
         };
-        let vmList = this.buildArrList(arr, arrBandUI);
-        arrBandUI.vmList = vmList;
+        let vmArr = this.buildVmArr(arr, arrBandUI);
+        arrBandUI.vmArr = vmArr;
         vBands.push(arrBandUI);
     }
 
@@ -357,7 +360,7 @@ export class VmForm extends ViewModel {
         for (let arr of this.arrs) this.buildArrBand(vBands, arr);
     }
 
-    private buildArrList(arr:Arr, arrBandUI:ArrBandUIX): VmArr {
+    private buildVmArr(arr:Arr, arrBandUI:ArrBandUIX): VmArr {
         let ret = new VmArr(this.vmApi, arr, arrBandUI);
         this.vmArrs[arr.name] = ret;
         return ret;

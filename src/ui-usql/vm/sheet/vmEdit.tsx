@@ -8,7 +8,7 @@ import { VmForm } from '../vmForm';
 export class VmSheetEdit extends VmSheet {
     vmForm: VmForm;
 
-    async beforeStart(param?:any) {
+    protected async beforeStart(param?:any) {
         this.vmForm = this.createVmFieldsForm();
     }
 

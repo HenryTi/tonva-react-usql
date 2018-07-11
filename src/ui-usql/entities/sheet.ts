@@ -10,25 +10,17 @@ export interface SheetAction {
     name: string;
 }
 
+interface StateCount {
+    state: string;
+    count: number;
+}
+
 export class Sheet extends Entity {
-    statesCount:IObservableArray = observable.array<{state:string;count:number}>([], {deep:false});
+    statesCount:IObservableArray<StateCount> = observable.array<StateCount>([], {deep:true});
     curState:string;
-    stateSheets:IObservableArray = observable.array<{id:number}>([], {deep:false});
+    stateSheets:IObservableArray = observable.array<{id:number}>([], {deep:true});
 
     states: SheetState[] = [];
-
-    /*
-    protected lowerCaseSchema() {
-        let {states} = this.schema;
-        if (states === undefined) return;
-        for (let state of states) {
-            let {actions} = state; 
-            if (actions === undefined) continue;
-            for (let action of actions) {
-                this.lowerCaseReturns(action.returns);
-            }
-        }
-    }*/
 
     setStates(states: SheetState[]) {
         for (let state of states) {
@@ -44,14 +36,15 @@ export class Sheet extends Entity {
             s.actions.push(action);
         }
     }
-    async onReceive(data):Promise<void> {
-        let row = data.data;
-        if (row === undefined) return;
-        let {id, state, preState} = row;
+    async onReceive(msg):Promise<void> {
+        let {$type, id, state, preState} = msg;
+        if ($type !== 'sheetAct') return;
         this.changeStateCount(state, 1);
         this.changeStateCount(preState, -1);
         if (this.curState === state) {
-            this.stateSheets.push(row);
+            if (this.stateSheets.findIndex(v => v.id === id) < 0) {
+                this.stateSheets.push(msg);
+            }
         }
         else if (this.curState === preState) {
             let index = this.stateSheets.findIndex(v => v.id === id);
@@ -63,7 +56,7 @@ export class Sheet extends Entity {
         if (index < 0) return;
         let stateCount = this.statesCount[index];
         stateCount.count += delta;
-        this.statesCount.splice(index, 1, stateCount);
+        //this.statesCount.splice(index, 1, stateCount);
     }
     async save(discription:string, data:any):Promise<number> {
         //await this.entities.wsConnect();

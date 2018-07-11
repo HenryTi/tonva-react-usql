@@ -8,8 +8,15 @@ import { VmForm } from '../vmForm';
 export class VmSheetNew extends VmSheet {
     vmForm: VmForm;
 
-    async beforeStart(param?:any) {
+    protected async beforeStart(param?:any) {
         this.vmForm = this.createVmFieldsForm();
+        this.vmForm.onSubmit = this.onSubmit;
+    }
+
+    onSubmit = async (values:any):Promise<void> => {
+        let ret = await this.entity.save(this.label, values);
+        alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
+        this.popPage();
     }
 
     protected view = Edit;

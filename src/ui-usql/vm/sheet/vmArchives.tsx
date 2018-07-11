@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {nav, Page} from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import {List, LMR, FA} from 'tonva-react-form';
 import { VmSheet } from './vmSheet';
 import { VmArchived } from './vmArchived';
@@ -7,7 +7,7 @@ import { VmArchived } from './vmArchived';
 export class VmArchives extends VmSheet {
     list: any[];
 
-    async beforeStart() {
+    protected async beforeStart() {
         this.list = await this.entity.getArchives(undefined, 10);
     }
 
@@ -19,7 +19,7 @@ export class VmArchives extends VmSheet {
         if (brief.processing===1) return;
         //this.archiveData = await this.entity.getArchive(brief.id);
         //let {brief, data:sheetData, flows} = res;
-        this.nav(VmArchived, brief);
+        this.navVm(VmArchived, brief);
     }
     archiveRow = (row:any, index:number) => {
         let left = <>

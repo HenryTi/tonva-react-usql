@@ -8,6 +8,7 @@ import { VmSheetEdit } from './vmEdit';
 import { VmSheetList } from './vmList';
 import { VmSheetSchema } from './vmSchema';
 import { VmArchives } from './vmArchives';
+import { observer } from '../../../../node_modules/mobx-react';
 
 export class VmSheetMain extends VmSheet {
     protected vmNew = VmSheetNew;
@@ -16,23 +17,28 @@ export class VmSheetMain extends VmSheet {
     protected vmArchives = VmArchives;
     protected vmSheetList = VmSheetList;
 
-    async beforeStart() {
+    protected async beforeStart() {
         await this.entity.getStateSheetCount();
+    }
+
+    protected async onReceive(msg: any) {
+        await super.onReceive(msg);
+        this.entity.onReceive(msg);
     }
 
     newClick = async () => {
         let t = (this.ui && this.ui.new) || this.vmNew;
-        await this.nav(t);
+        await this.navVm(t);
     }
-    schemaClick = async () => await this.nav(this.vmSchema);
-    archivesClick = async () => await this.nav(this.vmArchives);
-    sheetStateClick = async (state) => await this.nav(this.vmSheetList, state);
+    schemaClick = async () => await this.navVm(this.vmSchema);
+    archivesClick = async () => await this.navVm(this.vmArchives);
+    sheetStateClick = async (state) => await this.navVm(this.vmSheetList, state);
 
     renderState = (item:any, index:number) => {
         let {state, count} = item;
-        let stateName = state==='$'? '新单':state;
+        if (count === 0) return null;
         let badge = <Badge className="ml-5 align-self-end" color="success">{count}</Badge>;
-        return <LMR className="px-3 py-2" left={stateName} right={badge} />;
+        return <LMR className="px-3 py-2" left={this.getStateLabel(state)} right={badge} />;
     }
 
     protected view = Main;
@@ -48,10 +54,10 @@ const Main = ({vm}:{vm:VmSheetMain}) => {
         <List className="my-2"
             header={<Muted>待处理{label}</Muted>}
             none="[ 无 ]"
-            items={entity.statesCount.filter(row=>row.count)}
+            items={entity.statesCount}
             item={{render:renderState, onClick:sheetStateClick}} />
         <div className="mx-3 my-2">
             <Button color="primary" onClick={archivesClick}>已归档{label}</Button>
         </div>
     </Page>;
-}
+};

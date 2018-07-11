@@ -265,10 +265,10 @@ export class VmApi extends ViewModel {
         return vm;
     }
 
-    nav = async <T extends VmEntity> (vmType: new (vmApi:VmApi, entity:Entity, ui:EntityUI) => T, 
+    navVm = async <T extends VmEntity> (vmType: new (vmApi:VmApi, entity:Entity, ui:EntityUI) => T, 
     entity:Entity, ui:EntityUI, param?:any) => {
         let vm = await this.create<T>(vmType, entity, ui);
-        vm.start(param);
+        await vm.start(param);
     }
 
     protected view = ApiView;

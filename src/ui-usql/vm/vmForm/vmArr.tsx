@@ -9,10 +9,11 @@ import { VmForm } from './vmForm';
 import { ArrBandUIX } from './formUIX';
 import { VmApi } from '../vmApi';
 import { SubmitBandUI } from './formUI';
+import { VmPage } from '../vmPage';
 
 export type ArrEditRow = (initValues:any, onRowChanged:(values:any)=>Promise<void>) => Promise<void>;
 
-export class VmArr extends ViewModel {
+export class VmArr extends VmPage {
     protected vmApi: VmApi;
     protected arrBandUI: ArrBandUIX;
     arr: Arr;
@@ -20,7 +21,6 @@ export class VmArr extends ViewModel {
     readOnly: boolean;
     vmForm: VmForm;
     onEditRow: ArrEditRow;
-    afterEditRow: (values:any) => Promise<void>;
     list: IObservableArray<any>;
     rowValues: any;                 // 仅仅用来判断是不是新增，undefined则是新增
     label: any;
@@ -29,6 +29,7 @@ export class VmArr extends ViewModel {
     
     constructor(vmApi:VmApi, arr:Arr, arrBandUI:ArrBandUIX,) {
         super();
+        this.start = this.start.bind(this);
         this.vmApi = vmApi;
         this.arr = arr;
         this.arrBandUI = arrBandUI;
@@ -38,22 +39,21 @@ export class VmArr extends ViewModel {
         this.row = row || RowContent;
         this.list = observable.array([], {deep:true});
 
-        let bands = this.arrBandUI.bands.slice();
+        //let bands = this.arrBandUI.bands.slice();
         let submitBand:SubmitBandUI = {
             type: 'submit',
             content: '{save} 完成',                    // 显示在按钮上的文本
         };
-        bands.push(submitBand);
+        //bands.push(submitBand);
         this.vmForm = new VmForm();
         this.vmForm.init({
             fields: arr.fields,
             vmApi: vmApi,
             ui: {
-                bands: bands,
+                bands: undefined, // bands,
                 className: undefined,
             },
             readOnly: this.readOnly,
-            //onSubmit: this.onSubmit,
         });
         this.vmForm.onSubmit = this.onSubmit;
     }
@@ -64,21 +64,26 @@ export class VmArr extends ViewModel {
     }
 
     onSubmit = async () => {
-        let values = this.vmForm.getValues();
+        let values = this.vmForm.values;
         await this.onRowChanged(values);
         if (this.afterEditRow !== undefined) await this.afterEditRow(values);
     }
 
-    start = async (rowValues?: any) => {
+    afterEditRow = async (values:any):Promise<void> => {
+        this.popPage();
+        return;
+    }
+
+    async start(rowValues?: any) {
         this.rowValues = rowValues;
         if (rowValues === undefined)
             this.vmForm.reset();
         else
-            this.vmForm.setValues(rowValues);
-        if (this.onEditRow === undefined)
-            nav.push(<RowPage vm={this} />);
-        else
+            this.vmForm.values = rowValues;
+        if (this.onEditRow !== undefined)
             await this.onEditRow(rowValues, this.onRowChanged);
+        else
+            this.pushPage(<RowPage vm={this} />);
     }
 
     addClick = () => this.start(undefined);
@@ -91,7 +96,7 @@ export class VmArr extends ViewModel {
         else {
             _.merge(this.rowValues, rowValues);
         }
-        this.vmForm.setValues(this.rowValues);
+        this.vmForm.values = this.rowValues;
     }
 
     renderItem = (item:any, index:number) => {

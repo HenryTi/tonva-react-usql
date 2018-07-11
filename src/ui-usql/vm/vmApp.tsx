@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observable} from 'mobx';
 import {observer} from 'mobx-react';
-import {Page, loadAppApis} from 'tonva-tools';
+import {Page, loadAppApis, nav} from 'tonva-tools';
 import {Entities} from '../entities';
 import {ViewModel} from './viewModel';
 import { VmApi, EntityType } from './vmApi';
@@ -77,6 +77,11 @@ export class VmApp extends ViewModel {
 
     getVmApi(apiName:string):VmApi {
         return this.vmApiCollection[apiName];
+    }
+
+    async start() {
+        await this.loadSchema();
+        nav.replace(this.render());
     }
 }
 

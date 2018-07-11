@@ -43,7 +43,11 @@ export abstract class VmSheet extends VmEntity {
     }
     getStateLabel(stateName:string) {
         let state = this.getStateUI(stateName);
-        return (state && state.label) || stateName;
+        let ret = (state && state.label) || stateName;
+        switch (ret) {
+            default: return ret;
+            case '$': return '新单';
+        }
     }
     getActionLabel(stateName:string, actionName:string) {
         let state = this.getStateUI(stateName);

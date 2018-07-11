@@ -13,7 +13,7 @@ export class VmArchived extends VmSheet {
     brief: any;
     vmView: VmView;
 
-    async beforeStart(inBrief:any) {
+    protected async beforeStart(inBrief:any) {
         let data = await this.entity.getArchive(inBrief.id)
         let {brief, data:sheetData, flows} = data;
         this.brief = brief;

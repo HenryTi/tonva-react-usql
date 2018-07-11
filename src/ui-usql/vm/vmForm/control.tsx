@@ -59,17 +59,18 @@ export abstract class VmInputControl extends VmControl {
         return <span className={className}>{error}</span>
     }
 
-    reset() {
-        this.input.value = '';
-        //this.setValue(null);
-    }
+    get value() {return super.value;}
+    set value(v:any) { super.value = v; this.setInputValue(); }
 
     ref = (input:HTMLInputElement) => {
         this.input = input;
-        if (input) {
-            let v = this.value;
-            this.input.value = (v !== null)? v : '';
-        }
+        this.setInputValue();
+    }
+
+    private setInputValue() {
+        if (!this.input) return;
+        let v = this.value;
+        this.input.value = v || '';
     }
 
     onFocus = () => {

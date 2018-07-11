@@ -40,9 +40,9 @@ export const FieldsBand = ({label, fieldUIs}:FieldsBandUIX) => {
     </div>;
 }
 
-export const ArrBand = ({label, name, bands, vmList}: ArrBandUIX) => {
+export const ArrBand = ({label, name, bands, vmArr}: ArrBandUIX) => {
     return <div className="form-group row flex-column">
-        {vmList && vmList.render()}
+        {vmArr && vmArr.render()}
     </div>;
 }
 

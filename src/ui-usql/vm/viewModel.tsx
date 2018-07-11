@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
+import { nav } from 'tonva-tools';
 
 export type TypeViewModel = typeof ViewModel;
 export type TypeView = React.StatelessComponent<{vm: ViewModel, className?:string|string[]}>;

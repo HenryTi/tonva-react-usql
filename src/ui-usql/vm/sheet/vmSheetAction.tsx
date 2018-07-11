@@ -25,7 +25,7 @@ export class VmSheetAction extends VmSheet {
         let {id, flow, state} = this.brief;
         let res = await this.entity.action(id, flow, state, action.name);
         alert(JSON.stringify(res));
-        nav.pop();
+        this.popPage();
     }
     protected view = SheetAction;
 }

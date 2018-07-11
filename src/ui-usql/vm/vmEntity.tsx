@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { observable } from 'mobx';
 import { FA } from 'tonva-react-form';
-import { nav } from 'tonva-tools';
+import { } from 'tonva-tools';
 import { Entity, Tuid } from '../entities';
-import { ViewModel, TypeContent } from './viewModel';
+import { TypeContent } from './viewModel';
 import { VmApi } from './vmApi';
 import { VmForm, VmFormOptions, TypeVmTuidControl, PickerConfig } from './vmForm';
 import { Field } from './field';
@@ -38,8 +38,8 @@ export abstract class VmEntity extends VmPage {
         return (res && res.label) || this.entity.name;
     }
 
-    protected nav = async <T extends VmEntity>(vmType: new (vmApi:VmApi, entity:Entity, ui:EntityUI) => T, param?:any) => {
-        await this.vmApi.nav(vmType, this.entity, this.ui, param);
+    protected navVm = async <T extends VmEntity>(vmType: new (vmApi:VmApi, entity:Entity, ui:EntityUI) => T, param?:any) => {
+        await this.vmApi.navVm(vmType, this.entity, this.ui, param);
     }
 
     protected createVmFieldsForm() {
@@ -68,29 +68,11 @@ export abstract class VmEntity extends VmPage {
         await super.start(param);
     }
 
-    values: any;
     returns: any;
     get icon() {return vmLinkIcon('text-info', 'circle-thin')}
 
     async loadSchema() {
         await this.entity.loadSchema();
-        this.buildValuesFromSchema();
-    }
-    protected buildValuesFromSchema() {}
-
-    protected buildObservableValues(fields: Field[]): object {
-        let len = fields.length;
-        let v: {[p:string]: any} = {};
-        for (let i=0; i<len; i++) {
-            v[fields[i].name] = null;
-        }
-        return observable(v);
-    }
-
-    protected resetValues() {
-        for (let i in this.values) {
-            this.values[i] = null;
-        }
     }
 
     typeVmTuidControl(field:Field, tuid:Tuid): TypeVmTuidControl {
@@ -104,7 +86,7 @@ export abstract class VmEntity extends VmPage {
     pickerConfig(field:Field, tuid:Tuid): PickerConfig {
         return this.vmApi.pickerConfig(tuid);
     }
-    renderForm = (className) => <div>old VMForm</div>;
+    //renderForm = (className) => <div>old VMForm</div>;
 }
 
 export function vmLinkIcon(cls:string, faName:string) {

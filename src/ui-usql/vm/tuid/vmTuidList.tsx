@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA, SearchBox, List } from 'tonva-react-form';
 import { Tuid, Entity } from '../../entities';
-import { Page, nav, PagedItems } from 'tonva-tools';
+import { Page, PagedItems } from 'tonva-tools';
 import { VmTuid } from './vmTuid';
 
 export type TypeVmTuidList = typeof VmTuidList;
@@ -14,7 +14,7 @@ export class VmTuidList extends VmTuid {
         this.pagedItems = new TuidPagedItems(this.entity);
     }
 
-    async beforeStart(param?:any) {
+    protected async beforeStart(param?:any) {
         await this.onSearch(undefined);
     }
     onSearch = async (key:string) => {
@@ -43,7 +43,7 @@ const Row = (item) => <div className="px-3 py-2">{JSON.stringify(item)}</div>;
 export class TuidListPage extends React.Component<{vm:VmTuidList}> {
     render() {
         let {vm} = this.props;
-        let {label, values} = this.props.vm;
+        let {label} = this.props.vm;
         let header = <SearchBox className="mx-1 w-100"
             initKey={''}
             onSearch={vm.onSearch} placeholder={'搜索'+label} />;

@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { SearchBox, List, Muted } from 'tonva-react-form';
+import { Button } from 'reactstrap';
 import { Tuid, Entity } from '../../entities';
 import { VmEntity, vmLinkIcon } from '../vmEntity';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmApi } from '../vmApi';
 import { VmTuidEdit } from './vmTuidEdit';
 import { VmTuid } from './vmTuid';
@@ -9,33 +11,50 @@ import { VmTuidList } from './vmTuidList';
 import { VmEntityLink, TypeLink } from '../link';
 
 export class VmTuidMain extends VmTuid {
-    onNew = () => this.nav(VmTuidEdit);
-    onList = () => this.nav(VmTuidList);
+    onNew = () => this.navVm(VmTuidEdit);
+    onList = () => this.navVm(VmTuidList);
+    onSearch = async (key:string) => await this.navVm(VmTuidList, key);
 
-    protected view = MainPage;
+    entityRender(link: VmEntityLink, index: number): JSX.Element {
+        return link.render();
+    }
+
+    async entityClick(link: VmEntityLink) {
+        //await ui.entity.loadSchema();
+        //nav.push(<ui.mainPage ui={ui} />);
+        await link.onClick();
+    }
+
+    protected async beforeStart(param?:any) {
+        let {proxies} = this.entity.schema;
+        this.view = proxies === undefined? MainPage : ProxyMainPage;
+    }
+
+    //protected view = MainPage;
 }
 
 const MainPage = ({vm}:{vm:VmTuidMain}) => {
-    let {label, onNew, onList} = vm;
+    let {label, onNew, onList, onSearch} = vm;
     return <Page header={label}>
-        Tuid 
-        <button className="btn btn-primary" onClick={onNew}>新建</button>
-        <button className="btn btn-primary" onClick={onList}>列表</button>
+        <SearchBox className="w-100" onSearch={onSearch} placeholder={'搜索'+label} />
+        <div className='my-3'>
+            <Button className="ml-3" color="primary" onClick={onNew}>新增</Button>
+            <Button className="ml-3" color="primary" onClick={onList}>列表</Button>
+        </div>
     </Page>;
 }
-
-//{new LinkButton<VmTuidEdit>(new VmTuidEdit(vm.vm), '新建')}
-export class LinkButton extends VmEntityLink {
-    constructor(vmEntity: VmEntity, caption:string) {
-        super(vmEntity);
-        this.caption = caption;
+        
+const ProxyMainPage = ({vm}:{vm:VmTuidMain}) => {
+    let {label, vmApi, entity, entityClick, entityRender} = vm;
+    let {proxies} = entity.schema;
+    let arr:string[] = [];
+    for (let i in proxies) {
+        arr.push(i);
     }
-    caption:string;
-
-    protected view = Button;
-}
-
-const Button = ({vm}:{vm: LinkButton}) => {
-    let {caption, onClick} = vm;
-    return <button className="btn btn-primary" onClick={onClick}>{caption}</button>;
+    return <Page header={label}>
+        <List className="my-2"
+            header={<Muted>{label} 代理下列Tuid</Muted>}
+            items={arr.map(v => vmApi.vmLinkFromName('tuid', v))}
+            item={{render: entityRender, onClick:entityClick}} />
+    </Page>
 }

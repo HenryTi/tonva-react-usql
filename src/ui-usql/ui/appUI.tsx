@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {List, Muted} from 'tonva-react-form';
-import {WSChannel, nav, Page, AppApi, loadAppApis, meInFrame} from 'tonva-tools';
+import {nav, Page, AppApi, loadAppApis, meInFrame} from 'tonva-tools';
 import {EntitiesMapper} from './mapper';
 import {defaultMapper} from '../pages';
 import {Entities, Entity} from '../entities';

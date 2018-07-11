@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, ButtonProps } from 'reactstrap';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { List, Muted, FA, LMR } from 'tonva-react-form';
 import { VmSheet } from './vmSheet';
 import { VmForm } from '../vmForm';
@@ -10,15 +10,15 @@ export class VmSheetList extends VmSheet {
     stateName: string;
     stateLabel: string;
 
-    async beforeStart(item:any) {
+    protected async beforeStart(item:any) {
         this.stateName = item.state;
         this.stateLabel = this.getStateLabel(this.stateName);
         await this.entity.getStateSheets(this.stateName, 0, 30);
     }
-    
+
     rowClick = async (brief:any) => {
         if (brief.processing===1) return;
-        this.nav(VmSheetAction, brief);
+        this.navVm(VmSheetAction, brief);
         //let {ui, data} = this.props;
         //let {entity:sheet} = ui;
         //let {state, stateName} = data;

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmTuid } from './vmTuid';
 import { VmForm } from '../vmForm';
 
@@ -12,38 +12,34 @@ export class VmTuidEdit extends VmTuid {
     vmForm: VmForm;
     id: number;
 
-    async beforeStart(param?:any) {
+    protected async beforeStart(param?:any) {
         this.vmForm = this.createVmFieldsForm();
+        this.vmForm.onSubmit = this.onSubmit;
     }
 
     async loadId(id: number) {
         this.id = id;
     }
 
-    protected buildValuesFromSchema() {
-        this.values = this.buildObservableValues(this.entity.schema.fields);
-    }
-
     protected next = async () => {
-        this.resetForm();
-        nav.pop();
+        this.vmForm.reset();
+        this.popPage();
     }
 
     protected finish = () => {
-        nav.pop(2);
+        this.popPage(2);
     }
 
     protected resetForm() {
-        this.resetValues();
         this.vmForm.reset();
     }
 
-    async submit() {
-        let ret = await this.entity.save(this.id, this.values);
+    protected onSubmit = async () => {
+        let ret = await this.entity.save(this.id, this.vmForm.values);
         if (ret) {
             alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
         }
-        nav.push(<Page header={this.label + '提交成功'} back="none">
+        this.pushPage(<Page header={this.label + '提交成功'} back="none">
             <div className='m-3'>
                 <span className="text-success">
                     <FA name='check-circle' size='lg' /> 成功提交！
@@ -65,8 +61,8 @@ export class VmTuidEdit extends VmTuid {
 }
 
 const TuidNewPage = observer(({vm}:{vm:VmTuidEdit}) => {
-    let {label, values, renderForm} = vm;
+    let {label, vmForm} = vm;
     return <Page header={'新增 - ' + label}>
-        {renderForm('mx-3 my-2')}
+        {vmForm.render('mx-3 my-2')}
     </Page>;
 });
