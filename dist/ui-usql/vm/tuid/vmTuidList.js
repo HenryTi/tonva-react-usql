@@ -49,7 +49,7 @@ const Row = (item) => React.createElement("div", { className: "px-3 py-2" }, JSO
 let TuidListPage = class TuidListPage extends React.Component {
     render() {
         let { vm } = this.props;
-        let { label, values } = this.props.vm;
+        let { label } = this.props.vm;
         let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: vm.onSearch, placeholder: '搜索' + label });
         return React.createElement(Page, { header: header },
             React.createElement(List, { items: vm.pagedItems.items, item: { render: vm.renderRow, onClick: vm.rowClick }, before: '搜索' + label + '资料' }));

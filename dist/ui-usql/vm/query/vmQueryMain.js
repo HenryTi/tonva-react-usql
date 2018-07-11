@@ -7,50 +7,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { observer } from 'mobx-react';
 import { List, FA } from 'tonva-react-form';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmQuery } from './vmQuery';
 export class VmQueryMain extends VmQuery {
     constructor() {
         super(...arguments);
-        this.close = () => nav.pop(2);
-        this.resultPage = observer(QueryResultPage);
+        this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
+            yield this.entity.resetPage(30, this.vmForm.values);
+            yield this.entity.loadPage();
+            this.replacePage(React.createElement(QueryResultPage, { vm: this }));
+        });
+        this.again = () => {
+            this.vmForm.reset();
+            this.replacePage(React.createElement(QueryPage, { vm: this }));
+        };
         this.view = QueryPage;
     }
-    buildValuesFromSchema() {
-        this.values = this.buildObservableValues(this.entity.schema.fields);
-    }
-    submit() {
+    beforeStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entity.resetPage(30, this.values);
-            yield this.entity.loadPage();
-            nav.push(React.createElement(this.resultPage, { vm: this }));
+            this.vmForm = this.createVmFieldsForm();
+            this.vmForm.onSubmit = this.onSubmit;
         });
     }
-    /*
-    renderForm(className?:string) {
-        let fieldUIs:any[] = undefined;
-        let vmForm = this.newVmForm(
-            this.entity.schema.fields, fieldUIs, className);
-        return vmForm.renderView();
-    }*/
     renderExtra() {
         return;
     }
 }
 export const QueryPage = ({ vm }) => {
-    let { label, values } = vm;
+    let { label, vmForm } = vm;
     return React.createElement(Page, { header: label },
-        vm.renderForm('mx-3 my-2'),
+        vmForm.render('mx-3 my-2'),
         vm.renderExtra());
 };
 const QueryResultPage = ({ vm }) => {
-    let { entity, label, close } = vm;
+    let { entity, label, again } = vm;
     let { name, list } = entity;
-    let rightClose = React.createElement("button", { className: "btn btn-outline-secondary btn-sm", onClick: close },
-        React.createElement(FA, { name: "close" }));
-    return React.createElement(Page, { header: label || name, right: rightClose },
+    let rightClose = React.createElement("button", { className: "btn btn-outline-success btn-sm", onClick: again },
+        React.createElement(FA, { name: "search" }),
+        " \u518D\u67E5\u8BE2");
+    return React.createElement(Page, { header: label, right: rightClose },
         React.createElement(List, { items: list, item: {} }));
 };
 //# sourceMappingURL=vmQueryMain.js.map

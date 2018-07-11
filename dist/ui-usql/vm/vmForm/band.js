@@ -17,8 +17,8 @@ export const FieldsBand = ({ label, fieldUIs }) => {
                 c.render(fieldClassName);
         })));
 };
-export const ArrBand = ({ label, name, bands, vmList }) => {
-    return React.createElement("div", { className: "form-group row flex-column" }, vmList && vmList.render());
+export const ArrBand = ({ label, name, bands, vmArr }) => {
+    return React.createElement("div", { className: "form-group row flex-column" }, vmArr && vmArr.render());
 };
 export const SubmitBand = ({ content, onSubmit, form }) => {
     let { defaultSubmitCaption, submitCaption, readOnly } = form;

@@ -1,12 +1,11 @@
 import { VmQuery } from './vmQuery';
+import { VmForm } from '../vmForm';
 export declare class VmQueryMain extends VmQuery {
-    protected buildValuesFromSchema(): void;
-    submit(): Promise<void>;
-    close: () => void;
+    vmForm: VmForm;
+    beforeStart(param?: any): Promise<void>;
+    onSubmit: () => Promise<void>;
+    again: () => void;
     renderExtra(): void;
-    resultPage: ({ vm }: {
-        vm: VmQueryMain;
-    }) => JSX.Element;
     protected view: ({ vm }: {
         vm: VmQueryMain;
     }) => JSX.Element;

@@ -29,9 +29,9 @@ export class VmApi extends ViewModel {
         this.linkClick = (vmLink) => {
             vmLink.onClick();
         };
-        this.nav = (vmType, entity, ui, param) => __awaiter(this, void 0, void 0, function* () {
+        this.navVm = (vmType, entity, ui, param) => __awaiter(this, void 0, void 0, function* () {
             let vm = yield this.create(vmType, entity, ui);
-            vm.start(param);
+            yield vm.start(param);
         });
         this.view = ApiView;
         this.vmApp = vmApp;

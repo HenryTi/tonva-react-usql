@@ -20,4 +20,5 @@ export declare class VmApp extends ViewModel {
     }) => JSX.Element;
     readonly vmApiArr: VmApi[];
     getVmApi(apiName: string): VmApi;
+    start(): Promise<void>;
 }

@@ -56,10 +56,7 @@ export class VmInputControl extends VmControl {
         };
         this.ref = (input) => {
             this.input = input;
-            if (input) {
-                let v = this.value;
-                this.input.value = (v !== null) ? v : '';
-            }
+            this.setInputValue();
         };
         this.onFocus = () => {
             this.error = undefined;
@@ -72,9 +69,13 @@ export class VmInputControl extends VmControl {
         };
         this.view = InputControl;
     }
-    reset() {
-        this.input.value = '';
-        //this.setValue(null);
+    get value() { return super.value; }
+    set value(v) { super.value = v; this.setInputValue(); }
+    setInputValue() {
+        if (!this.input)
+            return;
+        let v = this.value;
+        this.input.value = v || '';
     }
 }
 const InputControl = observer(({ vm, className }) => {

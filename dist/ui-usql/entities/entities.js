@@ -20,7 +20,6 @@ const ln = '\n';
 //const entitiesCollection: {[api:string]: Entities} = {};
 export class Entities {
     constructor(api, access) {
-        //private ws: WSChannel;
         this.tuids = {};
         this.actions = {};
         this.sheets = {};

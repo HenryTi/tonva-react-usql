@@ -27,8 +27,9 @@ export declare abstract class VmInputControl extends VmControl {
     private input;
     inputType: string;
     renderError: (className: string) => JSX.Element;
-    reset(): void;
+    value: any;
     ref: (input: HTMLInputElement) => void;
+    private setInputValue;
     onFocus: () => void;
     onBlur: () => void;
     onChange: (evt: React.ChangeEvent<any>) => void;

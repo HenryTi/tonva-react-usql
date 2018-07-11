@@ -7,27 +7,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
+import { observer } from 'mobx-react';
+import { vmLinkIcon } from '../vmEntity';
 import { Page } from 'tonva-tools';
-import { VmSheet } from './vmSheet';
-export class VmSheetNew extends VmSheet {
+import { VmAction } from './vmAction';
+export class VmActionMain extends VmAction {
     constructor() {
         super(...arguments);
-        this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.save(this.label, values);
-            alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
-            this.popPage();
+        this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
+            this.returns = yield this.entity.submit(this.vmForm.values);
+            this.replacePage(React.createElement(ResultPage, { vm: this }));
         });
-        this.view = Edit;
+        this.view = ActionPage;
     }
-    beforeStart(param) {
+    get icon() { return vmLinkIcon('text-success', 'hand-o-right'); }
+    beforeStart() {
         return __awaiter(this, void 0, void 0, function* () {
             this.vmForm = this.createVmFieldsForm();
             this.vmForm.onSubmit = this.onSubmit;
         });
     }
 }
-const Edit = ({ vm }) => {
+const ActionPage = observer(({ vm }) => {
     let { label, vmForm } = vm;
-    return React.createElement(Page, { header: label }, vmForm.render());
+    return React.createElement(Page, { header: label }, vmForm.render('mx-3 my-2'));
+});
+const ResultPage = ({ vm }) => {
+    let { label, returns } = vm;
+    return React.createElement(Page, { header: label, back: "close" },
+        "\u5B8C\u6210\uFF01",
+        React.createElement("pre", null, JSON.stringify(returns, undefined, ' ')));
 };
-//# sourceMappingURL=vmNew.js.map
+//# sourceMappingURL=vmActionMain.js.map

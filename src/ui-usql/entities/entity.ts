@@ -1,7 +1,6 @@
 import {UsqlApi} from './usqlApi';
-import { Entities } from './entities';
+import { Entities, Field, Arr } from './entities';
 import { Tuid } from './tuid';
-import { Field, Arr } from '../vm/field';
 
 export abstract class Entity {
     protected entities: Entities;

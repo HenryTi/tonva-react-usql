@@ -10,48 +10,24 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmTuid } from './vmTuid';
 export class VmTuidEdit extends VmTuid {
     constructor() {
         super(...arguments);
         this.next = () => __awaiter(this, void 0, void 0, function* () {
-            this.resetForm();
-            nav.pop();
+            this.vmForm.reset();
+            this.popPage();
         });
         this.finish = () => {
-            nav.pop(2);
+            this.popPage(2);
         };
-        this.view = TuidNewPage;
-        /*
-        renderView() {
-            return <TuidNewPage vm={this} />;
-        }*/
-    }
-    beforeStart(param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createVmFieldsForm();
-        });
-    }
-    loadId(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.id = id;
-        });
-    }
-    buildValuesFromSchema() {
-        this.values = this.buildObservableValues(this.entity.schema.fields);
-    }
-    resetForm() {
-        this.resetValues();
-        this.vmForm.reset();
-    }
-    submit() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.save(this.id, this.values);
+        this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.entity.save(this.id, this.vmForm.values);
             if (ret) {
                 alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
             }
-            nav.push(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
+            this.pushPage(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },
                     React.createElement("span", { className: "text-success" },
                         React.createElement(FA, { name: 'check-circle', size: 'lg' }),
@@ -61,10 +37,29 @@ export class VmTuidEdit extends VmTuid {
                         React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
             return;
         });
+        this.view = TuidNewPage;
+        /*
+        renderView() {
+            return <TuidNewPage vm={this} />;
+        }*/
+    }
+    beforeStart(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.vmForm = this.createVmFieldsForm();
+            this.vmForm.onSubmit = this.onSubmit;
+        });
+    }
+    loadId(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.id = id;
+        });
+    }
+    resetForm() {
+        this.vmForm.reset();
     }
 }
 const TuidNewPage = observer(({ vm }) => {
-    let { label, values, renderForm } = vm;
-    return React.createElement(Page, { header: '新增 - ' + label }, renderForm('mx-3 my-2'));
+    let { label, vmForm } = vm;
+    return React.createElement(Page, { header: '新增 - ' + label }, vmForm.render('mx-3 my-2'));
 });
 //# sourceMappingURL=vmTuidEdit.js.map

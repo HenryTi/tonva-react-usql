@@ -23,7 +23,7 @@ export interface FieldsBandUIX extends FieldsBandUI {
 export interface ArrBandUIX extends ArrBandUI {
     name?: string;
     type?: 'arr';
-    vmList?: VmArr;
+    vmArr?: VmArr;
     band?: TypeArrBand;
     key?: string;
     form?: VmForm;

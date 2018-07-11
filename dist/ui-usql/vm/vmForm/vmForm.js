@@ -26,7 +26,7 @@ export class VmForm extends ViewModel {
         this.controls = {};
         this.vmArrs = {};
         this.onSubmitButtonClick = () => __awaiter(this, void 0, void 0, function* () {
-            let values = this.getValues();
+            let values = this.values;
             if (this.onFieldsInputed !== undefined) {
                 yield this.onFieldsInputed(values);
                 return;
@@ -52,7 +52,7 @@ export class VmForm extends ViewModel {
         this.formValues = this.buildFormValues(this.fields);
         this.buildBands(ui);
     }
-    getValues() {
+    get values() {
         let values = {};
         _.merge(values, this.formValues.values);
         for (let i in this.vmArrs) {
@@ -60,7 +60,7 @@ export class VmForm extends ViewModel {
         }
         return values;
     }
-    setValues(initValues) {
+    set values(initValues) {
         let { values, errors } = this.formValues;
         for (let f of this.fields) {
             let fn = f.name;
@@ -78,6 +78,10 @@ export class VmForm extends ViewModel {
             let fn = f.name;
             values[fn] = null;
             errors[fn] = undefined;
+        }
+        for (let i in this.controls) {
+            let ctrl = this.controls[i];
+            ctrl.value = null;
         }
         for (let i in this.vmArrs) {
             let vmArr = this.vmArrs[i];
@@ -271,7 +275,7 @@ export class VmForm extends ViewModel {
         let arr = this.arrs.find(v => v.name === name);
         if (arr === undefined)
             return ret;
-        ret.vmList = this.buildArrList(arr, ret);
+        ret.vmArr = this.buildVmArr(arr, ret);
         return ret;
     }
     buildOnFly() {
@@ -330,8 +334,8 @@ export class VmForm extends ViewModel {
             band: ArrBand,
             form: this,
         };
-        let vmList = this.buildArrList(arr, arrBandUI);
-        arrBandUI.vmList = vmList;
+        let vmArr = this.buildVmArr(arr, arrBandUI);
+        arrBandUI.vmArr = vmArr;
         vBands.push(arrBandUI);
     }
     buildArrsBands(vBands) {
@@ -340,7 +344,7 @@ export class VmForm extends ViewModel {
         for (let arr of this.arrs)
             this.buildArrBand(vBands, arr);
     }
-    buildArrList(arr, arrBandUI) {
+    buildVmArr(arr, arrBandUI) {
         let ret = new VmArr(this.vmApi, arr, arrBandUI);
         this.vmArrs[arr.name] = ret;
         return ret;

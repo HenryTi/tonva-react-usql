@@ -17,7 +17,7 @@ export class VmSheetList extends VmSheet {
         this.rowClick = (brief) => __awaiter(this, void 0, void 0, function* () {
             if (brief.processing === 1)
                 return;
-            this.nav(VmSheetAction, brief);
+            this.navVm(VmSheetAction, brief);
             //let {ui, data} = this.props;
             //let {entity:sheet} = ui;
             //let {state, stateName} = data;

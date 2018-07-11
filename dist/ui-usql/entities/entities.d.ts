@@ -13,6 +13,10 @@ export interface Field {
     url?: string;
     _tuid: Tuid;
 }
+export interface Arr {
+    name: string;
+    fields: Field[];
+}
 export declare class Entities {
     private api;
     private tvApi;

@@ -17,7 +17,7 @@ export interface Field {
     url?: string;
     _tuid: Tuid;
 }
-interface Arr {
+export interface Arr {
     name:string;
     fields: Field[];
 }

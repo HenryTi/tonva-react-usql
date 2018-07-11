@@ -51,7 +51,7 @@ export declare class VmApi extends ViewModel {
     pickerConfig(tuid: Tuid): PickerConfig;
     typeTuidContent(tuid: Tuid): TypeContent;
     create<T extends VmEntity>(vmType: new (vmApi: VmApi, entity: Entity, ui: EntityUI) => T, entity: Entity, ui: EntityUI): Promise<T>;
-    nav: <T extends VmEntity>(vmType: new (vmApi: VmApi, entity: Entity, ui: EntityUI) => T, entity: Entity, ui: EntityUI, param?: any) => Promise<void>;
+    navVm: <T extends VmEntity>(vmType: new (vmApi: VmApi, entity: Entity, ui: EntityUI) => T, entity: Entity, ui: EntityUI, param?: any) => Promise<void>;
     protected view: ({ vm }: {
         vm: VmApi;
     }) => JSX.Element;

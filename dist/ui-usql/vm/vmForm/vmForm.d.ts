@@ -35,8 +35,7 @@ export declare class VmForm extends ViewModel {
     };
     defaultSubmitCaption: any;
     submitCaption: any;
-    getValues(): any;
-    setValues(initValues: any): void;
+    values: any;
     onSubmitButtonClick: () => Promise<void>;
     onFormSubmit: (event: React.FormEvent<any>) => boolean;
     reset(): void;
@@ -60,7 +59,7 @@ export declare class VmForm extends ViewModel {
     private typeFromField;
     private buildArrBand;
     private buildArrsBands;
-    private buildArrList;
+    private buildVmArr;
     protected view: ({ vm }: {
         vm: VmForm;
     }) => JSX.Element;

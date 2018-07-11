@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Button } from 'reactstrap';
 import { tonvaDebug } from 'tonva-react-form';
-import { nav, Page } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmSheet } from './vmSheet';
 import { VmView } from './vmView';
 export class VmSheetAction extends VmSheet {
@@ -19,7 +19,7 @@ export class VmSheetAction extends VmSheet {
             let { id, flow, state } = this.brief;
             let res = yield this.entity.action(id, flow, state, action.name);
             alert(JSON.stringify(res));
-            nav.pop();
+            this.popPage();
         });
         this.view = SheetAction;
     }

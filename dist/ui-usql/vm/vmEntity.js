@@ -7,17 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { observable } from 'mobx';
 import { FA } from 'tonva-react-form';
 import { VmForm } from './vmForm';
 import { VmPage } from './vmPage';
 export class VmEntity extends VmPage {
     constructor(vmApi, entity, ui) {
         super();
-        this.nav = (vmType, param) => __awaiter(this, void 0, void 0, function* () {
-            yield this.vmApi.nav(vmType, this.entity, this.ui, param);
+        this.navVm = (vmType, param) => __awaiter(this, void 0, void 0, function* () {
+            yield this.vmApi.navVm(vmType, this.entity, this.ui, param);
         });
-        this.renderForm = (className) => React.createElement("div", null, "old VMForm");
         this.vmApi = vmApi;
         this.entity = entity;
         this.ui = ui;
@@ -61,22 +59,7 @@ export class VmEntity extends VmPage {
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.entity.loadSchema();
-            this.buildValuesFromSchema();
         });
-    }
-    buildValuesFromSchema() { }
-    buildObservableValues(fields) {
-        let len = fields.length;
-        let v = {};
-        for (let i = 0; i < len; i++) {
-            v[fields[i].name] = null;
-        }
-        return observable(v);
-    }
-    resetValues() {
-        for (let i in this.values) {
-            this.values[i] = null;
-        }
     }
     typeVmTuidControl(field, tuid) {
         return this.vmApi.typeVmTuidControl(tuid);

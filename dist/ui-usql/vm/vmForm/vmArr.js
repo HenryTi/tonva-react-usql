@@ -10,28 +10,22 @@ import * as React from 'react';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { List, FA } from 'tonva-react-form';
-import { Page, nav } from 'tonva-tools';
-import { ViewModel, RowContent } from '../viewModel';
+import { Page } from 'tonva-tools';
+import { RowContent } from '../viewModel';
 import { VmForm } from './vmForm';
-export class VmArr extends ViewModel {
+import { VmPage } from '../vmPage';
+export class VmArr extends VmPage {
     constructor(vmApi, arr, arrBandUI) {
         super();
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let values = this.vmForm.getValues();
+            let values = this.vmForm.values;
             yield this.onRowChanged(values);
             if (this.afterEditRow !== undefined)
                 yield this.afterEditRow(values);
         });
-        this.start = (rowValues) => __awaiter(this, void 0, void 0, function* () {
-            this.rowValues = rowValues;
-            if (rowValues === undefined)
-                this.vmForm.reset();
-            else
-                this.vmForm.setValues(rowValues);
-            if (this.onEditRow === undefined)
-                nav.push(React.createElement(RowPage, { vm: this }));
-            else
-                yield this.onEditRow(rowValues, this.onRowChanged);
+        this.afterEditRow = (values) => __awaiter(this, void 0, void 0, function* () {
+            this.popPage();
+            return;
         });
         this.addClick = () => this.start(undefined);
         this.onRowChanged = (rowValues) => __awaiter(this, void 0, void 0, function* () {
@@ -42,12 +36,13 @@ export class VmArr extends ViewModel {
             else {
                 _.merge(this.rowValues, rowValues);
             }
-            this.vmForm.setValues(this.rowValues);
+            this.vmForm.values = this.rowValues;
         });
         this.renderItem = (item, index) => {
             return React.createElement(this.row, Object.assign({}, item));
         };
         this.view = ArrList;
+        this.start = this.start.bind(this);
         this.vmApi = vmApi;
         this.arr = arr;
         this.arrBandUI = arrBandUI;
@@ -56,18 +51,18 @@ export class VmArr extends ViewModel {
         this.label = label;
         this.row = row || RowContent;
         this.list = observable.array([], { deep: true });
-        let bands = this.arrBandUI.bands.slice();
+        //let bands = this.arrBandUI.bands.slice();
         let submitBand = {
             type: 'submit',
             content: '{save} 完成',
         };
-        bands.push(submitBand);
+        //bands.push(submitBand);
         this.vmForm = new VmForm();
         this.vmForm.init({
             fields: arr.fields,
             vmApi: vmApi,
             ui: {
-                bands: bands,
+                bands: undefined,
                 className: undefined,
             },
             readOnly: this.readOnly,
@@ -77,6 +72,19 @@ export class VmArr extends ViewModel {
     reset() {
         this.vmForm.reset();
         this.list.clear();
+    }
+    start(rowValues) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.rowValues = rowValues;
+            if (rowValues === undefined)
+                this.vmForm.reset();
+            else
+                this.vmForm.values = rowValues;
+            if (this.onEditRow !== undefined)
+                yield this.onEditRow(rowValues, this.onRowChanged);
+            else
+                this.pushPage(React.createElement(RowPage, { vm: this }));
+        });
     }
 }
 const ArrList = ({ vm }) => {

@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Page, loadAppApis } from 'tonva-tools';
+import { Page, loadAppApis, nav } from 'tonva-tools';
 import { ViewModel } from './viewModel';
 import { VmApi } from './vmApi';
 export const entitiesCollection = {};
@@ -75,6 +75,12 @@ export class VmApp extends ViewModel {
     }
     getVmApi(apiName) {
         return this.vmApiCollection[apiName];
+    }
+    start() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            nav.replace(this.render());
+        });
     }
 }
 const SheetLink = ({ vm, apiName, type, entityName }) => {

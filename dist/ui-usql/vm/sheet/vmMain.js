@@ -26,22 +26,30 @@ export class VmSheetMain extends VmSheet {
         this.vmSheetList = VmSheetList;
         this.newClick = () => __awaiter(this, void 0, void 0, function* () {
             let t = (this.ui && this.ui.new) || this.vmNew;
-            yield this.nav(t);
+            yield this.navVm(t);
         });
-        this.schemaClick = () => __awaiter(this, void 0, void 0, function* () { return yield this.nav(this.vmSchema); });
-        this.archivesClick = () => __awaiter(this, void 0, void 0, function* () { return yield this.nav(this.vmArchives); });
-        this.sheetStateClick = (state) => __awaiter(this, void 0, void 0, function* () { return yield this.nav(this.vmSheetList, state); });
+        this.schemaClick = () => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(this.vmSchema); });
+        this.archivesClick = () => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(this.vmArchives); });
+        this.sheetStateClick = (state) => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(this.vmSheetList, state); });
         this.renderState = (item, index) => {
             let { state, count } = item;
-            let stateName = state === '$' ? '新单' : state;
+            if (count === 0)
+                return null;
             let badge = React.createElement(Badge, { className: "ml-5 align-self-end", color: "success" }, count);
-            return React.createElement(LMR, { className: "px-3 py-2", left: stateName, right: badge });
+            return React.createElement(LMR, { className: "px-3 py-2", left: this.getStateLabel(state), right: badge });
         };
         this.view = Main;
     }
     beforeStart() {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.entity.getStateSheetCount();
+        });
+    }
+    onReceive(msg) {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("onReceive").call(this, msg);
+            this.entity.onReceive(msg);
         });
     }
 }
@@ -53,7 +61,7 @@ const Main = ({ vm }) => {
             React.createElement(Button, { className: "mr-2", color: "primary", onClick: schemaClick }, "\u6A21\u677F")),
         React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
                 "\u5F85\u5904\u7406",
-                label), none: "[ \u65E0 ]", items: entity.statesCount.filter(row => row.count), item: { render: renderState, onClick: sheetStateClick } }),
+                label), none: "[ \u65E0 ]", items: entity.statesCount, item: { render: renderState, onClick: sheetStateClick } }),
         React.createElement("div", { className: "mx-3 my-2" },
             React.createElement(Button, { color: "primary", onClick: archivesClick },
                 "\u5DF2\u5F52\u6863",

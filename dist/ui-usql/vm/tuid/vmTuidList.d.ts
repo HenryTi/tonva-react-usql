@@ -6,7 +6,7 @@ export declare type TypeVmTuidList = typeof VmTuidList;
 export declare class VmTuidList extends VmTuid {
     pagedItems: TuidPagedItems;
     protected init(): void;
-    beforeStart(param?: any): Promise<void>;
+    protected beforeStart(param?: any): Promise<void>;
     onSearch: (key: string) => Promise<void>;
     renderRow: (item: any, index: number) => JSX.Element;
     rowClick: (item: any) => Promise<void>;

@@ -23,7 +23,7 @@ export class VmArchives extends VmSheet {
                 return;
             //this.archiveData = await this.entity.getArchive(brief.id);
             //let {brief, data:sheetData, flows} = res;
-            this.nav(VmArchived, brief);
+            this.navVm(VmArchived, brief);
         });
         this.archiveRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,

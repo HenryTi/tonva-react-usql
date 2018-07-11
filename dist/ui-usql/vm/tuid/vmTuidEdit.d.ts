@@ -4,13 +4,12 @@ export declare type TypeVmTuidEdit = typeof VmTuidEdit;
 export declare class VmTuidEdit extends VmTuid {
     vmForm: VmForm;
     id: number;
-    beforeStart(param?: any): Promise<void>;
+    protected beforeStart(param?: any): Promise<void>;
     loadId(id: number): Promise<void>;
-    protected buildValuesFromSchema(): void;
     protected next: () => Promise<void>;
     protected finish: () => void;
     protected resetForm(): void;
-    submit(): Promise<void>;
+    protected onSubmit: () => Promise<void>;
     protected view: ({ vm }: {
         vm: VmTuidEdit;
     }) => JSX.Element;

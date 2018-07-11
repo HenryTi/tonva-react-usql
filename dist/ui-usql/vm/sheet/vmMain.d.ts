@@ -10,7 +10,8 @@ export declare class VmSheetMain extends VmSheet {
     protected vmSchema: typeof VmSheetSchema;
     protected vmArchives: typeof VmArchives;
     protected vmSheetList: typeof VmSheetList;
-    beforeStart(): Promise<void>;
+    protected beforeStart(): Promise<void>;
+    protected onReceive(msg: any): Promise<void>;
     newClick: () => Promise<void>;
     schemaClick: () => Promise<void>;
     archivesClick: () => Promise<void>;
