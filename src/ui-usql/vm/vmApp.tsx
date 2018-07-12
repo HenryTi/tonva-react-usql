@@ -80,8 +80,19 @@ export class VmApp extends ViewModel {
     }
 
     async start() {
-        await this.loadSchema();
-        nav.replace(this.render());
+        try {
+            await this.loadSchema();
+            console.log('schema loaded');
+            nav.clear();
+            nav.replace(this.render());
+        }
+        catch(err) {
+            nav.push(<Page header="App start error!">
+                <pre>
+                    {err.message}
+                </pre>
+            </Page>);
+        }
     }
 }
 

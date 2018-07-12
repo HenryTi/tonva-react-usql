@@ -1,8 +1,15 @@
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 import * as React from 'react';
+import { computed } from 'mobx';
 import { observer } from 'mobx-react';
-//import { FieldUI, InputUI } from "./formUI";
 import { ViewModel } from "../viewModel";
 import { isArray } from 'util';
+import { RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from './rule';
 export function buildControl(fieldUI, formValues) {
     let ctrl;
     switch (fieldUI.type) {
@@ -27,6 +34,26 @@ export class VmControl extends ViewModel {
         this.fieldUI = fieldUI;
         this.name = fieldUI.name;
         this.formValues = formValues;
+        this.buildRules();
+    }
+    buildRules() {
+        this.rules = [];
+        let { field, required } = this.fieldUI;
+        if (required === true || field !== undefined && field.null === false) {
+            this.rules.push(new RuleRequired);
+        }
+    }
+    get checkRules() {
+        let defy = [];
+        for (let r of this.rules)
+            r.check(defy, this.value);
+        return defy;
+    }
+    get isOk() {
+        if (this.rules.length === 0)
+            return true;
+        let defy = this.checkRules;
+        return defy.length === 0;
     }
     get value() { return this.formValues.values[this.name]; }
     set value(v) { this.formValues.values[this.name] = v; }
@@ -34,6 +61,15 @@ export class VmControl extends ViewModel {
     set error(err) { this.formValues.errors[this.name] = err; }
     parse(str) { return str; }
 }
+__decorate([
+    computed
+], VmControl.prototype, "checkRules", null);
+__decorate([
+    computed
+], VmControl.prototype, "isOk", null);
+__decorate([
+    computed
+], VmControl.prototype, "value", null);
 export class VmUnknownControl extends VmControl {
     constructor() {
         super(...arguments);
@@ -62,7 +98,10 @@ export class VmInputControl extends VmControl {
             this.error = undefined;
         };
         this.onBlur = () => {
-            this.error = 'error';
+            let defy = this.checkRules;
+            if (defy.length > 0) {
+                this.error = defy[0];
+            }
         };
         this.onChange = (evt) => {
             this.value = this.parse(evt.currentTarget.value);
@@ -78,9 +117,10 @@ export class VmInputControl extends VmControl {
         this.input.value = v || '';
     }
 }
+export const RedMark = () => React.createElement("b", { style: { color: 'red', position: 'absolute', left: '0.1em', top: '0.5em' } }, "*");
 const InputControl = observer(({ vm, className }) => {
     let { fieldUI, ref, inputType, onFocus, onBlur, onChange, renderError } = vm;
-    let { placeholder, readOnly, form } = fieldUI;
+    let { placeHolder, readOnly, form } = fieldUI;
     if (readOnly === undefined)
         readOnly = false;
     if (readOnly === false) {
@@ -98,8 +138,14 @@ const InputControl = observer(({ vm, className }) => {
     }
     if (readOnly === true)
         return React.createElement("input", { className: ctrlCN, ref: ref, type: inputType, readOnly: true });
+    let redDot;
+    let { field, required } = fieldUI;
+    if (required === true || field.null === false) {
+        redDot = React.createElement(RedMark, null);
+    }
     return React.createElement(React.Fragment, null,
-        React.createElement("input", { className: ctrlCN, ref: ref, type: inputType, onFocus: onFocus, onBlur: onBlur, onChange: onChange, placeholder: placeholder, readOnly: readOnly }),
+        redDot,
+        React.createElement("input", { className: ctrlCN, ref: ref, type: inputType, onFocus: onFocus, onBlur: onBlur, onChange: onChange, placeholder: placeHolder, readOnly: readOnly }),
         renderError(errCN));
 });
 export class VmStringControl extends VmInputControl {
@@ -113,6 +159,15 @@ export class VmNumberControl extends VmInputControl {
         super(...arguments);
         this.inputType = 'number';
     }
+    buildRules() {
+        super.buildRules();
+        this.rules.push(new RuleNum);
+        let { min, max } = this.fieldUI;
+        if (min !== undefined)
+            this.rules.push(new RuleMin(min));
+        if (max !== undefined)
+            this.rules.push(new RuleMax(max));
+    }
     parse(text) {
         try {
             let ret = Number(text);
@@ -124,6 +179,10 @@ export class VmNumberControl extends VmInputControl {
     }
 }
 export class VmIntControl extends VmNumberControl {
+    buildRules() {
+        super.buildRules();
+        this.rules.push(new RuleInt);
+    }
 }
 export class VmDecControl extends VmNumberControl {
 }

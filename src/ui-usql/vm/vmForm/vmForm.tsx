@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { observable, IObservableObject, IObservableArray } from 'mobx';
+import { observable, IObservableObject, IObservableArray, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { ViewModel, JSONContent, RowContent } from '../viewModel';
@@ -73,6 +73,13 @@ export class VmForm extends ViewModel {
         for (let i in this.vmArrs) {
             this.vmArrs[i].list.push(...initValues[i]);
         }
+    }
+
+    @computed get isOk():boolean {
+        for (let i in this.controls) {
+            if (this.controls[i].isOk === false) return false;
+        }
+        return true;
     }
 
     onSubmitButtonClick = async () => {

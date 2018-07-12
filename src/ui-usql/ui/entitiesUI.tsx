@@ -22,7 +22,7 @@ export class EntitiesUI {
     private defaultMapper:EntitiesMapper;
     private mapper?:EntitiesMapper;
 
-    constructor(url:string, ws:string, api:string, access:string, defaultMapper:EntitiesMapper, mapper?:EntitiesMapper) {
+    constructor(url:string, /*ws:string, */api:string, access:string, defaultMapper:EntitiesMapper, mapper?:EntitiesMapper) {
         this.api = api;
         entitiesUICollection[api] = this;
         let token = undefined;
@@ -44,7 +44,7 @@ export class EntitiesUI {
         let hash = document.location.hash;
         let baseUrl = hash===undefined || hash===''? 
             'debug/':'tv/';
-        let _api = new Api(baseUrl, url, ws, apiOwner, apiName, true);
+        let _api = new Api(baseUrl, url, /*ws, */apiOwner, apiName, true);
         this.entities = new Entities(_api, access);
         this.defaultMapper = defaultMapper;
         this.mapper = mapper || {};

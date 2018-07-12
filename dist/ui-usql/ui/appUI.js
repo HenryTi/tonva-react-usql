@@ -33,7 +33,7 @@ export class AppUI {
             let isDebug = process.env.NODE_ENV === 'development';
             let appApis = yield loadAppApis(this.appOwner, this.appName);
             for (let appApi of appApis) {
-                let { apiOwner, apiName, url, urlDebug, ws, access, token } = appApi;
+                let { apiOwner, apiName, url, urlDebug, /*ws, */ access, token } = appApi;
                 let api = apiOwner + '/' + apiName;
                 let mapper = this.uiMappers && this.uiMappers[api];
                 if (mapper === null)
@@ -56,7 +56,7 @@ export class AppUI {
                         }
                     }
                 }
-                let apiUI = new EntitiesUI(url, ws, api, access, defaultMapper, mapper);
+                let apiUI = new EntitiesUI(url, /*ws, */ api, access, defaultMapper, mapper);
                 this.apiUIs.push(apiUI);
                 yield apiUI.loadEntities();
             }

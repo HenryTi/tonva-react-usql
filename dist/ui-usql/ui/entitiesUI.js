@@ -19,7 +19,7 @@ import { BookUI } from './bookUI';
 import { HistoryUI } from './historyUI';
 export const entitiesUICollection = {};
 export class EntitiesUI {
-    constructor(url, ws, api, access, defaultMapper, mapper) {
+    constructor(url, /*ws:string, */ api, access, defaultMapper, mapper) {
         this.api = api;
         entitiesUICollection[api] = this;
         let token = undefined;
@@ -41,7 +41,7 @@ export class EntitiesUI {
         let hash = document.location.hash;
         let baseUrl = hash === undefined || hash === '' ?
             'debug/' : 'tv/';
-        let _api = new Api(baseUrl, url, ws, apiOwner, apiName, true);
+        let _api = new Api(baseUrl, url, /*ws, */ apiOwner, apiName, true);
         this.entities = new Entities(_api, access);
         this.defaultMapper = defaultMapper;
         this.mapper = mapper || {};

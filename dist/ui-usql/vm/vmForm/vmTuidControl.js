@@ -11,7 +11,7 @@ import { observer } from 'mobx-react';
 import { nav } from 'tonva-tools';
 //import { VmTuidPicker, TypeVmTuidPicker } from './vmTuidPicker';
 import { VmTuidPicker } from './vmPicker';
-import { VmControl } from './control';
+import { VmControl, RedMark } from './control';
 export class VmTuidControl extends VmControl {
     constructor(fieldUI, formValues, vmApi, tuid, tuidContent, pickerConfig) {
         super(fieldUI, formValues);
@@ -65,6 +65,13 @@ const TuidControl = observer(({ vm }) => {
     if (readOnly === true) {
         return React.createElement("div", { className: "form-control form-control-plaintext border border-info rounded bg-light" }, content);
     }
-    return React.createElement("button", { className: "form-control btn btn-outline-info", type: "button", style: buttonStyle, onClick: onClick }, content);
+    let redDot;
+    let { field, required } = fieldUI;
+    if (required === true || field.null === false) {
+        redDot = React.createElement(RedMark, null);
+    }
+    return React.createElement(React.Fragment, null,
+        redDot,
+        React.createElement("button", { className: "form-control btn btn-outline-info", type: "button", style: buttonStyle, onClick: onClick }, content));
 });
 //# sourceMappingURL=vmTuidControl.js.map

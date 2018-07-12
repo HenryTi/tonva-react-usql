@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { computed, action } from 'mobx';
 import { observer } from 'mobx-react';
-//import { FieldUI, InputUI } from "./formUI";
 import { ViewModel } from "../viewModel";
 import { FormValues } from './vmForm';
-import { InputUIX, FieldUIX } from './formUIX';
+import { InputUIX, FieldUIX, NumberUIX, StringUIX } from './formUIX';
 import { isArray } from 'util';
+import { Rule, RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from './rule';
 
 export type TypeControl = React.StatelessComponent<{vm: ViewModel, className:string}>;
 
@@ -23,14 +24,36 @@ export abstract class VmControl extends ViewModel {
     fieldUI: FieldUIX;
     protected formValues: FormValues;
     protected name: string;
+    protected rules: Rule[];
     constructor(fieldUI: FieldUIX, formValues:FormValues) {
         super();
         this.fieldUI = fieldUI;
         this.name = fieldUI.name;
         this.formValues = formValues;
+        this.buildRules();
     }
 
-    get value() { return this.formValues.values[this.name]; }
+    protected buildRules() {
+        this.rules = [];
+        let {field, required} = this.fieldUI;
+        if (required === true || field !== undefined && field.null === false) {
+            this.rules.push(new RuleRequired);
+        }
+    }
+
+    @computed get checkRules(): string[] {
+        let defy = [];
+        for (let r of this.rules) r.check(defy, this.value);
+        return defy;
+    }
+
+    @computed get isOk() {
+        if (this.rules.length === 0) return true;
+        let defy = this.checkRules;
+        return defy.length === 0;
+    }
+
+    @computed get value() { return this.formValues.values[this.name]; }
     set value(v:any) { this.formValues.values[this.name]=v; }
     get error() { return this.formValues.errors[this.name]; }
     set error(err:any) { this.formValues.errors[this.name]=err; }
@@ -78,7 +101,10 @@ export abstract class VmInputControl extends VmControl {
     }
 
     onBlur = () => {
-        this.error = 'error';
+        let defy = this.checkRules;
+        if (defy.length > 0) {
+            this.error = defy[0];
+        }
     }
 
     onChange = (evt: React.ChangeEvent<any>) => {
@@ -88,9 +114,10 @@ export abstract class VmInputControl extends VmControl {
     protected view = InputControl;
 }
 
+export const RedMark = () => <b style={{color:'red', position:'absolute', left:'0.1em', top:'0.5em'}}>*</b>;
 const InputControl = observer(({vm, className}:{vm:VmInputControl, className:string|string[]}) => {
     let {fieldUI, ref, inputType, onFocus, onBlur, onChange, renderError} = vm;
-    let {placeholder, readOnly, form} = fieldUI;
+    let {placeHolder, readOnly, form} = fieldUI;
     if (readOnly === undefined) readOnly=false;
     if (readOnly === false) {
         if (form.readOnly === true) readOnly = true;
@@ -110,14 +137,21 @@ const InputControl = observer(({vm, className}:{vm:VmInputControl, className:str
             readOnly={true}
         />;
 
-    return <><input className={ctrlCN}
-        ref={ref}
-        type={inputType}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onChange={onChange}
-        placeholder={placeholder}
-        readOnly={readOnly} />
+    let redDot;
+    let {field, required} = fieldUI;
+    if (required === true || field.null === false) {
+        redDot = <RedMark />;
+    }
+    return <>
+        {redDot}
+        <input className={ctrlCN}
+            ref={ref}
+            type={inputType}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            onChange={onChange}
+            placeholder={placeHolder}
+            readOnly={readOnly} />
         {renderError(errCN)}
     </>
 });
@@ -127,6 +161,16 @@ export class VmStringControl extends VmInputControl {
 }
 
 export abstract class VmNumberControl extends VmInputControl {
+    fieldUI: NumberUIX;
+
+    protected buildRules() {
+        super.buildRules();
+        this.rules.push(new RuleNum);
+        let {min, max} = this.fieldUI;
+        if (min !== undefined) this.rules.push(new RuleMin(min));
+        if (max !== undefined) this.rules.push(new RuleMax(max));
+    }
+
     inputType:string = 'number';
 
     protected parse(text:string):any {
@@ -141,6 +185,10 @@ export abstract class VmNumberControl extends VmInputControl {
 }
 
 export class VmIntControl extends VmNumberControl {
+    protected buildRules() {
+        super.buildRules();
+        this.rules.push(new RuleInt);
+    }
 }
 
 export class VmDecControl extends VmNumberControl {

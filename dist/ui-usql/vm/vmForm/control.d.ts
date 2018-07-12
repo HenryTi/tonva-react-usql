@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { ViewModel } from "../viewModel";
 import { FormValues } from './vmForm';
-import { InputUIX, FieldUIX } from './formUIX';
+import { InputUIX, FieldUIX, NumberUIX } from './formUIX';
+import { Rule } from './rule';
 export declare type TypeControl = React.StatelessComponent<{
     vm: ViewModel;
     className: string;
@@ -11,7 +12,11 @@ export declare abstract class VmControl extends ViewModel {
     fieldUI: FieldUIX;
     protected formValues: FormValues;
     protected name: string;
+    protected rules: Rule[];
     constructor(fieldUI: FieldUIX, formValues: FormValues);
+    protected buildRules(): void;
+    readonly checkRules: string[];
+    readonly isOk: boolean;
     value: any;
     error: any;
     protected parse(str: string): any;
@@ -38,14 +43,18 @@ export declare abstract class VmInputControl extends VmControl {
         className: string | string[];
     }) => JSX.Element;
 }
+export declare const RedMark: () => JSX.Element;
 export declare class VmStringControl extends VmInputControl {
     inputType: string;
 }
 export declare abstract class VmNumberControl extends VmInputControl {
+    fieldUI: NumberUIX;
+    protected buildRules(): void;
     inputType: string;
     protected parse(text: string): any;
 }
 export declare class VmIntControl extends VmNumberControl {
+    protected buildRules(): void;
 }
 export declare class VmDecControl extends VmNumberControl {
 }

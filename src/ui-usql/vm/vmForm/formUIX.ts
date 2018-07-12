@@ -4,7 +4,7 @@ import { Field } from "../field";
 import { VmControl } from "./control";
 import { TypeFieldBand, TypeFieldsBand, TypeArrBand, TypeSubmitBand } from './band';
 import { FormUI, FieldBandUI, FieldsBandUI, ArrBandUI, SubmitBandUI, FieldUI,
-    TuidUI, InputUI, StringUI, IntUI, DecUI, TextUI, CheckUI, SelectUI, RadioUI } from './formUI';
+    TuidUI, InputUI, StringUI, IntUI, DecUI, TextUI, CheckUI, SelectUI, RadioUI, NumberUI } from './formUI';
 import { VmForm } from './vmForm';
 import { VmArr } from './vmArr';
 
@@ -60,11 +60,15 @@ export interface TuidUIX extends TuidUI, FieldUIXBase {
 }
 
 export interface InputUIX extends InputUI, FieldUIXBase {
-    placeholder: string;
+    //placeholder: string;
 }
 
-export interface StringUIX extends StringUI, FieldUIXBase {
-    //type: 'string';
+export interface StringUIX extends StringUI, InputUIX {
+    type: 'string';
+}
+
+export interface NumberUIX extends NumberUI, InputUIX {
+    //type: 'int';
 }
 
 export interface IntUIX extends IntUI, FieldUIXBase {

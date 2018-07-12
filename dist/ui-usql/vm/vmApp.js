@@ -78,8 +78,16 @@ export class VmApp extends ViewModel {
     }
     start() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.loadSchema();
-            nav.replace(this.render());
+            try {
+                yield this.loadSchema();
+                console.log('schema loaded');
+                nav.clear();
+                nav.replace(this.render());
+            }
+            catch (err) {
+                nav.push(React.createElement(Page, { header: "App start error!" },
+                    React.createElement("pre", null, err.message)));
+            }
         });
     }
 }

@@ -50,8 +50,8 @@ export class VmApi extends ViewModel {
         let hash = document.location.hash;
         let baseUrl = hash===undefined || hash===''? 
             'debug/':'tv/';
-        let ws = undefined;     // 新版没有ws了，webSocket都是从单一的中央过来的
-        let _api = new Api(baseUrl, url, ws, apiOwner, apiName, true);
+        //let ws = undefined;     // 新版没有ws了，webSocket都是从单一的中央过来的
+        let _api = new Api(baseUrl, url, /*ws, */apiOwner, apiName, true);
         this.entities = new Entities(_api, access);
     }
 

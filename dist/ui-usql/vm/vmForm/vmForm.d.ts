@@ -36,6 +36,7 @@ export declare class VmForm extends ViewModel {
     defaultSubmitCaption: any;
     submitCaption: any;
     values: any;
+    readonly isOk: boolean;
     onSubmitButtonClick: () => Promise<void>;
     onFormSubmit: (event: React.FormEvent<any>) => boolean;
     reset(): void;

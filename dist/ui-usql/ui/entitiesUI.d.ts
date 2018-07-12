@@ -13,7 +13,7 @@ export declare const entitiesUICollection: {
 export declare class EntitiesUI {
     private defaultMapper;
     private mapper?;
-    constructor(url: string, ws: string, api: string, access: string, defaultMapper: EntitiesMapper, mapper?: EntitiesMapper);
+    constructor(url: string, /*ws:string, */ api: string, access: string, defaultMapper: EntitiesMapper, mapper?: EntitiesMapper);
     api: string;
     loadEntities(): Promise<void>;
     entities: Entities;

@@ -24,6 +24,7 @@ export interface FieldUI {
     name: string;
     type: 'tuid' | 'string' | 'int' | 'dec' | 'text' | 'check' | 'select' | 'radio';
     readOnly?: boolean;
+    required?: boolean;
 }
 export interface TuidUI extends FieldUI {
     type: 'tuid';
@@ -34,10 +35,14 @@ export interface InputUI extends FieldUI {
 export interface StringUI extends InputUI {
     type: 'string';
 }
-export interface IntUI extends InputUI {
+export interface NumberUI extends InputUI {
+    min?: number;
+    max?: number;
+}
+export interface IntUI extends NumberUI {
     type: 'int';
 }
-export interface DecUI extends InputUI {
+export interface DecUI extends NumberUI {
     type: 'dec';
 }
 export interface TextUI extends InputUI {

@@ -3,6 +3,7 @@ import { FA } from 'tonva-react-form';
 import { FieldBandUIX, FieldsBandUIX, ArrBandUIX, SubmitBandUIX } from "./formUIX";
 import { defaultCreateObservableOptions } from '../../../../node_modules/mobx/lib/api/observable';
 import { VmUnknownControl } from './control';
+import { observer } from '../../../../node_modules/mobx-react';
 
 export type TypeFieldBand = ({}:FieldBandUIX) => JSX.Element;
 export type TypeFieldsBand = ({}:FieldsBandUIX) => JSX.Element;
@@ -10,7 +11,7 @@ export type TypeArrBand = ({}:ArrBandUIX) => JSX.Element;
 export type TypeSubmitBand = ({}:SubmitBandUIX) => JSX.Element;
 
 const Unkown = ({name}:{name:string}) => <input type="text" className="form-control" placeholder={'unkown control: ' + name} />
-const fieldClassName = ['form-control', 'd-block text-danger'];
+const fieldClassName = ['form-control', 'd-block text-danger small px-2 pt-1'];
 
 export const FieldBand = ({label, control, field}:FieldBandUIX) => {
     return <div className='form-group row'>
@@ -46,14 +47,17 @@ export const ArrBand = ({label, name, bands, vmArr}: ArrBandUIX) => {
     </div>;
 }
 
-export const SubmitBand = ({content, onSubmit, form}: SubmitBandUIX) => {
-    let {defaultSubmitCaption, submitCaption, readOnly} = form;
+export const SubmitBand = observer(({content, onSubmit, form}: SubmitBandUIX) => {
+    let {defaultSubmitCaption, submitCaption, readOnly, isOk} = form;
     if (readOnly === true) return null;
     return <div className="form-group row">
         <div className="offset-sm-2 col-sm-10">
-            <button type="button" onClick={onSubmit} className="btn btn-primary">
+            <button type="button" 
+                onClick={onSubmit} 
+                className="btn btn-primary"
+                disabled={isOk === false}>
                 {submitCaption || defaultSubmitCaption}
             </button>
         </div>
     </div>;
-}
+});

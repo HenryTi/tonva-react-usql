@@ -6,7 +6,7 @@ import { ViewModel, TypeContent } from '../viewModel';
 import { VmApi } from '../vmApi';
 //import { VmTuidPicker, TypeVmTuidPicker } from './vmTuidPicker';
 import { VmTuidPicker, TypeVmTuidPicker } from './vmPicker';
-import { VmControl } from './control';
+import { VmControl, RedMark } from './control';
 import { FieldUI } from './formUI';
 import { FormValues } from './vmForm';
 
@@ -86,10 +86,18 @@ const TuidControl = observer(({vm}:{vm: VmTuidControl}) => {
     if (readOnly === true) {
         return <div className="form-control form-control-plaintext border border-info rounded bg-light">{content}</div>;
     }
-    return <button className="form-control btn btn-outline-info"
-        type="button"
-        style={buttonStyle}
-        onClick={onClick}>
-        {content}
-    </button>;
+    let redDot;
+    let {field, required} = fieldUI;
+    if (required === true || field.null === false) {
+        redDot = <RedMark />;
+    }
+    return <>
+        {redDot}
+        <button className="form-control btn btn-outline-info"
+            type="button"
+            style={buttonStyle}
+            onClick={onClick}>
+            {content}
+        </button>
+    </>;
 });
