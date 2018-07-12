@@ -1,9 +1,8 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { FieldBandUIX, FieldsBandUIX, ArrBandUIX, SubmitBandUIX } from "./formUIX";
-import { defaultCreateObservableOptions } from '../../../../node_modules/mobx/lib/api/observable';
 import { VmUnknownControl } from './control';
-import { observer } from '../../../../node_modules/mobx-react';
 
 export type TypeFieldBand = ({}:FieldBandUIX) => JSX.Element;
 export type TypeFieldsBand = ({}:FieldsBandUIX) => JSX.Element;
