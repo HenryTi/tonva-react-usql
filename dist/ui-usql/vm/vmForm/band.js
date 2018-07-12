@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { observer } from '../../../../node_modules/mobx-react';
+import { observer } from 'mobx-react';
 const Unkown = ({ name }) => React.createElement("input", { type: "text", className: "form-control", placeholder: 'unkown control: ' + name });
 const fieldClassName = ['form-control', 'd-block text-danger small px-2 pt-1'];
 export const FieldBand = ({ label, control, field }) => {
