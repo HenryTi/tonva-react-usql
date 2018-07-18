@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { observer } from 'mobx-react';
 import { Button, ButtonProps, Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
@@ -8,7 +9,6 @@ import { VmSheetEdit } from './vmEdit';
 import { VmSheetList } from './vmList';
 import { VmSheetSchema } from './vmSchema';
 import { VmArchives } from './vmArchives';
-import { observer } from '../../../../node_modules/mobx-react';
 
 export class VmSheetMain extends VmSheet {
     protected vmNew = VmSheetNew;
