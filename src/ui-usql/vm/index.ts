@@ -5,4 +5,4 @@ export * from './query';
 export * from './vmEntity';
 export * from './viewModel';
 export * from './vmForm';
-//export * from './field';
+export * from './vmPage';

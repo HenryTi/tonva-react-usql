@@ -16,6 +16,7 @@ import { VmSheetEdit } from './vmEdit';
 import { VmSheetList } from './vmList';
 import { VmSheetSchema } from './vmSchema';
 import { VmArchives } from './vmArchives';
+import { observer } from '../../../../node_modules/mobx-react';
 export class VmSheetMain extends VmSheet {
     constructor() {
         super(...arguments);
@@ -53,18 +54,19 @@ export class VmSheetMain extends VmSheet {
         });
     }
 }
-const Main = ({ vm }) => {
+const Main = observer(({ vm }) => {
     let { label, entity, newClick, schemaClick, renderState, sheetStateClick, archivesClick } = vm;
+    let list = entity.statesCount.filter(row => row.count);
     return React.createElement(Page, { header: label },
         React.createElement("div", { className: "mx-3 my-2" },
             React.createElement(Button, { className: "mr-2", color: "primary", onClick: newClick }, "\u65B0\u5EFA"),
             React.createElement(Button, { className: "mr-2", color: "primary", onClick: schemaClick }, "\u6A21\u677F")),
         React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
                 "\u5F85\u5904\u7406",
-                label), none: "[ \u65E0 ]", items: entity.statesCount, item: { render: renderState, onClick: sheetStateClick } }),
+                label), none: "[ \u65E0 ]", items: list, item: { render: renderState, onClick: sheetStateClick } }),
         React.createElement("div", { className: "mx-3 my-2" },
             React.createElement(Button, { color: "primary", onClick: archivesClick },
                 "\u5DF2\u5F52\u6863",
                 label)));
-};
+});
 //# sourceMappingURL=vmMain.js.map

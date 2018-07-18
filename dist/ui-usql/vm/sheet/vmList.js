@@ -18,11 +18,6 @@ export class VmSheetList extends VmSheet {
             if (brief.processing === 1)
                 return;
             this.navVm(VmSheetAction, brief);
-            //let {ui, data} = this.props;
-            //let {entity:sheet} = ui;
-            //let {state, stateName} = data;
-            //this.nav(VmSheetAction);
-            //nav.push(<SheetAction ui={ui} data={{stateName:stateName, state:state, brief:brief}} />);
         });
         this.renderRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,
@@ -50,9 +45,6 @@ export class VmSheetList extends VmSheet {
 }
 const SheetList = ({ vm }) => {
     let { entity, label, stateLabel, renderRow, rowClick } = vm;
-    //let {ui, data} = this.props;
-    //let {entity:sheet} = ui;
-    //let {state, stateName} = data;
     let sheets = entity.stateSheets;
     return React.createElement(Page, { header: label + ' - ' + stateLabel },
         React.createElement(List, { items: sheets, item: { render: renderRow, onClick: rowClick } }));

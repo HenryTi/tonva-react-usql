@@ -5,7 +5,7 @@ import { VmBookMain } from './book';
 import { VmSheetMain } from './sheet';
 import { VmActionMain } from './action';
 import { VmQueryMain } from './query';
-import { VmTuidMain } from './tuid';
+import { VmTuidMain, VmTuidView } from './tuid';
 import { VmApp } from './vmApp';
 import { TypeVmTuidControl, PickerConfig } from './vmForm';
 import { VmEntity, EntityUI } from './vmEntity';
@@ -29,6 +29,7 @@ export declare class VmApi extends ViewModel {
     readonly vmTuidLinks: VmEntityLink[];
     newVmTuidLink(vmTuid: VmTuidMain): VmEntityLink;
     newVmTuid(tuid: Tuid): VmTuidMain;
+    newVmTuidView(tuid: Tuid): VmTuidView;
     readonly sheetTypeCaption: any;
     protected newVmSheetLink(vmSheet: VmSheetMain): VmEntityLink;
     newVmSheet(sheet: Sheet): VmSheetMain;

@@ -60,6 +60,12 @@ export class VmControl extends ViewModel {
     get error() { return this.formValues.errors[this.name]; }
     set error(err) { this.formValues.errors[this.name] = err; }
     parse(str) { return str; }
+    get readOnly() {
+        let { readOnly, form } = this.fieldUI;
+        if (readOnly === true)
+            return true;
+        return form && form.readOnly === true;
+    }
 }
 __decorate([
     computed
@@ -119,14 +125,8 @@ export class VmInputControl extends VmControl {
 }
 export const RedMark = () => React.createElement("b", { style: { color: 'red', position: 'absolute', left: '0.1em', top: '0.5em' } }, "*");
 const InputControl = observer(({ vm, className }) => {
-    let { fieldUI, ref, inputType, onFocus, onBlur, onChange, renderError } = vm;
-    let { placeHolder, readOnly, form } = fieldUI;
-    if (readOnly === undefined)
-        readOnly = false;
-    if (readOnly === false) {
-        if (form.readOnly === true)
-            readOnly = true;
-    }
+    let { fieldUI, ref, inputType, onFocus, onBlur, onChange, renderError, readOnly } = vm;
+    let { placeHolder, form } = fieldUI;
     let ctrlCN, errCN;
     if (className !== undefined) {
         if (typeof className === 'string')

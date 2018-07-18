@@ -6,15 +6,18 @@ import { Page } from 'tonva-tools';
 import { VmTuid } from './vmTuid';
 import { VmForm } from '../vmForm';
 
-export type TypeVmTuidEdit = typeof VmTuidEdit;
+export type TypeVmTuidView = typeof VmTuidView;
 
-export class VmTuidEdit extends VmTuid {
+export class VmTuidView extends VmTuid {
     vmForm: VmForm;
     id: number;
 
     protected async beforeStart(param?:any) {
+        let data = await this.entity.getId(param)
         this.vmForm = this.createVmFieldsForm();
-        this.vmForm.onSubmit = this.onSubmit;
+        this.vmForm.values = data;
+        this.vmForm.readOnly = true;
+        //this.vmForm.onSubmit = this.onSubmit;
     }
 
     async loadId(id: number) {
@@ -53,12 +56,12 @@ export class VmTuidEdit extends VmTuid {
         return;
     }
 
-    protected view = TuidNewPage;
+    protected view = ViewPage;
 }
 
-const TuidNewPage = observer(({vm}:{vm:VmTuidEdit}) => {
+const ViewPage = observer(({vm}:{vm:VmTuidView}) => {
     let {label, vmForm} = vm;
-    return <Page header={'新增 - ' + label}>
+    return <Page header={label}>
         {vmForm.render('mx-3 my-2')}
     </Page>;
 });

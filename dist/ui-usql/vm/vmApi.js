@@ -17,7 +17,7 @@ import { VmBookMain } from './book';
 import { VmSheetMain } from './sheet';
 import { VmActionMain } from './action';
 import { VmQueryMain } from './query';
-import { VmTuidMain } from './tuid';
+import { VmTuidMain, VmTuidView } from './tuid';
 import { VmTuidControl, VmTuidPicker } from './vmForm';
 export class VmApi extends ViewModel {
     constructor(vmApp, url, api, access, ui) {
@@ -170,6 +170,13 @@ export class VmApi extends ViewModel {
         let vm = ui && ui.main;
         if (vm === undefined)
             vm = VmTuidMain;
+        return new vm(this, tuid, ui);
+    }
+    newVmTuidView(tuid) {
+        let ui = this.getUI('tuid', tuid.name);
+        let vm = ui && ui.view;
+        if (vm === undefined)
+            vm = VmTuidView;
         return new vm(this, tuid, ui);
     }
     get sheetTypeCaption() { return this.getUITypeCaption('sheet') || '凭单'; }

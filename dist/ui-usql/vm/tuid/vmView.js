@@ -12,7 +12,7 @@ import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { VmTuid } from './vmTuid';
-export class VmTuidEdit extends VmTuid {
+export class VmTuidView extends VmTuid {
     constructor() {
         super(...arguments);
         this.next = () => __awaiter(this, void 0, void 0, function* () {
@@ -37,12 +37,15 @@ export class VmTuidEdit extends VmTuid {
                         React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
             return;
         });
-        this.view = TuidNewPage;
+        this.view = ViewPage;
     }
     beforeStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
+            let data = yield this.entity.getId(param);
             this.vmForm = this.createVmFieldsForm();
-            this.vmForm.onSubmit = this.onSubmit;
+            this.vmForm.values = data;
+            this.vmForm.readOnly = true;
+            //this.vmForm.onSubmit = this.onSubmit;
         });
     }
     loadId(id) {
@@ -54,8 +57,8 @@ export class VmTuidEdit extends VmTuid {
         this.vmForm.reset();
     }
 }
-const TuidNewPage = observer(({ vm }) => {
+const ViewPage = observer(({ vm }) => {
     let { label, vmForm } = vm;
-    return React.createElement(Page, { header: '新增 - ' + label }, vmForm.render('mx-3 my-2'));
+    return React.createElement(Page, { header: label }, vmForm.render('mx-3 my-2'));
 });
-//# sourceMappingURL=vmTuidEdit.js.map
+//# sourceMappingURL=vmView.js.map

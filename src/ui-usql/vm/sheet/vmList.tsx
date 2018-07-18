@@ -19,11 +19,6 @@ export class VmSheetList extends VmSheet {
     rowClick = async (brief:any) => {
         if (brief.processing===1) return;
         this.navVm(VmSheetAction, brief);
-        //let {ui, data} = this.props;
-        //let {entity:sheet} = ui;
-        //let {state, stateName} = data;
-        //this.nav(VmSheetAction);
-        //nav.push(<SheetAction ui={ui} data={{stateName:stateName, state:state, brief:brief}} />);
     }
 
     renderRow = (row:any, index:number) => {
@@ -40,9 +35,6 @@ export class VmSheetList extends VmSheet {
 
 const SheetList = ({vm}:{vm:VmSheetList}) => {
     let {entity, label, stateLabel, renderRow, rowClick} = vm;
-    //let {ui, data} = this.props;
-    //let {entity:sheet} = ui;
-    //let {state, stateName} = data;
     let sheets = entity.stateSheets;
     return <Page header={label + ' - ' + stateLabel}>
         <List items={sheets} item={{render:renderRow, onClick:rowClick}} />

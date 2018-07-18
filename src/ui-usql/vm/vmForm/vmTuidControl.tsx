@@ -31,6 +31,7 @@ export class VmTuidControl extends VmControl { // ViewModel {
         pickerConfig: PickerConfig
     ) {
         super(fieldUI, formValues);
+        this.vmApi = vmApi;
         this.tuid = tuid;
         this.tuidContent = tuidContent;
         this.pickerConfig = pickerConfig;
@@ -39,6 +40,11 @@ export class VmTuidControl extends VmControl { // ViewModel {
         //if (id !== null) this.idChanged(id);
     }
     onClick = async () => {
+        if (this.readOnly === true) {
+            let vm = this.vmApi.newVmTuidView(this.tuid);
+            if (this.value !== undefined) await vm.start(this.value);
+            return;
+        }
         let typePicker = this.pickerConfig.picker;
         if (typePicker === undefined) typePicker = VmTuidPicker;
         let vmTuidPicker = new typePicker(
@@ -72,8 +78,7 @@ const buttonStyle:React.CSSProperties = {
     overflow: 'hidden'
 };
 const TuidControl = observer(({vm}:{vm: VmTuidControl}) => {
-    let {tuid, value, fieldUI, tuidContent:TuidContent, onClick} = vm;
-    let {readOnly} = fieldUI;
+    let {tuid, value, fieldUI, tuidContent:TuidContent, onClick, readOnly} = vm;
     tuid.useId(value);
     let tuidObj = tuid.getId(value);
     let content = !tuidObj?
@@ -84,7 +89,11 @@ const TuidControl = observer(({vm}:{vm: VmTuidControl}) => {
                 : <TuidContent id={value} />
         );
     if (readOnly === true) {
-        return <div className="form-control form-control-plaintext border border-info rounded bg-light">{content}</div>;
+        return <div 
+            className="form-control form-control-plaintext border border-info rounded bg-light cursor-pointer"
+            onClick={onClick}>
+            {content}
+        </div>;
     }
     let redDot;
     let {field, required} = fieldUI;

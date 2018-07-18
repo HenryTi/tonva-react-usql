@@ -58,6 +58,11 @@ export abstract class VmControl extends ViewModel {
     get error() { return this.formValues.errors[this.name]; }
     set error(err:any) { this.formValues.errors[this.name]=err; }
     protected parse(str:string):any {return str;}
+    get readOnly() {
+        let {readOnly, form} = this.fieldUI;
+        if (readOnly === true) return true;
+        return form && form.readOnly === true;
+    }
 }
 
 export class VmUnknownControl extends VmControl {
@@ -116,12 +121,8 @@ export abstract class VmInputControl extends VmControl {
 
 export const RedMark = () => <b style={{color:'red', position:'absolute', left:'0.1em', top:'0.5em'}}>*</b>;
 const InputControl = observer(({vm, className}:{vm:VmInputControl, className:string|string[]}) => {
-    let {fieldUI, ref, inputType, onFocus, onBlur, onChange, renderError} = vm;
-    let {placeHolder, readOnly, form} = fieldUI;
-    if (readOnly === undefined) readOnly=false;
-    if (readOnly === false) {
-        if (form.readOnly === true) readOnly = true;
-    }
+    let {fieldUI, ref, inputType, onFocus, onBlur, onChange, renderError, readOnly} = vm;
+    let {placeHolder, form} = fieldUI;
     let ctrlCN, errCN;
     if (className !== undefined) {
         if (typeof className === 'string') ctrlCN = className;

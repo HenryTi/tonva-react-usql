@@ -66,12 +66,15 @@ export class VmForm extends ViewModel {
         let {values, errors} = this.formValues;
         for (let f of this.fields) {
             let fn = f.name;
-            values[fn] = initValues[fn];
+            values[fn] = initValues===undefined? null : initValues[fn];
             errors[fn] = undefined;
         }
         // 还要设置arrs的values
         for (let i in this.vmArrs) {
-            this.vmArrs[i].list.push(...initValues[i]);
+            if (initValues === undefined) continue;
+            let list = initValues[i];
+            if (list === undefined) continue;
+            this.vmArrs[i].list.push(...list);
         }
     }
 

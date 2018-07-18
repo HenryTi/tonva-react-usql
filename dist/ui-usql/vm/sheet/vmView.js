@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { List, Muted, EasyDate, FA } from 'tonva-react-form';
 import { VmSheet } from './vmSheet';
-//import {Page} from 'tonva-tools';
-//import {Sheet} from '../../entities';
-//import {EntitiesUIProps, SheetUIProps, SheetViewProps, EntitiesUI, SheetUIO} from '../../ui';
-//import {MainDetails, MainDetailsView} from '../tools';
 export class VmView extends VmSheet {
     constructor(vmApi, sheet, ui, data, state, flows) {
         super(vmApi, sheet, ui);
@@ -61,6 +57,4 @@ const View = ({ vm }) => {
         vmForm.render(),
         React.createElement(List, { header: React.createElement(Muted, null, "\u6D41\u7A0B"), items: flows, item: { render: flowRow } }));
 };
-//{/*来不及写了，先用JSON方式显示吧。反正就是显示<br/>*/}
-//{/*JSON.stringify(data)*/}
 //# sourceMappingURL=vmView.js.map

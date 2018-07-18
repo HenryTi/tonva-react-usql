@@ -23,14 +23,12 @@ export class VmTuidList extends VmTuid {
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
             yield this.pagedItems.first(key);
         });
-        //row: TypeRow;
         this.renderRow = (item, index) => {
             return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
         };
         this.rowClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let data = yield this.entity.load(item.id);
             alert('edit');
-            //nav.push(<EditPage ui={ui} data={data} />);
         });
     }
     init() {

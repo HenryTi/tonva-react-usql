@@ -40,7 +40,13 @@ export class VmApp extends ViewModel {
                             console.log('try urlDebug %s', urlDebug);
                             if (!lud.endsWith('/'))
                                 lud += '/';
-                            let resp = yield fetch(lud + 'hello');
+                            let resp = yield fetch(lud + 'hello', {
+                                method: "GET",
+                                mode: "no-cors",
+                                headers: {
+                                    "Content-Type": "text/plain"
+                                },
+                            });
                             let text = yield resp.text();
                             console.log('respond from %s: %s', urlDebug, text);
                             url = urlDebug;

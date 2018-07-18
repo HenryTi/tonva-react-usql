@@ -20,6 +20,7 @@ export declare abstract class VmControl extends ViewModel {
     value: any;
     error: any;
     protected parse(str: string): any;
+    readonly readOnly: boolean;
 }
 export declare class VmUnknownControl extends VmControl {
     protected view: ({ vm, className }: {

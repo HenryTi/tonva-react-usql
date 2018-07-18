@@ -20,7 +20,6 @@ export class VmTuidList extends VmTuid {
     onSearch = async (key:string) => {
         await this.pagedItems.first(key);
     }
-    //row: TypeRow;
     
     renderRow = (item:any, index:number):JSX.Element => {
         return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
@@ -28,7 +27,6 @@ export class VmTuidList extends VmTuid {
     rowClick = async (item:any) => {
         let data = await this.entity.load(item.id);
         alert('edit');
-        //nav.push(<EditPage ui={ui} data={data} />);
     }
 
     render() {

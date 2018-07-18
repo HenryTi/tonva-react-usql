@@ -20,8 +20,6 @@ export class VmTuidMain extends VmTuid {
     }
 
     async entityClick(link: VmEntityLink) {
-        //await ui.entity.loadSchema();
-        //nav.push(<ui.mainPage ui={ui} />);
         await link.onClick();
     }
 
@@ -29,8 +27,6 @@ export class VmTuidMain extends VmTuid {
         let {proxies} = this.entity.schema;
         this.view = proxies === undefined? MainPage : ProxyMainPage;
     }
-
-    //protected view = MainPage;
 }
 
 const MainPage = ({vm}:{vm:VmTuidMain}) => {

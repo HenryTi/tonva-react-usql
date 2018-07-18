@@ -14,15 +14,9 @@ import { VmArchived } from './vmArchived';
 export class VmArchives extends VmSheet {
     constructor() {
         super(...arguments);
-        //archivedSheet = undefined;
-        //archiveData: any;
-        //brief: any;
         this.archiveClick = (brief) => __awaiter(this, void 0, void 0, function* () {
-            //this.brief = brief;
             if (brief.processing === 1)
                 return;
-            //this.archiveData = await this.entity.getArchive(brief.id);
-            //let {brief, data:sheetData, flows} = res;
             this.navVm(VmArchived, brief);
         });
         this.archiveRow = (row, index) => {
@@ -52,42 +46,4 @@ const Archives = ({ vm }) => {
     return React.createElement(Page, { header: '已归档' + label },
         React.createElement(List, { items: list, item: { render: archiveRow, onClick: archiveClick } }));
 };
-/*
-export class ArchivedSheet extends React.Component<SheetUIProps, State> {
-    private mainDetails: MainDetails;
-    constructor(props) {
-        super(props);
-        this.state = {
-            flows: undefined,
-            data: undefined,
-        }
-        this.mainDetails = this.props.ui.mapMainDetails();
-    }
-
-    async componentDidMount() {
-        let {ui, data} = this.props;
-        let sheet = ui.entity;
-        let res = await sheet.getArchive(data.id);
-        let {brief, data:sheetData, flows} = res;
-        this.setState({
-            data: sheetData,
-            flows: flows
-        });
-    }
-    mapper(row:any, index:number) {
-        return <li key={index}>id:{row.id}, no:{row.no}, discription:{row.discription}, date:{row.date}</li>
-    }
-    render() {
-*/
-/*
-const ArchivedSheet = ({vm}:{vm: VmArchives}) => {
-    let {label, archiveData, typeSheetView:SheetView} = vm;
-    let {brief, data:sheetData, flows} = archiveData;
-    //let {ui, data:brief} = this.props;
-    //let {entity:sheet} = ui;
-    return <Page header={label + ':' + '-' + brief.no}>
-        <SheetView vm={vm} />
-    </Page>;
-}
-*/
 //# sourceMappingURL=vmArchives.js.map

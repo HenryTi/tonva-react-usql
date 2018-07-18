@@ -16,6 +16,12 @@ export class VmTuidControl extends VmControl {
     constructor(fieldUI, formValues, vmApi, tuid, tuidContent, pickerConfig) {
         super(fieldUI, formValues);
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
+            if (this.readOnly === true) {
+                let vm = this.vmApi.newVmTuidView(this.tuid);
+                if (this.value !== undefined)
+                    yield vm.start(this.value);
+                return;
+            }
             let typePicker = this.pickerConfig.picker;
             if (typePicker === undefined)
                 typePicker = VmTuidPicker;
@@ -32,6 +38,7 @@ export class VmTuidControl extends VmControl {
             this.value = id;
         }*/
         this.view = TuidControl;
+        this.vmApi = vmApi;
         this.tuid = tuid;
         this.tuidContent = tuidContent;
         this.pickerConfig = pickerConfig;
@@ -51,8 +58,7 @@ const buttonStyle = {
     overflow: 'hidden'
 };
 const TuidControl = observer(({ vm }) => {
-    let { tuid, value, fieldUI, tuidContent: TuidContent, onClick } = vm;
-    let { readOnly } = fieldUI;
+    let { tuid, value, fieldUI, tuidContent: TuidContent, onClick, readOnly } = vm;
     tuid.useId(value);
     let tuidObj = tuid.getId(value);
     let content = !tuidObj ?
@@ -63,7 +69,7 @@ const TuidControl = observer(({ vm }) => {
             React.createElement(TuidContent, Object.assign({}, tuidObj))
             : React.createElement(TuidContent, { id: value }));
     if (readOnly === true) {
-        return React.createElement("div", { className: "form-control form-control-plaintext border border-info rounded bg-light" }, content);
+        return React.createElement("div", { className: "form-control form-control-plaintext border border-info rounded bg-light cursor-pointer", onClick: onClick }, content);
     }
     let redDot;
     let { field, required } = fieldUI;

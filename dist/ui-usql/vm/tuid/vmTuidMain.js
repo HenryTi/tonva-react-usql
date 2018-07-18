@@ -19,15 +19,12 @@ export class VmTuidMain extends VmTuid {
         this.onNew = () => this.navVm(VmTuidEdit);
         this.onList = () => this.navVm(VmTuidList);
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(VmTuidList, key); });
-        //protected view = MainPage;
     }
     entityRender(link, index) {
         return link.render();
     }
     entityClick(link) {
         return __awaiter(this, void 0, void 0, function* () {
-            //await ui.entity.loadSchema();
-            //nav.push(<ui.mainPage ui={ui} />);
             yield link.onClick();
         });
     }
