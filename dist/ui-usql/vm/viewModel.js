@@ -7,9 +7,10 @@ export class ViewModel {
         return React.createElement(this.view, { vm: this, className: className });
     }
 }
-export const JSONContent = observer((values) => React.createElement(React.Fragment, null,
+export const PureJSONContent = (values) => React.createElement(React.Fragment, null,
     "content: ",
-    JSON.stringify(values)));
+    JSON.stringify(values));
+export const JSONContent = observer(PureJSONContent);
 export const RowContent = (values) => React.createElement("div", { className: "px-3 py-2" },
     "Row: ",
     JSON.stringify(values));

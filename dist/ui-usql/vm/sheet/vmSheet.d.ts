@@ -4,6 +4,7 @@ import { VmApi } from '../vmApi';
 import { VmSheetMain } from './vmMain';
 import { VmSheetNew } from './vmNew';
 import { VmSheetEdit } from './vmEdit';
+import { VmSheetAction } from './vmSheetAction';
 export interface ActionUI {
     label: string;
 }
@@ -20,6 +21,7 @@ export interface SheetUI extends EntityUI {
     main: typeof VmSheetMain;
     new: typeof VmSheetNew;
     edit: typeof VmSheetEdit;
+    action: typeof VmSheetAction;
 }
 export declare abstract class VmSheet extends VmEntity {
     protected ui: SheetUI;

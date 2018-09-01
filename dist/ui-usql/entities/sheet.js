@@ -13,24 +13,45 @@ export class Sheet extends Entity {
         super(...arguments);
         this.statesCount = observable.array([], { deep: true });
         this.stateSheets = observable.array([], { deep: true });
-        this.states = [];
     }
-    setStates(states) {
+    get typeName() { return 'sheet'; }
+    /*
+    setStates(states: SheetState[]) {
         for (let state of states) {
-            this.setStateAccess(this.states.find(s => s.name == state.name), state);
+            this.setStateAccess(this.states.find(s=>s.name==state.name), state);
+        }
+    }*/
+    build(obj) {
+        this.states = [];
+        for (let p in obj) {
+            switch (p) {
+                case '#':
+                case '$': continue;
+                default:
+                    this.states.push(this.createSheetState(p, obj[p]));
+                    break;
+            }
         }
     }
-    setStateAccess(s, s1) {
-        if (s === undefined)
-            return;
+    createSheetState(name, obj) {
+        let ret = { name: name, actions: [] };
+        let actions = ret.actions;
+        for (let p in obj) {
+            let action = { name: p };
+            actions.push(action);
+        }
+        return ret;
+    }
+    /*
+    private setStateAccess(s:SheetState, s1:SheetState) {
+        if (s === undefined) return;
         for (let action of s1.actions) {
             let acn = action.name;
-            let ac = s.actions.find(a => a.name === acn);
-            if (ac === undefined)
-                continue;
+            let ac = s.actions.find(a=>a.name === acn);
+            if (ac === undefined) continue;
             s.actions.push(action);
         }
-    }
+    }*/
     onReceive(msg) {
         return __awaiter(this, void 0, void 0, function* () {
             let { $type, id, state, preState } = msg;
@@ -60,9 +81,9 @@ export class Sheet extends Entity {
     }
     save(discription, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            //await this.entities.wsConnect();
-            let text = this.entities.pack(this.schema, data);
-            let ret = yield this.tvApi.sheetSave(this.name, { discription: discription, data: text });
+            let { appId, apiId } = this.entities;
+            let text = this.pack(data);
+            let ret = yield this.tvApi.sheetSave(this.name, { app: appId, api: apiId, discription: discription, data: text });
             let { id, state } = ret;
             if (id > 0)
                 this.changeStateCount(state, 1);
@@ -71,7 +92,6 @@ export class Sheet extends Entity {
     }
     action(id, flow, state, action) {
         return __awaiter(this, void 0, void 0, function* () {
-            //await this.entities.wsConnect();
             return yield this.tvApi.sheetAction(this.name, { id: id, flow: flow, state: state, action: action });
         });
     }
@@ -87,7 +107,7 @@ export class Sheet extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             this.statesCount.clear();
             let ret = yield this.tvApi.stateSheetCount(this.name);
-            this.statesCount.spliceWithArray(0, 0, this.schema.states.map(s => {
+            this.statesCount.spliceWithArray(0, 0, this.states.map(s => {
                 let n = s.name, count = 0;
                 let r = ret.find(v => v.state === n);
                 if (r !== undefined)
@@ -98,11 +118,10 @@ export class Sheet extends Entity {
     }
     unpack(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.schema === undefined)
-                yield this.loadSchema();
+            //if (this.schema === undefined) await this.loadSchema();
             let ret = data[0];
             let brief = ret[0];
-            let sheetData = this.entities.unpackSheet(this.schema, brief.data);
+            let sheetData = this.unpackSheet(brief.data);
             let flows = data[1];
             return {
                 brief: brief,

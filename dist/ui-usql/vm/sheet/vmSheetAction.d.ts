@@ -1,13 +1,16 @@
-import { VmSheet } from './vmSheet';
 import { VmView } from './vmView';
-export declare class VmSheetAction extends VmSheet {
+import { VmEntity } from '../VM';
+import { Sheet } from '../../entities';
+import { CrSheet, SheetUI } from './crSheet';
+export declare class VmSheetAction extends VmEntity<Sheet, SheetUI> {
+    protected coordinator: CrSheet;
     brief: any;
     sheetData: any;
     flows: any[];
     vmView: VmView;
-    start(inBrief: any): Promise<void>;
+    showEntry(sheetId: number): Promise<void>;
     actionClick: (action: any) => Promise<void>;
-    protected view: ({ vm }: {
-        vm: VmSheetAction;
-    }) => JSX.Element;
+    deleteClick: () => Promise<void>;
+    editClick: () => Promise<void>;
+    protected view: () => JSX.Element;
 }

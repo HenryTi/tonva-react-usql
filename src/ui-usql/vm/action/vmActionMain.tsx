@@ -1,42 +1,40 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import { Tuid, Action, Entity } from '../../entities';
-import { vmLinkIcon } from '../vmEntity';
 import { Page } from 'tonva-tools';
-import { VmForm } from '../vmForm';
-import { VmAction } from './vmAction';
+import { VmForm } from '../form';
+import { Vm, VmEntity } from '../VM';
+import { CrAction, ActionUI } from './crAction';
+import { Action } from '../../entities';
 
-export class VmActionMain extends VmAction {
-    vmForm: VmForm;
+export class VmActionMain extends VmEntity<Action, ActionUI> {
+    protected coordinator: CrAction;
+    private vmForm: VmForm;
+    private returns: any;
 
-    get icon() {return vmLinkIcon('text-success', 'hand-o-right')}
-
-    protected async beforeStart() {
-        this.vmForm = this.createVmFieldsForm();
-        this.vmForm.onSubmit = this.onSubmit;
+    private onSubmit = async () => {
+        this.returns = await this.coordinator.submit(this.vmForm.values);
+        this.close();
+        this.open(this.resultPage);
     }
 
-    onSubmit = async () => {
-        this.returns = await this.entity.submit(this.vmForm.values);
-        this.replacePage(<ResultPage vm={this} />);
+    async showEntry(param?:any):Promise<void> {
+        this.vmForm = this.createForm(this.onSubmit, param);
+        this.open(this.mainPage);
     }
 
-    protected view = ActionPage;
-}
+    protected mainPage = () => {
+        let {label} = this.coordinator;
+        return <Page header={label}>
+            {this.vmForm.render('mx-3 my-2')}
+        </Page>;
+    }
 
-const ActionPage = observer(({vm}:{vm:VmActionMain}) => {
-    let {label, vmForm} = vm;
-    return <Page header={label}>
-        {vmForm.render('mx-3 my-2')}
-    </Page>;
-});
-
-const ResultPage = ({vm}:{vm:VmActionMain}) => {
-    let {label, returns} = vm;
-    return <Page header={label} back="close">
-        完成！
-        <pre>
-            {JSON.stringify(returns, undefined, ' ')}
-        </pre>
-    </Page>;
+    protected resultPage = () => {
+        let {label} = this.coordinator;
+        return <Page header={label} back="close">
+            完成！
+            <pre>
+                {JSON.stringify(this.returns, undefined, ' ')}
+            </pre>
+        </Page>;
+    }
 }

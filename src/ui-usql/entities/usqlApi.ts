@@ -2,18 +2,10 @@ import * as _ from 'lodash';
 import {Api, ApiBase} from 'tonva-tools';
 
 export class UsqlApi {
-    private api: ApiBase;
+    private api: Api;
     private access:string[];
 
-    /*
-    constructor(apiOwner:string, apiName:string, url:string, access:string[]) {
-        let hash = document.location.hash;
-        let baseUrl = (hash===undefined || hash==='') && apiOwner!=='$$$'? 
-            'debug/':'tv/';
-        super(baseUrl, url, apiOwner, apiName);
-        this.access = access;
-    }*/
-    constructor(api: ApiBase, access:string[]) {
+    constructor(api: Api, access:string[]) {
         this.api = api;
         this.access = access;
     }
@@ -46,8 +38,9 @@ export class UsqlApi {
         return await this.api.post('tuid/' + name, params);
     }
 
-    async tuidSearch(name:string, key:string, pageStart:string|number, pageSize:number):Promise<any> {
+    async tuidSearch(name:string, arr:string, key:string, pageStart:string|number, pageSize:number):Promise<any> {
         let ret = await this.api.post('tuids/' + name, {
+            arr: arr,
             key: key,
             pageStart: pageStart,
             pageSize: pageSize
@@ -84,9 +77,12 @@ export class UsqlApi {
         return ret;
     }
 
-    async tuidIds(name:string, ids:number[]):Promise<any[]> {
+    async tuidIds(name:string, arr:string, ids:number[]):Promise<any[]> {
         try {
-            let ret = await this.api.post('tuidids/' + name, ids);
+            let url = 'tuidids/' + name + '/';
+            if (arr !== undefined) url += arr;
+            else url += '$';
+            let ret = await this.api.post(url, ids);
             return ret;
         }
         catch (e) {

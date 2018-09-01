@@ -4,5 +4,6 @@ export class History extends Query {
         super(...arguments);
         this.queryApiName = 'history';
     }
+    get typeName() { return 'history'; }
 }
 //# sourceMappingURL=history.js.map

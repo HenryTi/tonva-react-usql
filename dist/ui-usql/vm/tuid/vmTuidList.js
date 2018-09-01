@@ -1,9 +1,3 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -16,8 +10,8 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page, PagedItems } from 'tonva-tools';
-import { VmTuid } from './vmTuid';
-export class VmTuidList extends VmTuid {
+import { VmEntity } from '../VM';
+export class VmTuidListBase extends VmEntity {
     constructor() {
         super(...arguments);
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
@@ -26,37 +20,45 @@ export class VmTuidList extends VmTuid {
         this.renderRow = (item, index) => {
             return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
         };
-        this.rowClick = (item) => __awaiter(this, void 0, void 0, function* () {
-            let data = yield this.entity.load(item.id);
-            alert('edit');
+        this.clickRow = (item) => {
+            this.callOnSelected(item);
+        };
+        this.view = observer(() => {
+            //let {label, entity, onSelected, renderRow, clickRow, pagedItems, onSearch, ownerId} = vm;
+            let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: this.onSearch, placeholder: '搜索' + this.label });
+            let { owner } = this.entity;
+            let ownerTop;
+            if (owner !== undefined) {
+                let ownerObj = owner.valueFromId(this.ownerId);
+                ownerTop = React.createElement("div", null,
+                    "owner: ",
+                    JSON.stringify(ownerObj));
+            }
+            return React.createElement(Page, { header: header },
+                ownerTop,
+                React.createElement(List, { items: this.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
         });
     }
-    init() {
-        this.pagedItems = new TuidPagedItems(this.entity);
-    }
-    beforeStart(param) {
+    showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.onSearch(undefined);
+            this.pagedItems = new TuidPagedItems(this.entity);
+            this.param = param;
+            if (this.entity.owner !== undefined)
+                this.ownerId = Number(param);
+            // 初始查询, key是空的
+            yield this.onSearch('');
+            this.open(this.view);
         });
     }
-    render() {
-        return React.createElement(TuidListPage, { vm: this });
+    callOnSelected(item) {
+        if (this.onSelected === undefined) {
+            alert('onSelect is undefined');
+            return;
+        }
+        this.onSelected(item);
     }
 }
 const Row = (item) => React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
-let TuidListPage = class TuidListPage extends React.Component {
-    render() {
-        let { vm } = this.props;
-        let { label } = this.props.vm;
-        let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: vm.onSearch, placeholder: '搜索' + label });
-        return React.createElement(Page, { header: header },
-            React.createElement(List, { items: vm.pagedItems.items, item: { render: vm.renderRow, onClick: vm.rowClick }, before: '搜索' + label + '资料' }));
-    }
-};
-TuidListPage = __decorate([
-    observer
-], TuidListPage);
-export { TuidListPage };
 class TuidPagedItems extends PagedItems {
     constructor(tuid) {
         super();
@@ -71,6 +73,13 @@ class TuidPagedItems extends PagedItems {
     setPageStart(item) {
         if (item === undefined)
             this.pageStart = 0;
+    }
+}
+export class VmTuidList extends VmTuidListBase {
+    onSelected(item) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.event('edit', item.id);
+        });
     }
 }
 //# sourceMappingURL=vmTuidList.js.map

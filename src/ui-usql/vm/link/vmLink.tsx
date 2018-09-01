@@ -1,40 +1,33 @@
 import * as React from 'react';
-import { ViewModel } from '../viewModel';
-import { VmEntity } from '../vmEntity';
-/*
-import { nav } from 'tonva-tools';
-import { Entity, Tuid } from '../../entities';
-import { VmActionMain } from '../action';
-import { VmTuidMain } from '../tuid';
-import { VmQueryMain } from '../query';
-import { VmSheetMain } from '../sheet';
-import { VmBookMain } from '../book';
-*/
+import { CrEntity, EntityUI } from '../VM';
+import { Entity } from '../../entities';
 
-export abstract class VmLink extends ViewModel {
+export abstract class VmLink {
     abstract onClick: () => void;
 }
 
 export class VmEntityLink extends VmLink {
-    vmEntity: VmEntity
+    private crEntity: CrEntity<Entity, EntityUI>;
 
-    constructor(vmEntity: VmEntity) {
+    constructor(crEntity: CrEntity<Entity, EntityUI>) {
         super();
-        this.vmEntity = vmEntity;
+        this.crEntity = crEntity;
     }
-
-    protected view = Link;
 
     onClick = async () => {
-        this.vmEntity.start();
+        await this.crEntity.start();
+    }
+
+    render() {
+        return React.createElement(this.view);
+    }
+
+    protected get view() {
+        return () => {
+            let {icon, label} = this.crEntity;
+            return <div className="px-3 py-2 align-items-center cursor-pointer" onClick={this.onClick}>
+                {icon} &nbsp; {label}
+            </div>;
+        }
     }
 }
-
-export type TypeLink = React.StatelessComponent<{vm: VmEntityLink}>;
-
-const Link = ({vm}:{vm: VmEntityLink}) => {
-    let {vmEntity} = vm;
-    return <div className="px-3 py-2  align-items-center">
-        {vmEntity.icon} &nbsp; {vmEntity.label}
-    </div>;
-};

@@ -31,8 +31,9 @@ export class AppUI {
     load() {
         return __awaiter(this, void 0, void 0, function* () {
             let isDebug = process.env.NODE_ENV === 'development';
-            let appApis = yield loadAppApis(this.appOwner, this.appName);
-            for (let appApi of appApis) {
+            let app = yield loadAppApis(this.appOwner, this.appName);
+            let { id, apis } = app;
+            for (let appApi of apis) {
                 let { apiOwner, apiName, url, urlDebug, /*ws, */ access, token } = appApi;
                 let api = apiOwner + '/' + apiName;
                 let mapper = this.uiMappers && this.uiMappers[api];

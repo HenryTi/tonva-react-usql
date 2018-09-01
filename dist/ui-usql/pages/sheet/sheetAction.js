@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Button } from 'reactstrap';
-import { tonvaDebug } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
 export class SheetAction extends React.Component {
     constructor(props) {
@@ -46,7 +45,6 @@ export class SheetAction extends React.Component {
         let { state, brief, stateName } = data;
         let s = sheet.schema.states.find(v => v.name === state.state);
         let actions = s.actions;
-        tonvaDebug();
         return React.createElement(Page, { header: sheet.name + ':' + stateName + '-' + brief.no },
             React.createElement("div", { className: "mx-3 my-2" }, actions.map((v, index) => React.createElement(Button, { key: index, className: "mr-2", color: "primary", onClick: () => this.actionClick(v) }, v.name))),
             React.createElement(ui.view, { className: "mx-3", ui: ui, sheetState: brief.state, data: this.state.data, flows: this.state.flows }));

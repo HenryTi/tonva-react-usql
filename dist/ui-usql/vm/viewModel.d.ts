@@ -6,8 +6,9 @@ export declare type TypeView = React.StatelessComponent<{
 }>;
 export declare type TypeContent = React.StatelessComponent<any>;
 export declare abstract class ViewModel {
-    protected view: TypeView;
+    protected abstract readonly view: TypeView;
     render(className?: string | string[]): JSX.Element;
 }
+export declare const PureJSONContent: (values: any) => JSX.Element;
 export declare const JSONContent: (values: any) => JSX.Element;
 export declare const RowContent: (values: any) => JSX.Element;

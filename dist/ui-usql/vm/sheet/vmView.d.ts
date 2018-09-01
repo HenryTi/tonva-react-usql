@@ -1,16 +1,15 @@
-import { VmSheet, SheetUI } from './vmSheet';
 import { Sheet } from '../../entities';
-import { VmApi } from '../vmApi';
-import { VmForm, VmFormOptions } from '../vmForm';
-export declare class VmView extends VmSheet {
+import { VmForm } from '../form';
+import { VmEntity } from '../VM';
+import { CrSheet, SheetUI } from './crSheet';
+export declare class VmView extends VmEntity<Sheet, SheetUI> {
     vmForm: VmForm;
     data: any;
     state: string;
     flows: any[];
-    constructor(vmApi: VmApi, sheet: Sheet, ui: SheetUI, data: any, state: string, flows: any[]);
-    protected readonly fieldsFormOptions: VmFormOptions;
+    constructor(crSheet: CrSheet, data: any, state: string, flows: any[]);
+    showEntry(param?: any): Promise<void>;
+    render(): JSX.Element;
     flowRow: (item: any, index: number) => JSX.Element;
-    protected view: ({ vm }: {
-        vm: VmView;
-    }) => JSX.Element;
+    protected view: () => JSX.Element;
 }

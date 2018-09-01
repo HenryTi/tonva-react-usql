@@ -20,7 +20,7 @@ import { VmQueryMain } from './query';
 import { VmTuidMain, VmTuidView } from './tuid';
 import { VmTuidControl, VmTuidPicker } from './vmForm';
 export class VmApi extends ViewModel {
-    constructor(vmApp, url, api, access, ui) {
+    constructor(appId, apiId, api, access, ui) {
         super();
         this.isSysVisible = false;
         this.renderLink = (vmLink, index) => {
@@ -34,9 +34,9 @@ export class VmApi extends ViewModel {
             yield vm.start(param);
         });
         this.view = ApiView;
-        this.vmApp = vmApp;
-        this.url = url;
+        //this.vmApp = vmApp;
         this.api = api;
+        this.id = apiId;
         this.ui = ui;
         this.access = access;
         let token = undefined;
@@ -58,13 +58,13 @@ export class VmApi extends ViewModel {
         let hash = document.location.hash;
         let baseUrl = hash === undefined || hash === '' ?
             'debug/' : 'tv/';
-        //let ws = undefined;     // 新版没有ws了，webSocket都是从单一的中央过来的
-        let _api = new Api(baseUrl, url, /*ws, */ apiOwner, apiName, true);
-        this.entities = new Entities(_api, access);
+        let _api = new Api(baseUrl, apiOwner, apiName, true);
+        this.entities = new Entities(appId, apiId, _api, access);
     }
+    //vmApp: VmApp;
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.loadEntities();
+            yield this.entities.load();
             // 检查注册的entity viewModels
             /*
             let arr = [
@@ -101,6 +101,17 @@ export class VmApi extends ViewModel {
     getTuid(name) { return this.entities.tuid(name); }
     isVisible(entity) {
         return entity.sys !== true || this.isSysVisible;
+    }
+    navSheet(sheetTypeId, sheetId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sheet = this.entities.sheetFromTypeId(sheetTypeId);
+            if (sheet === undefined) {
+                alert('sheetTypeId ' + sheetTypeId + ' is not exists!');
+                return;
+            }
+            let vmSheetMain = this.newVmSheet(sheet);
+            yield vmSheetMain.showSheet(sheetId);
+        });
     }
     vmLinkFromName(entityType, entityName) {
         switch (entityType) {

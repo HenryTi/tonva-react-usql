@@ -1,9 +1,10 @@
-import { VmSheet } from './vmSheet';
-import { VmForm } from '../vmForm';
-export declare class VmSheetEdit extends VmSheet {
+import { Sheet } from '../../entities';
+import { VmForm } from '../form';
+import { VmEntity } from '../VM';
+import { SheetUI } from './crSheet';
+export declare class VmSheetEdit extends VmEntity<Sheet, SheetUI> {
     vmForm: VmForm;
-    protected beforeStart(param?: any): Promise<void>;
-    protected view: ({ vm }: {
-        vm: VmSheetEdit;
-    }) => JSX.Element;
+    showEntry(param?: any): Promise<void>;
+    onSubmit: (values: any) => Promise<void>;
+    protected view: () => JSX.Element;
 }

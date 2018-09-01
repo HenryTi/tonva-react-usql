@@ -8,10 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { Entity } from './entity';
 export class Action extends Entity {
+    get typeName() { return 'action'; }
     submit(data) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.loadSchema();
-            let text = this.entities.pack(this.schema, data);
+            let text = this.pack(data);
             return yield this.tvApi.action(this.name, { data: text });
         });
     }

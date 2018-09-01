@@ -1,17 +1,13 @@
 import * as React from 'react';
-import { ViewModel } from '../viewModel';
-import { VmEntity } from '../vmEntity';
-export declare abstract class VmLink extends ViewModel {
+import { CrEntity, EntityUI } from '../VM';
+import { Entity } from '../../entities';
+export declare abstract class VmLink {
     abstract onClick: () => void;
 }
 export declare class VmEntityLink extends VmLink {
-    vmEntity: VmEntity;
-    constructor(vmEntity: VmEntity);
-    protected view: ({ vm }: {
-        vm: VmEntityLink;
-    }) => JSX.Element;
+    private crEntity;
+    constructor(crEntity: CrEntity<Entity, EntityUI>);
     onClick: () => Promise<void>;
+    render(): React.SFCElement<{}>;
+    protected readonly view: () => JSX.Element;
 }
-export declare type TypeLink = React.StatelessComponent<{
-    vm: VmEntityLink;
-}>;

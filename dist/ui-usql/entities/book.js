@@ -4,5 +4,6 @@ export class Book extends Query {
         super(...arguments);
         this.queryApiName = 'book';
     }
+    get typeName() { return 'book'; }
 }
 //# sourceMappingURL=book.js.map

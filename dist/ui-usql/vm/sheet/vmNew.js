@@ -8,26 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VmSheet } from './vmSheet';
-export class VmSheetNew extends VmSheet {
+import { VmEntity } from '../VM';
+export class VmSheetNew extends VmEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.entity.save(this.label, values);
             alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
-            this.popPage();
+            this.close();
         });
-        this.view = Edit;
+        this.view = () => React.createElement(Page, { header: this.label }, this.vmForm.render());
     }
-    beforeStart(param) {
+    showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createVmFieldsForm();
-            this.vmForm.onSubmit = this.onSubmit;
+            this.vmForm = this.createForm(this.onSubmit, param);
+            this.open(this.view);
         });
     }
 }
-const Edit = ({ vm }) => {
-    let { label, vmForm } = vm;
-    return React.createElement(Page, { header: label }, vmForm.render());
-};
 //# sourceMappingURL=vmNew.js.map

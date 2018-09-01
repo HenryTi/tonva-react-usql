@@ -8,14 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as _ from 'lodash';
 export class UsqlApi {
-    /*
-    constructor(apiOwner:string, apiName:string, url:string, access:string[]) {
-        let hash = document.location.hash;
-        let baseUrl = (hash===undefined || hash==='') && apiOwner!=='$$$'?
-            'debug/':'tv/';
-        super(baseUrl, url, apiOwner, apiName);
-        this.access = access;
-    }*/
     constructor(api, access) {
         this.api = api;
         this.access = access;
@@ -55,9 +47,10 @@ export class UsqlApi {
             return yield this.api.post('tuid/' + name, params);
         });
     }
-    tuidSearch(name, key, pageStart, pageSize) {
+    tuidSearch(name, arr, key, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.api.post('tuids/' + name, {
+                arr: arr,
                 key: key,
                 pageStart: pageStart,
                 pageSize: pageSize
@@ -104,10 +97,15 @@ export class UsqlApi {
             return ret;
         });
     }
-    tuidIds(name, ids) {
+    tuidIds(name, arr, ids) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let ret = yield this.api.post('tuidids/' + name, ids);
+                let url = 'tuidids/' + name + '/';
+                if (arr !== undefined)
+                    url += arr;
+                else
+                    url += '$';
+                let ret = yield this.api.post(url, ids);
                 return ret;
             }
             catch (e) {

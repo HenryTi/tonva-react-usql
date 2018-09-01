@@ -10,6 +10,7 @@ export declare abstract class VmPage extends ViewModel {
     pushPage(page: JSX.Element): void;
     popPage(level?: number): void;
     replacePage(page: JSX.Element): void;
+    back(confirm?: boolean): Promise<void>;
     show(): Promise<void>;
     private disposer;
     end(): Promise<void>;

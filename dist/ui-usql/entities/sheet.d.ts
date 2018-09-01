@@ -12,12 +12,13 @@ interface StateCount {
     count: number;
 }
 export declare class Sheet extends Entity {
+    readonly typeName: string;
+    states: SheetState[];
     statesCount: IObservableArray<StateCount>;
     curState: string;
     stateSheets: IObservableArray;
-    states: SheetState[];
-    setStates(states: SheetState[]): void;
-    private setStateAccess;
+    build(obj: any): void;
+    private createSheetState;
     onReceive(msg: any): Promise<void>;
     private changeStateCount;
     save(discription: string, data: any): Promise<number>;

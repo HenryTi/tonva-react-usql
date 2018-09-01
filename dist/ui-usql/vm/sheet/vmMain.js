@@ -11,62 +11,55 @@ import { observer } from 'mobx-react';
 import { Button, Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
-import { VmSheet } from './vmSheet';
-import { VmSheetNew } from './vmNew';
-import { VmSheetEdit } from './vmEdit';
-import { VmSheetList } from './vmList';
-import { VmSheetSchema } from './vmSchema';
-import { VmArchives } from './vmArchives';
-export class VmSheetMain extends VmSheet {
+import { VmEntity } from '../VM';
+export class VmSheetMain extends VmEntity {
     constructor() {
         super(...arguments);
-        this.vmNew = VmSheetNew;
-        this.vmEdit = VmSheetEdit;
-        this.vmSchema = VmSheetSchema;
-        this.vmArchives = VmArchives;
-        this.vmSheetList = VmSheetList;
-        this.newClick = () => __awaiter(this, void 0, void 0, function* () {
+        /* 移到CrSheet里面去
+        protected async onReceive(msg: any) {
+            await super.onReceive(msg);
+            this.entity.onReceive(msg);
+        }
+        */
+        this.newClick = () => this.event('new'); /* {
             let t = (this.ui && this.ui.new) || this.vmNew;
-            yield this.navVm(t);
-        });
-        this.schemaClick = () => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(this.vmSchema); });
-        this.archivesClick = () => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(this.vmArchives); });
-        this.sheetStateClick = (state) => __awaiter(this, void 0, void 0, function* () { return yield this.navVm(this.vmSheetList, state); });
+            await this.navVm(t);
+        }*/
+        this.schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);
+        this.archivesClick = () => this.event('archives'); //await this.navVm(this.vmArchives);
+        this.sheetStateClick = (state) => this.event('state', state); // await this.navVm(this.vmSheetList, state);
+        /* 移到CrSheet里面去了
+        async showSheet(sheetId:number) {
+            let vmAction = (this.ui && this.ui.action) || VmSheetAction;
+            await this.navVm(vmAction, sheetId);
+        }*/
         this.renderState = (item, index) => {
             let { state, count } = item;
             if (count === 0)
                 return null;
             let badge = React.createElement(Badge, { className: "ml-5 align-self-end", color: "success" }, count);
-            return React.createElement(LMR, { className: "px-3 py-2", left: this.getStateLabel(state), right: badge });
+            return React.createElement(LMR, { className: "px-3 py-2", left: this.coordinator.getStateLabel(state), right: badge });
         };
-        this.view = Main;
-    }
-    beforeStart() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.entity.getStateSheetCount();
+        this.view = observer(() => {
+            let list = this.entity.statesCount.filter(row => row.count);
+            return React.createElement(Page, { header: this.label },
+                React.createElement("div", { className: "mx-3 my-2" },
+                    React.createElement(Button, { className: "mr-2", color: "primary", onClick: this.newClick }, "\u65B0\u5EFA"),
+                    React.createElement(Button, { className: "mr-2", color: "primary", onClick: this.schemaClick }, "\u6A21\u677F")),
+                React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
+                        "\u5F85\u5904\u7406",
+                        this.label), none: "[ \u65E0 ]", items: list, item: { render: this.renderState, onClick: this.sheetStateClick } }),
+                React.createElement("div", { className: "mx-3 my-2" },
+                    React.createElement(Button, { color: "primary", onClick: this.archivesClick },
+                        "\u5DF2\u5F52\u6863",
+                        this.label)));
         });
     }
-    onReceive(msg) {
-        const _super = name => super[name];
+    showEntry() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("onReceive").call(this, msg);
-            this.entity.onReceive(msg);
+            yield this.entity.getStateSheetCount();
+            this.open(this.view);
         });
     }
 }
-const Main = observer(({ vm }) => {
-    let { label, entity, newClick, schemaClick, renderState, sheetStateClick, archivesClick } = vm;
-    let list = entity.statesCount.filter(row => row.count);
-    return React.createElement(Page, { header: label },
-        React.createElement("div", { className: "mx-3 my-2" },
-            React.createElement(Button, { className: "mr-2", color: "primary", onClick: newClick }, "\u65B0\u5EFA"),
-            React.createElement(Button, { className: "mr-2", color: "primary", onClick: schemaClick }, "\u6A21\u677F")),
-        React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
-                "\u5F85\u5904\u7406",
-                label), none: "[ \u65E0 ]", items: list, item: { render: renderState, onClick: sheetStateClick } }),
-        React.createElement("div", { className: "mx-3 my-2" },
-            React.createElement(Button, { color: "primary", onClick: archivesClick },
-                "\u5DF2\u5F52\u6863",
-                label)));
-});
 //# sourceMappingURL=vmMain.js.map

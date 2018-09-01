@@ -1,7 +1,9 @@
 import { IObservableArray } from 'mobx';
+import { ArrFields } from './entities';
 import { Entity } from './entity';
 export declare type QueryPageApi = (name: string, pageStart: any, pageSize: number, params: any) => Promise<string>;
 export declare class Query extends Entity {
+    readonly typeName: string;
     private pageStart;
     private pageSize;
     private params;
@@ -9,7 +11,9 @@ export declare class Query extends Entity {
     private startField;
     protected queryApiName: string;
     list: IObservableArray;
-    private unpackReturns;
+    returns: ArrFields[];
+    isPaged: boolean;
+    setSchema(schema: any): void;
     resetPage(size: number, params: any): void;
     readonly hasMore: boolean;
     loadPage(): Promise<void>;

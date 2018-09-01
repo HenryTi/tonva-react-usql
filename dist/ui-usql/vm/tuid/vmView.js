@@ -11,23 +11,23 @@ import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VmTuid } from './vmTuid';
-export class VmTuidView extends VmTuid {
+import { VmEntity } from '../VM';
+export class VmTuidView extends VmEntity {
     constructor() {
         super(...arguments);
         this.next = () => __awaiter(this, void 0, void 0, function* () {
             this.vmForm.reset();
-            this.popPage();
+            this.close();
         });
         this.finish = () => {
-            this.popPage(2);
+            this.close(2);
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.entity.save(this.id, this.vmForm.values);
             if (ret) {
                 alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
             }
-            this.pushPage(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
+            this.open(() => React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },
                     React.createElement("span", { className: "text-success" },
                         React.createElement(FA, { name: 'check-circle', size: 'lg' }),
@@ -37,15 +37,16 @@ export class VmTuidView extends VmTuid {
                         React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
             return;
         });
-        this.view = ViewPage;
+        this.view = observer(() => React.createElement(Page, { header: this.label }, this.vmForm.render('mx-3 my-2')));
     }
-    beforeStart(param) {
+    showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            let data = yield this.entity.getId(param);
-            this.vmForm = this.createVmFieldsForm();
-            this.vmForm.values = data;
-            this.vmForm.readOnly = true;
+            let data = yield this.entity.valueFromId(param);
+            this.vmForm = this.createForm(data);
+            //this.vmForm.values = data;
+            //this.vmForm.readOnly = true;
             //this.vmForm.onSubmit = this.onSubmit;
+            this.open(this.view);
         });
     }
     loadId(id) {
@@ -57,8 +58,4 @@ export class VmTuidView extends VmTuid {
         this.vmForm.reset();
     }
 }
-const ViewPage = observer(({ vm }) => {
-    let { label, vmForm } = vm;
-    return React.createElement(Page, { header: label }, vmForm.render('mx-3 my-2'));
-});
 //# sourceMappingURL=vmView.js.map

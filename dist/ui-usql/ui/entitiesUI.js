@@ -41,8 +41,8 @@ export class EntitiesUI {
         let hash = document.location.hash;
         let baseUrl = hash === undefined || hash === '' ?
             'debug/' : 'tv/';
-        let _api = new Api(baseUrl, url, /*ws, */ apiOwner, apiName, true);
-        this.entities = new Entities(_api, access);
+        let _api = new Api(baseUrl, apiOwner, apiName, true);
+        this.entities = new Entities(0, 0, _api, access);
         this.defaultMapper = defaultMapper;
         this.mapper = mapper || {};
         this.typeFieldMappers = _.clone(defaultMapper.typeFieldMappers);
@@ -51,14 +51,13 @@ export class EntitiesUI {
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.entities.loadEntities();
+                yield this.entities.load();
                 this.buildUI();
             }
             catch (err) {
                 if (err.no === apiErrors.databaseNotExists) {
                     alert(err.message + '\nlogout');
                     nav.logout();
-                    //debugger;
                 }
             }
         });

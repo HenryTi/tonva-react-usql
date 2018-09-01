@@ -7,32 +7,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { UsqlApi } from './usqlApi';
-import { Tuid } from './tuid';
+import { TuidMain } from './tuid';
 import { Action } from './action';
 import { Sheet } from './sheet';
 import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
-const tab = '\t';
-const ln = '\n';
+import { Map } from './map';
 // api: apiOwner/apiName
 // access: acc1; acc2
 //const entitiesCollection: {[api:string]: Entities} = {};
 export class Entities {
-    constructor(api, access) {
+    constructor(usq, appId, apiId, api, access) {
         this.tuids = {};
         this.actions = {};
         this.sheets = {};
         this.queries = {};
         this.books = {};
+        this.maps = {};
         this.histories = {};
         this.tuidArr = [];
         this.actionArr = [];
         this.sheetArr = [];
         this.queryArr = [];
         this.bookArr = [];
+        this.mapArr = [];
         this.historyArr = [];
-        this.api = api;
+        this.usq = usq;
+        this.appId = appId;
+        this.apiId = apiId;
         this.loadIds = this.loadIds.bind(this);
         let acc;
         if (access === undefined || access === '*') {
@@ -48,22 +51,30 @@ export class Entities {
     sheet(name) { return this.sheets[name.toLowerCase()]; }
     query(name) { return this.queries[name.toLowerCase()]; }
     book(name) { return this.books[name.toLowerCase()]; }
+    map(name) { return this.maps[name.toLowerCase()]; }
     history(name) { return this.histories[name.toLowerCase()]; }
-    loadEntities() {
+    sheetFromTypeId(typeId) {
+        for (let i in this.sheets) {
+            let sheet = this.sheets[i];
+            if (sheet.typeId === typeId)
+                return sheet;
+        }
+    }
+    load() {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = yield this.tvApi.loadAccess();
-            this.buildAccess(this.tvApi, accesses);
-            //await this.wsConnect();
+            let { access, tuids } = accesses;
+            this.buildTuids(tuids);
+            this.buildAccess(access);
         });
     }
-    getTuid(name, tuidUrl) { return this.tuids[name]; }
-    loadSchemas(...entityArr) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let schemas = yield this.tvApi.schemas(entityArr.map(v => v.name));
-            for (let i in entityArr) {
-                entityArr[i].schema = schemas[i];
-            }
-        });
+    getTuid(name, arr, tuidUrl) {
+        let tuid = this.tuids[name];
+        if (tuid === undefined)
+            return;
+        if (arr === undefined)
+            return tuid;
+        return tuid.divs[arr];
     }
     cacheTuids(defer) {
         this.clearCacheTimer();
@@ -82,271 +93,186 @@ export class Entities {
             tuid.cacheIds();
         }
     }
-    buildAccess(api, access) {
+    buildTuids(tuids) {
+        let proxyColl = {};
+        for (let i in tuids) {
+            let schema = tuids[i];
+            let { name, typeId, proxies } = schema;
+            let tuid = this.newTuid(name, typeId);
+            tuid.sys = true;
+            //tuid.setSchema(schema);
+            if (proxies !== undefined)
+                proxyColl[i] = proxies;
+        }
+        for (let i in tuids) {
+            let schema = tuids[i];
+            let { name } = schema;
+            let tuid = this.getTuid(name);
+            //tuid.sys = true;
+            tuid.setSchema(schema);
+        }
+        for (let i in proxyColl) {
+            let proxies = proxyColl[i];
+            let tuid = this.tuids[i];
+            tuid.proxies = {};
+            for (let p of proxies) {
+                tuid.proxies[p] = this.tuids[p];
+            }
+        }
+    }
+    buildAccess(access) {
         for (let a in access) {
             let v = access[a];
             switch (typeof v) {
                 case 'string':
-                    this.fromType(api, a, v);
+                    this.fromType(a, v);
                     break;
                 case 'object':
-                    this.fromObj(api, a, v);
+                    this.fromObj(a, v);
                     break;
             }
         }
-        for (let tuid of this.tuidArr)
+        /*
+        for (let tuid of this.tuidArr) {
             tuid.setProxies(this);
+        }*/
     }
-    fromType(api, name, type) {
+    newAction(name, id) {
+        let action = this.actions[name];
+        if (action !== undefined)
+            return action;
+        action = this.actions[name] = new Action(this, name, id);
+        this.actionArr.push(action);
+        return action;
+    }
+    newTuid(name, id) {
+        let tuid = this.tuids[name];
+        if (tuid !== undefined)
+            return tuid;
+        tuid = this.tuids[name] = new TuidMain(this, name, id);
+        this.tuidArr.push(tuid);
+        return tuid;
+    }
+    newQuery(name, id) {
+        let query = this.queries[name];
+        if (query !== undefined)
+            return query;
+        query = this.queries[name] = new Query(this, name, id);
+        this.queryArr.push(query);
+        return query;
+    }
+    newBook(name, id) {
+        let book = this.books[name];
+        if (book !== undefined)
+            return book;
+        book = this.books[name] = new Book(this, name, id);
+        this.bookArr.push(book);
+        return book;
+    }
+    newMap(name, id) {
+        let map = this.maps[name];
+        if (map !== undefined)
+            return map;
+        map = this.maps[name] = new Map(this, name, id);
+        this.mapArr.push(map);
+        return map;
+    }
+    newHistory(name, id) {
+        let history = this.histories[name];
+        if (history !== undefined)
+            return;
+        history = this.histories[name] = new History(this, name, id);
+        this.historyArr.push(history);
+        return history;
+    }
+    newSheet(name, id) {
+        let sheet = this.sheets[name];
+        if (sheet !== undefined)
+            return sheet;
+        sheet = this.sheets[name] = new Sheet(this, name, id);
+        this.sheetArr.push(sheet);
+        return sheet;
+    }
+    fromType(name, type) {
         let parts = type.split('|');
         type = parts[0];
         let id = Number(parts[1]);
         switch (type) {
-            case 'action':
-                let action = this.actions[name];
-                if (action === undefined) {
-                    this.actionArr.push(this.actions[name] = new Action(this, api, name, id));
-                }
-                break;
             case 'tuid':
-                let tuid = this.tuids[name];
-                if (tuid === undefined) {
-                    this.tuidArr.push(tuid = this.tuids[name] = new Tuid(this, api, name, id));
-                    tuid.buidProxies(parts);
-                }
+                let tuid = this.newTuid(name, id);
+                tuid.sys = false;
+                break;
+            case 'action':
+                this.newAction(name, id);
                 break;
             case 'query':
-                let query = this.queries[name];
-                if (query === undefined) {
-                    this.queryArr.push(this.queries[name] = new Query(this, api, name, id));
-                }
+                this.newQuery(name, id);
                 break;
             case 'book':
-                let book = this.books[name];
-                if (book === undefined) {
-                    this.bookArr.push(this.books[name] = new Book(this, api, name, id));
-                }
+                this.newBook(name, id);
+                break;
+            case 'map':
+                this.newMap(name, id);
                 break;
             case 'history':
-                let history = this.histories[name];
-                if (history === undefined) {
-                    this.historyArr.push(this.histories[name] = new History(this, api, name, id));
-                }
+                this.newHistory(name, id);
                 break;
             case 'sheet':
-                let sheet = this.sheets[name];
-                if (sheet === undefined) {
-                    this.sheetArr.push(this.sheets[name] = new Sheet(this, api, name, id));
-                }
+                this.newSheet(name, id);
+                break;
         }
     }
-    fromObj(api, name, obj) {
+    fromObj(name, obj) {
         switch (obj['$']) {
             case 'sheet':
-                this.buildSheet(api, name, obj);
+                this.buildSheet(name, obj);
                 break;
         }
     }
-    buildSheet(api, name, obj) {
+    buildSheet(name, obj) {
         let sheet = this.sheets[name];
-        if (sheet === undefined) {
-            this.sheetArr.push(sheet = this.sheets[name] = new Sheet(this, api, name, obj.id));
-        }
+        if (sheet === undefined)
+            sheet = this.newSheet(name, obj.id);
+        sheet.build(obj);
+        /*
         let states = sheet.states;
         for (let p in obj) {
-            switch (p) {
+            switch(p) {
                 case '#':
                 case '$': continue;
-                default:
-                    states.push(this.createSheetState(p, obj[p]));
-                    break;
+                default: states.push(this.createSheetState(p, obj[p])); break;
             }
-        }
+        }*/
     }
-    createSheetState(name, obj) {
-        let ret = { name: name, actions: [] };
+    /*
+    private createSheetState(name:string, obj:object):SheetState {
+        let ret:SheetState = {name:name, actions:[]};
         let actions = ret.actions;
         for (let p in obj) {
-            let action = { name: p };
+            let action:SheetAction = {name: p};
             actions.push(action);
         }
         return ret;
-    }
-    schemaRefTuids(tuidSchemas) {
-        if (tuidSchemas === undefined)
+    }*/
+    buildFieldTuid(fields) {
+        if (fields === undefined)
             return;
-        for (let schema of tuidSchemas) {
-            let { tuids, name } = schema;
-            let tuid = this.tuids[name];
-            if (tuid === undefined) {
+        for (let f of fields) {
+            let { tuid, arr, url } = f;
+            if (tuid === undefined)
                 continue;
-            }
-            if (tuid.schema === undefined)
-                tuid.schema = schema;
-            this.schemaRefTuids(tuids);
+            f._tuid = this.getTuid(tuid, arr, url);
         }
     }
-    pack(schema, data) {
-        let ret = [];
-        if (schema === undefined || data === undefined)
+    buildArrFieldsTuid(arrFields) {
+        if (arrFields === undefined)
             return;
-        let fields = schema.fields;
-        if (fields !== undefined)
-            this.packRow(ret, schema.fields, data);
-        let arrs = schema['arrs'];
-        if (arrs !== undefined) {
-            for (let arr of arrs) {
-                this.packArr(ret, arr.fields, data[arr.name]);
-            }
+        for (let af of arrFields) {
+            let { fields } = af;
+            if (fields === undefined)
+                continue;
+            this.buildFieldTuid(fields);
         }
-        return ret.join('');
-    }
-    escape(d) {
-        switch (typeof d) {
-            default: return d;
-            case 'string':
-                let len = d.length;
-                let r = '', p = 0;
-                for (let i = 0; i < len; i++) {
-                    let c = d.charCodeAt(i);
-                    switch (c) {
-                        case 9:
-                            r += d.substring(p, i) + '\\t';
-                            p = i + 1;
-                            break;
-                        case 10:
-                            r += d.substring(p, i) + '\\n';
-                            p = i + 1;
-                            break;
-                    }
-                }
-                return r + d.substring(p);
-            case 'undefined': return '';
-        }
-    }
-    packRow(result, fields, data) {
-        let ret = '';
-        let len = fields.length;
-        ret += this.escape(data[fields[0].name]);
-        for (let i = 1; i < len; i++) {
-            let f = fields[i];
-            ret += tab + this.escape(data[f.name]);
-        }
-        result.push(ret + ln);
-    }
-    packArr(result, fields, data) {
-        if (data !== undefined) {
-            for (let row of data) {
-                this.packRow(result, fields, row);
-            }
-        }
-        result.push(ln);
-    }
-    unpackSheet(schema, data) {
-        let ret = {};
-        if (schema === undefined || data === undefined)
-            return;
-        let fields = schema.fields;
-        let p = 0;
-        if (fields !== undefined)
-            p = this.unpackRow(ret, schema.fields, data, p);
-        let arrs = schema['arrs'];
-        if (arrs !== undefined) {
-            for (let arr of arrs) {
-                p = this.unpackArr(ret, arr, data, p);
-            }
-        }
-        return ret;
-    }
-    unpackReturns(schema, data) {
-        let ret = {};
-        if (schema === undefined || data === undefined)
-            return;
-        //let fields = schema.fields;
-        let p = 0;
-        //if (fields !== undefined) p = unpackRow(ret, schema.fields, data, p);
-        let arrs = schema['returns'];
-        if (arrs !== undefined) {
-            for (let arr of arrs) {
-                p = this.unpackArr(ret, arr, data, p);
-            }
-        }
-        return ret;
-    }
-    unpackRow(ret, fields, data, p) {
-        let ch0 = 0, ch = 0, c = p, i = 0, len = data.length, fLen = fields.length;
-        for (; p < len; p++) {
-            ch0 = ch;
-            ch = data.charCodeAt(p);
-            if (ch === 9) {
-                let f = fields[i];
-                if (ch0 !== 8) {
-                    let v = data.substring(c, p);
-                    ret[f.name] = this.to(ret, v, f);
-                }
-                else {
-                    let s = null;
-                }
-                c = p + 1;
-                ++i;
-                if (i >= fLen)
-                    break;
-            }
-            else if (ch === 10) {
-                let f = fields[i];
-                if (ch0 !== 8) {
-                    let v = data.substring(c, p);
-                    ret[f.name] = this.to(ret, v, f);
-                }
-                else {
-                    let s = null;
-                }
-                ++p;
-                ++i;
-                break;
-            }
-        }
-        return p;
-    }
-    to(ret, v, f) {
-        switch (f.type) {
-            default: return v;
-            case 'datetime':
-            case 'date':
-            case 'time':
-                let date = new Date(Number(v));
-                return date;
-            case 'tinyint':
-            case 'smallint':
-            case 'int':
-            case 'dec': return Number(v);
-            case 'bigint':
-                let { tuid: tuidKey, url: tuidUrl } = f;
-                if (tuidKey !== undefined) {
-                    let tuid = f._tuid;
-                    if (tuid === undefined) {
-                        f._tuid = tuid = this.getTuid(tuidKey, tuidUrl);
-                    }
-                    tuid.useId(Number(v), true);
-                }
-                return Number(v);
-        }
-    }
-    unpackArr(ret, arr, data, p) {
-        let vals = [], len = data.length;
-        let { name, fields } = arr;
-        while (p < len) {
-            let ch = data.charCodeAt(p);
-            if (ch === 10) {
-                ++p;
-                break;
-            }
-            let val = {};
-            vals.push(val);
-            p = this.unpackRow(val, fields, data, p);
-        }
-        ret[name] = vals;
-        return p;
     }
 }
 //# sourceMappingURL=entities.js.map

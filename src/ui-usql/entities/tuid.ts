@@ -1,57 +1,71 @@
-import {observable} from 'mobx';
+import * as React from 'react';
+import {observable, IObservableValue} from 'mobx';
 import * as _ from 'lodash';
-import {Entity} from './entity';
-import {Entities} from './entities';
-import { debug, isNumber } from 'util';
-import { Book } from './book';
-import { Query } from './query';
-import { Action } from './action';
+import { Entity } from './entity';
+import { Entities, Field } from './entities';
+import { isNumber } from 'util';
+
+export class IdBox {
+    id: number;
+    content: (templet?:React.StatelessComponent)=>JSX.Element;
+}
 
 const maxCacheSize = 1000;
-export class Tuid extends Entity {
+export abstract class Tuid extends Entity {
+    private idCreater: ()=>void;
+    get typeName(): string { return 'tuid';}
     private queue: number[] = [];               // 每次使用，都排到队头
     private waitingIds: number[] = [];          // 等待loading的
     private cache = observable.map({}, {deep: false});    // 已经缓冲的
-    @observable all:any[] = undefined;
-    proxies: {[name:string]: Tuid};    
-    slaves:{[name:string]:Slave};
+    idName: string;
+    owner: TuidMain;                    // 用这个值来区分是不是TuidArr
+    unique: string[];
 
-    public setSchema(schema:any) {
-        super.setSchema(schema);
-        let {slaves} = schema;
-        if (slaves === undefined) return;
-        this.slaves = {};
-        for (let i in slaves) {
-            let slave = slaves[i];
-            this.slaves[i] = this.buildSlave(slave);
-        }
+    constructor(entities:Entities, name:string, typeId:number) {
+        super(entities, name, typeId);
+        this.buildIdCreater();
     }
 
-    private buildSlave(slave:any):Slave {
-        let {tuid, book, page, pageSlave, all, add, del} = slave;
-        let tuidTuid:Tuid = this.entities.tuid(tuid.name);
-        tuidTuid.setSchema(tuid);
-        let bookBook:Book = this.entities.book(book.name);
-        bookBook.setSchema(book);
-        let pageQuery:Query = this.entities.query(page.name);
-        pageQuery.setSchema(page);
-        let pageSlaveQuery:Query = this.entities.query(pageSlave.name);
-        pageSlaveQuery.setSchema(pageSlave);
-        let allQuery:Query = this.entities.query(all.name);
-        allQuery.setSchema(all);
-        let addAction:Action = this.entities.action(add.name);
-        addAction.setSchema(add);
-        let delAction:Action = this.entities.action(del.name);
-        delAction.setSchema(del);
-        return {
-            tuid: tuidTuid,
-            book: bookBook,
-            page: pageQuery,
-            pageSlave: pageSlaveQuery,
-            all: allQuery,
-            add: addAction,
-            del: delAction,
-        };
+    abstract get Main();
+
+    private buildIdCreater() {
+        this.idCreater = function():void {};
+        let prototype = this.idCreater.prototype;
+        Object.defineProperty(prototype, '_$tuid', {
+            value: this,
+            writable: false,
+            enumerable: false,
+        });
+        prototype.content = function(templet?:React.StatelessComponent) {
+            let t:Tuid = this._$tuid;
+            let com = templet || t.entities.usq.getTuidContent(t);
+            let val = this._$tuid.valueFromId(this.id);
+            if (typeof val === 'number') val = {id: val};
+            return React.createElement(com, val);
+        }
+        Object.defineProperty(prototype, 'obj', {
+            enumerable: false,
+            get: function() {
+                return this._$tuid.valueFromId(this.id);
+            }
+        });
+        prototype.toJSON = function() {return this.id}
+    }
+    createID(id:number):IdBox {
+        let ret:IdBox = new this.idCreater();
+        ret.id = id;
+        return ret;
+    }
+
+    getIdFromObj(item:any):number {
+        return item[this.idName];
+    }
+
+    setSchema(schema:any) {
+        super.setSchema(schema);
+        let {id, unique} = schema;
+        this.idName = id;
+        this.unique = unique;
     }
 
     private moveToHead(id:number) {
@@ -59,20 +73,8 @@ export class Tuid extends Entity {
         this.queue.splice(index, 1);
         this.queue.push(id);
     }
-    setItemObservable() {
-        this.cache = observable.map({}, {deep: true});
-    }
-    buidProxies(parts:string[]) {
-        let len = parts.length;
-        if (len <= 2) return;
-        this.proxies = {};
-        for (let i=2;i<len;i++) this.proxies[parts[i]] = null;
-    }
-    setProxies(entities:Entities) {
-        if (this.proxies === undefined) return;
-        for (let i in this.proxies) this.proxies[i] = entities.getTuid(i, undefined);
-    }
-    getId(id:number):any {
+
+    valueFromId(id:number):any {
         return this.cache.get(String(id));
     }
     resetCache(id:number) {
@@ -81,10 +83,8 @@ export class Tuid extends Entity {
         this.queue.splice(index, 1);
         this.useId(id);
     }
-    cacheItem(id:number, item:any) {
-        this.cache.set(String(id), item);
-    }
     useId(id:number, defer?:boolean):void {
+        if (id === undefined || id === 0) return;
         if (isNumber(id) === false) return;
         let key = String(id);
         if (this.cache.has(key) === true) {
@@ -92,6 +92,7 @@ export class Tuid extends Entity {
             return;
         }
         this.entities.cacheTuids(defer===true?70:20);
+        //let idVal = this.createID(id);
         this.cache.set(key, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
@@ -131,11 +132,14 @@ export class Tuid extends Entity {
     }
     private cacheValue(val:any):boolean {
         if (val === undefined) return false;
-        let id = val.id;
+        let id = this.getIdFromObj(val);
         if (id === undefined) return false;
         let index = this.waitingIds.findIndex(v => v === id);
         if (index>=0) this.waitingIds.splice(index, 1);
+        //let cacheVal = this.createID(id, val);
         this.cache.set(String(id), val);
+        // 下面的代码应该是cache proxy id, 需要的时候再写吧
+        /*
         let {tuids, fields} = this.schema;
         if (tuids !== undefined && fields !== undefined) {
             for (let f of fields) {
@@ -145,28 +149,30 @@ export class Tuid extends Entity {
                 if (t === undefined) continue;
                 t.useId(val[name]);
             }
-        }
+        }*/
         return true;
+    }
+    protected afterCacheId(tuidValue:any) {
     }
     async cacheIds():Promise<void> {
         if (this.waitingIds.length === 0) return;
-        await this.loadSchema();
-        let tuids = await this.tvApi.tuidIds(this.name, this.waitingIds);
-        for (let tuid of tuids) {
-            if (this.cacheValue(tuid) === false) continue;
-            if (this.proxies !== undefined) {
-                let {type, $proxy} = tuid;
-                let pTuid = this.proxies[type];
-                pTuid.useId($proxy);
-            }
+        let name:string, arr:string;
+        if (this.owner === undefined) {
+            name = this.name;
+        }
+        else {
+            name = this.owner.name;
+            arr = this.name;
+        }
+        let tuids = await this.tvApi.tuidIds(name, arr, this.waitingIds);
+        for (let tuidValue of tuids) {
+            if (this.cacheValue(tuidValue) === false) continue;
+            this.afterCacheId(tuidValue);
         }
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
         return await this.tvApi.tuidGet(this.name, id);
-    }
-    async loadAll():Promise<any[]> {
-        return this.all = await this.tvApi.tuidGetAll(this.name);
     }
     async save(id:number, props:any) {
         let params = _.clone(props);
@@ -174,16 +180,26 @@ export class Tuid extends Entity {
         return await this.tvApi.tuidSave(this.name, params);
     }
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {
-        let ret = await this.tvApi.tuidSearch(this.name, key, pageStart, pageSize);
+        let name:string, arr:string;
+        if (this.owner !== undefined) {
+            name = this.owner.name;
+            arr = this.name;
+        }
+        else {
+            name = this.name;
+            arr = undefined;
+        }
+        let ret = await this.tvApi.tuidSearch(name, arr, key, pageStart, pageSize);
         return ret;
     }
     async loadArr(arr:string, owner:number, id:number):Promise<any> {
         if (id === undefined || id === 0) return;
         return await this.tvApi.tuidArrGet(this.name, arr, owner, id);
     }
+    /*
     async loadArrAll(owner:number):Promise<any[]> {
         return this.all = await this.tvApi.tuidGetAll(this.name);
-    }
+    }*/
     async saveArr(arr:string, owner:number, id:number, props:any) {
         let params = _.clone(props);
         params["$id"] = id;
@@ -204,17 +220,67 @@ export class Tuid extends Entity {
     }
     
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
-    private async ids(idArr:number[]) {
-        return await this.tvApi.tuidIds(this.name, idArr);
+    //private async ids(idArr:number[]) {
+    //    return await this.tvApi.tuidIds(this.name, idArr);
+    //}
+}
+
+export class TuidMain extends Tuid {
+    get Main() {return this}
+
+    divs: {[name:string]: TuidDiv};
+    proxies: {[name:string]: TuidMain};
+
+    public setSchema(schema:any) {
+        super.setSchema(schema);
+        //let {slaves} = schema;
+        //if (slaves === undefined) return;
+        //this.slaves = {};
+        //for (let i in slaves) {
+        //    let slave = slaves[i];
+        //    this.slaves[i] = this.buildSlave(slave);
+        //}
+        let {arrs} = schema;
+        if (arrs !== undefined) {
+            this.divs = {};
+            for (let arr of arrs) {
+                let {name} = arr;
+                let tuidDiv = new TuidDiv(this.entities, name, this.typeId);
+                tuidDiv.owner = this;
+                this.divs[name] = tuidDiv;
+                tuidDiv.setSchema(arr);
+            }
+        }
+    }
+
+    async cacheIds():Promise<void> {
+        await super.cacheIds();
+        if (this.divs === undefined) return;
+        for (let i in this.divs) {
+            await this.divs[i].cacheIds();
+        }
+    }
+
+    /*
+    buidProxies(parts:string[]) {
+        let len = parts.length;
+        if (len <= 2) return;
+        this.proxies = {};
+        for (let i=2;i<len;i++) this.proxies[parts[i]] = null;
+    }
+    setProxies(entities:Entities) {
+        if (this.proxies === undefined) return;
+        for (let i in this.proxies) this.proxies[i] = entities.getTuid(i) as Tuid;
+    }
+    */
+    protected afterCacheId(tuidValue:any) {
+        if (this.proxies === undefined) return;
+        let {type, $proxy} = tuidValue;
+        let pTuid = this.proxies[type];
+        pTuid.useId($proxy);
     }
 }
 
-export interface Slave {
-    tuid: Tuid,
-    book: Book;
-    page: Query;
-    pageSlave: Query;
-    all: Query;
-    add: Action;
-    del: Action;
+export class TuidDiv extends Tuid {
+    get Main() {return this.owner}
 }

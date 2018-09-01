@@ -9,15 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, FA, LMR } from 'tonva-react-form';
-import { VmSheet } from './vmSheet';
-import { VmSheetAction } from './vmSheetAction';
-export class VmSheetList extends VmSheet {
+import { VmEntity } from '../VM';
+export class VmSheetList extends VmEntity {
     constructor() {
         super(...arguments);
         this.rowClick = (brief) => __awaiter(this, void 0, void 0, function* () {
             if (brief.processing === 1)
                 return;
-            this.navVm(VmSheetAction, brief);
+            this.event('action', brief.id);
+            //this.navVm(VmSheetAction, brief.id);
         });
         this.renderRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,
@@ -33,20 +33,18 @@ export class VmSheetList extends VmSheet {
             let right = React.createElement(FA, { className: "align-self-center", name: "angle-right" });
             return React.createElement(LMR, { className: "px-3 py-2", left: left, right: right });
         };
-        this.view = SheetList;
+        this.view = () => {
+            let sheets = this.entity.stateSheets;
+            return React.createElement(Page, { header: this.label + ' - ' + this.stateLabel },
+                React.createElement(List, { items: sheets, item: { render: this.renderRow, onClick: this.rowClick } }));
+        };
     }
-    beforeStart(item) {
+    showEntry(item) {
         return __awaiter(this, void 0, void 0, function* () {
             this.stateName = item.state;
-            this.stateLabel = this.getStateLabel(this.stateName);
+            this.stateLabel = this.coordinator.getStateLabel(this.stateName);
             yield this.entity.getStateSheets(this.stateName, 0, 30);
         });
     }
 }
-const SheetList = ({ vm }) => {
-    let { entity, label, stateLabel, renderRow, rowClick } = vm;
-    let sheets = entity.stateSheets;
-    return React.createElement(Page, { header: label + ' - ' + stateLabel },
-        React.createElement(List, { items: sheets, item: { render: renderRow, onClick: rowClick } }));
-};
 //# sourceMappingURL=vmList.js.map

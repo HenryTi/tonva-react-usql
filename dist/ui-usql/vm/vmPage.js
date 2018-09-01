@@ -48,6 +48,11 @@ export class VmPage extends ViewModel {
     replacePage(page) {
         nav.replace(page, this.disposer);
     }
+    back(confirm) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield nav.back(confirm);
+        });
+    }
     show() {
         return __awaiter(this, void 0, void 0, function* () {
             //nav.push(this.render(), this.disposer);

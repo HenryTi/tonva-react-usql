@@ -1,50 +1,54 @@
+import * as React from 'react';
 import { Entity } from './entity';
 import { Entities } from './entities';
-import { Book } from './book';
-import { Query } from './query';
-import { Action } from './action';
-export declare class Tuid extends Entity {
+export declare class IdBox {
+    id: number;
+    content: (templet?: React.StatelessComponent) => JSX.Element;
+}
+export declare abstract class Tuid extends Entity {
+    private idCreater;
+    readonly typeName: string;
     private queue;
     private waitingIds;
     private cache;
-    all: any[];
-    proxies: {
-        [name: string]: Tuid;
-    };
-    slaves: {
-        [name: string]: Slave;
-    };
+    idName: string;
+    owner: TuidMain;
+    unique: string[];
+    constructor(entities: Entities, name: string, typeId: number);
+    abstract readonly Main: any;
+    private buildIdCreater;
+    createID(id: number): IdBox;
+    getIdFromObj(item: any): number;
     setSchema(schema: any): void;
-    private buildSlave;
     private moveToHead;
-    setItemObservable(): void;
-    buidProxies(parts: string[]): void;
-    setProxies(entities: Entities): void;
-    getId(id: number): any;
+    valueFromId(id: number): any;
     resetCache(id: number): void;
-    cacheItem(id: number, item: any): void;
     useId(id: number, defer?: boolean): void;
     proxied(name: string, id: number): Promise<any>;
     private cacheValue;
+    protected afterCacheId(tuidValue: any): void;
     cacheIds(): Promise<void>;
     load(id: number): Promise<any>;
-    loadAll(): Promise<any[]>;
     save(id: number, props: any): Promise<any>;
     search(key: string, pageStart: string | number, pageSize: number): Promise<any>;
     loadArr(arr: string, owner: number, id: number): Promise<any>;
-    loadArrAll(owner: number): Promise<any[]>;
     saveArr(arr: string, owner: number, id: number, props: any): Promise<any>;
     posArr(arr: string, owner: number, id: number, order: number): Promise<any>;
     bindSlaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;
     bindSlaves(slave: string, masterId: number, order: number, pageSize: any): Promise<any[]>;
-    private ids;
 }
-export interface Slave {
-    tuid: Tuid;
-    book: Book;
-    page: Query;
-    pageSlave: Query;
-    all: Query;
-    add: Action;
-    del: Action;
+export declare class TuidMain extends Tuid {
+    readonly Main: this;
+    divs: {
+        [name: string]: TuidDiv;
+    };
+    proxies: {
+        [name: string]: TuidMain;
+    };
+    setSchema(schema: any): void;
+    cacheIds(): Promise<void>;
+    protected afterCacheId(tuidValue: any): void;
+}
+export declare class TuidDiv extends Tuid {
+    readonly Main: TuidMain;
 }

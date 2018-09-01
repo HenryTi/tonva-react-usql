@@ -9,15 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { VmSheet } from './vmSheet';
-import { VmArchived } from './vmArchived';
-export class VmArchives extends VmSheet {
+import { VmEntity } from '../VM';
+export class VmArchives extends VmEntity {
     constructor() {
         super(...arguments);
         this.archiveClick = (brief) => __awaiter(this, void 0, void 0, function* () {
             if (brief.processing === 1)
                 return;
-            this.navVm(VmArchived, brief);
+            this.event('archived', brief);
+            //this.navVm(VmArchived, brief);
         });
         this.archiveRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,
@@ -33,17 +33,16 @@ export class VmArchives extends VmSheet {
             let right = React.createElement(FA, { className: "align-self-center", name: "angle-right" });
             return React.createElement(LMR, { className: "px-3 py-2", left: left, right: right });
         };
-        this.view = Archives;
+        this.view = () => {
+            return React.createElement(Page, { header: '已归档' + this.label },
+                React.createElement(List, { items: this.list, item: { render: this.archiveRow, onClick: this.archiveClick } }));
+        };
     }
-    beforeStart() {
+    showEntry() {
         return __awaiter(this, void 0, void 0, function* () {
             this.list = yield this.entity.getArchives(undefined, 10);
+            this.open(this.view);
         });
     }
 }
-const Archives = ({ vm }) => {
-    let { label, list, archiveRow, archiveClick } = vm;
-    return React.createElement(Page, { header: '已归档' + label },
-        React.createElement(List, { items: list, item: { render: archiveRow, onClick: archiveClick } }));
-};
 //# sourceMappingURL=vmArchives.js.map

@@ -1,15 +1,16 @@
-import { VmQuery } from './vmQuery';
-import { VmForm } from '../vmForm';
-export declare class VmQueryMain extends VmQuery {
-    vmForm: VmForm;
-    beforeStart(param?: any): Promise<void>;
+import { Query } from '../../entities';
+import { VmForm } from '../form';
+import { VmEntity } from '../VM';
+import { QueryUI } from './crQuery';
+export declare class VmQueryMain extends VmEntity<Query, QueryUI> {
+    protected vmForm: VmForm;
+    private row;
+    showEntry(param?: any): Promise<void>;
     onSubmit: () => Promise<void>;
     again: () => void;
     renderExtra(): void;
-    protected view: ({ vm }: {
-        vm: VmQueryMain;
-    }) => JSX.Element;
+    renderRow: (item: any, index: number) => JSX.Element;
+    protected view: () => JSX.Element;
+    protected pageResult: () => JSX.Element;
+    protected queryResult: (result: any) => JSX.Element;
 }
-export declare const QueryPage: ({ vm }: {
-    vm: VmQueryMain;
-}) => JSX.Element;

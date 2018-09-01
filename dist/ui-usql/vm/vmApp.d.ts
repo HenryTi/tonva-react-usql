@@ -8,12 +8,15 @@ export declare class VmApp extends ViewModel {
     private appOwner;
     private appName;
     private ui;
+    private isProduction;
+    id: number;
+    appUnits: any[];
     constructor(tonvaApp: string, ui: any);
     vmApiCollection: {
         [api: string]: VmApi;
     };
-    loadSchema(): Promise<void>;
-    protected newVmApi(url: string, api: string, access: string, ui: any): VmApi;
+    loadApis(): Promise<void>;
+    protected newVmApi(apiId: number, api: string, access: string, ui: any): VmApi;
     caption: string;
     protected view: ({ vm }: {
         vm: VmApp;
@@ -21,4 +24,10 @@ export declare class VmApp extends ViewModel {
     readonly vmApiArr: VmApi[];
     getVmApi(apiName: string): VmApi;
     start(): Promise<void>;
+    protected clearPrevPages(): void;
+    private showMainPage;
+    private getVmApiFromId;
+    private loadAppUnits;
+    renderRow: (item: any, index: number) => JSX.Element;
+    onRowClick: (item: any) => Promise<void>;
 }

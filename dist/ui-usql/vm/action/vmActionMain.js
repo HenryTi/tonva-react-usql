@@ -7,35 +7,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { observer } from 'mobx-react';
-import { vmLinkIcon } from '../vmEntity';
 import { Page } from 'tonva-tools';
-import { VmAction } from './vmAction';
-export class VmActionMain extends VmAction {
+import { VmEntity } from '../VM';
+export class VmActionMain extends VmEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            this.returns = yield this.entity.submit(this.vmForm.values);
-            this.replacePage(React.createElement(ResultPage, { vm: this }));
+            this.returns = yield this.coordinator.submit(this.vmForm.values);
+            this.close();
+            this.open(this.resultPage);
         });
-        this.view = ActionPage;
+        this.mainPage = () => {
+            let { label } = this.coordinator;
+            return React.createElement(Page, { header: label }, this.vmForm.render('mx-3 my-2'));
+        };
+        this.resultPage = () => {
+            let { label } = this.coordinator;
+            return React.createElement(Page, { header: label, back: "close" },
+                "\u5B8C\u6210\uFF01",
+                React.createElement("pre", null, JSON.stringify(this.returns, undefined, ' ')));
+        };
     }
-    get icon() { return vmLinkIcon('text-success', 'hand-o-right'); }
-    beforeStart() {
+    showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createVmFieldsForm();
-            this.vmForm.onSubmit = this.onSubmit;
+            this.vmForm = this.createForm(this.onSubmit, param);
+            this.open(this.mainPage);
         });
     }
 }
-const ActionPage = observer(({ vm }) => {
-    let { label, vmForm } = vm;
-    return React.createElement(Page, { header: label }, vmForm.render('mx-3 my-2'));
-});
-const ResultPage = ({ vm }) => {
-    let { label, returns } = vm;
-    return React.createElement(Page, { header: label, back: "close" },
-        "\u5B8C\u6210\uFF01",
-        React.createElement("pre", null, JSON.stringify(returns, undefined, ' ')));
-};
 //# sourceMappingURL=vmActionMain.js.map

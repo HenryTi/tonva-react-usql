@@ -1,58 +1,92 @@
 import * as React from 'react';
 import { Button } from 'reactstrap';
-import { tonvaDebug } from 'tonva-react-form';
 import { nav, Page } from 'tonva-tools';
-import { VmSheet } from './vmSheet';
 import { VmView } from './vmView';
+import { VmEntity } from '../VM';
+import { Sheet } from '../../entities';
+import { CrSheet, SheetUI } from './crSheet';
 
-export class VmSheetAction extends VmSheet {
+export class VmSheetAction extends VmEntity<Sheet, SheetUI> {
+    protected coordinator: CrSheet;
     brief: any;
     sheetData: any;
     flows: any[];
     vmView: VmView;
 
-    async start(inBrief:any) {
-        let data = await this.entity.getSheet(inBrief.id)
+    async showEntry(sheetId:number) {
+        let data = await this.entity.getSheet(sheetId);
         let {brief, data:sheetData, flows} = data;
         this.brief = brief;
         this.sheetData = sheetData;
         this.flows = flows;
-        this.vmView = new VmView(this.vmApi, this.entity, this.ui, this.sheetData, this.brief.state, flows);
-        super.start();
+        this.vmView = new VmView(this.coordinator, this.sheetData, this.brief.state, flows);
     }
 
     actionClick = async (action:any) => {
         let {id, flow, state} = this.brief;
         let res = await this.entity.action(id, flow, state, action.name);
         alert(JSON.stringify(res));
-        this.popPage();
+        await nav.back();
     }
-    protected view = SheetAction;
-}
 
-const SheetAction = ({vm}:{vm:VmSheetAction}) => {
-    let {label, entity, brief, actionClick, vmView} = vm;
-    let state = brief.state;
-    let stateLabel = vm.getStateLabel(state);
-    let s = entity.schema.states.find(v => v.name === state);
-    let actions = s.actions;
-    tonvaDebug();
-    return <Page header={label + ':' + stateLabel + '-' + brief.no}>
-        <div className="my-3">
-            <div className="mx-3 mb-3">
-                {
-                    actions.map((v,index) => 
-                        <Button
-                            key={index}
-                            className="mr-2"
-                            color="primary"
-                            onClick={()=>actionClick(v)}
-                        >
-                            {vm.getActionLabel(state, v.name)}
-                        </Button>)
-                }
+    deleteClick = async () => {
+        alert('单据作废：程序正在设计中');
+    }
+
+    editClick = async () => {
+        alert('修改单据：程序正在设计中');
+    }
+
+    protected view = () => {
+        let state = this.brief.state;
+        let stateLabel = this.coordinator.getStateLabel(state);
+        let {states} = this.entity;
+        let s = states.find(v => v.name === state);
+        let actionButtons, startButtons;
+        if (s === undefined) {
+            let text:string, cn:string;
+            switch (state) {
+                default:
+                    text = '不认识的单据状态\'' + state + '\'';
+                    cn = 'text-info';
+                    break;
+                case '-': 
+                    text = '已作废';
+                    cn = 'text-danger';
+                    break;
+                case '#':
+                    text = '已归档';
+                    cn = 'text-success';
+                    break;
+            }
+            actionButtons = <div className={cn}>[{text}]</div>;
+        }
+        else {
+            actionButtons = <div className="flex-grow-1">{s.actions.map((v,index) => 
+                <Button
+                    key={index}
+                    className="mr-2"
+                    color="primary"
+                    onClick={()=>this.actionClick(v)}
+                >
+                    {this.coordinator.getActionLabel(state, v.name)}
+                </Button>)}
+            </div>;
+            if (state === '$') {
+                startButtons = <div>
+                    <Button outline={true} className="ml-2" color="info" onClick={this.editClick}>修改</Button>
+                    <Button outline={true} className="ml-2" color="danger" onClick={this.deleteClick}>作废</Button>
+                </div>
+            }
+        };
+        return <Page header={this.label + ':' + stateLabel + '-' + this.brief.no}>
+            <div className="my-3">
+                <div className="d-flex mx-3 mb-3">
+                    {actionButtons}
+                    {startButtons}
+                </div>
+                {this.vmView.render()}
             </div>
-            {vmView.render()}
-        </div>
-    </Page>;
+        </Page>;
+    }
 }

@@ -5,4 +5,5 @@ export * from './query';
 export * from './sheet';
 export * from './tuid';
 export * from './book';
+export * from './map';
 export * from './history';

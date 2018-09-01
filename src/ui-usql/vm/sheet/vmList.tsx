@@ -2,23 +2,26 @@ import * as React from 'react';
 import { Button, ButtonProps } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, FA, LMR } from 'tonva-react-form';
-import { VmSheet } from './vmSheet';
-import { VmForm } from '../vmForm';
 import { VmSheetAction } from './vmSheetAction';
+import { VmEntity } from '../VM';
+import { Sheet } from '../../entities';
+import { CrSheet, SheetUI } from './crSheet';
 
-export class VmSheetList extends VmSheet {
+export class VmSheetList extends VmEntity<Sheet, SheetUI> {
+    protected coordinator: CrSheet;
     stateName: string;
     stateLabel: string;
 
-    protected async beforeStart(item:any) {
+    async showEntry(item:any) {
         this.stateName = item.state;
-        this.stateLabel = this.getStateLabel(this.stateName);
+        this.stateLabel = this.coordinator.getStateLabel(this.stateName);
         await this.entity.getStateSheets(this.stateName, 0, 30);
     }
 
     rowClick = async (brief:any) => {
         if (brief.processing===1) return;
-        this.navVm(VmSheetAction, brief);
+        this.event('action', brief.id);
+        //this.navVm(VmSheetAction, brief.id);
     }
 
     renderRow = (row:any, index:number) => {
@@ -30,13 +33,10 @@ export class VmSheetList extends VmSheet {
         return <LMR className="px-3 py-2" left={left} right={right} />;
     }
 
-    protected view = SheetList;
-}
-
-const SheetList = ({vm}:{vm:VmSheetList}) => {
-    let {entity, label, stateLabel, renderRow, rowClick} = vm;
-    let sheets = entity.stateSheets;
-    return <Page header={label + ' - ' + stateLabel}>
-        <List items={sheets} item={{render:renderRow, onClick:rowClick}} />
-    </Page>;
+    protected view = () => {
+        let sheets = this.entity.stateSheets;
+        return <Page header={this.label + ' - ' + this.stateLabel}>
+            <List items={sheets} item={{render:this.renderRow, onClick:this.rowClick}} />
+        </Page>;
+    }
 }

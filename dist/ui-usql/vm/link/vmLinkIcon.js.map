@@ -1,0 +1,1 @@
+{"version":3,"file":"vmLinkIcon.js","sourceRoot":"","sources":["../../../../src/ui-usql/vm/link/vmLinkIcon.tsx"],"names":[],"mappings":"AAAA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAC/B,OAAO,EAAE,EAAE,EAAE,MAAM,kBAAkB,CAAC;AAEtC,MAAM,qBAAqB,GAAU,EAAE,MAAa;IAChD,OAAO,oBAAC,EAAE,IAAC,SAAS,EAAE,GAAG,EAAE,IAAI,EAAC,IAAI,EAAC,IAAI,EAAE,MAAM,EAAE,QAAQ,EAAE,IAAI,GAAI,CAAC;AAC1E,CAAC"}

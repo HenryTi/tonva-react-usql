@@ -35,6 +35,10 @@ export abstract class VmPage extends ViewModel {
         nav.replace(page, this.disposer);
     }
 
+    async back(confirm?:boolean) {
+        await nav.back(confirm);
+    }
+
     async show() {
         //nav.push(this.render(), this.disposer);
         this.pushPage(this.render());

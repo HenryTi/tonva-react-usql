@@ -1,9 +1,23 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { List, Muted, EasyDate, FA } from 'tonva-react-form';
-import { VmSheet } from './vmSheet';
-export class VmView extends VmSheet {
-    constructor(vmApi, sheet, ui, data, state, flows) {
-        super(vmApi, sheet, ui);
+import { VmEntity } from '../VM';
+export class VmView extends VmEntity {
+    constructor(crSheet, data, state, flows) {
+        super(crSheet);
+        /*
+        protected get fieldsFormOptions():VmFormOptions {
+            let ret = super.fieldsFormOptions;
+            ret.readOnly = true;
+            return ret;
+        }*/
         this.flowRow = (item, index) => {
             let { date, user, preState, state, action } = item;
             if (action === undefined)
@@ -34,27 +48,25 @@ export class VmView extends VmSheet {
                         React.createElement(Muted, null,
                             React.createElement(EasyDate, { date: date })))));
         };
-        this.view = View;
+        this.view = () => {
+            let removed;
+            if (this.state === '-')
+                removed = React.createElement("div", { className: "mx-3 my-2", style: { color: 'red' } }, "\u672C\u5355\u636E\u4F5C\u5E9F");
+            return React.createElement("div", null,
+                removed,
+                this.vmForm.render(),
+                React.createElement(List, { header: React.createElement(Muted, null, "\u6D41\u7A0B"), items: this.flows, item: { render: this.flowRow } }));
+        };
         this.data = data;
         this.state = state;
         this.flows = flows;
-        this.vmForm = this.createVmFieldsForm();
-        this.vmForm.values = data;
     }
-    get fieldsFormOptions() {
-        let ret = super.fieldsFormOptions;
-        ret.readOnly = true;
-        return ret;
+    showEntry(param) {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    render() {
+        this.vmForm = this.createForm(this.data);
+        return React.createElement(this.view, null);
     }
 }
-const View = ({ vm }) => {
-    let { entity, state, data, vmForm, flows, flowRow } = vm;
-    let removed;
-    if (state === '-')
-        removed = React.createElement("div", { className: "mx-3 my-2", style: { color: 'red' } }, "\u672C\u5355\u636E\u4F5C\u5E9F");
-    return React.createElement("div", null,
-        removed,
-        vmForm.render(),
-        React.createElement(List, { header: React.createElement(Muted, null, "\u6D41\u7A0B"), items: flows, item: { render: flowRow } }));
-};
 //# sourceMappingURL=vmView.js.map

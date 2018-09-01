@@ -1,8 +1,8 @@
-import { ApiBase } from 'tonva-tools';
+import { Api } from 'tonva-tools';
 export declare class UsqlApi {
     private api;
     private access;
-    constructor(api: ApiBase, access: string[]);
+    constructor(api: Api, access: string[]);
     update(): Promise<string>;
     loadAccess(): Promise<any>;
     schema(name: string): Promise<any>;
@@ -10,14 +10,14 @@ export declare class UsqlApi {
     tuidGet(name: string, id: number): Promise<any>;
     tuidGetAll(name: string): Promise<any[]>;
     tuidSave(name: string, params: any): Promise<any>;
-    tuidSearch(name: string, key: string, pageStart: string | number, pageSize: number): Promise<any>;
+    tuidSearch(name: string, arr: string, key: string, pageStart: string | number, pageSize: number): Promise<any>;
     tuidArrGet(name: string, arr: string, owner: number, id: number): Promise<any>;
     tuidArrGetAll(name: string, arr: string, owner: number): Promise<any[]>;
     tuidArrSave(name: string, arr: string, owner: number, params: any): Promise<any>;
     tuidArrPos(name: string, arr: string, owner: number, id: number, order: number): Promise<any>;
     tuidBindSlaveSave(name: string, slave: any, params: any): Promise<any>;
     tuidBindSlaves(name: string, slave: string, masterId: number, order: number, pageSize: number): Promise<any>;
-    tuidIds(name: string, ids: number[]): Promise<any[]>;
+    tuidIds(name: string, arr: string, ids: number[]): Promise<any[]>;
     proxied(name: string, proxy: string, id: number): Promise<any>;
     sheetSave(name: string, data: object): Promise<any>;
     sheetAction(name: string, data: object): Promise<any>;

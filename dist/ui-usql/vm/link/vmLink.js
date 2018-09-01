@@ -7,33 +7,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { ViewModel } from '../viewModel';
-/*
-import { nav } from 'tonva-tools';
-import { Entity, Tuid } from '../../entities';
-import { VmActionMain } from '../action';
-import { VmTuidMain } from '../tuid';
-import { VmQueryMain } from '../query';
-import { VmSheetMain } from '../sheet';
-import { VmBookMain } from '../book';
-*/
-export class VmLink extends ViewModel {
+export class VmLink {
 }
 export class VmEntityLink extends VmLink {
-    constructor(vmEntity) {
+    constructor(crEntity) {
         super();
-        this.view = Link;
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
-            this.vmEntity.start();
+            yield this.crEntity.start();
         });
-        this.vmEntity = vmEntity;
+        this.crEntity = crEntity;
+    }
+    render() {
+        return React.createElement(this.view);
+    }
+    get view() {
+        return () => {
+            let { icon, label } = this.crEntity;
+            return React.createElement("div", { className: "px-3 py-2 align-items-center cursor-pointer", onClick: this.onClick },
+                icon,
+                " \u00A0 ",
+                label);
+        };
     }
 }
-const Link = ({ vm }) => {
-    let { vmEntity } = vm;
-    return React.createElement("div", { className: "px-3 py-2  align-items-center" },
-        vmEntity.icon,
-        " \u00A0 ",
-        vmEntity.label);
-};
 //# sourceMappingURL=vmLink.js.map

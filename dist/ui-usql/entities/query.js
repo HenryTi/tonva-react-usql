@@ -19,17 +19,12 @@ export class Query extends Entity {
         super(...arguments);
         this.queryApiName = 'page';
     }
-    /*
-    protected lowerCaseSchema() {
-        let {returns} = this.schema;
-        this.lowerCaseReturns(returns);
-    }*/
-    unpackReturns(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.schema === undefined)
-                yield this.loadSchema();
-            return this.entities.unpackReturns(this.schema, data);
-        });
+    get typeName() { return 'query'; }
+    setSchema(schema) {
+        super.setSchema(schema);
+        let { returns } = schema;
+        this.returns = returns;
+        this.isPaged = returns.find(v => v.name === '$page') !== undefined;
     }
     resetPage(size, params) {
         this.pageStart = undefined;
@@ -57,6 +52,7 @@ export class Query extends Entity {
                         break;
                 }
             }
+            yield this.loadSchema();
             let res = yield this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize + 1, this.params);
             let data = yield this.unpackReturns(res);
             this.list = observable.array([], { deep: false });
@@ -65,7 +61,7 @@ export class Query extends Entity {
                 if (page.length > this.pageSize) {
                     this.more = true;
                     page.pop();
-                    let ret = this.schema.returns.find(r => r.name === '$page');
+                    let ret = this.returns.find(r => r.name === '$page');
                     this.startField = ret.fields[0];
                     this.pageStart = page[page.length - 1][this.startField.name];
                 }
@@ -79,14 +75,16 @@ export class Query extends Entity {
     }
     page(params, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let res = yield this.api.queryPage(this.queryApiName, this.name, pageStart, pageSize + 1, params);
+            yield this.loadSchema();
+            let res = yield this.tvApi.queryPage(this.queryApiName, this.name, pageStart, pageSize + 1, params);
             let data = yield this.unpackReturns(res);
             return data.$page; // as any[];
         });
     }
     query(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            let res = yield this.api.query(this.name, params);
+            yield this.loadSchema();
+            let res = yield this.tvApi.query(this.name, params);
             let data = yield this.unpackReturns(res);
             return data;
         });

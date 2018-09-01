@@ -1,9 +1,3 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -12,79 +6,67 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import * as React from 'react';
 import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { Entity } from './entity';
 import { isNumber } from 'util';
+export class IdBox {
+}
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
-    constructor() {
-        super(...arguments);
+    constructor(entities, name, typeId) {
+        super(entities, name, typeId);
         this.queue = []; // 每次使用，都排到队头
         this.waitingIds = []; // 等待loading的
         this.cache = observable.map({}, { deep: false }); // 已经缓冲的
-        this.all = undefined;
+        this.buildIdCreater();
+    }
+    get typeName() { return 'tuid'; }
+    buildIdCreater() {
+        this.idCreater = function () { };
+        let prototype = this.idCreater.prototype;
+        Object.defineProperty(prototype, '_$tuid', {
+            value: this,
+            writable: false,
+            enumerable: false,
+        });
+        prototype.content = function (templet) {
+            let t = this._$tuid;
+            let com = templet || t.entities.usq.getTuidContent(t);
+            let val = this._$tuid.valueFromId(this.id);
+            if (typeof val === 'number')
+                val = { id: val };
+            return React.createElement(com, val);
+        };
+        Object.defineProperty(prototype, 'obj', {
+            enumerable: false,
+            get: function () {
+                return this._$tuid.valueFromId(this.id);
+            }
+        });
+        prototype.toJSON = function () { return this.id; };
+    }
+    createID(id) {
+        let ret = new this.idCreater();
+        ret.id = id;
+        return ret;
+    }
+    getIdFromObj(item) {
+        return item[this.idName];
     }
     setSchema(schema) {
         super.setSchema(schema);
-        let { slaves } = schema;
-        if (slaves === undefined)
-            return;
-        this.slaves = {};
-        for (let i in slaves) {
-            let slave = slaves[i];
-            this.slaves[i] = this.buildSlave(slave);
-        }
-    }
-    buildSlave(slave) {
-        let { tuid, book, page, pageSlave, all, add, del } = slave;
-        let tuidTuid = this.entities.tuid(tuid.name);
-        tuidTuid.setSchema(tuid);
-        let bookBook = this.entities.book(book.name);
-        bookBook.setSchema(book);
-        let pageQuery = this.entities.query(page.name);
-        pageQuery.setSchema(page);
-        let pageSlaveQuery = this.entities.query(pageSlave.name);
-        pageSlaveQuery.setSchema(pageSlave);
-        let allQuery = this.entities.query(all.name);
-        allQuery.setSchema(all);
-        let addAction = this.entities.action(add.name);
-        addAction.setSchema(add);
-        let delAction = this.entities.action(del.name);
-        delAction.setSchema(del);
-        return {
-            tuid: tuidTuid,
-            book: bookBook,
-            page: pageQuery,
-            pageSlave: pageSlaveQuery,
-            all: allQuery,
-            add: addAction,
-            del: delAction,
-        };
+        let { id, unique } = schema;
+        this.idName = id;
+        this.unique = unique;
     }
     moveToHead(id) {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
         this.queue.push(id);
     }
-    setItemObservable() {
-        this.cache = observable.map({}, { deep: true });
-    }
-    buidProxies(parts) {
-        let len = parts.length;
-        if (len <= 2)
-            return;
-        this.proxies = {};
-        for (let i = 2; i < len; i++)
-            this.proxies[parts[i]] = null;
-    }
-    setProxies(entities) {
-        if (this.proxies === undefined)
-            return;
-        for (let i in this.proxies)
-            this.proxies[i] = entities.getTuid(i, undefined);
-    }
-    getId(id) {
+    valueFromId(id) {
         return this.cache.get(String(id));
     }
     resetCache(id) {
@@ -93,10 +75,9 @@ export class Tuid extends Entity {
         this.queue.splice(index, 1);
         this.useId(id);
     }
-    cacheItem(id, item) {
-        this.cache.set(String(id), item);
-    }
     useId(id, defer) {
+        if (id === undefined || id === 0)
+            return;
         if (isNumber(id) === false)
             return;
         let key = String(id);
@@ -105,6 +86,7 @@ export class Tuid extends Entity {
             return;
         }
         this.entities.cacheTuids(defer === true ? 70 : 20);
+        //let idVal = this.createID(id);
         this.cache.set(key, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
@@ -145,41 +127,47 @@ export class Tuid extends Entity {
     cacheValue(val) {
         if (val === undefined)
             return false;
-        let id = val.id;
+        let id = this.getIdFromObj(val);
         if (id === undefined)
             return false;
         let index = this.waitingIds.findIndex(v => v === id);
         if (index >= 0)
             this.waitingIds.splice(index, 1);
+        //let cacheVal = this.createID(id, val);
         this.cache.set(String(id), val);
-        let { tuids, fields } = this.schema;
+        // 下面的代码应该是cache proxy id, 需要的时候再写吧
+        /*
+        let {tuids, fields} = this.schema;
         if (tuids !== undefined && fields !== undefined) {
             for (let f of fields) {
-                let { name, tuid } = f;
-                if (tuid === undefined)
-                    continue;
+                let {name, tuid} = f;
+                if (tuid === undefined) continue;
                 let t = this.entities.tuid(tuid);
-                if (t === undefined)
-                    continue;
+                if (t === undefined) continue;
                 t.useId(val[name]);
             }
-        }
+        }*/
         return true;
+    }
+    afterCacheId(tuidValue) {
     }
     cacheIds() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.waitingIds.length === 0)
                 return;
-            yield this.loadSchema();
-            let tuids = yield this.tvApi.tuidIds(this.name, this.waitingIds);
-            for (let tuid of tuids) {
-                if (this.cacheValue(tuid) === false)
+            let name, arr;
+            if (this.owner === undefined) {
+                name = this.name;
+            }
+            else {
+                name = this.owner.name;
+                arr = this.name;
+            }
+            let tuids = yield this.tvApi.tuidIds(name, arr, this.waitingIds);
+            for (let tuidValue of tuids) {
+                if (this.cacheValue(tuidValue) === false)
                     continue;
-                if (this.proxies !== undefined) {
-                    let { type, $proxy } = tuid;
-                    let pTuid = this.proxies[type];
-                    pTuid.useId($proxy);
-                }
+                this.afterCacheId(tuidValue);
             }
         });
     }
@@ -188,11 +176,6 @@ export class Tuid extends Entity {
             if (id === undefined || id === 0)
                 return;
             return yield this.tvApi.tuidGet(this.name, id);
-        });
-    }
-    loadAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.all = yield this.tvApi.tuidGetAll(this.name);
         });
     }
     save(id, props) {
@@ -204,7 +187,16 @@ export class Tuid extends Entity {
     }
     search(key, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.tvApi.tuidSearch(this.name, key, pageStart, pageSize);
+            let name, arr;
+            if (this.owner !== undefined) {
+                name = this.owner.name;
+                arr = this.name;
+            }
+            else {
+                name = this.name;
+                arr = undefined;
+            }
+            let ret = yield this.tvApi.tuidSearch(name, arr, key, pageStart, pageSize);
             return ret;
         });
     }
@@ -215,11 +207,10 @@ export class Tuid extends Entity {
             return yield this.tvApi.tuidArrGet(this.name, arr, owner, id);
         });
     }
-    loadArrAll(owner) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.all = yield this.tvApi.tuidGetAll(this.name);
-        });
-    }
+    /*
+    async loadArrAll(owner:number):Promise<any[]> {
+        return this.all = await this.tvApi.tuidGetAll(this.name);
+    }*/
     saveArr(arr, owner, id, props) {
         return __awaiter(this, void 0, void 0, function* () {
             let params = _.clone(props);
@@ -246,14 +237,62 @@ export class Tuid extends Entity {
             return yield this.tvApi.tuidBindSlaves(this.name, slave, masterId, order, pageSize);
         });
     }
-    // cache放到Tuid里面之后，这个函数不再需要公开调用了
-    ids(idArr) {
+}
+export class TuidMain extends Tuid {
+    get Main() { return this; }
+    setSchema(schema) {
+        super.setSchema(schema);
+        //let {slaves} = schema;
+        //if (slaves === undefined) return;
+        //this.slaves = {};
+        //for (let i in slaves) {
+        //    let slave = slaves[i];
+        //    this.slaves[i] = this.buildSlave(slave);
+        //}
+        let { arrs } = schema;
+        if (arrs !== undefined) {
+            this.divs = {};
+            for (let arr of arrs) {
+                let { name } = arr;
+                let tuidDiv = new TuidDiv(this.entities, name, this.typeId);
+                tuidDiv.owner = this;
+                this.divs[name] = tuidDiv;
+                tuidDiv.setSchema(arr);
+            }
+        }
+    }
+    cacheIds() {
+        const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.tvApi.tuidIds(this.name, idArr);
+            yield _super("cacheIds").call(this);
+            if (this.divs === undefined)
+                return;
+            for (let i in this.divs) {
+                yield this.divs[i].cacheIds();
+            }
         });
     }
+    /*
+    buidProxies(parts:string[]) {
+        let len = parts.length;
+        if (len <= 2) return;
+        this.proxies = {};
+        for (let i=2;i<len;i++) this.proxies[parts[i]] = null;
+    }
+    setProxies(entities:Entities) {
+        if (this.proxies === undefined) return;
+        for (let i in this.proxies) this.proxies[i] = entities.getTuid(i) as Tuid;
+    }
+    */
+    afterCacheId(tuidValue) {
+        if (this.proxies === undefined)
+            return;
+        let { type, $proxy } = tuidValue;
+        let pTuid = this.proxies[type];
+        pTuid.useId($proxy);
+    }
 }
-__decorate([
-    observable
-], Tuid.prototype, "all", void 0);
+export class TuidDiv extends Tuid {
+    get Main() { return this.owner; }
+}
 //# sourceMappingURL=tuid.js.map

@@ -3,6 +3,7 @@
       "outDir": "./dist",
       "module": "esnext",
       "moduleResolution": "node",
+      "allowSyntheticDefaultImports": true,
       "target": "es6",
       "declaration": true,
       "lib": ["es2016", "dom"],
@@ -16,7 +17,8 @@
       "strictNullChecks": false,
       "suppressImplicitAnyIndexErrors": true,
       "noUnusedLocals": false,
-      "experimentalDecorators": true
+      "experimentalDecorators": true,
+      "composite": true
     },
     "include": [
       "src/**/*"

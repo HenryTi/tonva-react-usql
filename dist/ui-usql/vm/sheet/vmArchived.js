@@ -8,24 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VmSheet } from './vmSheet';
 import { VmView } from './vmView';
-export class VmArchived extends VmSheet {
+import { VmEntity } from '../VM';
+export class VmArchived extends VmEntity {
     constructor() {
         super(...arguments);
-        this.view = Archived;
+        this.view = () => {
+            return React.createElement(Page, { header: this.label + ':' + '-' + this.brief.no }, this.vmView.render());
+        };
     }
-    beforeStart(inBrief) {
+    showEntry(inBrief) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = yield this.entity.getArchive(inBrief.id);
             let { brief, data: sheetData, flows } = data;
             this.brief = brief;
-            this.vmView = new VmView(this.vmApi, this.entity, this.ui, sheetData, this.brief.state, flows);
+            this.vmView = new VmView(this.coordinator, sheetData, this.brief.state, flows);
+            this.open(this.view);
         });
     }
 }
-const Archived = ({ vm }) => {
-    let { brief, label, vmView } = vm;
-    return React.createElement(Page, { header: label + ':' + '-' + brief.no }, vmView.render());
-};
 //# sourceMappingURL=vmArchived.js.map

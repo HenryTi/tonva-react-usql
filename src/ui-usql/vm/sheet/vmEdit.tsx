@@ -1,23 +1,24 @@
 import * as React from 'react';
-import { Button, ButtonProps } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { List, Muted } from 'tonva-react-form';
-import { VmSheet } from './vmSheet';
-import { VmForm } from '../vmForm';
+import { Sheet } from '../../entities';
+import { VmForm } from '../form';
+import { VmEntity } from '../VM';
+import { SheetUI } from './crSheet';
 
-export class VmSheetEdit extends VmSheet {
+export class VmSheetEdit extends VmEntity<Sheet, SheetUI> {
     vmForm: VmForm;
 
-    protected async beforeStart(param?:any) {
-        this.vmForm = this.createVmFieldsForm();
+    async showEntry(param?:any) {
+        this.vmForm = this.createForm(param);
+        this.open(this.view);
     }
 
-    protected view = Edit;
-}
+    onSubmit = (values:any):Promise<void> => {
+        alert('not implemented');
+        return;
+    }
 
-const Edit = ({vm}:{vm:VmSheetEdit}) => {
-    let {label, vmForm} = vm;
-    return <Page header={label}>
-        {vmForm.render()}
+    protected view = () => <Page header={this.label}>
+        {this.vmForm.render()}
     </Page>;
 }

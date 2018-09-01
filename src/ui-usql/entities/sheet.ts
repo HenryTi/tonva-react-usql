@@ -16,17 +16,39 @@ interface StateCount {
 }
 
 export class Sheet extends Entity {
+    get typeName(): string { return 'sheet';}
+    states: SheetState[];
+
     statesCount:IObservableArray<StateCount> = observable.array<StateCount>([], {deep:true});
     curState:string;
     stateSheets:IObservableArray = observable.array<{id:number}>([], {deep:true});
 
-    states: SheetState[] = [];
-
+    /*
     setStates(states: SheetState[]) {
         for (let state of states) {
             this.setStateAccess(this.states.find(s=>s.name==state.name), state);
         }
+    }*/
+    build(obj:any) {
+        this.states = [];
+        for (let p in obj) {
+            switch(p) {
+                case '#':
+                case '$': continue;
+                default: this.states.push(this.createSheetState(p, obj[p])); break;
+            }
+        }
     }
+    private createSheetState(name:string, obj:object):SheetState {
+        let ret:SheetState = {name:name, actions:[]};
+        let actions = ret.actions;
+        for (let p in obj) {
+            let action:SheetAction = {name: p};
+            actions.push(action);
+        }
+        return ret;
+    }
+    /*
     private setStateAccess(s:SheetState, s1:SheetState) {
         if (s === undefined) return;
         for (let action of s1.actions) {
@@ -35,7 +57,7 @@ export class Sheet extends Entity {
             if (ac === undefined) continue;
             s.actions.push(action);
         }
-    }
+    }*/
     async onReceive(msg):Promise<void> {
         let {$type, id, state, preState} = msg;
         if ($type !== 'sheetAct') return;
@@ -59,15 +81,15 @@ export class Sheet extends Entity {
         //this.statesCount.splice(index, 1, stateCount);
     }
     async save(discription:string, data:any):Promise<number> {
-        //await this.entities.wsConnect();
-        let text = this.entities.pack(this.schema, data);
-        let ret = await this.tvApi.sheetSave(this.name, {discription: discription, data:text});
+        let {appId, apiId} = this.entities;
+        let text = this.pack(data);
+
+        let ret = await this.tvApi.sheetSave(this.name, {app: appId, api: apiId, discription: discription, data:text});
         let {id, state} = ret;
         if (id > 0) this.changeStateCount(state, 1);
         return id;
     }
     async action(id:number, flow:number, state:string, action:string) {
-        //await this.entities.wsConnect();
         return await this.tvApi.sheetAction(this.name, {id:id, flow:flow, state:state, action:action});
     }
     async getStateSheets(state:string, pageStart:number, pageSize:number):Promise<void> {
@@ -79,7 +101,7 @@ export class Sheet extends Entity {
     async getStateSheetCount():Promise<void> {
         this.statesCount.clear();
         let ret:{state:string, count:number}[] = await this.tvApi.stateSheetCount(this.name);
-        this.statesCount.spliceWithArray(0, 0, this.schema.states.map(s => {
+        this.statesCount.spliceWithArray(0, 0, this.states.map(s => {
             let n = s.name, count = 0;
             let r = ret.find(v => v.state === n);
             if (r !== undefined) count = r.count;
@@ -87,10 +109,10 @@ export class Sheet extends Entity {
         }));
     }
     private async unpack(data:any):Promise<any> {
-        if (this.schema === undefined) await this.loadSchema();
+        //if (this.schema === undefined) await this.loadSchema();
         let ret = data[0];
         let brief = ret[0];
-        let sheetData = this.entities.unpackSheet(this.schema, brief.data);
+        let sheetData = this.unpackSheet(brief.data);
         let flows = data[1];
         return {
             brief: brief,
