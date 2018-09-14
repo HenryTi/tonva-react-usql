@@ -67,10 +67,10 @@ export class Tuid extends Entity {
         this.queue.push(id);
     }
     valueFromId(id) {
-        return this.cache.get(String(id));
+        return this.cache.get(id);
     }
     resetCache(id) {
-        this.cache.delete(String(id));
+        this.cache.delete(id);
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
         this.useId(id);
@@ -80,14 +80,13 @@ export class Tuid extends Entity {
             return;
         if (isNumber(id) === false)
             return;
-        let key = String(id);
-        if (this.cache.has(key) === true) {
+        if (this.cache.has(id) === true) {
             this.moveToHead(id);
             return;
         }
         this.entities.cacheTuids(defer === true ? 70 : 20);
         //let idVal = this.createID(id);
-        this.cache.set(key, id);
+        this.cache.set(id, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
             return;
@@ -101,10 +100,10 @@ export class Tuid extends Entity {
                 this.queue.push(r);
                 return;
             }
-            let rKey = String(r);
-            if (this.cache.has(rKey) === true) {
+            //let rKey = String(r);
+            if (this.cache.has(r) === true) {
                 // 如果移除r已经缓存
-                this.cache.delete(rKey);
+                this.cache.delete(r);
             }
             else {
                 // 如果移除r还没有缓存
@@ -114,6 +113,7 @@ export class Tuid extends Entity {
         }
         this.waitingIds.push(id);
         this.queue.push(id);
+        return;
     }
     proxied(name, id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -134,7 +134,7 @@ export class Tuid extends Entity {
         if (index >= 0)
             this.waitingIds.splice(index, 1);
         //let cacheVal = this.createID(id, val);
-        this.cache.set(String(id), val);
+        this.cache.set(id, val);
         // 下面的代码应该是cache proxy id, 需要的时候再写吧
         /*
         let {tuids, fields} = this.schema;
@@ -175,8 +175,33 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === undefined || id === 0)
                 return;
-            return yield this.tvApi.tuidGet(this.name, id);
+            let values = yield this.tvApi.tuidGet(this.name, id);
+            this.cacheTuidValues(values);
+            return values;
         });
+    }
+    cacheTuidValues(values) {
+        let { fields, arrs } = this.schema;
+        this.cacheFieldsInValue(values, fields);
+        if (arrs !== undefined) {
+            for (let arr of arrs) {
+                let { name, fields } = arr;
+                let arrValues = values[name];
+                if (arrValues === undefined)
+                    continue;
+                this.cacheFieldsInValue(arrValues, fields);
+            }
+        }
+    }
+    cacheFieldsInValue(values, fields) {
+        for (let f of fields) {
+            let { name, _tuid } = f;
+            if (_tuid === undefined)
+                continue;
+            let id = values[name];
+            _tuid.useId(id);
+            values[name] = _tuid.createID(id);
+        }
     }
     save(id, props) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -187,6 +212,23 @@ export class Tuid extends Entity {
     }
     search(key, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
+            return this.searchArr(undefined, key, pageStart, pageSize);
+            /*
+            let name:string, arr:string;
+            if (this.owner !== undefined) {
+                name = this.owner.name;
+                arr = this.name;
+            }
+            else {
+                name = this.name;
+                arr = undefined;
+            }
+            let ret = await this.tvApi.tuidSearch(name, arr, undefined, key, pageStart, pageSize);
+            return ret;*/
+        });
+    }
+    searchArr(owner, key, pageStart, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
             let name, arr;
             if (this.owner !== undefined) {
                 name = this.owner.name;
@@ -196,7 +238,7 @@ export class Tuid extends Entity {
                 name = this.name;
                 arr = undefined;
             }
-            let ret = yield this.tvApi.tuidSearch(name, arr, key, pageStart, pageSize);
+            let ret = yield this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
             return ret;
         });
     }
@@ -235,6 +277,15 @@ export class Tuid extends Entity {
     bindSlaves(slave, masterId, order, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.tvApi.tuidBindSlaves(this.name, slave, masterId, order, pageSize);
+        });
+    }
+    // cache放到Tuid里面之后，这个函数不再需要公开调用了
+    //private async ids(idArr:number[]) {
+    //    return await this.tvApi.tuidIds(this.name, idArr);
+    //}
+    showInfo(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.entities.usq.showTuid(this, id);
         });
     }
 }

@@ -19,7 +19,7 @@ export class VmQuerySelect extends VmEntity<Query, QueryUI> {
         this.entity = this.coordinator.entity;
         this.pagedItems = new QueryPagedItems(this.entity);
         await this.onSearch(param);
-        this.open(this.view);
+        this.openPage(this.view);
     }
     onSearch = async (key:string) => {
         await this.pagedItems.first(key);
@@ -35,7 +35,7 @@ export class VmQuerySelect extends VmEntity<Query, QueryUI> {
         }
         this.onSelected(item);
         */
-       this.close();
+       this.closePage();
        this.return(item);
     }
     clickRow = (item:any) => {

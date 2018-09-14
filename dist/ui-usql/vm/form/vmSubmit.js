@@ -12,8 +12,8 @@ export class VmSubmit extends ViewModel {
     constructor(vmForm) {
         super();
         this.view = observer(() => {
-            let { onSubmit, isOk } = this.vmForm;
-            return React.createElement("button", { type: "button", onClick: onSubmit, className: this.className, disabled: isOk === false }, this.caption);
+            let { onSubmit, isOk, formValues } = this.vmForm;
+            return React.createElement("button", { type: "button", onClick: () => onSubmit(formValues.values), className: this.className, disabled: isOk === false }, this.caption);
         });
         this.vmForm = vmForm;
         this.caption = this.vmForm.submitCaption;

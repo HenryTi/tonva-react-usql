@@ -1,4 +1,4 @@
-import { Sheet } from "../../entities";
+import { Sheet, StateCount } from "../../entities";
 import { CrEntity, EntityUI, VM } from "../VM";
 import { entitiesRes } from '../../res';
 import { VmSheetMain } from "./vmMain";
@@ -9,6 +9,7 @@ import { VmSheetSchema } from "./vmSchema";
 import { VmArchives } from "./vmArchives";
 import { VmSheetList } from "./vmList";
 import { VmArchived } from "./vmArchived";
+import { IObservableArray } from "mobx";
 
 export interface SheetActionUI {
     label: string;
@@ -20,11 +21,11 @@ export interface StateUI {
 }
 
 export interface SheetUI extends EntityUI {
-    states: {[name:string]: StateUI};
-    main: typeof VmSheetMain;
-    new: typeof VmSheetNew;
-    edit: typeof VmSheetEdit;
-    action: typeof VmSheetAction;
+    states?: {[name:string]: StateUI};
+    main?: typeof VmSheetMain;
+    new?: typeof VmSheetNew;
+    edit?: typeof VmSheetEdit;
+    action?: typeof VmSheetAction;
 }
 
 export class CrSheet extends CrEntity<Sheet, SheetUI> {
@@ -38,10 +39,9 @@ export class CrSheet extends CrEntity<Sheet, SheetUI> {
         return (this.ui&&this.ui.main) || VmSheetMain;
     }
 
-    protected async onReceive(msg: any) {
+    protected async onMessage(msg: any):Promise<void> {
         //这个必须接上，否则没有websocket push
-        //await super.onReceive(msg);
-        this.entity.onReceive(msg);
+        this.entity.onMessage(msg);
     }
 
     protected get VmSheetNew(): typeof VmSheetNew {return VmSheetNew}
@@ -65,7 +65,8 @@ export class CrSheet extends CrEntity<Sheet, SheetUI> {
         await this.showVm(vm, value);
     }
 
-    async showSheet(sheetId:number) {
+    async startSheet(sheetId:number) {
+        super.beforeStart();
         this.onEvent('action', sheetId);
         //await this.run(new this.VmSheetAction(this));
         //let vmAction = (this.ui && this.ui.action) || VmSheetAction;
@@ -96,8 +97,27 @@ export class CrSheet extends CrEntity<Sheet, SheetUI> {
         return (action && action.label) || actionName;
     }
 
-    /*
-    async submit(values:any) {
-        return this.entity.submit(values);
-    }*/
+    async getStateSheetCount() {
+        await this.entity.getStateSheetCount();
+    }
+
+    async getSheetData(sheetId:number):Promise<any> {
+        return await this.entity.getSheet(sheetId);
+    }
+
+    async getArchived(sheetId:number):Promise<{brief:any, data:any, flows:any[]}> {
+        return await this.entity.getArchive(sheetId);
+    }
+
+    async saveSheet(values:any):Promise<number> {
+        return await this.entity.save(this.label, values);
+    }
+
+    async action(id:number, flow:number, state:string, actionName:string):Promise<any> {
+        return await this.entity.action(id, flow, state, actionName);
+    }
+
+    get statesCount(): IObservableArray<StateCount> {
+        return this.entity.statesCount;
+    }
 }

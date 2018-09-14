@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { Entities } from '../entities';
 import { CrUsq } from './usq';
 import { Coordinator } from './VM';
@@ -18,8 +19,8 @@ export declare class CrApp extends Coordinator {
     crUsqCollection: {
         [api: string]: CrUsq;
     };
-    loadApis(): Promise<void>;
-    protected newCrUsq(apiId: number, api: string, access: string, ui: any): CrUsq;
+    loadUsqs(): Promise<void>;
+    protected newCrUsq(usq: string, usqId: number, access: string, ui: any): CrUsq;
     protected caption: string;
     readonly crUsqArr: CrUsq[];
     getCrUsq(apiName: string): CrUsq;

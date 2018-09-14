@@ -6,29 +6,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Api } from 'tonva-tools';
+import { UsqApi } from 'tonva-tools';
 import { Entities } from '../../entities';
 import { VmEntityLink } from '../link';
 import { CrBook } from '../book';
 import { CrSheet } from '../sheet';
 import { CrAction } from '../action';
 import { CrQuery, CrQuerySelect } from '../query';
-import { CrTuidMain, CrTuidMainSelect } from '../tuid';
+import { CrTuidMain, CrTuidMainSelect, CrTuidInfo } from '../tuid';
 import { CrMap } from '../map';
+import { Coordinator } from '../VM';
 import { PureJSONContent } from '../viewModel';
 import { VmUsq } from './vmUsq';
-export class CrUsq {
-    constructor(vmApp, apiId, api, access, ui) {
+export class CrUsq extends Coordinator {
+    constructor(usq, appId, usqId, access, ui) {
+        super();
         this.isSysVisible = false;
-        //super();
-        this.vmApp = vmApp;
-        this.api = api;
-        this.id = apiId;
+        this.usq = usq;
+        this.id = usqId;
         if (ui === undefined)
             this.ui = {};
-        else if (ui.res !== undefined) {
+        else {
             this.ui = ui;
-            this.res = ui.res.zh.CN;
+            if (ui.res !== undefined) {
+                this.res = ui.res.zh.CN;
+            }
         }
         if (ui !== undefined) {
             this.CrTuidMain = ui.CrTuidMain;
@@ -39,30 +41,48 @@ export class CrUsq {
         this.res = this.res || {};
         this.access = access;
         let token = undefined;
-        let apiOwner, apiName;
-        let p = api.split('/');
+        let usqOwner, usqName;
+        let p = usq.split('/');
         switch (p.length) {
             case 1:
-                apiOwner = '$$$';
-                apiName = p[0];
+                usqOwner = '$$$';
+                usqName = p[0];
                 break;
             case 2:
-                apiOwner = p[0];
-                apiName = p[1];
+                usqOwner = p[0];
+                usqName = p[1];
                 break;
             default:
-                console.log('api must be apiOwner/apiName format');
+                console.log('usq must be usqOwner/usqName format');
                 return;
         }
         let hash = document.location.hash;
         let baseUrl = hash === undefined || hash === '' ?
             'debug/' : 'tv/';
-        let _api = new Api(baseUrl, apiOwner, apiName, true);
-        this.entities = new Entities(this, vmApp.id, apiId, _api, access);
+        let acc;
+        if (access === undefined || access === '*') {
+            acc = [];
+        }
+        else {
+            acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
+        }
+        let usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+        this.entities = new Entities(this, usqApi, appId); //, crApp.id, usqId, usqApi);
+    }
+    internalStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
     }
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.load();
+            try {
+                yield this.entities.load();
+                if (this.id === undefined)
+                    this.id = this.entities.usqId;
+            }
+            catch (err) {
+                debugger;
+            }
             for (let i in this.ui) {
                 let g = this.ui[i];
                 if (g === undefined)
@@ -116,8 +136,8 @@ export class CrUsq {
                 alert('sheetTypeId ' + sheetTypeId + ' is not exists!');
                 return;
             }
-            let vmSheetMain = this.crSheet(sheet);
-            yield vmSheetMain.showSheet(sheetId);
+            let crSheet = this.crSheet(sheet);
+            yield crSheet.startSheet(sheetId);
         });
     }
     crFromName(entityType, entityName) {
@@ -169,7 +189,6 @@ export class CrUsq {
         let { entity } = this.res;
         if (entity !== undefined) {
             res = entity[name];
-            //if (res !== undefined) debugger;
         }
         return { ui: ui || {}, res: res };
     }
@@ -192,6 +211,10 @@ export class CrUsq {
     crTuidSelect(tuid) {
         let { ui, res } = this.getUI(tuid);
         return new (ui && ui.CrTuidSelect || CrTuidMainSelect)(this, tuid, ui, res);
+    }
+    crTuidInfo(tuid) {
+        let { ui, res } = this.getUI(tuid);
+        return new (ui && ui.CrTuidInfo || CrTuidInfo)(this, tuid, ui, res);
     }
     /*
     newVmTuidView(tuid:Tuid):VmTuidView {
@@ -275,6 +298,12 @@ export class CrUsq {
             let { ui } = this.getUI(owner);
             return (ui && ui.divs && ui.divs[tuid.name].content) || PureJSONContent;
         }
+    }
+    showTuid(tuid, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cr = this.crTuidInfo(tuid);
+            yield cr.start(id);
+        });
     }
     get VmUsq() { return VmUsq; }
     render() {

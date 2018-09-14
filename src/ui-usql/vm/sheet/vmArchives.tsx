@@ -10,7 +10,7 @@ export class VmArchives extends VmEntity<Sheet, SheetUI> {
 
     async showEntry() {
         this.list = await this.entity.getArchives(undefined, 10);
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     archiveClick = async (brief:any) => {

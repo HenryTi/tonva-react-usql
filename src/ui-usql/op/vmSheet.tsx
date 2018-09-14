@@ -2,7 +2,7 @@ import React from 'react';
 import { nav, Page } from 'tonva-tools';
 import { Muted, LMR, FA, List } from 'tonva-react-form';
 import { OpCoordinator } from './op';
-import { Vm } from '../vm/VM';
+import { VmPage } from '../vm/VM';
 import { StateTo, Sheet, Organization, Post, Team, Section, To } from './model';
 import { observer } from 'mobx-react';
 import { IObservableValue, IObservableArray, observable } from 'mobx';
@@ -24,7 +24,7 @@ interface SelectableSection {
     selected: IObservableValue<boolean>;
 }
 
-export class VmSheet extends Vm {
+export class VmSheet extends VmPage {
     protected coordinator: OpCoordinator;
     private sheet: Sheet;
     private states: StateTo[];
@@ -53,8 +53,8 @@ export class VmSheet extends Vm {
             }
         });*/
         this.sheetOpsChanged = false;
-        nav.push(<this.stateView {...state} />);
-        nav.regConfirmClose(async ():Promise<boolean> => {
+        this.openPage(this.stateView, state);
+        this.regConfirmClose(async ():Promise<boolean> => {
             if (this.sheetOpsChanged === false) return true;
             return confirm('未保存\n真的不保存吗？');
         });
@@ -178,7 +178,7 @@ export class VmSheet extends Vm {
     private stateTosView = observer(({tosText}:{tosText: IObservableValue<string[]>}) => {
         let tos = tosText.get();
         return <div className="bg-light py-1 px-2">{
-            tos === undefined? <Muted>[无岗位]</Muted> :
+            tos === undefined || tos.length === 0? <Muted>[无岗位]</Muted> :
             tos.map((v,index) => {
                 return <span
                     key={v}
@@ -233,9 +233,9 @@ export class VmSheet extends Vm {
                 tosText: observable.box<string[]>(this.tosTexts(tos)),
             };
         })
-        nav.push(<Page header={'单据状态对应岗位 - ' + name} >
+        this.openPageElement(<Page header={'单据状态对应岗位 - ' + name} >
             {this.states.map(v => this.renderState(v))}
-        </Page>)
+        </Page>);
     }
 
     private async saveOps(stateTo: StateTo) {
@@ -292,11 +292,12 @@ export class VmSheet extends Vm {
                 });
             }
         }
-        await this.coordinator.saveSheetStatePosts(this.sheet.name, stateToName, toArr);
+        await this.coordinator.saveSheetStatePosts(this.sheet, stateToName, toArr);
         let state = this.states.find(v => v.name === stateToName);
         state.tos = tos;
-        state.tosText.set(this.tosTexts(tos));
-        nav.pop();
+        let tosTexts = this.tosTexts(tos);
+        state.tosText.set(tosTexts);
+        this.closePage();
     }
 
     private organizationRow = (item: Organization, index:number) => {
@@ -312,7 +313,7 @@ export class VmSheet extends Vm {
     private postRow = (item:SelectablePost, index:number) => {
         return <this.observablePostRow {...item} />;
     };
-    private stateView = (state:StateTo) => {
+    private stateView: React.SFC<StateTo> = (state:StateTo) => {
         let stateCaption = state.name;
         if (stateCaption === '$') stateCaption = '[新开单]';
         let right = <button className="btn btn-sm btn-success" onClick={async ()=>await this.saveOps(state)}>保存</button>

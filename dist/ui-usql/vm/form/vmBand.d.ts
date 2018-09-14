@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { VmField } from './vmField';
 import { VmArr } from './vmArr';
 import { VmSubmit } from './vmSubmit';

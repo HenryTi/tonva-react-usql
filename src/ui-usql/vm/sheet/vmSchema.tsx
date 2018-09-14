@@ -6,7 +6,7 @@ import { SheetUI } from './crSheet';
 
 export class VmSheetSchema extends VmEntity<Sheet, SheetUI> {
     async showEntry(param?:any) {
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     protected view = () => <Page header={this.label + "模板"}>

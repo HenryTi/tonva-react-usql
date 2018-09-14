@@ -14,10 +14,10 @@ export abstract class VmBand {
 
     render():JSX.Element {
         return <div key={this.key} className='form-group row'>
-            <label className='col-sm-2 col-form-label'>
+            <label className='col-sm-2 col-form-label text-sm-right'>
                 {this.label}
             </label>
-            <div className="col-sm-10 d-flex">
+            <div className="col-sm-10">
                 {this.renderContent()}
             </div>
         </div>;

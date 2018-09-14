@@ -9,8 +9,8 @@ export class VmSheetEdit extends VmEntity<Sheet, SheetUI> {
     vmForm: VmForm;
 
     async showEntry(param?:any) {
-        this.vmForm = this.createForm(param);
-        this.open(this.view);
+        this.vmForm = this.createForm(this.onSubmit, param);
+        this.openPage(this.view);
     }
 
     onSubmit = (values:any):Promise<void> => {

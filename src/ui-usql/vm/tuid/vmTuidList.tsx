@@ -1,33 +1,36 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA, SearchBox, List } from 'tonva-react-form';
-import { TuidMain, Entity, Tuid } from '../../entities';
 import { Page, PagedItems } from 'tonva-tools';
+import { TuidMain, Entity, Tuid } from '../../entities';
 import { VmEntity } from '../VM';
-import { TuidUI } from './crTuid';
+import { TuidUI, CrTuidMain } from './crTuid';
 
 export abstract class VmTuidListBase  extends VmEntity<TuidMain, TuidUI> {
+    protected coordinator: CrTuidMain;
     protected entity: TuidMain;
     ppp: string;
-    pagedItems:TuidPagedItems;
     ownerId: number;
     param: any;
 
     async showEntry(param?:any) {
-        this.pagedItems = new TuidPagedItems(this.entity);
+        //this.pagedItems = new TuidPagedItems(this.entity);
         this.param = param;
         if (this.entity.owner !== undefined) this.ownerId = Number(param);
         // 初始查询, key是空的
-        await this.onSearch('');
-        this.open(this.view);
+        //await this.onSearch('');
+        await this.coordinator.search('');
+        this.openPage(this.view);
     }
 
     onSearch = async (key:string) => {
-        await this.pagedItems.first(key);
+        await this.coordinator.search(key);
+        //await this.pagedItems.first(key);
     }
     renderRow = (item:any, index:number):JSX.Element => {
         return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
     }
+
     protected abstract onSelected(item:any): Promise<void>;
     private callOnSelected(item:any) {
         if (this.onSelected === undefined) {
@@ -54,29 +57,11 @@ export abstract class VmTuidListBase  extends VmEntity<TuidMain, TuidUI> {
         return <Page header={header}>
             {ownerTop}
             <List
-                items={this.pagedItems.items}
+                items={this.coordinator.pagedItems.items}
                 item={{render: this.renderRow, onClick: this.clickRow}}
                 before={'搜索'+this.label+'资料'} />
         </Page>;
     });
-}
-
-type TypeRow = typeof Row;
-const Row = (item) => <div className="px-3 py-2">{JSON.stringify(item)}</div>;
-
-class TuidPagedItems extends PagedItems<any> {
-    private tuid: Tuid;
-    constructor(tuid: Tuid) {
-        super();
-        this.tuid = tuid;
-    }
-    protected async load():Promise<any[]> {
-        let ret = await this.tuid.search(this.param, this.pageStart, this.pageSize);
-        return ret;
-    }
-    protected setPageStart(item:any) {
-        if (item === undefined) this.pageStart = 0;
-    }
 }
 
 export class VmTuidList extends VmTuidListBase {

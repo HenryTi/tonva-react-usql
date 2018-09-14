@@ -12,7 +12,7 @@ export class VmMapMain extends VmEntity<Map, MapUI> {
     private mapKey: MapKey[];
 
     async showEntry(param?:any) {
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     itemRender = (item:MapItem, index:number) => {

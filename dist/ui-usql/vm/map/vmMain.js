@@ -55,7 +55,7 @@ export class VmMapMain extends VmEntity {
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
     get view() {

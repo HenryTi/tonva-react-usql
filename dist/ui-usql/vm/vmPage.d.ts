@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { IReactionPublic } from 'mobx';
 import { IAutorunOptions } from 'mobx/lib/api/autorun';
 import { ViewModel } from './viewModel';

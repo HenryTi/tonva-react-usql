@@ -1,14 +1,15 @@
-import { UsqlApi } from './usqlApi';
+/// <reference types="react" />
 import { TuidMain, Tuid } from './tuid';
 import { Action } from './action';
 import { Sheet } from './sheet';
 import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
-import { Api } from 'tonva-tools';
+import { UsqApi } from 'tonva-tools';
 import { Map } from './map';
 export interface Usq {
     getTuidContent(tuid: Tuid): React.StatelessComponent<any>;
+    showTuid(tuid: Tuid, id: number): Promise<void>;
 }
 export interface Field {
     name: string;
@@ -34,10 +35,10 @@ export declare class Entities {
     private histories;
     private cacheTimer;
     usq: Usq;
-    tvApi: UsqlApi;
+    usqApi: UsqApi;
     appId: number;
-    apiId: number;
-    constructor(usq: Usq, appId: number, apiId: number, api: Api, access?: string);
+    usqId: number;
+    constructor(usq: Usq, usqApi: UsqApi, appId: number);
     tuid(name: string): TuidMain;
     action(name: string): Action;
     sheet(name: string): Sheet;

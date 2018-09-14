@@ -7,35 +7,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { observable } from 'mobx';
 import * as _ from 'lodash';
 import { List, FA } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
 import { ViewModel, JSONContent } from '../viewModel';
 import { VmForm } from './vmForm';
+import { observer } from 'mobx-react';
 export class VmArr extends ViewModel {
     constructor(ownerForm, arr, onEditRow) {
         super();
-        /*
-        afterEditRow = async (values:any):Promise<void> => {
-            nav.pop();
-            return;
-        }
-    
-        async showRowPage(rowValues?: any) {
-            this.rowValues = rowValues;
-            if (rowValues === undefined)
-                this.vmForm.reset();
-            else
-                this.vmForm.setValues(rowValues);
-            if (this.onEditRow !== undefined)
-                await this.onEditRow(rowValues);
-            else
-                nav.push(<this.rowPage />);
-        }
-        */
         this.rowPage = () => {
-            return React.createElement(Page, { header: this.label }, this.vmForm.render('p-3'));
+            return React.createElement(Page, { header: this.label, back: "close" }, this.vmForm.render('p-3'));
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             let values = this.vmForm.values;
@@ -73,8 +55,10 @@ export class VmArr extends ViewModel {
         this.editRow = (rowValues) => __awaiter(this, void 0, void 0, function* () {
             this.rowValues = rowValues;
             let { vmSubmit } = this.vmForm;
-            vmSubmit.caption = this.editSubmitCaption;
-            vmSubmit.className = 'btn btn-outline-success';
+            if (vmSubmit !== undefined) {
+                vmSubmit.caption = this.editSubmitCaption;
+                vmSubmit.className = 'btn btn-outline-success';
+            }
             yield this.showRow(rowValues);
         });
         this.addRow = () => __awaiter(this, void 0, void 0, function* () {
@@ -85,7 +69,7 @@ export class VmArr extends ViewModel {
             yield this.showRow(undefined);
             this.vmForm.reset();
         });
-        this.view = () => {
+        this.view = observer(() => {
             //let {label, list, renderItem, start, addClick, header, footer, readOnly} = vm;
             let button;
             if (this.readOnly === false) {
@@ -96,18 +80,18 @@ export class VmArr extends ViewModel {
                 React.createElement("div", { className: "flex-fill align-self-center" }, this.label),
                 button);
             return React.createElement(List, { header: header, items: this.list, item: { render: this.renderItem, onClick: this.editRow } });
-        };
+        });
         this.ownerForm = ownerForm;
         let { name, fields } = arr;
         this.name = name;
-        let { ui, res, readOnly, inputs } = ownerForm;
+        let { ui, res, readOnly, inputs, formValues } = ownerForm;
         let arrsRes = res.arrs;
         let arrRes = arrsRes !== undefined ? arrsRes[name] : {};
         let { label, newSubmit, editSubmit } = arrRes;
         this.newSubmitCaption = newSubmit || ownerForm.arrNewCaption;
         this.editSubmitCaption = editSubmit || ownerForm.arrEditCaption;
         this.label = label || name;
-        let arrUI = ui && ui[name];
+        let arrUI = ui && ui.arrs && ui.arrs[name];
         this.rowContent = JSONContent;
         this.readOnly = readOnly;
         if (this.onEditRow === undefined) {
@@ -120,38 +104,12 @@ export class VmArr extends ViewModel {
                 submitCaption: 'submit',
                 arrNewCaption: undefined,
                 arrEditCaption: undefined,
-            }, this.onSubmit);
+            }, this.readOnly === true ? undefined : this.onSubmit);
         }
         else {
             this.onEditRow = onEditRow;
         }
-        this.list = observable.array([], { deep: true });
-        /*
-        this.start = this.start.bind(this);
-        //this.vmApi = vmApi;
-        this.arr = arr;
-        this.arrBandUI = arrBandUI;
-        let {label, row, form} = arrBandUI;
-        this.row = row || RowContent;
-
-        //let bands = this.arrBandUI.bands.slice();
-        let submitBand:SubmitBandUI = {
-            type: 'submit',
-            content: '{save} 完成',                    // 显示在按钮上的文本
-        };
-        //bands.push(submitBand);
-        this.vmForm = new VmForm();
-        this.vmForm.init({
-            fields: arr.fields,
-            //vmApi: vmApi,
-            ui: {
-                bands: undefined, // bands,
-                className: undefined,
-            },
-            readOnly: this.readOnly,
-        });
-        this.vmForm.onSubmit = this.onSubmit;
-        */
+        this.list = formValues.values[name];
     }
     reset() {
         this.vmForm.reset();

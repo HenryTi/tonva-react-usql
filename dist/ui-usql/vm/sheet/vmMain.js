@@ -15,24 +15,10 @@ import { VmEntity } from '../VM';
 export class VmSheetMain extends VmEntity {
     constructor() {
         super(...arguments);
-        /* 移到CrSheet里面去
-        protected async onReceive(msg: any) {
-            await super.onReceive(msg);
-            this.entity.onReceive(msg);
-        }
-        */
-        this.newClick = () => this.event('new'); /* {
-            let t = (this.ui && this.ui.new) || this.vmNew;
-            await this.navVm(t);
-        }*/
+        this.newClick = () => this.event('new');
         this.schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);
         this.archivesClick = () => this.event('archives'); //await this.navVm(this.vmArchives);
         this.sheetStateClick = (state) => this.event('state', state); // await this.navVm(this.vmSheetList, state);
-        /* 移到CrSheet里面去了
-        async showSheet(sheetId:number) {
-            let vmAction = (this.ui && this.ui.action) || VmSheetAction;
-            await this.navVm(vmAction, sheetId);
-        }*/
         this.renderState = (item, index) => {
             let { state, count } = item;
             if (count === 0)
@@ -41,12 +27,12 @@ export class VmSheetMain extends VmEntity {
             return React.createElement(LMR, { className: "px-3 py-2", left: this.coordinator.getStateLabel(state), right: badge });
         };
         this.view = observer(() => {
-            let list = this.entity.statesCount.filter(row => row.count);
+            let list = this.coordinator.statesCount.filter(row => row.count);
             return React.createElement(Page, { header: this.label },
                 React.createElement("div", { className: "mx-3 my-2" },
                     React.createElement(Button, { className: "mr-2", color: "primary", onClick: this.newClick }, "\u65B0\u5EFA"),
                     React.createElement(Button, { className: "mr-2", color: "primary", onClick: this.schemaClick }, "\u6A21\u677F")),
-                React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
+                React.createElement(List, { className: "my-2", header: React.createElement(Muted, { className: "mx-3 my-1" },
                         "\u5F85\u5904\u7406",
                         this.label), none: "[ \u65E0 ]", items: list, item: { render: this.renderState, onClick: this.sheetStateClick } }),
                 React.createElement("div", { className: "mx-3 my-2" },
@@ -57,8 +43,8 @@ export class VmSheetMain extends VmEntity {
     }
     showEntry() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entity.getStateSheetCount();
-            this.open(this.view);
+            yield this.coordinator.getStateSheetCount();
+            this.openPage(this.view);
         });
     }
 }

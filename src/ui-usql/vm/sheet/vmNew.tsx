@@ -4,20 +4,22 @@ import { Page } from 'tonva-tools';
 import { Sheet } from '../../entities';
 import { VmForm } from '../form';
 import { VmEntity } from '../VM';
-import { SheetUI } from './crSheet';
+import { SheetUI, CrSheet } from './crSheet';
 
 export class VmSheetNew extends VmEntity<Sheet, SheetUI> {
+    protected coordinator: CrSheet;
+
     vmForm: VmForm;
 
     async showEntry(param?:any) {
         this.vmForm = this.createForm(this.onSubmit, param);
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     onSubmit = async (values:any):Promise<void> => {
-        let ret = await this.entity.save(this.label, values);
+        let ret = await this.coordinator.saveSheet(values);
         alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
-        this.close();
+        this.closePage();
     }
 
     protected view = () => <Page header={this.label}>

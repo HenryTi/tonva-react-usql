@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { TuidMain } from '../../entities';
 import { VmEntityLink } from '../link';
 import { VmEntity } from '../VM';

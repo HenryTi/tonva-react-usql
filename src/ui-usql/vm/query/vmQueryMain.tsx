@@ -16,33 +16,29 @@ export class VmQueryMain extends VmEntity<Query, QueryUI> {
         this.vmForm = this.createForm(this.onSubmit, param);
         let {row, queryRow} = this.ui;
         this.row = queryRow || row || DefaultRow;
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     onSubmit = async () => {
         let params = this.vmForm.values;
-        await this.entity.loadSchema();
         if (this.entity.isPaged === true) {
             await this.entity.resetPage(30, params);
             await this.entity.loadPage();
             //this.replacePage(<QueryResultPage vm={this} />);
-            nav.pop();
-            this.open(this.pageResult);
+            this.replacePage(this.pageResult);
         }
         else {
             let data = await this.entity.query(params);
             //let data = await this.unpackReturns(res);
             //return data;
-            nav.pop();
-            this.open(this.queryResult, data);
+            this.replacePage(this.queryResult, data);
         }
     }
 
     again = () => {
         this.vmForm.reset();
         //this.replacePage(<QueryPage vm={this} />);
-        nav.pop();
-        this.open(this.view);
+        this.replacePage(this.view);
     }
 
     renderExtra() {

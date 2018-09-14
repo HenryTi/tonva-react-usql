@@ -1,3 +1,4 @@
+/// <reference types="react" />
 declare const _default: {
     caption: string;
     a: string;

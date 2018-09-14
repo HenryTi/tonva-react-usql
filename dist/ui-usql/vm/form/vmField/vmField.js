@@ -7,17 +7,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import * as React from 'react';
 import { computed } from 'mobx';
 import { observer } from 'mobx-react';
+import { FA } from 'tonva-react-form';
 import { ViewModel } from "../../viewModel";
 import { RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
 //export type TypeControl = React.StatelessComponent<{vm: ViewModel, className:string}>;
 export class VmField extends ViewModel {
-    constructor(field, fieldUI, formValues, readOnly) {
+    constructor(field, fieldUI, formValues, formCompute, readOnly) {
         super();
         this.field = field;
         this.name = field.name;
         this.fieldUI = fieldUI || {};
         this.formValues = formValues;
+        this.formCompute = formCompute;
         this.formReadOnly = readOnly;
+        this.init();
+    }
+    init() {
         this.buildRules();
     }
     buildRules() {
@@ -78,7 +83,10 @@ export class VmInputControl extends VmField {
             let error = errors[this.name];
             if (error === undefined)
                 return;
-            return React.createElement("span", { className: className }, error);
+            return React.createElement("div", { className: className },
+                React.createElement(FA, { name: "exclamation-circle" }),
+                " ",
+                error);
         };
         this.ref = (input) => {
             this.input = input;
@@ -92,14 +100,24 @@ export class VmInputControl extends VmField {
             if (defy.length > 0) {
                 this.error = defy[0];
             }
+            if (this.formCompute !== undefined) {
+                let { values } = this.formValues;
+                for (let i in this.formCompute) {
+                    values[i] = this.formCompute[i].call(values);
+                }
+            }
         };
         this.onChange = (evt) => {
-            this.setValue(this.parse(evt.currentTarget.value));
+            let v = this.parse(evt.currentTarget.value);
+            if (v === null) {
+                return;
+            }
+            this.setValue(v);
         };
         this.view = observer(() => {
             let { placeHolder, required } = this.fieldUI;
-            let ctrlCN = "form-control form-control-input";
-            let errCN;
+            let ctrlCN = 'form-control form-control-input';
+            let errCN = 'text-danger small mt-1 mx-2';
             /*
             if (className !== undefined) {
                 if (typeof className === 'string') ctrlCN = className;
@@ -116,11 +134,14 @@ export class VmInputControl extends VmField {
             }
             return React.createElement(React.Fragment, null,
                 redDot,
-                React.createElement("input", { className: ctrlCN, ref: this.ref, type: this.inputType, onFocus: this.onFocus, onBlur: this.onBlur, onChange: this.onChange, placeholder: placeHolder, readOnly: this.readOnly }),
+                React.createElement("input", { className: ctrlCN, ref: this.ref, type: this.inputType, onFocus: this.onFocus, onBlur: this.onBlur, onChange: this.onChange, placeholder: placeHolder, readOnly: this.readOnly, maxLength: this.maxLength, onKeyPress: this.onKeyPress }),
                 this.renderError(errCN));
         });
     }
-    get value() { return super.value; }
+    get maxLength() { return; }
+    get value() {
+        return super.value;
+    }
     setValue(v) {
         super.setValue(v);
         this.setInputValue();
@@ -129,7 +150,7 @@ export class VmInputControl extends VmField {
         if (!this.input)
             return;
         let v = this.value;
-        this.input.value = v || '';
+        this.input.value = v === null || v === undefined ? '' : v;
     }
 }
 export const RedMark = () => React.createElement("b", { style: { color: 'red', position: 'absolute', left: '0.1em', top: '0.5em' } }, "*");
@@ -138,11 +159,61 @@ export class VmStringField extends VmInputControl {
         super(...arguments);
         this.inputType = 'text';
     }
+    get maxLength() { return this.field.size; }
 }
+const KeyCode_Neg = 45;
+const KeyCode_Dot = 46;
 export class VmNumberControl extends VmInputControl {
     constructor() {
         super(...arguments);
         this.inputType = 'number';
+        this.onKeyPress = (event) => {
+            let ch = event.charCode;
+            if (ch === 8 || ch === 0 || ch === 13 || ch >= 48 && ch <= 57)
+                return;
+            if (this.extraChars !== undefined) {
+                if (this.extraChars.indexOf(ch) >= 0) {
+                    switch (ch) {
+                        case KeyCode_Dot:
+                            this.onKeyDot();
+                            break;
+                        case KeyCode_Neg:
+                            this.onKeyNeg();
+                            event.preventDefault();
+                            break;
+                    }
+                    return;
+                }
+            }
+            event.preventDefault();
+        };
+    }
+    init() {
+        super.init();
+        this.extraChars = [];
+        if (this.fieldUI !== undefined) {
+            let { min, max } = this.fieldUI;
+            if (min !== undefined) {
+                //this.rules.push((v:number) => {if (v === undefined) return; if (v<min) return ErrMin + min; return true;});
+                if (min < 0)
+                    this.extraChars.push(KeyCode_Neg);
+            }
+            else {
+                this.extraChars.push(KeyCode_Neg);
+            }
+            if (max !== undefined) {
+                //this.rules.push((v:number) => {if (v === undefined) return; if (v>max) return ErrMax + max; return true});
+            }
+        }
+        switch (this.field.type) {
+            case 'dec':
+            case 'bigint':
+            case 'int':
+            case 'smallint':
+            case 'tinyint':
+                this.extraChars.push(KeyCode_Dot);
+                break;
+        }
     }
     buildRules() {
         super.buildRules();
@@ -155,12 +226,29 @@ export class VmNumberControl extends VmInputControl {
     }
     parse(text) {
         try {
+            if (text.trim().length === 0)
+                return undefined;
             let ret = Number(text);
             return (ret === NaN) ? null : ret;
         }
         catch (_a) {
             return null;
         }
+    }
+    onKeyDot() {
+        let v = this.input.value;
+        let p = v.indexOf('.');
+        if (p >= 0)
+            this.input.value = v.replace('.', '');
+    }
+    onKeyNeg() {
+        let v = this.input.value;
+        let p = v.indexOf('-');
+        if (p >= 0)
+            v = v.replace('-', '');
+        else
+            v = '-' + v;
+        this.input.value = v;
     }
 }
 export class VmIntField extends VmNumberControl {

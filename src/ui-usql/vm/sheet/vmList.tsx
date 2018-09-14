@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, ButtonProps } from 'reactstrap';
-import { Page } from 'tonva-tools';
+import { Page, nav } from 'tonva-tools';
 import { List, Muted, FA, LMR } from 'tonva-react-form';
 import { VmSheetAction } from './vmSheetAction';
 import { VmEntity } from '../VM';
@@ -16,6 +16,7 @@ export class VmSheetList extends VmEntity<Sheet, SheetUI> {
         this.stateName = item.state;
         this.stateLabel = this.coordinator.getStateLabel(this.stateName);
         await this.entity.getStateSheets(this.stateName, 0, 30);
+        this.openPage(this.view);
     }
 
     rowClick = async (brief:any) => {

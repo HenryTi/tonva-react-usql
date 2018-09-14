@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { IObservableArray } from 'mobx';
 import { ViewModel, TypeContent } from '../viewModel';
 import { ArrFields } from '../../entities';

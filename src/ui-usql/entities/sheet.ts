@@ -10,7 +10,7 @@ export interface SheetAction {
     name: string;
 }
 
-interface StateCount {
+export interface StateCount {
     state: string;
     count: number;
 }
@@ -29,15 +29,23 @@ export class Sheet extends Entity {
             this.setStateAccess(this.states.find(s=>s.name==state.name), state);
         }
     }*/
+    setSchema(schema:any) {
+        super.setSchema(schema);
+        this.states = schema.states;
+    }
     build(obj:any) {
         this.states = [];
+        for (let op of obj.ops) {
+            this.states.push({name: op, actions:undefined});
+        }
+        /*
         for (let p in obj) {
             switch(p) {
                 case '#':
                 case '$': continue;
                 default: this.states.push(this.createSheetState(p, obj[p])); break;
             }
-        }
+        }*/
     }
     private createSheetState(name:string, obj:object):SheetState {
         let ret:SheetState = {name:name, actions:[]};
@@ -58,7 +66,7 @@ export class Sheet extends Entity {
             s.actions.push(action);
         }
     }*/
-    async onReceive(msg):Promise<void> {
+    async onMessage(msg):Promise<void> {
         let {$type, id, state, preState} = msg;
         if ($type !== 'sheetAct') return;
         this.changeStateCount(state, 1);
@@ -81,10 +89,10 @@ export class Sheet extends Entity {
         //this.statesCount.splice(index, 1, stateCount);
     }
     async save(discription:string, data:any):Promise<number> {
-        let {appId, apiId} = this.entities;
+        let {appId} = this.entities;
         let text = this.pack(data);
 
-        let ret = await this.tvApi.sheetSave(this.name, {app: appId, api: apiId, discription: discription, data:text});
+        let ret = await this.tvApi.sheetSave(this.name, {app: appId, discription: discription, data:text});
         let {id, state} = ret;
         if (id > 0) this.changeStateCount(state, 1);
         return id;

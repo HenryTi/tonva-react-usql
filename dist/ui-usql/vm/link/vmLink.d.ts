@@ -8,6 +8,6 @@ export declare class VmEntityLink extends VmLink {
     private crEntity;
     constructor(crEntity: CrEntity<Entity, EntityUI>);
     onClick: () => Promise<void>;
-    render(): React.SFCElement<{}>;
-    protected readonly view: () => JSX.Element;
+    render(className?: string): React.SFCElement<string>;
+    protected view: (className?: string) => JSX.Element;
 }

@@ -41,7 +41,7 @@ export class VmArchives extends VmEntity {
     showEntry() {
         return __awaiter(this, void 0, void 0, function* () {
             this.list = yield this.entity.getArchives(undefined, 10);
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
 }

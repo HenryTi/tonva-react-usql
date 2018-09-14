@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
+import classNames from 'classnames';
 export class VmLink {
 }
 export class VmEntityLink extends VmLink {
@@ -15,19 +16,17 @@ export class VmEntityLink extends VmLink {
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
             yield this.crEntity.start();
         });
-        this.crEntity = crEntity;
-    }
-    render() {
-        return React.createElement(this.view);
-    }
-    get view() {
-        return () => {
+        this.view = (className) => {
             let { icon, label } = this.crEntity;
-            return React.createElement("div", { className: "px-3 py-2 align-items-center cursor-pointer", onClick: this.onClick },
+            return React.createElement("div", { className: classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className), onClick: this.onClick },
                 icon,
                 " \u00A0 ",
                 label);
         };
+        this.crEntity = crEntity;
+    }
+    render(className) {
+        return React.createElement(this.view, className);
     }
 }
 //# sourceMappingURL=vmLink.js.map

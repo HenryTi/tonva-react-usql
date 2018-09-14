@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { VmEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';

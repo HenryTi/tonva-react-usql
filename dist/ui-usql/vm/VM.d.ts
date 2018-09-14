@@ -3,25 +3,36 @@ import { Entity, Field } from '../entities';
 import { CrUsq } from './usq/crUsq';
 import { VmForm, FieldCall } from './form';
 import { CrQuerySelect } from './query';
+import { FormUI } from './formUI';
 export declare abstract class Coordinator {
-    disposer: () => void;
-    protected showVm(vm: new (coordinator: Coordinator) => Vm, param?: any): Promise<void>;
+    private receiveHandlerId;
+    private disposer;
+    protected showVm(vm: new (coordinator: Coordinator) => VmPage, param?: any): Promise<void>;
+    protected renderVm(vm: new (coordinator: Coordinator) => VmView, param?: any): JSX.Element;
     event(type: string, value: any): Promise<void>;
     protected onEvent(type: string, value: any): Promise<void>;
     protected msg(text: string): void;
     protected errorPage(header: string, err: any): void;
+    protected onMessage(message: any): Promise<void>;
+    private onMessageReceive;
+    protected beforeStart(): Promise<void>;
+    protected abstract internalStart(param?: any): Promise<void>;
     start(param?: any): Promise<void>;
     private _resolve_$;
     call(param?: any): Promise<any>;
     return(value: any): void;
-    protected abstract internalStart(param?: any): Promise<void>;
+    openPage(page: JSX.Element): void;
+    replacePage(page: JSX.Element): void;
+    backPage(): void;
+    closePage(level?: number): void;
+    regConfirmClose(confirmClose: () => Promise<boolean>): void;
 }
 export declare abstract class CoordinatorUsq extends Coordinator {
     crUsq: CrUsq;
     constructor(crUsq: CrUsq);
 }
 export interface EntityUI {
-    form?: any;
+    form?: FormUI;
 }
 export declare abstract class CrEntity<T extends Entity, UI extends EntityUI> extends CoordinatorUsq {
     constructor(crUsq: CrUsq, entity: T, ui: UI, res: any);
@@ -30,7 +41,7 @@ export declare abstract class CrEntity<T extends Entity, UI extends EntityUI> ex
     res: any;
     abstract readonly icon: any;
     readonly label: string;
-    start(param?: any): Promise<void>;
+    protected beforeStart(): Promise<void>;
     createForm(onSubmit: (values: any) => Promise<void>, values?: any): VmForm;
     private buildFormOptions;
     private buildInputs;
@@ -40,17 +51,27 @@ export declare abstract class CrEntity<T extends Entity, UI extends EntityUI> ex
     protected getRes(): any;
     crQuerySelect(queryName: string): CrQuerySelect;
 }
-export declare abstract class Vm {
+export declare abstract class VmView {
     protected coordinator: Coordinator;
     constructor(coordinator: Coordinator);
-    abstract showEntry(param?: any): Promise<void>;
-    protected open(view: React.StatelessComponent, param?: any): void;
-    protected close(level?: number): void;
+    abstract render(param?: any): JSX.Element;
     protected event(type: string, value?: any): Promise<void>;
     protected return(value: any): void;
+    protected openPage(view: React.StatelessComponent<any>, param?: any): void;
+    protected replacePage(view: React.StatelessComponent<any>, param?: any): void;
+    protected openPageElement(page: JSX.Element): void;
+    protected replacePageElement(page: JSX.Element): void;
+    protected backPage(): void;
+    protected closePage(level?: number): void;
+    protected regConfirmClose(confirmClose: () => Promise<boolean>): void;
 }
-export declare type VM = new (coordinator: Coordinator) => Vm;
-export declare abstract class VmEntity<T extends Entity, UI extends EntityUI> extends Vm {
+export declare abstract class VmPage extends VmView {
+    constructor(coordinator: Coordinator);
+    abstract showEntry(param?: any): Promise<void>;
+    render(param?: any): JSX.Element;
+}
+export declare type VM = new (coordinator: Coordinator) => VmPage;
+export declare abstract class VmEntity<T extends Entity, UI extends EntityUI> extends VmPage {
     protected coordinator: CrEntity<T, UI>;
     protected entity: T;
     protected ui: UI;

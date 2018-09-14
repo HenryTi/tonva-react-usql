@@ -9,15 +9,16 @@ export interface App {
     inUnit: number;
     date_init: Date;
     date_update: Date;
-    apis: Api[];
+    usqs: Usq[];
 }
 
 export interface Sheet {
+    usq: Usq;
     name: string;
     states: string[];
 }
 
-export interface Api {
+export interface Usq {
     app: number;
     id: number;
     unit: number;

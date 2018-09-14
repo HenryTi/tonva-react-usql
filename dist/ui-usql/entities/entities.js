@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { UsqlApi } from './usqlApi';
+//import {UsqlApi} from './usqlApi';
 import { TuidMain } from './tuid';
 import { Action } from './action';
 import { Sheet } from './sheet';
@@ -18,7 +18,7 @@ import { Map } from './map';
 // access: acc1; acc2
 //const entitiesCollection: {[api:string]: Entities} = {};
 export class Entities {
-    constructor(usq, appId, apiId, api, access) {
+    constructor(usq, usqApi, appId) {
         this.tuids = {};
         this.actions = {};
         this.sheets = {};
@@ -33,18 +33,16 @@ export class Entities {
         this.bookArr = [];
         this.mapArr = [];
         this.historyArr = [];
+        this.loadIds = () => {
+            this.clearCacheTimer();
+            for (let i in this.tuids) {
+                let tuid = this.tuids[i];
+                tuid.cacheIds();
+            }
+        };
         this.usq = usq;
+        this.usqApi = usqApi;
         this.appId = appId;
-        this.apiId = apiId;
-        this.loadIds = this.loadIds.bind(this);
-        let acc;
-        if (access === undefined || access === '*') {
-            acc = [];
-        }
-        else {
-            acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
-        }
-        this.tvApi = new UsqlApi(api, acc);
     }
     tuid(name) { return this.tuids[name.toLowerCase()]; }
     action(name) { return this.actions[name.toLowerCase()]; }
@@ -62,7 +60,7 @@ export class Entities {
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
-            let accesses = yield this.tvApi.loadAccess();
+            let accesses = yield this.usqApi.loadAccess();
             let { access, tuids } = accesses;
             this.buildTuids(tuids);
             this.buildAccess(access);
@@ -86,19 +84,12 @@ export class Entities {
         clearTimeout(this.cacheTimer);
         this.cacheTimer = undefined;
     }
-    loadIds() {
-        this.clearCacheTimer();
-        for (let i in this.tuids) {
-            let tuid = this.tuids[i];
-            tuid.cacheIds();
-        }
-    }
     buildTuids(tuids) {
         let proxyColl = {};
         for (let i in tuids) {
             let schema = tuids[i];
             let { name, typeId, proxies } = schema;
-            let tuid = this.newTuid(name, typeId);
+            let tuid = this.newTuid(i, typeId);
             tuid.sys = true;
             //tuid.setSchema(schema);
             if (proxies !== undefined)
@@ -107,7 +98,7 @@ export class Entities {
         for (let i in tuids) {
             let schema = tuids[i];
             let { name } = schema;
-            let tuid = this.getTuid(name);
+            let tuid = this.getTuid(i);
             //tuid.sys = true;
             tuid.setSchema(schema);
         }
@@ -198,6 +189,9 @@ export class Entities {
         type = parts[0];
         let id = Number(parts[1]);
         switch (type) {
+            case 'usq':
+                this.usqId = id;
+                break;
             case 'tuid':
                 let tuid = this.newTuid(name, id);
                 tuid.sys = false;

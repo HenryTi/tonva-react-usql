@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { VmEntityLink } from "../link";
 import { CrUsq } from "./crUsq";
 import { Entity } from "../../entities";

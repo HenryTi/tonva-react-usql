@@ -4,7 +4,7 @@ import { Button } from 'reactstrap';
 import { TuidMain, Entity } from '../../entities';
 import { Page } from 'tonva-tools';
 import { VmEntityLink } from '../link';
-import { Vm, VmEntity } from '../VM';
+import { VmPage, VmEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
 
 export class VmTuidMain extends VmEntity<TuidMain, TuidUI> {
@@ -14,7 +14,7 @@ export class VmTuidMain extends VmEntity<TuidMain, TuidUI> {
     onSearch = async (key:string) => this.event('list', key) //await this.coordinator.navVm(VmTuidList, key);
 
     async showEntry(param?:any):Promise<void> {
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     protected entityRender(link: VmEntityLink, index: number): JSX.Element {

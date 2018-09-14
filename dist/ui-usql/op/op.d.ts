@@ -1,5 +1,5 @@
 import { Coordinator } from "../vm/VM";
-import { Organization, Team, Section, Post } from "./model";
+import { Organization, Team, Section, Post, Sheet } from "./model";
 export declare class OpCoordinator extends Coordinator {
     private crApp;
     private unitxUsq;
@@ -26,7 +26,7 @@ export declare class OpCoordinator extends Coordinator {
     private setApiEntities;
     private setNames;
     private setSheets;
-    saveSheetStatePosts(sheetName: string, stateName: string, toArr: {
+    saveSheetStatePosts(sheet: Sheet, stateName: string, toArr: {
         post: number;
         team: number;
         section: number;
@@ -43,6 +43,6 @@ export declare class OpCoordinator extends Coordinator {
     private queryClick;
     private historyClick;
     private sheetClick;
-    private apiRender;
+    private usqRender;
     private appView;
 }

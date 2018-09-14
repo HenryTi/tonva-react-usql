@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import { CrEntity, EntityUI } from '../VM';
 import { Entity } from '../../entities';
 
@@ -18,16 +19,16 @@ export class VmEntityLink extends VmLink {
         await this.crEntity.start();
     }
 
-    render() {
-        return React.createElement(this.view);
+    render(className?:string) {
+        return React.createElement(this.view, className);
     }
 
-    protected get view() {
-        return () => {
-            let {icon, label} = this.crEntity;
-            return <div className="px-3 py-2 align-items-center cursor-pointer" onClick={this.onClick}>
-                {icon} &nbsp; {label}
-            </div>;
-        }
+    protected view = (className?:string) => {
+        let {icon, label} = this.crEntity;
+        return <div
+            className={classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className)}
+            onClick={this.onClick}>
+            {icon} &nbsp; {label}
+        </div>;
     }
 }

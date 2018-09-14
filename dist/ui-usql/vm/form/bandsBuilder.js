@@ -1,21 +1,26 @@
 import { VmFieldBand, VmArrBand, VmFieldsBand, VmSubmitBand } from "./vmBand";
 import { VmSubmit } from "./vmSubmit";
-import { buildVmField } from "./vmField";
+import { buildVmField, VmComputeField } from "./vmField";
 import { VmArr } from "./vmArr";
 import { VmTuidField } from "./vmField/vmTuidField";
 export class BandsBuilder {
     constructor(vmForm, options, onSubmit) {
         this.vmForm = vmForm;
         this.onSubmit = onSubmit;
-        this.fields = options.fields;
-        this.arrs = options.arrs;
-        this.ui = options.ui;
-        this.res = options.res;
+        let { fields, arrs, ui, res } = options;
+        this.fields = fields;
+        this.arrs = arrs;
+        if (ui !== undefined) {
+            let { bandUIs, compute } = ui;
+            this.bandUIs = bandUIs;
+            this.compute = compute;
+        }
+        this.res = res;
         this.formValues = vmForm.formValues;
         this.readOnly = vmForm.readOnly;
     }
     build() {
-        return this.ui === undefined ? this.bandsOnFly() : this.bandsFromUI(this.ui);
+        return this.bandUIs === undefined ? this.bandsOnFly() : this.bandsFromUI();
     }
     labelFromName(name, res) {
         if (res === undefined)
@@ -25,14 +30,6 @@ export class BandsBuilder {
             return;
         return fields[name] || name;
     }
-    /*
-    private arrResFromName(name:string):any {
-        if (this.res === undefined) return;
-        let {arrs} = this.res;
-        if (arrs === undefined) return;
-        return arrs[name];
-    }
-    */
     bandsOnFly() {
         let bands = [];
         this.bandsFromFields(bands, this.fields, this.res);
@@ -51,12 +48,9 @@ export class BandsBuilder {
         for (let field of fields)
             bands.push(this.bandFromField(field, res));
     }
-    bandsFromUI(ui) {
-        let { bandUIs } = ui;
+    bandsFromUI() {
         let bands = [];
-        if (bandUIs === undefined)
-            return bands;
-        for (let bandUI of bandUIs) {
+        for (let bandUI of this.bandUIs) {
             let band = this.bandFromUI(bandUI);
             bands.push(band);
         }
@@ -93,11 +87,14 @@ export class BandsBuilder {
         return new VmSubmitBand(vmSubmit);
     }
     vmFieldFromField(field) {
-        if (field === undefined)
-            debugger;
-        //let {name, type} = field;
         let fieldUI = undefined;
-        let ret = buildVmField(field, fieldUI, this.formValues, this.readOnly);
+        if (this.compute !== undefined) {
+            let fieldCompute = this.compute[field.name];
+            if (fieldCompute !== undefined) {
+                return new VmComputeField(field, fieldUI, this.formValues);
+            }
+        }
+        let ret = buildVmField(field, fieldUI, this.formValues, this.compute, this.readOnly);
         if (ret !== undefined)
             return ret;
         return new VmTuidField(field, fieldUI, this.vmForm);

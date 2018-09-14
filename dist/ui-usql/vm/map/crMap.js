@@ -42,33 +42,33 @@ export class CrMap extends CrEntity {
             if (idx >= keysLen)
                 return;
             let keyField = this.keyFields[idx];
+            let kn = keyField.name;
             let tuid = keyField._tuid;
+            let searchParam = {};
             let data = {};
             for (let p = item; p !== undefined; p = p.parent) {
                 let { keyIndex: ki, box } = p;
-                data[this.keyFields[ki].name] = box.id;
+                let kn = this.keyFields[ki].name;
+                searchParam[kn] = data['_' + kn] = box.id;
             }
-            //let searchId = await this.getSearchId(key);
-            //let id = await searchId(data);
-            //let id = await searchId(data);
-            let id = yield this.searchOnKey(keyField, data);
-            if (id > 0) {
-                let arr1 = {};
-                if (keyIndex + 1 === keysLast) {
-                    arr1[keyField.name] = id;
-                }
-                else {
-                    data[keyField.name] = id;
-                    for (let i = idx + 1; i < keysLast; i++)
-                        data[this.keyFields[i].name] = 0;
-                    arr1[this.keyFields[keysLast].name] = 0;
-                }
-                data.arr1 = [arr1];
-                yield this.entity.actions.add.submit(data);
-                if (children.find(v => v.box.id === id) === undefined) {
-                    tuid.useId(id);
-                    children.push(this.createItem(item, tuid, tuid.createID(id), idx, undefined));
-                }
+            let id = yield this.searchOnKey(keyField, searchParam);
+            if (id === undefined || id <= 0)
+                return;
+            let arr1 = {};
+            if (keyIndex + 1 === keysLast) {
+                arr1['_' + kn] = id;
+            }
+            else {
+                data['_' + kn] = id;
+                for (let i = idx + 1; i < keysLast; i++)
+                    data['_' + this.keyFields[i].name] = 0;
+                arr1['_' + this.keyFields[keysLast].name] = 0;
+            }
+            data.arr1 = [arr1];
+            yield this.entity.actions.add.submit(data);
+            if (children.find(v => v.box.id === id) === undefined) {
+                tuid.useId(id);
+                children.push(this.createItem(item, tuid, tuid.createID(id), idx, undefined));
             }
         });
         this.removeClick = (item) => __awaiter(this, void 0, void 0, function* () {
@@ -76,9 +76,35 @@ export class CrMap extends CrEntity {
             let tuid = keyField._tuid;
             let crTuidMain = this.crUsq.crTuidMain(tuid.Main);
             let label = crTuidMain.getLable(tuid);
-            if (confirm(this.res.confirmDelete({ label: label })) === false)
+            let confirmDelete;
+            if (this.res !== undefined) {
+                let cd = this.res.confirmDelete;
+                if (cd !== undefined)
+                    confirmDelete = cd;
+            }
+            if (confirmDelete === undefined)
+                confirmDelete = _.template('do you really want to remove ${label}?');
+            if (confirm(confirmDelete({ label: label })) === false)
                 return;
-            alert(`程序还没有实现删除${label}`);
+            let map = this.entity;
+            let data = {};
+            let arr1 = data['arr1'] = [];
+            let v0 = {};
+            arr1.push(v0);
+            for (let p = item; p !== undefined; p = p.parent) {
+                let ki = p.keyIndex;
+                v0['_' + this.keyFields[ki].name] = p.box.id;
+            }
+            let len = this.keyFields.length;
+            for (let i = item.keyIndex + 1; i < len; i++) {
+                let k = this.keyFields[i];
+                v0['_' + k.name] = -1;
+            }
+            yield map.actions.del.submit(data);
+            let children = item.parent.children;
+            let index = children.findIndex(v => v === item);
+            if (index >= 0)
+                children.splice(index, 1);
         });
         /*
         async submit(values:any) {

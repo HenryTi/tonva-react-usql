@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { VmEntity } from '../VM';
 import { CrAction, ActionUI } from './crAction';
 import { Action } from '../../entities';

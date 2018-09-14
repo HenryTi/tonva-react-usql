@@ -20,12 +20,13 @@ export class RuleRequired extends Rule {
             case 'undefined':
                 break;
         }
-        defy.push('请输入');
+        defy.push('不能为空');
     }
 }
 
 export class RuleNum extends Rule {
     check(defy:string[], value:any) {
+        if (value === undefined || value === null) return;
         let n = Number(value);
         if (n === NaN) defy.push('必须是数字');
     }
@@ -33,6 +34,7 @@ export class RuleNum extends Rule {
 
 export class RuleInt extends Rule {
     check(defy:string[], value:any) {
+        if (value === undefined || value === null) return;
         let n = Number(value);
         if (Number.isNaN(n) === true || Number.isInteger(n) === false) {
             defy.push('必须是整数');

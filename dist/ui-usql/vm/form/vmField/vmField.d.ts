@@ -3,15 +3,17 @@ import { ViewModel } from "../../viewModel";
 import { FormValues } from '../vmForm';
 import { Rule } from '../rule';
 import { Field } from '../../../entities';
-import { FieldUI, InputUI, NumberUI } from '../formUI';
+import { FieldUI, InputUI, NumberUI, Compute, StringUI } from '../../formUI';
 export declare abstract class VmField extends ViewModel {
     protected fieldUI: FieldUI;
     protected field: Field;
     protected formValues: FormValues;
     protected formReadOnly: boolean;
     protected rules: Rule[];
-    constructor(field: Field, fieldUI: FieldUI, formValues: FormValues, readOnly: boolean);
+    protected formCompute: Compute;
+    constructor(field: Field, fieldUI: FieldUI, formValues: FormValues, formCompute: Compute, readOnly: boolean);
     name: string;
+    protected init(): void;
     protected buildRules(): void;
     readonly checkRules: string[];
     readonly isOk: boolean;
@@ -25,28 +27,37 @@ export declare class VmUnknownField extends VmField {
     protected view: () => JSX.Element;
 }
 export declare abstract class VmInputControl extends VmField {
-    fieldUI: InputUI;
-    private input;
-    inputType: string;
-    renderError: (className: string) => JSX.Element;
+    protected fieldUI: InputUI;
+    protected input: HTMLInputElement;
+    protected inputType: string;
+    protected readonly maxLength: number;
+    protected renderError: (className: string) => JSX.Element;
     readonly value: any;
     setValue(v: any): void;
-    ref: (input: HTMLInputElement) => void;
+    protected ref: (input: HTMLInputElement) => void;
     private setInputValue;
-    onFocus: () => void;
-    onBlur: () => void;
-    onChange: (evt: React.ChangeEvent<any>) => void;
+    protected onFocus: () => void;
+    protected onBlur: () => void;
+    protected onChange: (evt: React.ChangeEvent<any>) => void;
+    protected onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     protected view: () => JSX.Element;
 }
 export declare const RedMark: () => JSX.Element;
 export declare class VmStringField extends VmInputControl {
-    inputType: string;
+    protected fieldUI: StringUI;
+    protected inputType: string;
+    protected readonly maxLength: number;
 }
 export declare abstract class VmNumberControl extends VmInputControl {
-    fieldUI: NumberUI;
+    protected fieldUI: NumberUI;
+    protected extraChars: number[];
+    protected init(): void;
     protected buildRules(): void;
     inputType: string;
     protected parse(text: string): any;
+    protected onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+    private onKeyDot;
+    private onKeyNeg;
 }
 export declare class VmIntField extends VmNumberControl {
     protected buildRules(): void;

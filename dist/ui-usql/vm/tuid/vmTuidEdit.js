@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmEntity } from '../VM';
 export class VmTuidEdit extends VmEntity {
     constructor() {
@@ -26,11 +26,10 @@ export class VmTuidEdit extends VmEntity {
         */
         this.next = () => __awaiter(this, void 0, void 0, function* () {
             this.vmForm.reset();
-            nav.pop();
-            //this.popPage();
+            this.closePage();
         });
         this.finish = () => {
-            nav.pop(2);
+            this.closePage(2);
             this.event('edit-end');
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
@@ -46,7 +45,7 @@ export class VmTuidEdit extends VmEntity {
                 }
                 return;
             }
-            nav.push(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
+            this.openPageElement(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },
                     React.createElement("span", { className: "text-success" },
                         React.createElement(FA, { name: 'check-circle', size: 'lg' }),
@@ -54,6 +53,7 @@ export class VmTuidEdit extends VmEntity {
                     React.createElement("div", { className: 'mt-5' },
                         React.createElement(Button, { className: "mr-3", color: "primary", onClick: this.next }, "\u7EE7\u7EED\u5F55\u5165"),
                         React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
+            this.event('item-changed', { id: this.id, values: values });
             return;
         });
         //protected view = TuidNewPage;
@@ -64,7 +64,7 @@ export class VmTuidEdit extends VmEntity {
             if (param !== undefined) {
                 this.id = param.id;
             }
-            this.open(this.editView);
+            this.openPage(this.editView);
         });
     }
     get editView() {

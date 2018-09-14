@@ -11,29 +11,14 @@ export class VmSheetMain extends VmEntity<Sheet, SheetUI> {
     protected coordinator: CrSheet;
 
     async showEntry() {
-        await this.entity.getStateSheetCount();
-        this.open(this.view);
+        await this.coordinator.getStateSheetCount();
+        this.openPage(this.view);
     }
 
-    /* 移到CrSheet里面去
-    protected async onReceive(msg: any) {
-        await super.onReceive(msg);
-        this.entity.onReceive(msg);
-    }
-    */
-
-    newClick = () => this.event('new'); /* {
-        let t = (this.ui && this.ui.new) || this.vmNew;
-        await this.navVm(t);
-    }*/
+    newClick = () => this.event('new');
     schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);
     archivesClick = () => this.event('archives'); //await this.navVm(this.vmArchives);
     sheetStateClick = (state) => this.event('state', state); // await this.navVm(this.vmSheetList, state);
-    /* 移到CrSheet里面去了
-    async showSheet(sheetId:number) {
-        let vmAction = (this.ui && this.ui.action) || VmSheetAction;
-        await this.navVm(vmAction, sheetId);
-    }*/
 
     renderState = (item:any, index:number) => {
         let {state, count} = item;
@@ -43,14 +28,14 @@ export class VmSheetMain extends VmEntity<Sheet, SheetUI> {
     }
 
     protected view = observer(() => {
-        let list = this.entity.statesCount.filter(row=>row.count);
+        let list = this.coordinator.statesCount.filter(row=>row.count);
         return <Page header={this.label}>
             <div className="mx-3 my-2">
                 <Button className="mr-2" color="primary" onClick={this.newClick}>新建</Button>
                 <Button className="mr-2" color="primary" onClick={this.schemaClick}>模板</Button>
             </div>
             <List className="my-2"
-                header={<Muted>待处理{this.label}</Muted>}
+                header={<Muted className="mx-3 my-1">待处理{this.label}</Muted>}
                 none="[ 无 ]"
                 items={list}
                 item={{render:this.renderState, onClick:this.sheetStateClick}} />

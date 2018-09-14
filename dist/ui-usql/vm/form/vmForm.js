@@ -23,13 +23,15 @@ export class VmForm {
         this.fields = options.fields;
         this.arrs = options.arrs;
         this.ui = options.ui;
+        if (this.ui !== undefined)
+            this.compute = this.ui.compute;
         this.res = options.res;
         this.inputs = options.inputs;
         this.submitCaption = options.submitCaption;
         this.arrNewCaption = options.arrNewCaption;
         this.arrEditCaption = options.arrEditCaption;
         this.readOnly = onSubmit === undefined;
-        this.formValues = this.buildFormValues(this.fields);
+        this.formValues = this.buildFormValues();
         this.buildBands(options, onSubmit);
         this.onSubmit = onSubmit;
     }
@@ -58,20 +60,29 @@ export class VmForm {
         return values;
     }
     setValues(initValues) {
+        if (initValues === undefined) {
+            this.reset();
+            return;
+        }
         let { values, errors } = this.formValues;
+        //let compute = this.ui && this.ui.compute;
         for (let f of this.fields) {
             let fn = f.name;
-            values[fn] = initValues === undefined ? null : initValues[fn];
+            //if (compute === undefined || compute[fn] === undefined) {
             errors[fn] = undefined;
+            let v = initValues[fn];
+            values[fn] = v;
+            //}
         }
         // 还要设置arrs的values
         for (let i in this.vmArrs) {
-            if (initValues === undefined)
-                continue;
             let list = initValues[i];
             if (list === undefined)
                 continue;
-            this.vmArrs[i].list.push(...list);
+            //this.vmArrs[i].list.push(...list);
+            let arrList = values[i];
+            arrList.clear();
+            arrList.push(...list);
         }
     }
     get isOk() {
@@ -85,11 +96,16 @@ export class VmForm {
         let { values, errors } = this.formValues;
         for (let f of this.fields) {
             let fn = f.name;
+            //if (this.compute !== undefined && this.compute[fn] !== undefined) continue;
             values[fn] = null;
             errors[fn] = undefined;
         }
         for (let i in this.vmFields) {
             let ctrl = this.vmFields[i];
+            let cn = ctrl.name;
+            if (cn === undefined)
+                continue;
+            //if (this.compute !== undefined && this.compute[cn] !== undefined) continue;
             ctrl.setValue(null);
         }
         for (let i in this.vmArrs) {
@@ -106,19 +122,45 @@ export class VmForm {
         return buildControl(field, fieldUI, formValues, this.readOnly);
     }
     */
-    buildObservableValues(fields) {
+    buildFieldValues(fields) {
         let v = {};
-        for (let f of fields)
-            v[f.name] = null;
-        return observable(v);
+        for (let f of fields) {
+            let fn = f.name;
+            //if (this.compute === undefined || this.compute[fn] === undefined)
+            {
+                v[fn] = null;
+            }
+        }
+        return v;
     }
-    buildFormValues(fields) {
+    buildObservableValues() {
+        let v = this.buildFieldValues(this.fields);
+        if (this.arrs !== undefined) {
+            for (let arr of this.arrs) {
+                v[arr.name] = observable.array([], { deep: true });
+            }
+        }
+        let ret = observable(v);
+        /*
+        for (let f of this.fields) {
+            let fn = f.name;
+            if (this.compute === undefined) continue;
+            let func = this.compute[fn];
+            if (func === undefined) continue;
+            Object.defineProperty(ret, fn, {
+                enumerable: true,
+                get: func,
+            });
+        }*/
+        return ret;
+    }
+    buildFormValues() {
         return {
-            values: this.buildObservableValues(fields),
-            errors: this.buildObservableValues(fields),
+            values: this.buildObservableValues(),
+            errors: observable(this.buildFieldValues(this.fields)),
         };
     }
-    render(className) {
+    render(className = "p-3") {
         return React.createElement(this.view, { className: className });
     }
 }

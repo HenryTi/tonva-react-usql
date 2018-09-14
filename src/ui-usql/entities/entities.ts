@@ -1,15 +1,16 @@
-import {UsqlApi} from './usqlApi';
+//import {UsqlApi} from './usqlApi';
 import {TuidMain, Tuid} from './tuid';
 import {Action} from './action';
 import {Sheet, SheetState, SheetAction} from './sheet';
 import {Query} from './query';
 import {Book} from './book';
 import {History} from './history';
-import { ApiBase, Api } from 'tonva-tools';
+import { UsqApi } from 'tonva-tools';
 import { Map } from './map';
 
 export interface Usq {
     getTuidContent(tuid:Tuid): React.StatelessComponent<any>;
+    showTuid(tuid:Tuid, id:number):Promise<void>;
 }
 
 export interface Field {
@@ -43,24 +44,14 @@ export class Entities {
     private histories: {[name:string]: History} = {};
     private cacheTimer: any;
     usq:Usq;
-    tvApi: UsqlApi;
+    usqApi: UsqApi;
     appId: number;
-    apiId: number;
+    usqId: number;
 
-    constructor(usq:Usq, appId:number, apiId:number, api:Api, access?:string) {
+    constructor(usq:Usq, usqApi:UsqApi, appId: number) {
         this.usq = usq;
+        this.usqApi = usqApi;
         this.appId = appId;
-        this.apiId = apiId;
-        this.loadIds = this.loadIds.bind(this);
-
-        let acc: string[];
-        if (access === undefined || access === '*') {
-            acc = [];
-        }
-        else {
-            acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
-        }
-        this.tvApi = new UsqlApi(api, acc);
     }
 
     tuid(name:string):TuidMain {return this.tuids[name.toLowerCase()]}
@@ -87,7 +78,7 @@ export class Entities {
     historyArr: History[] = [];
 
     async load() {
-        let accesses = await this.tvApi.loadAccess();
+        let accesses = await this.usqApi.loadAccess();
         let {access, tuids} = accesses;
         this.buildTuids(tuids);
         this.buildAccess(access);
@@ -109,7 +100,7 @@ export class Entities {
         clearTimeout(this.cacheTimer);
         this.cacheTimer = undefined;
     }
-    private loadIds() {
+    private loadIds = () => {
         this.clearCacheTimer();
         for (let i in this.tuids) {
             let tuid = this.tuids[i];
@@ -122,7 +113,7 @@ export class Entities {
         for (let i in tuids) {
             let schema = tuids[i];
             let {name, typeId, proxies} = schema;
-            let tuid = this.newTuid(name, typeId);
+            let tuid = this.newTuid(i, typeId);
             tuid.sys = true;
             //tuid.setSchema(schema);
             if (proxies !== undefined) proxyColl[i] = proxies;
@@ -130,7 +121,7 @@ export class Entities {
         for (let i in tuids) {
             let schema = tuids[i];
             let {name} = schema;
-            let tuid = this.getTuid(name);
+            let tuid = this.getTuid(i);
             //tuid.sys = true;
             tuid.setSchema(schema);
         }
@@ -212,6 +203,7 @@ export class Entities {
         type = parts[0];
         let id = Number(parts[1]);
         switch (type) {
+            case 'usq': this.usqId = id; break;
             case 'tuid': 
                 let tuid = this.newTuid(name, id);
                 tuid.sys = false;

@@ -13,12 +13,19 @@ export class Coordinator {
     constructor() {
         this.disposer = () => {
             // message listener的清理
+            nav.unregisterReceiveHandler(this.receiveHandlerId);
         };
+        this.onMessageReceive = (message) => __awaiter(this, void 0, void 0, function* () {
+            yield this.onMessage(message);
+        });
     }
     showVm(vm, param) {
         return __awaiter(this, void 0, void 0, function* () {
             yield (new vm(this)).showEntry(param);
         });
+    }
+    renderVm(vm, param) {
+        return (new vm(this)).render(param);
     }
     event(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,20 +40,29 @@ export class Coordinator {
         alert(text);
     }
     errorPage(header, err) {
-        nav.push(React.createElement(Page, { header: "App error!" },
+        this.openPage(React.createElement(Page, { header: "App error!" },
             React.createElement("pre", null, typeof err === 'string' ? err : err.message)));
+    }
+    onMessage(message) {
+        return;
+    }
+    beforeStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.receiveHandlerId = nav.registerReceiveHandler(this.onMessageReceive);
+        });
     }
     start(param) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.beforeStart();
             yield this.internalStart(param);
         });
     }
     call(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 this._resolve_$ = resolve;
-                this.start(param);
-            });
+                yield this.start(param);
+            }));
         });
     }
     return(value) {
@@ -56,6 +72,23 @@ export class Coordinator {
         }
         this._resolve_$(value);
         this._resolve_$ = undefined;
+    }
+    openPage(page) {
+        nav.push(page, this.disposer);
+        this.disposer = undefined;
+    }
+    replacePage(page) {
+        nav.replace(page, this.disposer);
+        this.disposer = undefined;
+    }
+    backPage() {
+        nav.back();
+    }
+    closePage(level) {
+        nav.pop(level);
+    }
+    regConfirmClose(confirmClose) {
+        nav.regConfirmClose(confirmClose);
     }
 }
 export class CoordinatorUsq extends Coordinator {
@@ -72,10 +105,11 @@ export class CrEntity extends CoordinatorUsq {
         this.res = res;
         this.label = (res && res.label) || entity.name;
     }
-    start(param) {
+    beforeStart() {
+        const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
+            yield _super("beforeStart").call(this);
             yield this.entity.loadSchema();
-            yield this.internalStart(param);
         });
     }
     createForm(onSubmit, values) {
@@ -122,12 +156,19 @@ export class CrEntity extends CoordinatorUsq {
         return ret;
     }
     buildFieldsInputs(ret, fields, arr) {
+        if (arr !== undefined) {
+            let arrFieldInputs = ret[arr];
+            if (arrFieldInputs === undefined) {
+                ret[arr] = arrFieldInputs = {};
+                ret = arrFieldInputs;
+            }
+        }
         for (let field of fields) {
             let { name, tuid, _tuid } = field;
             if (tuid === undefined)
                 continue;
-            let fn = arr === undefined ? name : arr + '.' + name;
-            ret[fn] = {
+            //let fn = arr === undefined? name : arr+'.'+name;
+            ret[name] = {
                 call: this.buildCall(field, arr),
                 content: this.buildContent(field, arr),
                 nullCaption: this.crUsq.getTuidNullCaption(_tuid),
@@ -156,22 +197,10 @@ export class CrEntity extends CoordinatorUsq {
         return this.crUsq.crQuerySelect(queryName);
     }
 }
-export class Vm {
+export class VmView {
     constructor(coordinator) {
         this.coordinator = coordinator;
     }
-    open(view, param) {
-        nav.push(React.createElement(view, param));
-    }
-    close(level) {
-        nav.pop(level);
-    }
-    /*
-    protected async retn(type:string, value?:any) {
-        nav.pop();
-        await this.resolve(type, value);
-    }
-    */
     event(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
             /*
@@ -185,8 +214,35 @@ export class Vm {
     return(value) {
         this.coordinator.return(value);
     }
+    openPage(view, param) {
+        this.coordinator.openPage(React.createElement(view, param));
+    }
+    replacePage(view, param) {
+        this.coordinator.replacePage(React.createElement(view, param));
+    }
+    openPageElement(page) {
+        this.coordinator.openPage(page);
+    }
+    replacePageElement(page) {
+        this.coordinator.replacePage(page);
+    }
+    backPage() {
+        this.coordinator.backPage();
+    }
+    closePage(level) {
+        this.coordinator.closePage(level);
+    }
+    regConfirmClose(confirmClose) {
+        this.coordinator.regConfirmClose(confirmClose);
+    }
 }
-export class VmEntity extends Vm {
+export class VmPage extends VmView {
+    constructor(coordinator) {
+        super(coordinator);
+    }
+    render(param) { return null; }
+}
+export class VmEntity extends VmPage {
     constructor(coordinator) {
         super(coordinator);
         this.entity = coordinator.entity;

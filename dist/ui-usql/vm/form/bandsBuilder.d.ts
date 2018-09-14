@@ -5,7 +5,8 @@ export declare class BandsBuilder {
     private onSubmit;
     private fields;
     private arrs;
-    private ui;
+    private bandUIs;
+    private compute;
     private res;
     private formValues;
     private readOnly;

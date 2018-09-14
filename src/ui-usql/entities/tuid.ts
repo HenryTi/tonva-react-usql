@@ -2,12 +2,13 @@ import * as React from 'react';
 import {observable, IObservableValue} from 'mobx';
 import * as _ from 'lodash';
 import { Entity } from './entity';
-import { Entities, Field } from './entities';
+import { Entities, Field, ArrFields } from './entities';
 import { isNumber } from 'util';
 
 export class IdBox {
     id: number;
-    content: (templet?:React.StatelessComponent)=>JSX.Element;
+    obj?: any;
+    content: (templet?:React.StatelessComponent<any>)=>JSX.Element;
 }
 
 const maxCacheSize = 1000;
@@ -36,7 +37,7 @@ export abstract class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
-        prototype.content = function(templet?:React.StatelessComponent) {
+        prototype.content = function(templet?:React.StatelessComponent<any>) {
             let t:Tuid = this._$tuid;
             let com = templet || t.entities.usq.getTuidContent(t);
             let val = this._$tuid.valueFromId(this.id);
@@ -75,25 +76,24 @@ export abstract class Tuid extends Entity {
     }
 
     valueFromId(id:number):any {
-        return this.cache.get(String(id));
+        return this.cache.get(id);
     }
     resetCache(id:number) {
-        this.cache.delete(String(id));
+        this.cache.delete(id);
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
         this.useId(id);
     }
-    useId(id:number, defer?:boolean):void {
+    useId(id:number, defer?:boolean) {
         if (id === undefined || id === 0) return;
         if (isNumber(id) === false) return;
-        let key = String(id);
-        if (this.cache.has(key) === true) {
+        if (this.cache.has(id) === true) {
             this.moveToHead(id);
             return;
         }
         this.entities.cacheTuids(defer===true?70:20);
         //let idVal = this.createID(id);
-        this.cache.set(key, id);
+        this.cache.set(id, id);
         if (this.waitingIds.findIndex(v => v === id) >= 0) {
             this.moveToHead(id);
             return;
@@ -109,10 +109,10 @@ export abstract class Tuid extends Entity {
                 return;
             }
 
-            let rKey = String(r);
-            if (this.cache.has(rKey) === true) {
+            //let rKey = String(r);
+            if (this.cache.has(r) === true) {
                 // 如果移除r已经缓存
-                this.cache.delete(rKey);
+                this.cache.delete(r);
             }
             else {
                 // 如果移除r还没有缓存
@@ -122,6 +122,7 @@ export abstract class Tuid extends Entity {
         }
         this.waitingIds.push(id);
         this.queue.push(id);
+        return;
     }
     async proxied(name:string, id:number):Promise<any> {
         let proxyTuid = this.entities.getTuid(name, undefined);
@@ -130,14 +131,14 @@ export abstract class Tuid extends Entity {
         this.cacheValue(proxied);
         return proxied;
     }
-    private cacheValue(val:any):boolean {
+    cacheValue(val:any):boolean {
         if (val === undefined) return false;
         let id = this.getIdFromObj(val);
         if (id === undefined) return false;
         let index = this.waitingIds.findIndex(v => v === id);
         if (index>=0) this.waitingIds.splice(index, 1);
         //let cacheVal = this.createID(id, val);
-        this.cache.set(String(id), val);
+        this.cache.set(id, val);
         // 下面的代码应该是cache proxy id, 需要的时候再写吧
         /*
         let {tuids, fields} = this.schema;
@@ -172,7 +173,30 @@ export abstract class Tuid extends Entity {
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
-        return await this.tvApi.tuidGet(this.name, id);
+        let values = await this.tvApi.tuidGet(this.name, id);
+        this.cacheTuidValues(values);
+        return values;
+    }
+    private cacheTuidValues(values:any) {
+        let {fields, arrs} = this.schema;
+        this.cacheFieldsInValue(values, fields);
+        if (arrs !== undefined) {
+            for (let arr of arrs as ArrFields[]) {
+                let {name, fields} = arr;
+                let arrValues = values[name];
+                if (arrValues === undefined) continue;
+                this.cacheFieldsInValue(arrValues, fields);
+            }
+        }
+    }
+    private cacheFieldsInValue(values:any, fields:Field[]) {
+        for (let f of fields as Field[]) {
+            let {name, _tuid} = f;
+            if (_tuid === undefined) continue;
+            let id = values[name];
+            _tuid.useId(id);
+            values[name] = _tuid.createID(id);
+        }
     }
     async save(id:number, props:any) {
         let params = _.clone(props);
@@ -180,6 +204,8 @@ export abstract class Tuid extends Entity {
         return await this.tvApi.tuidSave(this.name, params);
     }
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {
+        return this.searchArr(undefined, key, pageStart, pageSize);
+        /*
         let name:string, arr:string;
         if (this.owner !== undefined) {
             name = this.owner.name;
@@ -189,7 +215,20 @@ export abstract class Tuid extends Entity {
             name = this.name;
             arr = undefined;
         }
-        let ret = await this.tvApi.tuidSearch(name, arr, key, pageStart, pageSize);
+        let ret = await this.tvApi.tuidSearch(name, arr, undefined, key, pageStart, pageSize);
+        return ret;*/
+    }
+    async searchArr(owner:number, key:string, pageStart:string|number, pageSize:number):Promise<any> {
+        let name:string, arr:string;
+        if (this.owner !== undefined) {
+            name = this.owner.name;
+            arr = this.name;
+        }
+        else {
+            name = this.name;
+            arr = undefined;
+        }
+        let ret = await this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
         return ret;
     }
     async loadArr(arr:string, owner:number, id:number):Promise<any> {
@@ -223,6 +262,9 @@ export abstract class Tuid extends Entity {
     //private async ids(idArr:number[]) {
     //    return await this.tvApi.tuidIds(this.name, idArr);
     //}
+    async showInfo(id:number) {
+        await this.entities.usq.showTuid(this, id);
+    }
 }
 
 export class TuidMain extends Tuid {

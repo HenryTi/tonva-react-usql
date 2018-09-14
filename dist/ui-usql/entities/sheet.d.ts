@@ -7,7 +7,7 @@ export interface SheetState {
 export interface SheetAction {
     name: string;
 }
-interface StateCount {
+export interface StateCount {
     state: string;
     count: number;
 }
@@ -17,9 +17,10 @@ export declare class Sheet extends Entity {
     statesCount: IObservableArray<StateCount>;
     curState: string;
     stateSheets: IObservableArray;
+    setSchema(schema: any): void;
     build(obj: any): void;
     private createSheetState;
-    onReceive(msg: any): Promise<void>;
+    onMessage(msg: any): Promise<void>;
     private changeStateCount;
     save(discription: string, data: any): Promise<number>;
     action(id: number, flow: number, state: string, action: string): Promise<any>;
@@ -30,4 +31,3 @@ export declare class Sheet extends Entity {
     getArchive(id: number): Promise<any>;
     getArchives(pageStart: number, pageSize: number): Promise<any>;
 }
-export {};

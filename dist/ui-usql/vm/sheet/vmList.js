@@ -44,6 +44,7 @@ export class VmSheetList extends VmEntity {
             this.stateName = item.state;
             this.stateLabel = this.coordinator.getStateLabel(this.stateName);
             yield this.entity.getStateSheets(this.stateName, 0, 30);
+            this.openPage(this.view);
         });
     }
 }

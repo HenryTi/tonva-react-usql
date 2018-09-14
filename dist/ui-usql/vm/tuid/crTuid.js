@@ -6,17 +6,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import _ from 'lodash';
 import { CrEntity } from "../VM";
 import { VmTuidMain } from './vmTuidMain';
 import { VmTuidEdit } from './vmTuidEdit';
 import { VmTuidSelect } from './vmTuidSelect';
 import { VmTuidList } from "./vmTuidList";
 import { entitiesRes } from '../../res';
+import { VmTuidInfo } from "./vmTuidInfo";
+import { TuidPagedItems } from "./pagedItems";
 export class CrTuid extends CrEntity {
     constructor(crUsq, entity, ui, res) {
         super(crUsq, entity, ui, res);
     }
     get icon() { return entitiesRes['tuid'].icon; }
+    search(key) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.pagedItems === undefined) {
+                this.pagedItems = new TuidPagedItems(this.entity);
+            }
+            yield this.pagedItems.first(key);
+        });
+    }
 }
 export class CrTuidMain extends CrTuid {
     constructor(crUsq, entity, ui, res) {
@@ -70,6 +81,9 @@ export class CrTuidMain extends CrTuid {
                 case 'edit':
                     yield this.edit(value);
                     return;
+                case 'item-changed':
+                    this.itemChanged(value);
+                    return;
             }
             yield this.showVm(vm, value);
         });
@@ -81,21 +95,36 @@ export class CrTuidMain extends CrTuid {
             yield this.showVm(vm, ret);
         });
     }
+    itemChanged({ id, values }) {
+        let items = this.pagedItems.items;
+        let item = items.find(v => v.id === id);
+        if (item !== undefined) {
+            _.merge(item, values);
+        }
+    }
 }
 export class CrTuidMainSelect extends CrTuid {
-    internalStart() {
+    internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVm(this.VmTuidSelect);
+            yield this.showVm(this.VmTuidSelect, param);
         });
     }
     get VmTuidSelect() { return VmTuidSelect; }
 }
 export class CrTuidDivSelect extends CrTuid {
-    internalStart() {
+    internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVm(this.VmTuidSelect);
+            yield this.showVm(this.VmTuidSelect, param);
         });
     }
     get VmTuidSelect() { return VmTuidSelect; }
+}
+export class CrTuidInfo extends CrTuid {
+    internalStart(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.showVm(this.VmTuidInfo, param);
+        });
+    }
+    get VmTuidInfo() { return VmTuidInfo; }
 }
 //# sourceMappingURL=crTuid.js.map

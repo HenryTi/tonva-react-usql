@@ -5,7 +5,7 @@ export class VmUsq {
     constructor(crUsq) {
         this.isSysVisible = false;
         this.view = () => {
-            let { res, api } = this.crUsq;
+            let { res, usq } = this.crUsq;
             let linkItem = {
                 render: (vmLink, index) => vmLink.render(),
                 onClick: undefined,
@@ -42,7 +42,7 @@ export class VmUsq {
                 }
             ];
             return React.createElement(React.Fragment, null,
-                React.createElement("div", { className: "px-3 py-1 small" }, res.usq || api),
+                React.createElement("div", { className: "px-3 py-1 small" }, res.usq || usq),
                 lists.map(({ cn, header, items }, index) => items.length > 0 && React.createElement(List, { key: index, className: cn, header: React.createElement("div", { className: "px-3 py-1 bg-light" },
                         React.createElement(Muted, null, header)), items: items, item: linkItem })));
         };

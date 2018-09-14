@@ -16,11 +16,11 @@ export class VmTuidView extends VmEntity<TuidMain, TuidUI> {
 
     async showEntry(param?:any) {
         let data = await this.entity.valueFromId(param)
-        this.vmForm = this.createForm(data);
+        this.vmForm = this.createForm(undefined, data);
         //this.vmForm.values = data;
         //this.vmForm.readOnly = true;
         //this.vmForm.onSubmit = this.onSubmit;
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     async loadId(id: number) {
@@ -29,11 +29,11 @@ export class VmTuidView extends VmEntity<TuidMain, TuidUI> {
 
     protected next = async () => {
         this.vmForm.reset();
-        this.close();
+        this.closePage();
     }
 
     protected finish = () => {
-        this.close(2);
+        this.closePage(2);
     }
 
     protected resetForm() {
@@ -45,7 +45,7 @@ export class VmTuidView extends VmEntity<TuidMain, TuidUI> {
         if (ret) {
             alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
         }
-        this.open(() => <Page header={this.label + '提交成功'} back="none">
+        this.openPage(() => <Page header={this.label + '提交成功'} back="none">
             <div className='m-3'>
                 <span className="text-success">
                     <FA name='check-circle' size='lg' /> 成功提交！

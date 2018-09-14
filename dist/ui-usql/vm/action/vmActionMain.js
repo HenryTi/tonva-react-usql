@@ -14,8 +14,8 @@ export class VmActionMain extends VmEntity {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             this.returns = yield this.coordinator.submit(this.vmForm.values);
-            this.close();
-            this.open(this.resultPage);
+            this.closePage();
+            this.openPage(this.resultPage);
         });
         this.mainPage = () => {
             let { label } = this.coordinator;
@@ -31,7 +31,7 @@ export class VmActionMain extends VmEntity {
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vmForm = this.createForm(this.onSubmit, param);
-            this.open(this.mainPage);
+            this.openPage(this.mainPage);
         });
     }
 }

@@ -1,16 +1,12 @@
-import { VmView } from './vmView';
-import { VmEntity } from '../VM';
-import { Sheet } from '../../entities';
-import { CrSheet, SheetUI } from './crSheet';
-export declare class VmSheetAction extends VmEntity<Sheet, SheetUI> {
+/// <reference types="react" />
+import { VmSheetView } from './vmView';
+import { CrSheet } from './crSheet';
+export declare class VmSheetAction extends VmSheetView {
     protected coordinator: CrSheet;
     brief: any;
-    sheetData: any;
-    flows: any[];
-    vmView: VmView;
     showEntry(sheetId: number): Promise<void>;
     actionClick: (action: any) => Promise<void>;
     deleteClick: () => Promise<void>;
     editClick: () => Promise<void>;
-    protected view: () => JSX.Element;
+    protected page: () => JSX.Element;
 }

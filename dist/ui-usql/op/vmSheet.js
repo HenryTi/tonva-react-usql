@@ -7,18 +7,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import React from 'react';
-import { nav, Page } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { Muted, LMR, FA, List } from 'tonva-react-form';
-import { Vm } from '../vm/VM';
+import { VmPage } from '../vm/VM';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
-export class VmSheet extends Vm {
+export class VmSheet extends VmPage {
     constructor() {
         super(...arguments);
         this.sheetOpsChanged = false;
         this.stateTosView = observer(({ tosText }) => {
             let tos = tosText.get();
-            return React.createElement("div", { className: "bg-light py-1 px-2" }, tos === undefined ? React.createElement(Muted, null, "[\u65E0\u5C97\u4F4D]") :
+            return React.createElement("div", { className: "bg-light py-1 px-2" }, tos === undefined || tos.length === 0 ? React.createElement(Muted, null, "[\u65E0\u5C97\u4F4D]") :
                 tos.map((v, index) => {
                     return React.createElement("span", { key: v, className: "d-inline-block border bg-white rounded mr-2 my-1 py-1 px-2" }, v);
                 }));
@@ -117,8 +117,8 @@ export class VmSheet extends Vm {
             }
         });*/
         this.sheetOpsChanged = false;
-        nav.push(React.createElement(this.stateView, Object.assign({}, state)));
-        nav.regConfirmClose(() => __awaiter(this, void 0, void 0, function* () {
+        this.openPage(this.stateView, state);
+        this.regConfirmClose(() => __awaiter(this, void 0, void 0, function* () {
             if (this.sheetOpsChanged === false)
                 return true;
             return confirm('未保存\n真的不保存吗？');
@@ -287,7 +287,7 @@ export class VmSheet extends Vm {
                     tosText: observable.box(this.tosTexts(tos)),
                 };
             });
-            nav.push(React.createElement(Page, { header: '单据状态对应岗位 - ' + name }, this.states.map(v => this.renderState(v))));
+            this.openPageElement(React.createElement(Page, { header: '单据状态对应岗位 - ' + name }, this.states.map(v => this.renderState(v))));
         });
     }
     saveOps(stateTo) {
@@ -348,11 +348,12 @@ export class VmSheet extends Vm {
                     });
                 }
             }
-            yield this.coordinator.saveSheetStatePosts(this.sheet.name, stateToName, toArr);
+            yield this.coordinator.saveSheetStatePosts(this.sheet, stateToName, toArr);
             let state = this.states.find(v => v.name === stateToName);
             state.tos = tos;
-            state.tosText.set(this.tosTexts(tos));
-            nav.pop();
+            let tosTexts = this.tosTexts(tos);
+            state.tosText.set(tosTexts);
+            this.closePage();
         });
     }
     /*

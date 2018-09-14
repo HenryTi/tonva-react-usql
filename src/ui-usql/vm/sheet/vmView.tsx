@@ -5,26 +5,31 @@ import { VmForm } from '../form';
 import { VmEntity } from '../VM';
 import { CrSheet, SheetUI } from './crSheet';
 
-export class VmView extends VmEntity<Sheet, SheetUI> {
+const leftFlowStyle = {width: '8rem'};
+
+export abstract class VmSheetView extends VmEntity<Sheet, SheetUI> {
     vmForm: VmForm;
     data: any;
     state: string;
     flows:any[];
 
+    /*
     constructor(crSheet:CrSheet, data: any, state:string, flows:any[]) {
         super(crSheet);
         this.data = data;
         this.state = state;
         this.flows = flows;
     }
+    */
 
-    async showEntry(param?:any) {}
+    //async showEntry(param?:any) {}
 
+    /*
     render() {
         this.vmForm = this.createForm(this.data);
         return <this.view />;
     }
-
+    */
     /*
     protected get fieldsFormOptions():VmFormOptions {
         let ret = super.fieldsFormOptions;
@@ -41,14 +46,21 @@ export class VmView extends VmEntity<Sheet, SheetUI> {
             case '#': to = <><FA className="text-success" name="file-archive-o" /></>; break;
             default: to = <><FA className="text-muted" name="arrow-right" /> &nbsp; {state}</>; break;
         }
+        /*
         return <div className="row">
-            <div className="col-sm"><div className="pl-3 py-2">{action}</div></div>
+            <div className="col-sm"></div>
             <div className="col-sm"><div className="p-2">{to}</div></div>
             <div className="col-sm text-right"><div className="p-2"><Muted><EasyDate date={date} /></Muted></div></div>
         </div>;
+        */
+        return <LMR 
+            left={<div className="pl-3 py-2" style={leftFlowStyle}>{action}</div>}
+            right={<div className="p-2"><Muted><EasyDate date={date} /></Muted></div>}>
+            <div className="p-2">{to}</div>
+        </LMR>;
     }
 
-    protected view = () => {
+    protected sheetView = () => {
         let removed;
         if (this.state === '-')
             removed = <div className="mx-3 my-2" style={{color:'red'}}>本单据作废</div>;
@@ -56,7 +68,7 @@ export class VmView extends VmEntity<Sheet, SheetUI> {
             {removed}
             {this.vmForm.render()}
     
-            <List header={<Muted>流程</Muted>}
+            <List header={<Muted className="mx-3 my-1">流程</Muted>}
                 items={this.flows}
                 item={{render:this.flowRow}}/>
         </div>;

@@ -8,8 +8,9 @@ import { ArrFields, Field } from '../../entities';
 import { VmForm, FieldInputs } from './vmForm';
 //import { ArrBandUIX } from './formUIX';
 //import { VmApi } from '../vmApi';
-import { SubmitBandUI } from './formUI';
+import { SubmitBandUI } from '../formUI';
 import { VmBand } from './vmBand';
+import { observer } from 'mobx-react';
 //import { VmPage } from '../vmPage';
 
 export type ArrEditRow = (initValues:any, onRowChanged:(rowValues:any)=>void) => Promise<void>;
@@ -44,14 +45,14 @@ export class VmArr extends ViewModel {
         this.ownerForm = ownerForm;
         let {name, fields} = arr;
         this.name = name;
-        let {ui, res, readOnly, inputs} = ownerForm;
+        let {ui, res, readOnly, inputs, formValues} = ownerForm;
         let arrsRes = res.arrs;
         let arrRes = arrsRes !== undefined? arrsRes[name] : {};
         let {label, newSubmit, editSubmit} = arrRes;
         this.newSubmitCaption = newSubmit || ownerForm.arrNewCaption;
         this.editSubmitCaption = editSubmit || ownerForm.arrEditCaption;
         this.label = label || name;
-        let arrUI = ui && ui[name];
+        let arrUI = ui && ui.arrs && ui.arrs[name];
         this.rowContent = JSONContent;
         this.readOnly = readOnly;
         if (this.onEditRow === undefined) {
@@ -64,38 +65,12 @@ export class VmArr extends ViewModel {
                 submitCaption: 'submit',
                 arrNewCaption: undefined,
                 arrEditCaption: undefined,
-            }, this.onSubmit);
+            }, this.readOnly===true? undefined: this.onSubmit);
         }
         else {
             this.onEditRow = onEditRow;
         }
-        this.list = observable.array([], {deep:true});
-        /*
-        this.start = this.start.bind(this);
-        //this.vmApi = vmApi;
-        this.arr = arr;
-        this.arrBandUI = arrBandUI;
-        let {label, row, form} = arrBandUI;
-        this.row = row || RowContent;
-
-        //let bands = this.arrBandUI.bands.slice();
-        let submitBand:SubmitBandUI = {
-            type: 'submit',
-            content: '{save} 完成',                    // 显示在按钮上的文本
-        };
-        //bands.push(submitBand);
-        this.vmForm = new VmForm();
-        this.vmForm.init({
-            fields: arr.fields,
-            //vmApi: vmApi,
-            ui: {
-                bands: undefined, // bands,
-                className: undefined,
-            },
-            readOnly: this.readOnly,
-        });
-        this.vmForm.onSubmit = this.onSubmit;
-        */
+        this.list = formValues.values[name];
     }
 
     reset() {
@@ -103,27 +78,8 @@ export class VmArr extends ViewModel {
         this.list.clear();
     }
 
-    /*
-    afterEditRow = async (values:any):Promise<void> => {
-        nav.pop();
-        return;
-    }
-
-    async showRowPage(rowValues?: any) {
-        this.rowValues = rowValues;
-        if (rowValues === undefined)
-            this.vmForm.reset();
-        else
-            this.vmForm.setValues(rowValues);
-        if (this.onEditRow !== undefined)
-            await this.onEditRow(rowValues);
-        else
-            nav.push(<this.rowPage />);
-    }
-    */
-
     protected rowPage = () => {
-        return <Page header={this.label}>
+        return <Page header={this.label} back="close">
             {this.vmForm.render('p-3')}
         </Page>
     }
@@ -162,8 +118,10 @@ export class VmArr extends ViewModel {
     private editRow = async (rowValues:any): Promise<void> => {
         this.rowValues = rowValues;
         let {vmSubmit} = this.vmForm;
-        vmSubmit.caption = this.editSubmitCaption;
-        vmSubmit.className = 'btn btn-outline-success';
+        if (vmSubmit !== undefined) {
+            vmSubmit.caption = this.editSubmitCaption;
+            vmSubmit.className = 'btn btn-outline-success';
+        }
         await this.showRow(rowValues);
     }
     private addRow = async () => {
@@ -175,7 +133,7 @@ export class VmArr extends ViewModel {
         this.vmForm.reset();
     }
 
-    protected view = () => {
+    protected view = observer(() => {
         //let {label, list, renderItem, start, addClick, header, footer, readOnly} = vm;
         let button;
         if (this.readOnly === false) {
@@ -193,7 +151,7 @@ export class VmArr extends ViewModel {
             header={header}
             items={this.list} 
             item={{render: this.renderItem, onClick: this.editRow}} />;
-    }
+    });
 }
 /*
 const ArrList = ({vm}:{vm:VmArr}) => {

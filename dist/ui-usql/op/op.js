@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Page, meInFrame, nav } from "tonva-tools";
+import { Page, meInFrame } from "tonva-tools";
 import React from "react";
 import { List, Muted, LMR } from "tonva-react-form";
 import { Coordinator } from "../vm/VM";
@@ -14,6 +14,7 @@ import { CrApp } from '../vm/crApp';
 import { centerApi } from "../centerApi";
 import { entitiesRes } from '../res';
 import { VmSheet } from './vmSheet';
+// 单据跟操作的绑定设置
 export class OpCoordinator extends Coordinator {
     constructor() {
         super(...arguments);
@@ -22,7 +23,7 @@ export class OpCoordinator extends Coordinator {
             return React.createElement(LMR, { className: "px-3 py-2", right: discription && React.createElement(Muted, null, discription) }, name);
         };
         this.appClick = (app) => {
-            nav.push(React.createElement(this.appView, Object.assign({}, app)));
+            this.openPage(React.createElement(this.appView, Object.assign({}, app)));
         };
         this.appsView = () => React.createElement(Page, { header: "\u8BBE\u7F6E\u64CD\u4F5C\u6743\u9650" },
             React.createElement(List, { items: this.apps, item: { render: this.appRender, onClick: this.appClick } }));
@@ -61,8 +62,8 @@ export class OpCoordinator extends Coordinator {
             }
             this.showVm(VmSheet, { sheet: sheet, opTos: opTos });
         });
-        this.apiRender = (api, index) => {
-            let { name, tuids, actions, maps, books, queries, histories, sheets } = api;
+        this.usqRender = (usq, index) => {
+            let { name, tuids, actions, maps, books, queries, histories, sheets } = usq;
             let nameRender = this.nameRender;
             function headerCaption(caption) {
                 return React.createElement(Muted, { className: "px-3 pt-1 bg-light w-100" }, caption);
@@ -82,7 +83,7 @@ export class OpCoordinator extends Coordinator {
                 itemList(histories, 'history', this.historyClick),
                 itemList(sheets, 'sheet', this.sheetClick, this.sheetRender));
         };
-        this.appView = (app) => React.createElement(Page, { header: app.name + '操作权限' }, app.apis.map((v, index) => this.apiRender(v, index)));
+        this.appView = (app) => React.createElement(Page, { header: app.name + '操作权限' }, app.usqs.map((v, index) => this.usqRender(v, index)));
     }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -90,7 +91,7 @@ export class OpCoordinator extends Coordinator {
             this.unitxUsq = this.crApp.getCrUsq('$$$/$unitx');
             yield this.buildPosts();
             yield this.buildAppsApis();
-            nav.push(React.createElement(this.appsView, null));
+            this.openPage(React.createElement(this.appsView, null));
         });
     }
     buildAppsApis() {
@@ -98,15 +99,15 @@ export class OpCoordinator extends Coordinator {
             let unit = meInFrame.unit;
             let ret = yield centerApi.get('/unit/apps-apis', { unit: unit });
             this.apps = ret[0];
-            let apis = ret[1];
+            let usqs = ret[1];
             for (let app of this.apps) {
-                app.apis = [];
+                app.usqs = [];
             }
-            for (let api of apis) {
+            for (let api of usqs) {
                 let app = this.apps.find(v => v.id === api.app);
                 if (app === undefined)
                     continue;
-                app.apis.push(api);
+                app.usqs.push(api);
                 this.setApiEntities(api);
             }
         });
@@ -163,8 +164,8 @@ export class OpCoordinator extends Coordinator {
             }
         });
     }
-    setApiEntities(api) {
-        let entities = api.entities;
+    setApiEntities(usq) {
+        let entities = usq.entities;
         if (entities === null)
             return;
         let lns = entities.split('\n');
@@ -173,25 +174,25 @@ export class OpCoordinator extends Coordinator {
         for (let i = 0; i < len;) {
             switch (lns[i]) {
                 case 'tuid':
-                    p = this.setNames(api.tuids = [], lns, i);
+                    p = this.setNames(usq.tuids = [], lns, i);
                     break;
                 case 'map':
-                    p = this.setNames(api.maps = [], lns, i);
+                    p = this.setNames(usq.maps = [], lns, i);
                     break;
                 case 'book':
-                    p = this.setNames(api.books = [], lns, i);
+                    p = this.setNames(usq.books = [], lns, i);
                     break;
                 case 'history':
-                    p = this.setNames(api.histories = [], lns, i);
+                    p = this.setNames(usq.histories = [], lns, i);
                     break;
                 case 'query':
-                    p = this.setNames(api.queries = [], lns, i);
+                    p = this.setNames(usq.queries = [], lns, i);
                     break;
                 case 'action':
-                    p = this.setNames(api.actions = [], lns, i);
+                    p = this.setNames(usq.actions = [], lns, i);
                     break;
                 case 'sheet':
-                    p = this.setSheets(api.sheets = [], lns, i);
+                    p = this.setSheets(usq.sheets = [], lns, i, usq);
                     break;
                 default:
                     alert('unknown entity type: ' + lns[i]);
@@ -212,7 +213,7 @@ export class OpCoordinator extends Coordinator {
         }
         return i;
     }
-    setSheets(sheets, lines, p) {
+    setSheets(sheets, lines, p, usq) {
         let len = lines.length;
         let i = p + 1;
         for (; i < len; i++) {
@@ -222,6 +223,7 @@ export class OpCoordinator extends Coordinator {
                 let name = parts[0];
                 parts[0] = '$';
                 let sheet = {
+                    usq: usq,
                     name: name,
                     states: parts,
                 };
@@ -232,12 +234,13 @@ export class OpCoordinator extends Coordinator {
         }
         return i;
     }
-    saveSheetStatePosts(sheetName, stateName, toArr) {
+    saveSheetStatePosts(sheet, stateName, toArr) {
         return __awaiter(this, void 0, void 0, function* () {
             let actionSaveEntityOpPost = this.unitxUsq.crFromName('action', 'saveentityoppost');
-            //let ret:any[][] = await queryAllTeams.entity.query(undefined);
+            let { usq, name } = sheet;
             yield actionSaveEntityOpPost.submit({
-                entityName: sheetName,
+                usq: usq.id,
+                entityName: name,
                 opName: stateName,
                 posts: toArr
             });

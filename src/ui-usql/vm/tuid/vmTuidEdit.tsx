@@ -4,7 +4,7 @@ import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page, nav } from 'tonva-tools';
 import { VmForm } from '../form';
-import { Vm, VmEntity } from '../VM';
+import { VmPage, VmEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
 import { TuidMain, Tuid } from '../../entities';
 
@@ -20,7 +20,7 @@ export class VmTuidEdit extends VmEntity<Tuid, TuidUI> {
         if (param !== undefined) {
             this.id = param.id;
         }
-        this.open(this.editView);
+        this.openPage(this.editView);
     }
 
     protected get editView() {
@@ -42,12 +42,11 @@ export class VmTuidEdit extends VmEntity<Tuid, TuidUI> {
 
     protected next = async () => {
         this.vmForm.reset();
-        nav.pop();
-        //this.popPage();
+        this.closePage();
     }
 
     protected finish = () => {
-        nav.pop(2);
+        this.closePage(2);
         this.event('edit-end');
     }
 
@@ -68,7 +67,7 @@ export class VmTuidEdit extends VmEntity<Tuid, TuidUI> {
             }
             return;
         }
-        nav.push(<Page header={this.label + '提交成功'} back="none">
+        this.openPageElement(<Page header={this.label + '提交成功'} back="none">
             <div className='m-3'>
                 <span className="text-success">
                     <FA name='check-circle' size='lg' /> 成功提交！
@@ -79,6 +78,8 @@ export class VmTuidEdit extends VmEntity<Tuid, TuidUI> {
                 </div>
             </div>
         </Page>);
+
+        this.event('item-changed', {id: this.id, values: values});
         return;
     }
 

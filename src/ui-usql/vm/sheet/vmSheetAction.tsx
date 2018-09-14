@@ -1,32 +1,36 @@
-import * as React from 'react';
+import React from 'react';
+import classNames from 'classnames';
 import { Button } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
-import { VmView } from './vmView';
+import { VmSheetView } from './vmView';
 import { VmEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';
 
-export class VmSheetAction extends VmEntity<Sheet, SheetUI> {
+export class VmSheetAction extends VmSheetView { //} VmEntity<Sheet, SheetUI> {
     protected coordinator: CrSheet;
     brief: any;
-    sheetData: any;
-    flows: any[];
-    vmView: VmView;
+    //sheetData: any;
+    //flows: any[];
+    //vmView: VmView;
 
     async showEntry(sheetId:number) {
-        let data = await this.entity.getSheet(sheetId);
-        let {brief, data:sheetData, flows} = data;
+        let {brief, data, flows} = await this.coordinator.getSheetData(sheetId);
         this.brief = brief;
-        this.sheetData = sheetData;
+        //this.sheetData = sheetData;
         this.flows = flows;
-        this.vmView = new VmView(this.coordinator, this.sheetData, this.brief.state, flows);
+        this.data = data;
+        this.state = this.brief.state;
+        //this.vmView = new VmView(this.coordinator, this.sheetData, this.brief.state, flows);
+        this.vmForm = this.createForm(undefined, this.data);
+        this.openPage(this.page);
     }
 
     actionClick = async (action:any) => {
         let {id, flow, state} = this.brief;
-        let res = await this.entity.action(id, flow, state, action.name);
+        let res = await this.coordinator.action(id, flow, state, action.name);
         alert(JSON.stringify(res));
-        await nav.back();
+        await this.backPage();
     }
 
     deleteClick = async () => {
@@ -37,7 +41,7 @@ export class VmSheetAction extends VmEntity<Sheet, SheetUI> {
         alert('修改单据：程序正在设计中');
     }
 
-    protected view = () => {
+    protected page = () => {
         let state = this.brief.state;
         let stateLabel = this.coordinator.getStateLabel(state);
         let {states} = this.entity;
@@ -59,7 +63,7 @@ export class VmSheetAction extends VmEntity<Sheet, SheetUI> {
                     cn = 'text-success';
                     break;
             }
-            actionButtons = <div className={cn}>[{text}]</div>;
+            actionButtons = <div className={classNames(cn)}>[{text}]</div>;
         }
         else {
             actionButtons = <div className="flex-grow-1">{s.actions.map((v,index) => 
@@ -80,12 +84,12 @@ export class VmSheetAction extends VmEntity<Sheet, SheetUI> {
             }
         };
         return <Page header={this.label + ':' + stateLabel + '-' + this.brief.no}>
-            <div className="my-3">
-                <div className="d-flex mx-3 mb-3">
+            <div className="mb-2">
+                <div className="d-flex px-3 py-2 border-bottom bg-light">
                     {actionButtons}
                     {startButtons}
                 </div>
-                {this.vmView.render()}
+                <this.sheetView />
             </div>
         </Page>;
     }

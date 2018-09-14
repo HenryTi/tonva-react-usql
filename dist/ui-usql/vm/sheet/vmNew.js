@@ -13,16 +13,16 @@ export class VmSheetNew extends VmEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.save(this.label, values);
+            let ret = yield this.coordinator.saveSheet(values);
             alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
-            this.close();
+            this.closePage();
         });
         this.view = () => React.createElement(Page, { header: this.label }, this.vmForm.render());
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vmForm = this.createForm(this.onSubmit, param);
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
 }

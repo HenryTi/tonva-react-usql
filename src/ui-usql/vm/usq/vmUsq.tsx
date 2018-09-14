@@ -33,7 +33,7 @@ export class VmUsq {
     }
 
     protected view = () => {
-        let {res, api} = this.crUsq;
+        let {res, usq} = this.crUsq;
         let linkItem = {
             render: (vmLink:VmEntityLink, index:number):JSX.Element => vmLink.render(), 
             onClick: undefined, //(vmLink:VmLink) => vmLink.onClick() 
@@ -70,7 +70,7 @@ export class VmUsq {
             }
         ];
         return <>
-            <div className="px-3 py-1 small">{res.usq || api}</div>
+            <div className="px-3 py-1 small">{res.usq || usq}</div>
             {lists.map(({cn, header, items},index) => items.length > 0 && <List
                 key={index}
                 className={cn}

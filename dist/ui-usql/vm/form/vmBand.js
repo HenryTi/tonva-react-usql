@@ -7,8 +7,8 @@ export class VmBand {
     }
     render() {
         return React.createElement("div", { key: this.key, className: 'form-group row' },
-            React.createElement("label", { className: 'col-sm-2 col-form-label' }, this.label),
-            React.createElement("div", { className: "col-sm-10 d-flex" }, this.renderContent()));
+            React.createElement("label", { className: 'col-sm-2 col-form-label text-sm-right' }, this.label),
+            React.createElement("div", { className: "col-sm-10" }, this.renderContent()));
     }
     get key() { return this.label; }
     getVmFields() { return; }

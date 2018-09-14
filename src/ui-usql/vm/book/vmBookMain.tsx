@@ -8,7 +8,7 @@ export class VmBookMain extends VmEntity<Book, BookUI> {
     protected coordinator: CrBook;
 
     async showEntry(param?:any):Promise<void> {
-        this.open(this.view);
+        this.openPage(this.view);
     }
 
     protected view = () => <Page header={this.label}>

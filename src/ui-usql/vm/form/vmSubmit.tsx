@@ -16,9 +16,9 @@ export class VmSubmit extends ViewModel {
     @observable caption: string;
     @observable className: string;
     protected view = observer(() => {
-        let {onSubmit, isOk} = this.vmForm;
+        let {onSubmit, isOk, formValues} = this.vmForm;
         return <button type="button" 
-            onClick={onSubmit} 
+            onClick={() => onSubmit(formValues.values)}
             className={this.className}
             disabled={isOk === false}>
             {this.caption}

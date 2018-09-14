@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
-import {Api, ApiBase} from 'tonva-tools';
-
+import {UsqApi, ApiBase} from 'tonva-tools';
+/*
 export class UsqlApi {
-    private api: Api;
+    private api: UsqApi;
     private access:string[];
 
-    constructor(api: Api, access:string[]) {
+    constructor(api: UsqApi, access:string[]) {
         this.api = api;
         this.access = access;
     }
@@ -38,9 +38,10 @@ export class UsqlApi {
         return await this.api.post('tuid/' + name, params);
     }
 
-    async tuidSearch(name:string, arr:string, key:string, pageStart:string|number, pageSize:number):Promise<any> {
+    async tuidSearch(name:string, arr:string, owner:number, key:string, pageStart:string|number, pageSize:number):Promise<any> {
         let ret = await this.api.post('tuids/' + name, {
             arr: arr,
+            owner: owner,
             key: key,
             pageStart: pageStart,
             pageSize: pageSize
@@ -144,24 +145,9 @@ export class UsqlApi {
         let ret = await this.api.post('query/' + name, params);
         return ret;
     }
-/*
-    async history(name:string, pageStart:any, pageSize:number, params:any):Promise<string> {
-        let p = _.clone(params);
-        p['$pageStart'] = pageStart;
-        p['$pageSize'] = pageSize;
-        let ret = await this.post('history/' + name, p);
-        return ret;
-    }
 
-    async book(name:string, pageStart:any, pageSize:number, params:any):Promise<string> {
-        let p = _.clone(params);
-        p['$pageStart'] = pageStart;
-        p['$pageSize'] = pageSize;
-        let ret = await this.post('history/' + name, p);
-        return ret;
-    }
-*/
     async user():Promise<any> {
         return await this.api.get('user', undefined);
     }
 }
+*/

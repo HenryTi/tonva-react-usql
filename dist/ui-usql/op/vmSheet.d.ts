@@ -1,7 +1,7 @@
 import { OpCoordinator } from './op';
-import { Vm } from '../vm/VM';
+import { VmPage } from '../vm/VM';
 import { Sheet, To } from './model';
-export declare class VmSheet extends Vm {
+export declare class VmSheet extends VmPage {
     protected coordinator: OpCoordinator;
     private sheet;
     private states;

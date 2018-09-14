@@ -9,18 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const tab = '\t';
 const ln = '\n';
 export class Entity {
+    get sName() { return this.jName || this.name; }
     constructor(entities, name, typeId) {
         this.entities = entities;
         this.name = name;
         this.typeId = typeId;
         this.sys = this.name.indexOf('$') >= 0;
     }
-    get tvApi() { return this.entities.tvApi; }
+    get tvApi() { return this.entities.usqApi; }
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.schema !== undefined)
                 return;
-            let schema = yield this.entities.tvApi.schema(this.name);
+            let schema = yield this.entities.usqApi.schema(this.name);
             this.setSchema(schema);
         });
     }
@@ -30,7 +31,9 @@ export class Entity {
         if (this.schema !== undefined)
             return;
         this.schema = schema;
-        let { fields, arrs, returns } = schema;
+        let { name, fields, arrs, returns } = schema;
+        if (name !== this.name)
+            this.jName = name;
         this.entities.buildFieldTuid(this.fields = fields);
         this.entities.buildArrFieldsTuid(this.arrFields = arrs);
         this.entities.buildArrFieldsTuid(this.returns = returns);
@@ -38,71 +41,12 @@ export class Entity {
         //this.newArr = this.buildArrCreater(arrs);
         //this.newRet = this.buildArrCreater(returns);
     }
-    buildCreater(fields) {
-        let creater = function () { };
-        let prototype = creater.prototype;
-        for (let f of fields) {
-            let { name, _tuid } = f;
-            if (_tuid === undefined)
-                continue;
-            let nTuid = '_$' + _tuid.name;
-            if (prototype.hasOwnProperty(nTuid) === false) {
-                Object.defineProperty(prototype, nTuid, {
-                    value: _tuid,
-                    writable: false,
-                    enumerable: false,
-                });
-            }
-            prototype.toJSON = function () {
-                let ret = {};
-                for (let i in this) {
-                    if (i.startsWith('_$') === true)
-                        continue;
-                    ret[i] = this[i];
-                }
-                return ret;
-            };
-            (function (fn, nt) {
-                let $fn = '$' + fn;
-                Object.defineProperty(prototype, $fn, {
-                    enumerable: true,
-                    get: function () {
-                        let ret = this[fn];
-                        console.log('prop ' + fn + ' get ');
-                        return this[nt].valueFromId(ret);
-                    },
-                    set: function (v) {
-                        this[fn] = v;
-                    }
-                });
-            })(name, nTuid);
-        }
-        return creater;
-    }
-    buildArrCreater(arrFields) {
-        if (arrFields === undefined)
-            return;
-        let ret = {};
-        for (let e of arrFields) {
-            let { name, fields } = e;
-            ret[name] = this.buildCreater(fields);
-        }
-        return ret;
-    }
-    removeRecursive(parent, obj) {
-        if (typeof obj !== 'object')
-            return obj;
-        let ret = {};
-        parent.push(obj);
-        for (let i in obj) {
-            ret[i] = this.removeRecursive(parent, obj[i]);
-        }
-        parent.pop();
-        return ret;
-    }
     schemaStringify() {
-        let obj = this.removeRecursive([], this.schema);
-        return JSON.stringify(obj, undefined, 4);
+        return JSON.stringify(this.schema, (key, value) => {
+            if (key === '_tuid')
+                return undefined;
+            return value;
+        }, 4);
     }
     getTuid(field) {
         let { _tuid, tuid } = field;
@@ -174,8 +118,10 @@ export class Entity {
         }
     }
     packRow(result, fields, data) {
-        let ret = '';
         let len = fields.length;
+        if (len === 0)
+            return;
+        let ret = '';
         ret += this.escape(data[fields[0].name]);
         for (let i = 1; i < len; i++) {
             let f = fields[i];

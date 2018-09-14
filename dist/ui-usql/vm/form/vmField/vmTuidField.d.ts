@@ -1,6 +1,7 @@
+/// <reference types="react" />
 import { Field, Tuid } from '../../../entities';
 import { VmField } from "./vmField";
-import { FieldUI } from '../formUI';
+import { FieldUI } from '../../formUI';
 import { VmForm, FieldInput } from '../vmForm';
 export declare class VmTuidField extends VmField {
     protected vmForm: VmForm;

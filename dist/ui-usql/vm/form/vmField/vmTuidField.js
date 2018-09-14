@@ -17,10 +17,11 @@ const buttonStyle = {
 };
 export class VmTuidField extends VmField {
     constructor(field, fieldUI, vmForm) {
-        super(field, fieldUI, vmForm.formValues, vmForm.readOnly);
+        super(field, fieldUI, vmForm.formValues, vmForm.compute, vmForm.readOnly);
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
             if (this.readOnly === true) {
-                alert('await super.onClick();');
+                //alert('await super.onClick();');
+                yield this.tuid.showInfo(this.value.id);
                 return;
             }
             let id;
@@ -37,13 +38,18 @@ export class VmTuidField extends VmField {
             let content;
             if (this.value === null)
                 content = React.createElement(React.Fragment, null, this.input.nullCaption);
-            else {
+            else if (typeof this.value === 'object') {
                 //this.tuid.useId(this.value);
                 //let v = this.tuid.valueFromId(this.value);
                 //v.templet = this.input.content;
                 //content = <this.input.content {...v} />;
                 //content = v.content;
-                content = this.tuid.createID(this.value).content();
+                // content = this.tuid.createID(this.value).content();
+                content = this.value.content();
+            }
+            else {
+                let idBox = this.tuid.createID(this.value);
+                content = idBox.content();
             }
             if (this.readOnly === true) {
                 return React.createElement("div", { className: "form-control form-control-plaintext border border-info rounded bg-light cursor-pointer", onClick: this.onClick }, content);

@@ -3,7 +3,8 @@ import { Entity } from './entity';
 import { Entities } from './entities';
 export declare class IdBox {
     id: number;
-    content: (templet?: React.StatelessComponent) => JSX.Element;
+    obj?: any;
+    content: (templet?: React.StatelessComponent<any>) => JSX.Element;
 }
 export declare abstract class Tuid extends Entity {
     private idCreater;
@@ -25,17 +26,21 @@ export declare abstract class Tuid extends Entity {
     resetCache(id: number): void;
     useId(id: number, defer?: boolean): void;
     proxied(name: string, id: number): Promise<any>;
-    private cacheValue;
+    cacheValue(val: any): boolean;
     protected afterCacheId(tuidValue: any): void;
     cacheIds(): Promise<void>;
     load(id: number): Promise<any>;
+    private cacheTuidValues;
+    private cacheFieldsInValue;
     save(id: number, props: any): Promise<any>;
     search(key: string, pageStart: string | number, pageSize: number): Promise<any>;
+    searchArr(owner: number, key: string, pageStart: string | number, pageSize: number): Promise<any>;
     loadArr(arr: string, owner: number, id: number): Promise<any>;
     saveArr(arr: string, owner: number, id: number, props: any): Promise<any>;
     posArr(arr: string, owner: number, id: number, order: number): Promise<any>;
     bindSlaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;
     bindSlaves(slave: string, masterId: number, order: number, pageSize: any): Promise<any[]>;
+    showInfo(id: number): Promise<void>;
 }
 export declare class TuidMain extends Tuid {
     readonly Main: this;

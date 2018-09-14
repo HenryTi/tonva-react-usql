@@ -6,19 +6,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as React from 'react';
+import React from 'react';
+import classNames from 'classnames';
 import { Button } from 'reactstrap';
-import { nav, Page } from 'tonva-tools';
-import { VmView } from './vmView';
-import { VmEntity } from '../VM';
-export class VmSheetAction extends VmEntity {
+import { Page } from 'tonva-tools';
+import { VmSheetView } from './vmView';
+export class VmSheetAction extends VmSheetView {
     constructor() {
         super(...arguments);
         this.actionClick = (action) => __awaiter(this, void 0, void 0, function* () {
             let { id, flow, state } = this.brief;
-            let res = yield this.entity.action(id, flow, state, action.name);
+            let res = yield this.coordinator.action(id, flow, state, action.name);
             alert(JSON.stringify(res));
-            yield nav.back();
+            yield this.backPage();
         });
         this.deleteClick = () => __awaiter(this, void 0, void 0, function* () {
             alert('单据作废：程序正在设计中');
@@ -26,7 +26,7 @@ export class VmSheetAction extends VmEntity {
         this.editClick = () => __awaiter(this, void 0, void 0, function* () {
             alert('修改单据：程序正在设计中');
         });
-        this.view = () => {
+        this.page = () => {
             let state = this.brief.state;
             let stateLabel = this.coordinator.getStateLabel(state);
             let { states } = this.entity;
@@ -48,7 +48,7 @@ export class VmSheetAction extends VmEntity {
                         cn = 'text-success';
                         break;
                 }
-                actionButtons = React.createElement("div", { className: cn },
+                actionButtons = React.createElement("div", { className: classNames(cn) },
                     "[",
                     text,
                     "]");
@@ -63,21 +63,27 @@ export class VmSheetAction extends VmEntity {
             }
             ;
             return React.createElement(Page, { header: this.label + ':' + stateLabel + '-' + this.brief.no },
-                React.createElement("div", { className: "my-3" },
-                    React.createElement("div", { className: "d-flex mx-3 mb-3" },
+                React.createElement("div", { className: "mb-2" },
+                    React.createElement("div", { className: "d-flex px-3 py-2 border-bottom bg-light" },
                         actionButtons,
                         startButtons),
-                    this.vmView.render()));
+                    React.createElement(this.sheetView, null)));
         };
     }
+    //sheetData: any;
+    //flows: any[];
+    //vmView: VmView;
     showEntry(sheetId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let data = yield this.entity.getSheet(sheetId);
-            let { brief, data: sheetData, flows } = data;
+            let { brief, data, flows } = yield this.coordinator.getSheetData(sheetId);
             this.brief = brief;
-            this.sheetData = sheetData;
+            //this.sheetData = sheetData;
             this.flows = flows;
-            this.vmView = new VmView(this.coordinator, this.sheetData, this.brief.state, flows);
+            this.data = data;
+            this.state = this.brief.state;
+            //this.vmView = new VmView(this.coordinator, this.sheetData, this.brief.state, flows);
+            this.vmForm = this.createForm(undefined, this.data);
+            this.openPage(this.page);
         });
     }
 }

@@ -1,3 +1,4 @@
+/// <reference types="react" />
 export declare type FieldUIType = 'tuid' | 'query' | 'string' | 'int' | 'dec' | 'text' | 'check' | 'select' | 'radio';
 export interface FormUI {
     bandUIs: BandUI[];

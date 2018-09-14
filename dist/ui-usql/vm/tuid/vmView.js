@@ -17,17 +17,17 @@ export class VmTuidView extends VmEntity {
         super(...arguments);
         this.next = () => __awaiter(this, void 0, void 0, function* () {
             this.vmForm.reset();
-            this.close();
+            this.closePage();
         });
         this.finish = () => {
-            this.close(2);
+            this.closePage(2);
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.entity.save(this.id, this.vmForm.values);
             if (ret) {
                 alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
             }
-            this.open(() => React.createElement(Page, { header: this.label + '提交成功', back: "none" },
+            this.openPage(() => React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },
                     React.createElement("span", { className: "text-success" },
                         React.createElement(FA, { name: 'check-circle', size: 'lg' }),
@@ -42,11 +42,11 @@ export class VmTuidView extends VmEntity {
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = yield this.entity.valueFromId(param);
-            this.vmForm = this.createForm(data);
+            this.vmForm = this.createForm(undefined, data);
             //this.vmForm.values = data;
             //this.vmForm.readOnly = true;
             //this.vmForm.onSubmit = this.onSubmit;
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
     loadId(id) {

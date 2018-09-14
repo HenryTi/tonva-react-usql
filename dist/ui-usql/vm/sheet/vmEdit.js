@@ -20,8 +20,8 @@ export class VmSheetEdit extends VmEntity {
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createForm(param);
-            this.open(this.view);
+            this.vmForm = this.createForm(this.onSubmit, param);
+            this.openPage(this.view);
         });
     }
 }

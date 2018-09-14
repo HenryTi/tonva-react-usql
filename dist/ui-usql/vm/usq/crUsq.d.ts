@@ -2,13 +2,12 @@ import * as React from 'react';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
 import { VmEntityLink } from '../link';
 import { CrBook } from '../book';
-import { CrSheet } from '../sheet';
+import { CrSheet, SheetUI } from '../sheet';
 import { CrAction } from '../action';
 import { QueryUI, CrQuery, CrQuerySelect } from '../query';
-import { CrTuidMain, TuidUI, CrTuidMainSelect } from '../tuid';
+import { CrTuidMain, TuidUI, CrTuidMainSelect, CrTuidInfo } from '../tuid';
 import { MapUI, CrMap } from '../map';
-import { CrApp } from '../crApp';
-import { CrEntity, EntityUI } from '../VM';
+import { CrEntity, EntityUI, Coordinator } from '../VM';
 import { VmUsq } from './vmUsq';
 export declare type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
 export interface UsqUI {
@@ -19,24 +18,27 @@ export interface UsqUI {
     tuid?: {
         [name: string]: TuidUI;
     };
+    sheet?: {
+        [name: string]: SheetUI;
+    };
     map?: {
         [name: string]: MapUI;
     };
     query?: {
         [name: string]: QueryUI;
     };
-    res: any;
+    res?: any;
 }
-export declare class CrUsq implements Usq {
-    vmApp: CrApp;
+export declare class CrUsq extends Coordinator implements Usq {
     private access;
     private ui;
     private CrTuidMain;
     private CrQuery;
     private CrQuerySelect;
     private CrMap;
-    constructor(vmApp: CrApp, apiId: number, api: string, access: string, ui: UsqUI);
-    api: string;
+    constructor(usq: string, appId: number, usqId: number, access: string, ui: UsqUI);
+    protected internalStart(): Promise<void>;
+    usq: string;
     id: number;
     res: any;
     entities: Entities;
@@ -54,6 +56,7 @@ export declare class CrUsq implements Usq {
     readonly vmTuidLinks: VmEntityLink[];
     crTuidMain(tuid: TuidMain): CrTuidMain;
     crTuidSelect(tuid: TuidMain): CrTuidMainSelect;
+    crTuidInfo(tuid: Tuid): CrTuidInfo;
     crSheet(sheet: Sheet): CrSheet;
     readonly vmSheetLinks: VmEntityLink[];
     crAction(action: Action): CrAction;
@@ -66,6 +69,7 @@ export declare class CrUsq implements Usq {
     crMap(map: Map): CrMap;
     readonly vmMapLinks: VmEntityLink[];
     getTuidContent(tuid: Tuid): React.StatelessComponent<any>;
+    showTuid(tuid: Tuid, id: number): Promise<void>;
     protected readonly VmUsq: typeof VmUsq;
     render(): JSX.Element;
 }

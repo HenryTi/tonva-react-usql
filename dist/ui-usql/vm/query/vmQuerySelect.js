@@ -35,7 +35,7 @@ export class VmQuerySelect extends VmEntity {
             this.entity = this.coordinator.entity;
             this.pagedItems = new QueryPagedItems(this.entity);
             yield this.onSearch(param);
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
     callOnSelected(item) {
@@ -46,7 +46,7 @@ export class VmQuerySelect extends VmEntity {
         }
         this.onSelected(item);
         */
-        this.close();
+        this.closePage();
         this.return(item);
     }
 }

@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { Book } from '../../entities';
 import { VmEntity } from '../VM';
 import { CrBook, BookUI } from './crBook';

@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { ViewModel } from "../viewModel";
 import { VmForm } from './vmForm';
 export declare class VmSubmit extends ViewModel {

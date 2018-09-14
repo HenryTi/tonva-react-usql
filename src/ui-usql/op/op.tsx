@@ -2,16 +2,17 @@ import { Page, meInFrame, nav } from "tonva-tools";
 import React from "react";
 import { Button } from "reactstrap";
 import { List, Muted, LMR, FA } from "tonva-react-form";
-import { Coordinator, Vm } from "../vm/VM";
+import { Coordinator, VmPage } from "../vm/VM";
 import { CrApp } from '../vm/crApp';
 import { centerApi } from "../centerApi";
 import { entitiesRes } from '../res';
 import { VmSheet } from './vmSheet';
 import { CrQuery, CrUsq } from "../vm";
-import { Organization, Team, Section, Post, Sheet, App, Api, To } from "./model";
+import { Organization, Team, Section, Post, Sheet, App, Usq, To } from "./model";
 import { observable } from "mobx";
 import { CrAction } from "../vm/action";
 
+// 单据跟操作的绑定设置
 export class OpCoordinator extends Coordinator {
     private crApp: CrApp;
     private unitxUsq: CrUsq;
@@ -30,22 +31,22 @@ export class OpCoordinator extends Coordinator {
         this.unitxUsq = this.crApp.getCrUsq('$$$/$unitx');
         await this.buildPosts();
         await this.buildAppsApis();
-        nav.push(<this.appsView />);
+        this.openPage(<this.appsView />);
     }
 
     private async buildAppsApis() {
         let unit = meInFrame.unit;
         let ret:any[][] = await centerApi.get('/unit/apps-apis', {unit: unit});
         this.apps = ret[0];
-        let apis: Api[] = ret[1];
+        let usqs: Usq[] = ret[1];
 
         for (let app of this.apps) {
-            app.apis = [];
+            app.usqs = [];
         }
-        for (let api of apis) {
+        for (let api of usqs) {
             let app = this.apps.find(v => v.id === api.app);
             if (app === undefined) continue;
-            app.apis.push(api);
+            app.usqs.push(api);
             this.setApiEntities(api);
         }
     }
@@ -100,21 +101,21 @@ export class OpCoordinator extends Coordinator {
         }
     }
 
-    private setApiEntities(api:Api) {
-        let entities = api.entities;
+    private setApiEntities(usq:Usq) {
+        let entities = usq.entities;
         if (entities === null) return;
         let lns = entities.split('\n');
         let len = lns.length;
         let p:number;
         for (let i=0; i<len;) {
             switch (lns[i]) {
-                case 'tuid': p = this.setNames(api.tuids = [], lns, i); break;
-                case 'map': p = this.setNames(api.maps = [], lns, i); break;
-                case 'book': p = this.setNames(api.books = [], lns, i); break;
-                case 'history': p = this.setNames(api.histories = [], lns, i); break;
-                case 'query': p = this.setNames(api.queries = [], lns, i); break;
-                case 'action': p = this.setNames(api.actions = [], lns, i); break;
-                case 'sheet': p = this.setSheets(api.sheets = [], lns, i); break;
+                case 'tuid': p = this.setNames(usq.tuids = [], lns, i); break;
+                case 'map': p = this.setNames(usq.maps = [], lns, i); break;
+                case 'book': p = this.setNames(usq.books = [], lns, i); break;
+                case 'history': p = this.setNames(usq.histories = [], lns, i); break;
+                case 'query': p = this.setNames(usq.queries = [], lns, i); break;
+                case 'action': p = this.setNames(usq.actions = [], lns, i); break;
+                case 'sheet': p = this.setSheets(usq.sheets = [], lns, i, usq); break;
                 default:
                     alert('unknown entity type: ' + lns[i]);
                     return;
@@ -134,7 +135,7 @@ export class OpCoordinator extends Coordinator {
         return i;
     }
 
-    private setSheets(sheets:Sheet[], lines:string[], p:number):number {
+    private setSheets(sheets:Sheet[], lines:string[], p:number, usq:Usq):number {
         let len = lines.length;
         let i = p+1;
         for (; i<len; i++) {
@@ -144,6 +145,7 @@ export class OpCoordinator extends Coordinator {
                 let name = parts[0];
                 parts[0] = '$';
                 let sheet:Sheet = {
+                    usq: usq,
                     name: name,
                     states: parts,
                 }
@@ -154,11 +156,12 @@ export class OpCoordinator extends Coordinator {
         return i;
     }
 
-    async saveSheetStatePosts(sheetName:string, stateName:string, toArr:{post:number, team:number, section:number}[]) {
+    async saveSheetStatePosts(sheet:Sheet, stateName:string, toArr:{post:number, team:number, section:number}[]) {
         let actionSaveEntityOpPost = this.unitxUsq.crFromName('action', 'saveentityoppost') as CrAction;
-        //let ret:any[][] = await queryAllTeams.entity.query(undefined);
+        let {usq, name} = sheet;
         await actionSaveEntityOpPost.submit({
-            entityName: sheetName,
+            usq: usq.id,
+            entityName: name,
             opName: stateName,
             posts: toArr
         });
@@ -172,7 +175,7 @@ export class OpCoordinator extends Coordinator {
     }
 
     private appClick = (app:App) => {
-        nav.push(<this.appView {...app} />)
+        this.openPage(<this.appView {...app} />)
     }
 
     private appsView = () => <Page header="设置操作权限">
@@ -222,8 +225,8 @@ export class OpCoordinator extends Coordinator {
         }
         this.showVm(VmSheet, {sheet:sheet, opTos:opTos});
     }
-    private apiRender = (api:Api, index:number) => {
-        let {name, tuids, actions, maps, books, queries, histories, sheets} = api;
+    private usqRender = (usq:Usq, index:number) => {
+        let {name, tuids, actions, maps, books, queries, histories, sheets} = usq;
         let nameRender = this.nameRender;
         function headerCaption(caption:string):JSX.Element {
             return <Muted className="px-3 pt-1 bg-light w-100">{caption}</Muted>
@@ -250,7 +253,7 @@ export class OpCoordinator extends Coordinator {
 
     private appView = (app:App) => <Page header={app.name + '操作权限'}>
         {
-            app.apis.map((v, index) => this.apiRender(v, index))
+            app.usqs.map((v, index) => this.usqRender(v, index))
         }
     </Page>;
 }

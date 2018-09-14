@@ -6,15 +6,13 @@ const ln = '\n';
 
 export abstract class Entity {
     protected entities: Entities;
-    private schema: any;
+    protected schema: any;
+    private jName: string;
     sys?: boolean;
     readonly name: string;
     readonly typeId: number;
     abstract get typeName(): string;
-    /*private newMain: ()=>void;
-    private newArr:{[name:string]: ()=>void};
-    private newRet:{[name:string]: ()=>void};
-    */
+    get sName():string {return this.jName || this.name}
     fields: Field[];
     arrFields: ArrFields[];
     returns: ArrFields[];
@@ -28,11 +26,11 @@ export abstract class Entity {
 
     public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
-    protected get tvApi() {return this.entities.tvApi;}
+    protected get tvApi() {return this.entities.usqApi;}
 
     public async loadSchema():Promise<void> {
         if (this.schema !== undefined) return;
-        let schema = await this.entities.tvApi.schema(this.name);
+        let schema = await this.entities.usqApi.schema(this.name);
         this.setSchema(schema);
     }
 
@@ -40,7 +38,8 @@ export abstract class Entity {
         if (schema === undefined) return;
         if (this.schema !== undefined) return;
         this.schema = schema;
-        let {fields, arrs, returns} = schema;
+        let {name, fields, arrs, returns} = schema;
+        if (name !== this.name) this.jName = name;
         this.entities.buildFieldTuid(this.fields = fields);
         this.entities.buildArrFieldsTuid(this.arrFields = arrs);
         this.entities.buildArrFieldsTuid(this.returns = returns);
@@ -48,68 +47,12 @@ export abstract class Entity {
         //this.newArr = this.buildArrCreater(arrs);
         //this.newRet = this.buildArrCreater(returns);
     }
-    private buildCreater(fields:Field[]):()=>void {
-        let creater = function():void {};
-        let prototype = creater.prototype;
-        for (let f of fields) {
-            let {name, _tuid} = f;
-            if (_tuid === undefined) continue;
-            let nTuid = '_$' + _tuid.name;
-            if (prototype.hasOwnProperty(nTuid) === false) {
-                Object.defineProperty(prototype, nTuid, {
-                    value: _tuid,
-                    writable: false,
-                    enumerable: false,
-                });
-            }
-            prototype.toJSON = function() {
-                let ret = {} as any;
-                for (let i in this) {
-                    if (i.startsWith('_$') === true) continue;
-                    ret[i] = this[i];
-                }
-                return ret;
-            };
-            (function(fn:string, nt:string) {
-                let $fn = '$' + fn;
-                Object.defineProperty(prototype, $fn, {
-                    enumerable: true,
-                    get: function() {
-                        let ret = this[fn];
-                        console.log('prop '+fn+' get ');
-                        return (this[nt] as Tuid).valueFromId(ret);
-                    },
-                    set: function(v) {
-                        this[fn]=v;
-                    }
-                });
-            })(name, nTuid);
-        }
-        return creater;
-    }
-    private buildArrCreater(arrFields:ArrFields[]):{[name:string]: ()=>void} {
-        if (arrFields === undefined) return;
-        let ret:{[name:string]: ()=>void} = {};
-        for (let e of arrFields) {
-            let {name, fields} = e;
-            ret[name] = this.buildCreater(fields);
-        }
-        return ret;
-    }
 
-    private removeRecursive(parent:any[], obj:any):any {
-        if (typeof obj !== 'object') return obj;
-        let ret = {} as any;
-        parent.push(obj);
-        for (let i in obj) {
-            ret[i] = this.removeRecursive(parent, obj[i]);
-        }
-        parent.pop();
-        return ret;
-    }
     schemaStringify():string {
-        let obj = this.removeRecursive([], this.schema);
-        return JSON.stringify(obj, undefined, 4);
+        return JSON.stringify(this.schema, (key:string, value:any) => {
+            if (key === '_tuid') return undefined;
+            return value;
+        }, 4);
     }
 
     getTuid(field:Field):Tuid {
@@ -170,8 +113,9 @@ export abstract class Entity {
     }
     
     private packRow(result:string[], fields:Field[], data:any) {
-        let ret = '';
         let len = fields.length;
+        if (len === 0) return;
+        let ret = '';
         ret += this.escape(data[fields[0].name]);
         for (let i=1;i<len;i++) {
             let f = fields[i];

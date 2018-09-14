@@ -2,6 +2,7 @@ import * as React from 'react';
 import { VmBand } from './vmBand';
 import { Field, ArrFields } from '../../entities';
 import { VmArr } from './vmArr';
+import { FormUI, FormUIBase, Compute } from '../formUI';
 import { VmField } from './vmField';
 import { VmSubmit } from './vmSubmit';
 export declare type FieldCall = (form: VmForm, field: string, values: any) => Promise<any>;
@@ -22,7 +23,7 @@ export interface FormValues {
 export interface FormOptions {
     fields: Field[];
     arrs?: ArrFields[];
-    ui: any;
+    ui: FormUIBase;
     res: any;
     inputs: FieldInputs;
     submitCaption: string;
@@ -35,9 +36,10 @@ export declare class VmForm {
     protected bands: VmBand[];
     constructor(options: FormOptions, onSubmit: (values: any) => Promise<void>);
     onSubmit: (values: any) => Promise<void>;
-    ui: any;
+    ui: FormUI;
     res: any;
     formValues: FormValues;
+    compute: Compute;
     readOnly: boolean;
     vmFields: {
         [name: string]: VmField;
@@ -62,6 +64,7 @@ export declare class VmForm {
     getValue(fieldName: string): any;
     setValue(fieldName: string, value: any): void;
     setError(fieldName: string, error: string): void;
+    private buildFieldValues;
     private buildObservableValues;
     private buildFormValues;
     render(className?: string): JSX.Element;

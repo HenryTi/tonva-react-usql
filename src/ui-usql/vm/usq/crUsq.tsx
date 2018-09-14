@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { Api, nav } from 'tonva-tools';
+import { UsqApi, nav } from 'tonva-tools';
 import { List, Muted } from 'tonva-react-form';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
 import { VmLink, VmEntityLink } from '../link';
@@ -8,10 +8,10 @@ import { CrBook, BookUI } from '../book';
 import { CrSheet, SheetUI } from '../sheet';
 import { ActionUI, CrAction } from '../action';
 import { QueryUI, CrQuery, CrQuerySelect } from '../query';
-import { CrTuidMain, TuidUI, CrTuidMainSelect, CrTuid } from '../tuid';
+import { CrTuidMain, TuidUI, CrTuidMainSelect, CrTuid, CrTuidInfo } from '../tuid';
 import { MapUI, CrMap } from '../map';
 import { CrApp } from '../crApp';
-import { CrEntity, EntityUI } from '../VM';
+import { CrEntity, EntityUI, Coordinator, CoordinatorUsq } from '../VM';
 import { JSONContent, PureJSONContent } from '../viewModel';
 import { VmUsq } from './vmUsq';
 
@@ -23,13 +23,13 @@ export interface UsqUI {
     CrQuerySelect?: typeof CrQuerySelect;
     CrMap?: typeof CrMap;
     tuid?: {[name:string]: TuidUI};
+    sheet?: {[name:string]: SheetUI};
     map?: {[name:string]: MapUI};
     query?: {[name:string]: QueryUI};
-    res: any;
+    res?: any;
 }
 
-export class CrUsq implements Usq {
-    vmApp: CrApp;
+export class CrUsq extends Coordinator implements Usq {
     private access:string;
     private ui:any;
     private CrTuidMain: typeof CrTuidMain;
@@ -37,16 +37,17 @@ export class CrUsq implements Usq {
     private CrQuerySelect: typeof CrQuerySelect;
     private CrMap: typeof CrMap;
 
-    constructor(vmApp:CrApp, apiId:number, api:string, access:string, ui:UsqUI) {
-        //super();
-        this.vmApp = vmApp;
-        this.api = api;
-        this.id = apiId;
+    constructor(usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
+        super();
+        this.usq = usq;
+        this.id = usqId;
         if (ui === undefined)
             this.ui = {};
-        else if (ui.res !== undefined) {
+        else {
             this.ui = ui;
-            this.res = ui.res.zh.CN;
+            if (ui.res !== undefined) {
+                this.res = ui.res.zh.CN;
+            }
         }
 
         if (ui !== undefined) {
@@ -60,36 +61,53 @@ export class CrUsq implements Usq {
         this.access = access;
 
         let token = undefined;
-        let apiOwner:string, apiName:string;
-        let p = api.split('/');
+        let usqOwner:string, usqName:string;
+        let p = usq.split('/');
         switch (p.length) {
             case 1:
-                apiOwner = '$$$';
-                apiName = p[0];
+                usqOwner = '$$$';
+                usqName = p[0];
                 break;
             case 2:
-                apiOwner = p[0];
-                apiName = p[1];
+                usqOwner = p[0];
+                usqName = p[1];
                 break;
             default:
-                console.log('api must be apiOwner/apiName format');
+                console.log('usq must be usqOwner/usqName format');
                 return;
         }
 
         let hash = document.location.hash;
         let baseUrl = hash===undefined || hash===''? 
             'debug/':'tv/';
-        let _api = new Api(baseUrl, apiOwner, apiName, true);
-        this.entities = new Entities(this, vmApp.id, apiId, _api, access);
+
+        let acc: string[];
+        if (access === undefined || access === '*') {
+            acc = [];
+        }
+        else {
+            acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
+        }
+        let usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+        this.entities = new Entities(this, usqApi, appId); //, crApp.id, usqId, usqApi);
     }
 
-    api: string;
+    protected async internalStart() {
+    }
+
+    usq: string;
     id: number;
     res: any;
     entities:Entities;
 
     async loadSchema() {
-        await this.entities.load();
+        try {
+            await this.entities.load();
+            if (this.id === undefined) this.id = this.entities.usqId;
+        }
+        catch(err) {
+            debugger;
+        }
 
         for (let i in this.ui) {
             let g = this.ui[i];
@@ -143,8 +161,8 @@ export class CrUsq implements Usq {
             alert('sheetTypeId ' + sheetTypeId + ' is not exists!');
             return;
         }
-        let vmSheetMain = this.crSheet(sheet);
-        await vmSheetMain.showSheet(sheetId);
+        let crSheet = this.crSheet(sheet);
+        await crSheet.startSheet(sheetId);
     }
 
     crFromName(entityType:EntityType, entityName:string): CrEntity<Entity, EntityUI> {
@@ -192,7 +210,6 @@ export class CrUsq implements Usq {
         let {entity} = this.res;
         if (entity !== undefined) {
             res = entity[name];
-            //if (res !== undefined) debugger;
         }
         return {ui: ui || {}, res: res };
     }
@@ -218,6 +235,10 @@ export class CrUsq implements Usq {
     crTuidSelect(tuid:TuidMain):CrTuidMainSelect {
         let {ui, res} = this.getUI<Tuid, TuidUI>(tuid);
         return new (ui && ui.CrTuidSelect || CrTuidMainSelect)(this, tuid, ui, res);
+    }
+    crTuidInfo(tuid:Tuid):CrTuidInfo {
+        let {ui, res} = this.getUI<Tuid, TuidUI>(tuid);
+        return new (ui && ui.CrTuidInfo || CrTuidInfo)(this, tuid, ui, res);
     }
     /*
     newVmTuidView(tuid:Tuid):VmTuidView {
@@ -308,111 +329,16 @@ export class CrUsq implements Usq {
         }
     }
 
+    async showTuid(tuid:Tuid, id:number):Promise<void> {
+        let cr = this.crTuidInfo(tuid);
+        await cr.start(id);
+    }
+
     protected get VmUsq():typeof VmUsq {return VmUsq}
 
     render() {
         let vm = new (this.VmUsq)(this);
         return vm.render();
     }
-
-    /*
-    newVmSearch(entity:Entity, onSelected:(item:any)=>Promise<void>):VmPage {
-        switch (entity.typeName) {
-            case 'tuid': return this.newVmTuidSearch(entity as Tuid, onSelected);
-            case 'query': return this.newVmQuerySearch(entity as Query, onSelected);
-        }
-    }*/
-    /*
-    newVmTuidSearch(tuid:TuidBase, onSelected:(item:any)=>Promise<void>):VmPage {
-        let ui = this.getUI<TuidUI>('tuid', tuid.name);
-        //let vm = ui && ui.search;
-        //if (vm === undefined) vm = VmTuidSearch;
-        let ret = undefined; // new vm(this, tuid, ui);
-        ret.onSelected = onSelected;
-        return ret;
-    }
-    crQuery(query:Query, onSelected:(item:any)=>Promise<void>):CrQuery {
-        let {ui, res} = this.getUI<QueryUI>('query', query.name);
-        let ret = new CrQuery(this, query, ui, res);
-        //ret.onSelected = onSelected;
-        return ret;
-    }
-    */
-    
-    /*
-    typeVmTuidControl(tuid:Tuid): TypeVmTuidControl {
-        let {ui, res} = this.getUI<TuidUI>('tuid', tuid.name);
-        let typeVmTuidControl = undefined; //ui && ui.input;
-        if (typeVmTuidControl === undefined) typeVmTuidControl = VmTuidControl;
-        return typeVmTuidControl;
-    }
-
-    pickerConfig(tuid:Tuid): PickerConfig {
-        let {ui, res} = this.getUI<TuidUI>('tuid', tuid.name);
-        let pickerConfig:PickerConfig = undefined; //ui && ui.pickerConfig;
-        let pc:PickerConfig = {
-            picker: VmTuidPicker,
-            row: JSONContent,
-        };
-        return _.merge(pc, pickerConfig);
-    }
-    */
-    /*
-    typeTuidContent(tuid:Tuid): TypeContent {
-        let {ui, res} = this.getUI<TuidUI>('tuid', tuid.name);
-        let typeTuidContent = ui && ui.content;
-        if (typeTuidContent === undefined) typeTuidContent = JSONContent;
-        return typeTuidContent;
-    }*/
-    /*
-    async create<T extends VmEntity>(vmType: new (crUsq:CrUsq, entity:Entity, ui:EntityUI) => T,
-        entity:Entity, ui:EntityUI): Promise<T> {
-        let vm = new vmType(this, entity, ui);
-        //await vm.loadSchema();
-        return vm;
-    }
-
-    navVm = async <T extends VmEntity> (vmType: new (crUsq:CrUsq, entity:Entity, ui:EntityUI) => T, 
-    entity:Entity, ui:EntityUI, param?:any) => {
-        let vm = await this.create<T>(vmType, entity, ui);
-        await vm.start(param);
-    }
-    */
-    /*
-    async tuidSearch(tuid:TuidBase, param?:any):Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            let onTuidSelected = async (selecdValue:any) => {
-                nav.pop();
-                resolve(selecdValue);
-            };
-            let {owner} = tuid;
-            if (owner !== undefined) {
-                let onOwnerSelected = async (ownerItem:any) => {
-                    nav.pop();
-                    let ownerId = owner.getIdFromObj(ownerItem);
-                    owner.useId(ownerId);
-                    let tuidSearch = this.newVmTuidSearch(tuid, onTuidSelected);
-                    await tuidSearch.start(ownerId);
-                }
-                let ownerSearch = this.newVmTuidSearch(owner, onOwnerSelected);
-                ownerSearch.start(param);
-            }
-            else {
-                let tuidSearch = this.newVmTuidSearch(tuid, onTuidSelected);
-                tuidSearch.start(param);
-            }
-        });
-    }
-    
-    async querySearch(query:Query, param?:any):Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            let onSelected = async (selecdValue:any) => {
-                nav.pop();
-                resolve(selecdValue);
-            };
-            let search = this.crQuery(query, onSelected);
-            search.start(param);
-        });
-    }*/
 }
 

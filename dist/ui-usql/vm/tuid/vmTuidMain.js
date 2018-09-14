@@ -20,7 +20,7 @@ export class VmTuidMain extends VmEntity {
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
     entityRender(link, index) {

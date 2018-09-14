@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { Map } from '../../entities';
 import { VmEntity } from '../VM';
 import { CrMap, MapItem, MapUI } from './crMap';

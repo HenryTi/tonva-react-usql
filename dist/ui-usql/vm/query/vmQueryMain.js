@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { List, FA } from 'tonva-react-form';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmEntity } from '../VM';
 import { DefaultRow } from './defaultRow';
 export class VmQueryMain extends VmEntity {
@@ -17,27 +17,23 @@ export class VmQueryMain extends VmEntity {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             let params = this.vmForm.values;
-            yield this.entity.loadSchema();
             if (this.entity.isPaged === true) {
                 yield this.entity.resetPage(30, params);
                 yield this.entity.loadPage();
                 //this.replacePage(<QueryResultPage vm={this} />);
-                nav.pop();
-                this.open(this.pageResult);
+                this.replacePage(this.pageResult);
             }
             else {
                 let data = yield this.entity.query(params);
                 //let data = await this.unpackReturns(res);
                 //return data;
-                nav.pop();
-                this.open(this.queryResult, data);
+                this.replacePage(this.queryResult, data);
             }
         });
         this.again = () => {
             this.vmForm.reset();
             //this.replacePage(<QueryPage vm={this} />);
-            nav.pop();
-            this.open(this.view);
+            this.replacePage(this.view);
         };
         this.renderRow = (item, index) => React.createElement(this.row, Object.assign({}, item));
         this.view = () => React.createElement(Page, { header: this.label },
@@ -64,7 +60,7 @@ export class VmQueryMain extends VmEntity {
             this.vmForm = this.createForm(this.onSubmit, param);
             let { row, queryRow } = this.ui;
             this.row = queryRow || row || DefaultRow;
-            this.open(this.view);
+            this.openPage(this.view);
         });
     }
     renderExtra() {

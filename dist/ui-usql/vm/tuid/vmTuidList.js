@@ -9,13 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
-import { Page, PagedItems } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmEntity } from '../VM';
 export class VmTuidListBase extends VmEntity {
     constructor() {
         super(...arguments);
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
-            yield this.pagedItems.first(key);
+            yield this.coordinator.search(key);
+            //await this.pagedItems.first(key);
         });
         this.renderRow = (item, index) => {
             return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
@@ -36,18 +37,19 @@ export class VmTuidListBase extends VmEntity {
             }
             return React.createElement(Page, { header: header },
                 ownerTop,
-                React.createElement(List, { items: this.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
+                React.createElement(List, { items: this.coordinator.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
         });
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.pagedItems = new TuidPagedItems(this.entity);
+            //this.pagedItems = new TuidPagedItems(this.entity);
             this.param = param;
             if (this.entity.owner !== undefined)
                 this.ownerId = Number(param);
             // 初始查询, key是空的
-            yield this.onSearch('');
-            this.open(this.view);
+            //await this.onSearch('');
+            yield this.coordinator.search('');
+            this.openPage(this.view);
         });
     }
     callOnSelected(item) {
@@ -56,23 +58,6 @@ export class VmTuidListBase extends VmEntity {
             return;
         }
         this.onSelected(item);
-    }
-}
-const Row = (item) => React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
-class TuidPagedItems extends PagedItems {
-    constructor(tuid) {
-        super();
-        this.tuid = tuid;
-    }
-    load() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.tuid.search(this.param, this.pageStart, this.pageSize);
-            return ret;
-        });
-    }
-    setPageStart(item) {
-        if (item === undefined)
-            this.pageStart = 0;
     }
 }
 export class VmTuidList extends VmTuidListBase {
