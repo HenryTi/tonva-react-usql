@@ -9,22 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import _ from 'lodash';
 import { setXLang, Page, loadAppUsqs, nav, meInFrame } from 'tonva-tools';
-import { List, LMR, FA } from 'tonva-react-form';
+import { List, LMR } from 'tonva-react-form';
 import res from '../res';
 import { CrUsq } from './usq';
 import { centerApi } from '../centerApi';
 import { Coordinator } from './VM';
-import { OpCoordinator } from '../op';
+//import { OpCoordinator  } from '../op';
 export const entitiesCollection = {};
 export class CrApp extends Coordinator {
     constructor(tonvaApp, ui) {
         super();
         this.crUsqCollection = {};
-        this.opClick = () => __awaiter(this, void 0, void 0, function* () {
-            let coord = new OpCoordinator;
-            let ret = yield coord.call();
-            alert('call returned in vmApp: ' + ret);
-        });
         this.renderRow = (item, index) => {
             let { id, nick, name } = item;
             return React.createElement(LMR, { className: "p-2", right: 'id: ' + id },
@@ -35,10 +30,11 @@ export class CrApp extends Coordinator {
             yield this.start();
         });
         this.appPage = () => {
-            return React.createElement(Page, { header: this.caption, logout: () => { meInFrame.unit = undefined; } },
-                React.createElement(LMR, { className: "px-3 py-2 my-2 bg-light", left: React.createElement(FA, { name: 'cog', fixWidth: true, className: "text-info mr-2 pt-1" }), onClick: this.opClick }, "\u8BBE\u7F6E\u64CD\u4F5C\u6743\u9650"),
-                this.crUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render())));
+            return React.createElement(Page, { header: this.caption, logout: () => { meInFrame.unit = undefined; } }, this.crUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render())));
         };
+        //<LMR className="px-3 py-2 my-2 bg-light"
+        //left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
+        //onClick={this.opClick}>设置操作权限</LMR>
         this.selectUnitPage = () => {
             return React.createElement(Page, { header: "\u9009\u62E9\u5C0F\u53F7", logout: true },
                 React.createElement(List, { items: this.appUnits, item: { render: this.renderRow, onClick: this.onRowClick } }));
@@ -168,6 +164,13 @@ export class CrApp extends Coordinator {
             nav.push(React.createElement(this.appPage, null));
         });
     }
+    /*
+    opClick = async () => {
+        let coord = new OpCoordinator;
+        let ret = await coord.call();
+        alert('call returned in vmApp: ' + ret);
+    }
+    */
     getCrUsqFromId(usqId) {
         for (let i in this.crUsqCollection) {
             let crUsq = this.crUsqCollection[i];

@@ -1,18 +1,16 @@
 import * as React from 'react';
 import * as _ from 'lodash';
 import { UsqApi, nav } from 'tonva-tools';
-import { List, Muted } from 'tonva-react-form';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
-import { VmLink, VmEntityLink } from '../link';
+import { CrLink } from '../link';
 import { CrBook, BookUI } from '../book';
 import { CrSheet, SheetUI } from '../sheet';
 import { ActionUI, CrAction } from '../action';
 import { QueryUI, CrQuery, CrQuerySelect } from '../query';
 import { CrTuidMain, TuidUI, CrTuidMainSelect, CrTuid, CrTuidInfo } from '../tuid';
 import { MapUI, CrMap } from '../map';
-import { CrApp } from '../crApp';
-import { CrEntity, EntityUI, Coordinator, CoordinatorUsq } from '../VM';
-import { JSONContent, PureJSONContent } from '../viewModel';
+import { CrEntity, EntityUI, Coordinator } from '../VM';
+import { PureJSONContent } from '../viewModel';
 import { VmUsq } from './vmUsq';
 
 export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
@@ -104,21 +102,21 @@ export class CrUsq extends Coordinator implements Usq {
         try {
             await this.entities.load();
             if (this.id === undefined) this.id = this.entities.usqId;
+
+            for (let i in this.ui) {
+                let g = this.ui[i];
+                if (g === undefined) continue;
+                let {caption, collection} = g;
+                if (collection === undefined) continue;
+                for (let j in collection) {
+                    if (this.entities[i](j) === undefined) {
+                        console.warn(i + ':' + '\'' + j + '\' is not usql entity');
+                    }
+                }
+            }
         }
         catch(err) {
             debugger;
-        }
-
-        for (let i in this.ui) {
-            let g = this.ui[i];
-            if (g === undefined) continue;
-            let {caption, collection} = g;
-            if (collection === undefined) continue;
-            for (let j in collection) {
-                if (this.entities[i](j) === undefined) {
-                    console.warn(i + ':' + '\'' + j + '\' is not usql entity');
-                }
-            }
         }
     }
 
@@ -194,8 +192,8 @@ export class CrUsq extends Coordinator implements Usq {
             }
         }
 
-    vmLinkFromName(entityType:EntityType, entityName:string) {
-        return this.vmLink(this.crFromName(entityType, entityName));
+    linkFromName(entityType:EntityType, entityName:string) {
+        return this.link(this.crFromName(entityType, entityName));
     }
 
     private getUI<T extends Entity, UI extends EntityUI>(t:T):{ui:UI, res:any} {
@@ -221,12 +219,12 @@ export class CrUsq extends Coordinator implements Usq {
     }
     */
 
-    vmLink(crEntity:CrEntity<Entity, EntityUI>) {
-        return new VmEntityLink(crEntity);
+    link(crEntity:CrEntity<Entity, EntityUI>) {
+        return new CrLink(crEntity);
     }
 
-    get vmTuidLinks() {
-        return this.entities.tuidArr.filter(v => this.isVisible(v)).map(v => this.vmLink(this.crTuidMain(v)));
+    get tuidLinks() {
+        return this.entities.tuidArr.filter(v => this.isVisible(v)).map(v => this.link(this.crTuidMain(v)));
     }
     crTuidMain(tuid:TuidMain):CrTuidMain {
         let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
@@ -256,9 +254,9 @@ export class CrUsq extends Coordinator implements Usq {
         let {ui, res} = this.getUI<Sheet, SheetUI>(sheet);
         return new CrSheet(this, sheet, ui, res);
     }
-    get vmSheetLinks() { 
+    get sheetLinks() { 
         return this.entities.sheetArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crSheet(v))
+            return this.link(this.crSheet(v))
         });
     }
 
@@ -266,9 +264,9 @@ export class CrUsq extends Coordinator implements Usq {
         let {ui, res} = this.getUI<Action, ActionUI>(action);
         return new CrAction(this, action, ui, res);
     }
-    get vmActionLinks() { 
+    get actionLinks() { 
         return this.entities.actionArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crAction(v))
+            return this.link(this.crAction(v))
         });
     }
 
@@ -282,9 +280,9 @@ export class CrUsq extends Coordinator implements Usq {
         let {ui, res} = this.getUI<Query, QueryUI>(query);
         return new (ui && ui.CrQuerySelect || this.CrQuerySelect || CrQuerySelect)(this, query, ui, res);
     }
-    get vmQueryLinks() {
+    get queryLinks() {
         return this.entities.queryArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crQuery(v))
+            return this.link(this.crQuery(v))
         });
     }
     
@@ -296,9 +294,9 @@ export class CrUsq extends Coordinator implements Usq {
         let {ui, res} = this.getUI<Book, BookUI>(book);
         return new CrBook(this, book, ui, res);
     }
-    get vmBookLinks() { 
+    get bookLinks() { 
         return this.entities.bookArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crBook(v))
+            return this.link(this.crBook(v))
         });
     }
     
@@ -311,9 +309,9 @@ export class CrUsq extends Coordinator implements Usq {
         let {ui, res} = this.getUI<Map, MapUI>(map);
         return new (ui && ui.CrMap || this.CrMap || CrMap)(this, map, ui, res);
     }
-    get vmMapLinks() { 
+    get mapLinks() { 
         return this.entities.mapArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crMap(v));
+            return this.link(this.crMap(v));
         });
     }
 

@@ -9,7 +9,6 @@ import { entitiesRes } from '../res';
 import { VmSheet } from './vmSheet';
 import { CrQuery, CrUsq } from "../vm";
 import { Organization, Team, Section, Post, Sheet, App, Usq, To } from "./model";
-import { observable } from "mobx";
 import { CrAction } from "../vm/action";
 
 // 单据跟操作的绑定设置
@@ -30,24 +29,24 @@ export class OpCoordinator extends Coordinator {
         this.crApp = CrApp.instance;
         this.unitxUsq = this.crApp.getCrUsq('$$$/$unitx');
         await this.buildPosts();
-        await this.buildAppsApis();
+        await this.buildAppsUsqs();
         this.openPage(<this.appsView />);
     }
 
-    private async buildAppsApis() {
+    private async buildAppsUsqs() {
         let unit = meInFrame.unit;
-        let ret:any[][] = await centerApi.get('/unit/apps-apis', {unit: unit});
+        let ret:any[][] = await centerApi.get('/unit/apps-usqs', {unit: unit});
         this.apps = ret[0];
         let usqs: Usq[] = ret[1];
 
         for (let app of this.apps) {
             app.usqs = [];
         }
-        for (let api of usqs) {
-            let app = this.apps.find(v => v.id === api.app);
+        for (let usq of usqs) {
+            let app = this.apps.find(v => v.id === usq.app);
             if (app === undefined) continue;
-            app.usqs.push(api);
-            this.setApiEntities(api);
+            app.usqs.push(usq);
+            this.setUsqEntities(usq);
         }
     }
 
@@ -101,7 +100,7 @@ export class OpCoordinator extends Coordinator {
         }
     }
 
-    private setApiEntities(usq:Usq) {
+    private setUsqEntities(usq:Usq) {
         let entities = usq.entities;
         if (entities === null) return;
         let lns = entities.split('\n');

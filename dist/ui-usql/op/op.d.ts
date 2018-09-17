@@ -21,9 +21,9 @@ export declare class OpCoordinator extends Coordinator {
         [id: number]: Section;
     };
     protected internalStart(): Promise<void>;
-    private buildAppsApis;
+    private buildAppsUsqs;
     private buildPosts;
-    private setApiEntities;
+    private setUsqEntities;
     private setNames;
     private setSheets;
     saveSheetStatePosts(sheet: Sheet, stateName: string, toArr: {

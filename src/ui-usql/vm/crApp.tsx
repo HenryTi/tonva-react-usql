@@ -7,7 +7,7 @@ import res from '../res';
 import { CrUsq, EntityType } from './usq';
 import { centerApi } from '../centerApi';
 import { Coordinator } from './VM';
-import { OpCoordinator  } from '../op';
+//import { OpCoordinator  } from '../op';
 
 export const entitiesCollection: {[api:string]: Entities} = {};
 
@@ -155,13 +155,13 @@ export class CrApp extends Coordinator {
         this.clearPrevPages();
         nav.push(<this.appPage />);
     }
-
+    /*
     opClick = async () => {
         let coord = new OpCoordinator;
         let ret = await coord.call();
         alert('call returned in vmApp: ' + ret);
     }
-
+    */
     private getCrUsqFromId(usqId:number): CrUsq {
         for (let i in this.crUsqCollection) {
             let crUsq = this.crUsqCollection[i];
@@ -191,13 +191,13 @@ export class CrApp extends Coordinator {
 
     protected appPage = () => {
         return <Page header={this.caption} logout={()=>{meInFrame.unit = undefined}}>
-            <LMR className="px-3 py-2 my-2 bg-light"
-                left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
-                onClick={this.opClick}>设置操作权限</LMR>
             {this.crUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
         </Page>;
     };
-    
+    //<LMR className="px-3 py-2 my-2 bg-light"
+    //left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
+    //onClick={this.opClick}>设置操作权限</LMR>
+
     protected selectUnitPage = () => {
         return <Page header="选择小号" logout={true}>
             <List items={this.appUnits} item={{render: this.renderRow, onClick: this.onRowClick}}/>

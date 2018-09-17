@@ -1,6 +1,6 @@
 import React from "react";
 import { List, Muted } from "tonva-react-form";
-import { VmEntityLink } from "../link";
+import { CrLink } from "../link";
 export class VmUsq {
     constructor(crUsq) {
         this.isSysVisible = false;
@@ -48,12 +48,12 @@ export class VmUsq {
         };
         this.crUsq = crUsq;
         let { tuidArr, mapArr, sheetArr, actionArr, queryArr, bookArr } = crUsq.entities;
-        this.vmTuidLinks = tuidArr.filter(v => this.isVisible(v)).map(v => new VmEntityLink(this.crUsq.crTuidMain(v)));
-        this.vmMapLinks = mapArr.filter(v => this.isVisible(v)).map(v => new VmEntityLink(this.crUsq.crMap(v)));
-        this.vmSheetLinks = sheetArr.filter(v => this.isVisible(v)).map(v => new VmEntityLink(this.crUsq.crSheet(v)));
-        this.vmActionLinks = actionArr.filter(v => this.isVisible(v)).map(v => new VmEntityLink(this.crUsq.crAction(v)));
-        this.vmQueryLinks = queryArr.filter(v => this.isVisible(v)).map(v => new VmEntityLink(this.crUsq.crQuery(v)));
-        this.vmBookLinks = bookArr.filter(v => this.isVisible(v)).map(v => new VmEntityLink(this.crUsq.crBook(v)));
+        this.vmTuidLinks = tuidArr.filter(v => this.isVisible(v)).map(v => new CrLink(this.crUsq.crTuidMain(v)));
+        this.vmMapLinks = mapArr.filter(v => this.isVisible(v)).map(v => new CrLink(this.crUsq.crMap(v)));
+        this.vmSheetLinks = sheetArr.filter(v => this.isVisible(v)).map(v => new CrLink(this.crUsq.crSheet(v)));
+        this.vmActionLinks = actionArr.filter(v => this.isVisible(v)).map(v => new CrLink(this.crUsq.crAction(v)));
+        this.vmQueryLinks = queryArr.filter(v => this.isVisible(v)).map(v => new CrLink(this.crUsq.crQuery(v)));
+        this.vmBookLinks = bookArr.filter(v => this.isVisible(v)).map(v => new CrLink(this.crUsq.crBook(v)));
     }
     isVisible(entity) {
         return entity.sys !== true || this.isSysVisible;

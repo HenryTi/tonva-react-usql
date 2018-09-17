@@ -5,6 +5,8 @@ import { VmForm, FieldCall } from './form';
 import { CrQuerySelect } from './query';
 import { FormUI } from './formUI';
 export declare abstract class Coordinator {
+    icon: string | JSX.Element;
+    label: string;
     private receiveHandlerId;
     private disposer;
     protected showVm(vm: new (coordinator: Coordinator) => VmPage, param?: any): Promise<void>;
@@ -28,8 +30,8 @@ export declare abstract class Coordinator {
     regConfirmClose(confirmClose: () => Promise<boolean>): void;
 }
 export declare abstract class CoordinatorUsq extends Coordinator {
-    crUsq: CrUsq;
     constructor(crUsq: CrUsq);
+    crUsq: CrUsq;
 }
 export interface EntityUI {
     form?: FormUI;
@@ -39,8 +41,6 @@ export declare abstract class CrEntity<T extends Entity, UI extends EntityUI> ex
     entity: T;
     ui: UI;
     res: any;
-    abstract readonly icon: any;
-    readonly label: string;
     protected beforeStart(): Promise<void>;
     createForm(onSubmit: (values: any) => Promise<void>, values?: any): VmForm;
     private buildFormOptions;

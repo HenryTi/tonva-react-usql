@@ -27,7 +27,6 @@ export declare class CrApp extends Coordinator {
     internalStart(): Promise<void>;
     protected clearPrevPages(): void;
     private showMainPage;
-    opClick: () => Promise<void>;
     private getCrUsqFromId;
     private loadAppUnits;
     renderRow: (item: any, index: number) => JSX.Element;

@@ -5,7 +5,7 @@ import { OpCoordinator } from './op';
 import { VmPage } from '../vm/VM';
 import { StateTo, Sheet, Organization, Post, Team, Section, To } from './model';
 import { observer } from 'mobx-react';
-import { IObservableValue, IObservableArray, observable } from 'mobx';
+import { IObservableValue, observable } from 'mobx';
 
 interface SelectablePost {
     post: Post;

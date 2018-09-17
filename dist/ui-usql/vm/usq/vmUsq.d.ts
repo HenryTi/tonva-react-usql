@@ -1,16 +1,16 @@
 /// <reference types="react" />
-import { VmEntityLink } from "../link";
+import { CrLink } from "../link";
 import { CrUsq } from "./crUsq";
 import { Entity } from "../../entities";
 export declare class VmUsq {
     protected crUsq: CrUsq;
     protected isSysVisible: boolean;
-    protected vmTuidLinks: VmEntityLink[];
-    protected vmMapLinks: VmEntityLink[];
-    protected vmSheetLinks: VmEntityLink[];
-    protected vmActionLinks: VmEntityLink[];
-    protected vmQueryLinks: VmEntityLink[];
-    protected vmBookLinks: VmEntityLink[];
+    protected vmTuidLinks: CrLink[];
+    protected vmMapLinks: CrLink[];
+    protected vmSheetLinks: CrLink[];
+    protected vmActionLinks: CrLink[];
+    protected vmQueryLinks: CrLink[];
+    protected vmBookLinks: CrLink[];
     constructor(crUsq: CrUsq);
     protected isVisible(entity: Entity): boolean;
     render(): JSX.Element;

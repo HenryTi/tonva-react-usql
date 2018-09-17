@@ -1,5 +1,7 @@
 export * from './entities';
 export * from './vm';
+export * from './res';
+export * from './centerApi';
 export function converUIKeyToLowercase(obj) {
     for (let i in obj) {
         let v = obj[i];

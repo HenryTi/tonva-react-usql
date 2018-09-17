@@ -7,6 +7,9 @@ import { CrQuerySelect } from './query';
 import { FormUI } from './formUI';
 
 export abstract class Coordinator {
+    icon: string|JSX.Element;
+    label:string;
+
     private receiveHandlerId:number;
     private disposer = () => {
         // message listener的清理
@@ -96,11 +99,11 @@ export abstract class Coordinator {
 }
 
 export abstract class CoordinatorUsq extends Coordinator{
-    crUsq: CrUsq;
     constructor(crUsq: CrUsq) {
         super();
         this.crUsq = crUsq;
     }
+    crUsq: CrUsq;
 }
 
 export interface EntityUI {
@@ -120,8 +123,6 @@ export abstract class CrEntity<T extends Entity, UI extends EntityUI> extends Co
     entity: T;
     ui: UI;
     res: any;
-    abstract get icon(): any;
-    readonly label:string;
 
     protected async beforeStart() {
         await super.beforeStart();

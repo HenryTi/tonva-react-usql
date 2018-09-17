@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { UsqApi } from 'tonva-tools';
 import { Entities } from '../../entities';
-import { VmEntityLink } from '../link';
+import { CrLink } from '../link';
 import { CrBook } from '../book';
 import { CrSheet } from '../sheet';
 import { CrAction } from '../action';
@@ -79,22 +79,22 @@ export class CrUsq extends Coordinator {
                 yield this.entities.load();
                 if (this.id === undefined)
                     this.id = this.entities.usqId;
+                for (let i in this.ui) {
+                    let g = this.ui[i];
+                    if (g === undefined)
+                        continue;
+                    let { caption, collection } = g;
+                    if (collection === undefined)
+                        continue;
+                    for (let j in collection) {
+                        if (this.entities[i](j) === undefined) {
+                            console.warn(i + ':' + '\'' + j + '\' is not usql entity');
+                        }
+                    }
+                }
             }
             catch (err) {
                 debugger;
-            }
-            for (let i in this.ui) {
-                let g = this.ui[i];
-                if (g === undefined)
-                    continue;
-                let { caption, collection } = g;
-                if (collection === undefined)
-                    continue;
-                for (let j in collection) {
-                    if (this.entities[i](j) === undefined) {
-                        console.warn(i + ':' + '\'' + j + '\' is not usql entity');
-                    }
-                }
             }
         });
     }
@@ -174,8 +174,8 @@ export class CrUsq extends Coordinator {
                 return this.crMap(map);
         }
     }
-    vmLinkFromName(entityType, entityName) {
-        return this.vmLink(this.crFromName(entityType, entityName));
+    linkFromName(entityType, entityName) {
+        return this.link(this.crFromName(entityType, entityName));
     }
     getUI(t) {
         let ui, res;
@@ -198,11 +198,11 @@ export class CrUsq extends Coordinator {
         return this.res[type];
     }
     */
-    vmLink(crEntity) {
-        return new VmEntityLink(crEntity);
+    link(crEntity) {
+        return new CrLink(crEntity);
     }
-    get vmTuidLinks() {
-        return this.entities.tuidArr.filter(v => this.isVisible(v)).map(v => this.vmLink(this.crTuidMain(v)));
+    get tuidLinks() {
+        return this.entities.tuidArr.filter(v => this.isVisible(v)).map(v => this.link(this.crTuidMain(v)));
     }
     crTuidMain(tuid) {
         let { ui, res } = this.getUI(tuid);
@@ -231,18 +231,18 @@ export class CrUsq extends Coordinator {
         let { ui, res } = this.getUI(sheet);
         return new CrSheet(this, sheet, ui, res);
     }
-    get vmSheetLinks() {
+    get sheetLinks() {
         return this.entities.sheetArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crSheet(v));
+            return this.link(this.crSheet(v));
         });
     }
     crAction(action) {
         let { ui, res } = this.getUI(action);
         return new CrAction(this, action, ui, res);
     }
-    get vmActionLinks() {
+    get actionLinks() {
         return this.entities.actionArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crAction(v));
+            return this.link(this.crAction(v));
         });
     }
     crQuery(query) {
@@ -256,9 +256,9 @@ export class CrUsq extends Coordinator {
         let { ui, res } = this.getUI(query);
         return new (ui && ui.CrQuerySelect || this.CrQuerySelect || CrQuerySelect)(this, query, ui, res);
     }
-    get vmQueryLinks() {
+    get queryLinks() {
         return this.entities.queryArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crQuery(v));
+            return this.link(this.crQuery(v));
         });
     }
     //get bookTypeCaption() { return this.getUITypeCaption('book') || '帐 - 仅供调试程序使用，普通用户不可见' }
@@ -269,9 +269,9 @@ export class CrUsq extends Coordinator {
         let { ui, res } = this.getUI(book);
         return new CrBook(this, book, ui, res);
     }
-    get vmBookLinks() {
+    get bookLinks() {
         return this.entities.bookArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crBook(v));
+            return this.link(this.crBook(v));
         });
     }
     /*
@@ -283,9 +283,9 @@ export class CrUsq extends Coordinator {
         let { ui, res } = this.getUI(map);
         return new (ui && ui.CrMap || this.CrMap || CrMap)(this, map, ui, res);
     }
-    get vmMapLinks() {
+    get mapLinks() {
         return this.entities.mapArr.filter(v => this.isVisible(v)).map(v => {
-            return this.vmLink(this.crMap(v));
+            return this.link(this.crMap(v));
         });
     }
     getTuidContent(tuid) {

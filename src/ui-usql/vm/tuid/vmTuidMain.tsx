@@ -3,7 +3,7 @@ import { SearchBox, List, Muted } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { TuidMain, Entity } from '../../entities';
 import { Page } from 'tonva-tools';
-import { VmEntityLink } from '../link';
+import { CrLink } from '../link';
 import { VmPage, VmEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
 
@@ -17,11 +17,11 @@ export class VmTuidMain extends VmEntity<TuidMain, TuidUI> {
         this.openPage(this.view);
     }
 
-    protected entityRender(link: VmEntityLink, index: number): JSX.Element {
+    protected entityRender(link: CrLink, index: number): JSX.Element {
         return link.render();
     }
 
-    protected async entityClick(link: VmEntityLink) {
+    protected async entityClick(link: CrLink) {
         await link.onClick();
     }
 

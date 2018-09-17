@@ -5,7 +5,7 @@ import { VmTuidMain } from './vmTuidMain';
 import { VmTuidEdit } from './vmTuidEdit';
 import { VmTuidSelect } from './vmTuidSelect';
 import { CrUsq } from "../usq/crUsq";
-import { VmEntityLink } from "../link";
+import { CrLink } from "../link";
 import { VmTuidList } from "./vmTuidList";
 import { VmTuidInfo } from "./vmTuidInfo";
 import { TuidPagedItems } from "./pagedItems";
@@ -33,7 +33,7 @@ export declare class CrTuidMain extends CrTuid<TuidMain> {
     proxies: {
         [name: string]: TuidMain;
     };
-    proxyLinks: VmEntityLink[];
+    proxyLinks: CrLink[];
     protected readonly VmTuidMain: typeof VmTuidMain;
     protected readonly VmTuidEdit: typeof VmTuidEdit;
     protected readonly VmTuidList: typeof VmTuidList;

@@ -37,7 +37,7 @@ export class CrTuidMain extends CrTuid {
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
-                let link = this.crUsq.vmLinkFromName('tuid', i);
+                let link = this.crUsq.linkFromName('tuid', i);
                 this.proxyLinks.push(link);
             }
         }

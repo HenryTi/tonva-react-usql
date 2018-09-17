@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import classNames from 'classnames';
-export class VmLink {
+export class Link {
 }
-export class VmCrLink extends VmLink {
-    constructor(coordinator, icon, label) {
+export class CrLink extends Link {
+    constructor(coordinator) {
         super();
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
             yield this.coordinator.start();
@@ -23,17 +23,11 @@ export class VmCrLink extends VmLink {
                 this.label);
         };
         this.coordinator = coordinator;
-        this.icon = icon;
-        this.label = label;
+        this.icon = coordinator.icon;
+        this.label = coordinator.label;
     }
     render(className) {
         return React.createElement(this.view, className);
     }
 }
-export class VmEntityLink extends VmCrLink {
-    constructor(crEntity) {
-        let { icon, label } = crEntity;
-        super(crEntity, icon, label);
-    }
-}
-//# sourceMappingURL=vmLink.js.map
+//# sourceMappingURL=crLink.js.map

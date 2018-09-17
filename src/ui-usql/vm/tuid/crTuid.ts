@@ -5,7 +5,7 @@ import { VmTuidMain } from './vmTuidMain';
 import { VmTuidEdit } from './vmTuidEdit';
 import { VmTuidSelect } from './vmTuidSelect';
 import { CrUsq } from "../usq/crUsq";
-import { VmEntityLink } from "../link";
+import { CrLink } from "../link";
 import { VmTuidList } from "./vmTuidList";
 import { entitiesRes } from '../../res';
 import { VmTuidInfo } from "./vmTuidInfo";
@@ -49,7 +49,7 @@ export class CrTuidMain extends CrTuid<TuidMain> {
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
-                let link = this.crUsq.vmLinkFromName('tuid', i);
+                let link = this.crUsq.linkFromName('tuid', i);
                 this.proxyLinks.push(link);
             }
         }
@@ -72,7 +72,7 @@ export class CrTuidMain extends CrTuid<TuidMain> {
     }
 
     proxies: {[name:string]: TuidMain};
-    proxyLinks: VmEntityLink[];
+    proxyLinks: CrLink[];
 
     protected get VmTuidMain():typeof VmTuidMain {return VmTuidMain}
     protected get VmTuidEdit():typeof VmTuidEdit {return VmTuidEdit}
