@@ -11,6 +11,7 @@ import { Page } from 'tonva-tools';
 import { VmEntity } from '../VM';
 export class VmSheetNew extends VmEntity {
     constructor() {
+        //protected coordinator: CrSheet;
         super(...arguments);
         this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.coordinator.saveSheet(values);

@@ -2,8 +2,8 @@
 import { Query } from '../../entities';
 import { VmForm } from '../form';
 import { VmEntity } from '../VM';
-import { QueryUI } from './crQuery';
-export declare class VmQueryMain extends VmEntity<Query, QueryUI> {
+import { QueryUI, CrQuery } from './crQuery';
+export declare class VmQueryMain extends VmEntity<Query, QueryUI, CrQuery> {
     protected vmForm: VmForm;
     private row;
     showEntry(param?: any): Promise<void>;

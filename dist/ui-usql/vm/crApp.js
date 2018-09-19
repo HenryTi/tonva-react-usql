@@ -8,13 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import _ from 'lodash';
-import { setXLang, Page, loadAppUsqs, nav, meInFrame } from 'tonva-tools';
+import { setXLang, Page, loadAppUsqs, nav, meInFrame, Coordinator } from 'tonva-tools';
 import { List, LMR } from 'tonva-react-form';
 import res from '../res';
 import { CrUsq } from './usq';
 import { centerApi } from '../centerApi';
-import { Coordinator } from './VM';
-//import { OpCoordinator  } from '../op';
 export const entitiesCollection = {};
 export class CrApp extends Coordinator {
     constructor(tonvaApp, ui) {

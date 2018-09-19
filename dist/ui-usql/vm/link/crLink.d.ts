@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Coordinator } from '../VM';
+import { Coordinator } from 'tonva-tools';
 export declare abstract class Link {
     abstract onClick: () => void;
     abstract render(className?: string): JSX.Element;

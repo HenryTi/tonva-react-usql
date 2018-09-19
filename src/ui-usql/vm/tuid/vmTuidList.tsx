@@ -6,7 +6,7 @@ import { TuidMain, Entity, Tuid } from '../../entities';
 import { VmEntity } from '../VM';
 import { TuidUI, CrTuidMain } from './crTuid';
 
-export abstract class VmTuidListBase  extends VmEntity<TuidMain, TuidUI> {
+export abstract class VmTuidListBase  extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
     protected coordinator: CrTuidMain;
     protected entity: TuidMain;
     ppp: string;

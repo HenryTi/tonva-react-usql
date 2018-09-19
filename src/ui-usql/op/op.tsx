@@ -1,8 +1,7 @@
-import { Page, meInFrame, nav } from "tonva-tools";
+import { Page, meInFrame, Coordinator } from "tonva-tools";
 import React from "react";
 import { Button } from "reactstrap";
 import { List, Muted, LMR, FA } from "tonva-react-form";
-import { Coordinator, VmPage } from "../vm/VM";
 import { CrApp } from '../vm/crApp';
 import { centerApi } from "../centerApi";
 import { entitiesRes } from '../res';

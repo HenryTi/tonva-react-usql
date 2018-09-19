@@ -1,4 +1,4 @@
-import { Coordinator } from "../vm/VM";
+import { Coordinator } from "tonva-tools";
 import { Organization, Team, Section, Post, Sheet } from "./model";
 export declare class OpCoordinator extends Coordinator {
     private crApp;

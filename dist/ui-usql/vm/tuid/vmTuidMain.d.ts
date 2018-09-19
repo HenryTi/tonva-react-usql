@@ -3,7 +3,7 @@ import { TuidMain } from '../../entities';
 import { CrLink } from '../link';
 import { VmEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
-export declare class VmTuidMain extends VmEntity<TuidMain, TuidUI> {
+export declare class VmTuidMain extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
     protected coordinator: CrTuidMain;
     onNew: () => Promise<void>;
     onList: () => Promise<void>;

@@ -2,9 +2,9 @@
 import { VmForm } from '../form';
 import { VmEntity } from '../VM';
 import { TuidMain } from '../../entities';
-import { TuidUI } from './crTuid';
+import { TuidUI, CrTuidMain } from './crTuid';
 export declare type TypeVmTuidView = typeof VmTuidView;
-export declare class VmTuidView extends VmEntity<TuidMain, TuidUI> {
+export declare class VmTuidView extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
     vmForm: VmForm;
     id: number;
     showEntry(param?: any): Promise<void>;

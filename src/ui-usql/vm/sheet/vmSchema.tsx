@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { VmEntity } from '../VM';
 import { Sheet } from '../../entities';
-import { SheetUI } from './crSheet';
+import { SheetUI, CrSheet } from './crSheet';
 
-export class VmSheetSchema extends VmEntity<Sheet, SheetUI> {
+export class VmSheetSchema extends VmEntity<Sheet, SheetUI, CrSheet> {
     async showEntry(param?:any) {
         this.openPage(this.view);
     }

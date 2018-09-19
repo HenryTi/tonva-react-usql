@@ -2,8 +2,8 @@
 import { Sheet } from '../../entities';
 import { VmForm } from '../form';
 import { VmEntity } from '../VM';
-import { SheetUI } from './crSheet';
-export declare abstract class VmSheetView extends VmEntity<Sheet, SheetUI> {
+import { CrSheet, SheetUI } from './crSheet';
+export declare abstract class VmSheetView extends VmEntity<Sheet, SheetUI, CrSheet> {
     vmForm: VmForm;
     data: any;
     state: string;

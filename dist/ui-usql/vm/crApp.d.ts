@@ -1,7 +1,7 @@
 /// <reference types="react" />
+import { Coordinator } from 'tonva-tools';
 import { Entities } from '../entities';
 import { CrUsq } from './usq';
-import { Coordinator } from './VM';
 export declare const entitiesCollection: {
     [api: string]: Entities;
 };

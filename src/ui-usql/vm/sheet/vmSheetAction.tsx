@@ -8,7 +8,7 @@ import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';
 
 export class VmSheetAction extends VmSheetView { //} VmEntity<Sheet, SheetUI> {
-    protected coordinator: CrSheet;
+    //protected coordinator: CrSheet;
     brief: any;
     //sheetData: any;
     //flows: any[];

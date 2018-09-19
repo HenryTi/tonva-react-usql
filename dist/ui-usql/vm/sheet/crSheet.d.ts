@@ -1,4 +1,5 @@
 /// <reference types="react" />
+import { IObservableArray } from "mobx";
 import { Sheet, StateCount } from "../../entities";
 import { CrEntity, EntityUI } from "../VM";
 import { VmSheetMain } from "./vmMain";
@@ -9,7 +10,6 @@ import { VmSheetSchema } from "./vmSchema";
 import { VmArchives } from "./vmArchives";
 import { VmSheetList } from "./vmList";
 import { VmArchived } from "./vmArchived";
-import { IObservableArray } from "mobx";
 export interface SheetActionUI {
     label: string;
 }

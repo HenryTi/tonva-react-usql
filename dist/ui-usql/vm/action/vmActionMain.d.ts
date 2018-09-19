@@ -2,8 +2,7 @@
 import { VmEntity } from '../VM';
 import { CrAction, ActionUI } from './crAction';
 import { Action } from '../../entities';
-export declare class VmActionMain extends VmEntity<Action, ActionUI> {
-    protected coordinator: CrAction;
+export declare class VmActionMain extends VmEntity<Action, ActionUI, CrAction> {
     private vmForm;
     private returns;
     private onSubmit;

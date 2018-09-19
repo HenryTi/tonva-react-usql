@@ -6,91 +6,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as React from 'react';
-import { nav, Page } from 'tonva-tools';
+import { Coordinator, VmPage } from 'tonva-tools';
 import { VmForm } from './form';
-export class Coordinator {
-    constructor() {
-        this.disposer = () => {
-            // message listener的清理
-            nav.unregisterReceiveHandler(this.receiveHandlerId);
-        };
-        this.onMessageReceive = (message) => __awaiter(this, void 0, void 0, function* () {
-            yield this.onMessage(message);
-        });
-    }
-    showVm(vm, param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield (new vm(this)).showEntry(param);
-        });
-    }
-    renderVm(vm, param) {
-        return (new vm(this)).render(param);
-    }
-    event(type, value) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.onEvent(type, value);
-        });
-    }
-    onEvent(type, value) {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
-    }
-    msg(text) {
-        alert(text);
-    }
-    errorPage(header, err) {
-        this.openPage(React.createElement(Page, { header: "App error!" },
-            React.createElement("pre", null, typeof err === 'string' ? err : err.message)));
-    }
-    onMessage(message) {
-        return;
-    }
-    beforeStart() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.receiveHandlerId = nav.registerReceiveHandler(this.onMessageReceive);
-        });
-    }
-    start(param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.beforeStart();
-            yield this.internalStart(param);
-        });
-    }
-    call(param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-                this._resolve_$ = resolve;
-                yield this.start(param);
-            }));
-        });
-    }
-    return(value) {
-        if (this._resolve_$ === undefined) {
-            alert('the Coordinator call already returned, or not called');
-            return;
-        }
-        this._resolve_$(value);
-        this._resolve_$ = undefined;
-    }
-    openPage(page) {
-        nav.push(page, this.disposer);
-        this.disposer = undefined;
-    }
-    replacePage(page) {
-        nav.replace(page, this.disposer);
-        this.disposer = undefined;
-    }
-    backPage() {
-        nav.back();
-    }
-    closePage(level) {
-        nav.pop(level);
-    }
-    regConfirmClose(confirmClose) {
-        nav.regConfirmClose(confirmClose);
-    }
-}
 export class CoordinatorUsq extends Coordinator {
     constructor(crUsq) {
         super();
@@ -196,51 +113,6 @@ export class CrEntity extends CoordinatorUsq {
     crQuerySelect(queryName) {
         return this.crUsq.crQuerySelect(queryName);
     }
-}
-export class VmView {
-    constructor(coordinator) {
-        this.coordinator = coordinator;
-    }
-    event(type, value) {
-        return __awaiter(this, void 0, void 0, function* () {
-            /*
-            if (this._resolve_$_ !== undefined) {
-                await this._resolve_$_({type:type, value:value});
-                return;
-            }*/
-            yield this.coordinator.event(type, value);
-        });
-    }
-    return(value) {
-        this.coordinator.return(value);
-    }
-    openPage(view, param) {
-        this.coordinator.openPage(React.createElement(view, param));
-    }
-    replacePage(view, param) {
-        this.coordinator.replacePage(React.createElement(view, param));
-    }
-    openPageElement(page) {
-        this.coordinator.openPage(page);
-    }
-    replacePageElement(page) {
-        this.coordinator.replacePage(page);
-    }
-    backPage() {
-        this.coordinator.backPage();
-    }
-    closePage(level) {
-        this.coordinator.closePage(level);
-    }
-    regConfirmClose(confirmClose) {
-        this.coordinator.regConfirmClose(confirmClose);
-    }
-}
-export class VmPage extends VmView {
-    constructor(coordinator) {
-        super(coordinator);
-    }
-    render(param) { return null; }
 }
 export class VmEntity extends VmPage {
     constructor(coordinator) {

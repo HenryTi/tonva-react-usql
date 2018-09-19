@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { CrEntity, EntityUI, VmEntity, VM } from "../VM";
+import { VM } from 'tonva-tools';
+import { CrEntity, EntityUI } from "../VM";
 import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VmTuidMain } from './vmTuidMain';
 import { VmTuidEdit } from './vmTuidEdit';
@@ -83,7 +84,7 @@ export class CrTuidMain extends CrTuid<TuidMain> {
     }
 
     protected async onEvent(type:string, value:any) {
-        let vm: VM;
+        let vm: VM<CrTuidMain>;
         switch (type) {
             default: return;
             case 'new': vm = this.VmTuidEdit; break;

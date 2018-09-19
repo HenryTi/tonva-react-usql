@@ -6,11 +6,11 @@ import { Page } from 'tonva-tools';
 import { VmForm } from '../form';
 import { VmEntity } from '../VM';
 import { TuidMain } from '../../entities';
-import { TuidUI } from './crTuid';
+import { TuidUI, CrTuidMain } from './crTuid';
 
 export type TypeVmTuidView = typeof VmTuidView;
 
-export class VmTuidView extends VmEntity<TuidMain, TuidUI> {
+export class VmTuidView extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
     vmForm: VmForm;
     id: number;
 

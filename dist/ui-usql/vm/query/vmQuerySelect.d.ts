@@ -1,9 +1,9 @@
 /// <reference types="react" />
-import { Query } from '../../entities';
 import { PagedItems } from 'tonva-tools';
+import { Query } from '../../entities';
 import { VmEntity } from '../VM';
-import { QueryUI } from './crQuery';
-export declare class VmQuerySelect extends VmEntity<Query, QueryUI> {
+import { QueryUI, CrQuerySelect } from './crQuery';
+export declare class VmQuerySelect extends VmEntity<Query, QueryUI, CrQuerySelect> {
     private row;
     pagedItems: QueryPagedItems;
     ownerId: number;

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Page } from 'tonva-tools';
+import { VmPage, Page } from 'tonva-tools';
 import { VmForm } from '../form';
-import { VmPage, VmEntity } from '../VM';
+import { VmEntity } from '../VM';
 import { CrAction, ActionUI } from './crAction';
 import { Action } from '../../entities';
 
-export class VmActionMain extends VmEntity<Action, ActionUI> {
-    protected coordinator: CrAction;
+export class VmActionMain extends VmEntity<Action, ActionUI, CrAction> {
+    //protected coordinator: CrAction;
     private vmForm: VmForm;
     private returns: any;
 

@@ -7,8 +7,8 @@ import { VmEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';
 
-export class VmSheetList extends VmEntity<Sheet, SheetUI> {
-    protected coordinator: CrSheet;
+export class VmSheetList extends VmEntity<Sheet, SheetUI, CrSheet> {
+    //protected coordinator: CrSheet;
     stateName: string;
     stateLabel: string;
 

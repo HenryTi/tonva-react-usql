@@ -1,102 +1,10 @@
 import * as React from 'react';
-import { nav, Page } from 'tonva-tools';
+import { Coordinator, VmPage, VmView } from 'tonva-tools';
 import { Entity, Field, TuidMain } from '../entities';
 import { CrUsq } from './usq/crUsq';
 import { VmForm, FieldInputs, FieldCall, FormOptions } from './form';
 import { CrQuerySelect } from './query';
 import { FormUI } from './formUI';
-
-export abstract class Coordinator {
-    icon: string|JSX.Element;
-    label:string;
-
-    private receiveHandlerId:number;
-    private disposer = () => {
-        // message listener的清理
-        nav.unregisterReceiveHandler(this.receiveHandlerId);
-    }
-
-    protected async showVm(vm: new (coordinator: Coordinator)=>VmPage, param?:any):Promise<void> {
-        await (new vm(this)).showEntry(param);
-    }
-
-    protected renderVm(vm: new (coordinator: Coordinator)=>VmView, param?:any) {
-        return (new vm(this)).render(param);
-    }
-
-    async event(type:string, value:any) {
-        await this.onEvent(type, value);
-    }
-
-    protected async onEvent(type:string, value:any) {
-    }
-
-    protected msg(text:string) {
-        alert(text);
-    }
-    protected errorPage(header:string, err:any) {
-        this.openPage(<Page header="App error!">
-            <pre>
-                {typeof err === 'string'? err : err.message}
-            </pre>
-        </Page>);
-    }
-
-    protected onMessage(message:any):Promise<void> {
-        return;
-    }
-
-    private onMessageReceive = async (message:any):Promise<void> => {
-        await this.onMessage(message);
-    }
-    protected async beforeStart() {
-        this.receiveHandlerId = nav.registerReceiveHandler(this.onMessageReceive);
-    }
-    protected abstract internalStart(param?:any):Promise<void>;
-    async start(param?:any):Promise<void> {
-        await this.beforeStart();
-        await this.internalStart(param);
-    }
-
-    private _resolve_$:(value:any) => void;
-    async call(param?:any):Promise<any> {
-        return new Promise<any> (async (resolve, reject) => {
-            this._resolve_$ = resolve;
-            await this.start(param);
-        });
-    }
-
-    return(value:any) {
-        if (this._resolve_$ === undefined) {
-            alert('the Coordinator call already returned, or not called');
-            return;
-        }
-        this._resolve_$(value);
-        this._resolve_$ = undefined;
-    }
-
-    openPage(page:JSX.Element) {
-        nav.push(page, this.disposer);
-        this.disposer = undefined;
-    }
-
-    replacePage(page:JSX.Element) {
-        nav.replace(page, this.disposer);
-        this.disposer = undefined;
-    }
-
-    backPage() {
-        nav.back();
-    }
-
-    closePage(level?:number) {
-        nav.pop(level);
-    }
-
-    regConfirmClose(confirmClose: ()=>Promise<boolean>) {
-        nav.regConfirmClose(confirmClose);
-    }
-}
 
 export abstract class CoordinatorUsq extends Coordinator{
     constructor(crUsq: CrUsq) {
@@ -221,75 +129,12 @@ export abstract class CrEntity<T extends Entity, UI extends EntityUI> extends Co
     }
 }
 
-export abstract class VmView {
-    protected coordinator: Coordinator;
-
-    constructor(coordinator: Coordinator) {
-        this.coordinator = coordinator;
-    }
-
-    abstract render(param?:any): JSX.Element;
-
-    protected async event(type:string, value?:any) {
-        /*
-        if (this._resolve_$_ !== undefined) {
-            await this._resolve_$_({type:type, value:value});
-            return;
-        }*/
-        await this.coordinator.event(type, value);
-    }
-
-    protected return(value:any) {
-        this.coordinator.return(value);
-    }
-
-    protected openPage(view: React.StatelessComponent<any>, param?:any) {
-        this.coordinator.openPage(React.createElement(view, param));
-    }
-
-    protected replacePage(view: React.StatelessComponent<any>, param?:any) {
-        this.coordinator.replacePage(React.createElement(view, param));
-    }
-
-    protected openPageElement(page: JSX.Element) {
-        this.coordinator.openPage(page);
-    }
-
-    protected replacePageElement(page: JSX.Element) {
-        this.coordinator.replacePage(page);
-    }
-
-    protected backPage() {
-        this.coordinator.backPage();
-    }
-
-    protected closePage(level?:number) {
-        this.coordinator.closePage(level);
-    }
-
-    protected regConfirmClose(confirmClose: ()=>Promise<boolean>) {
-        this.coordinator.regConfirmClose(confirmClose);
-    }
-}
-
-export abstract class VmPage extends VmView {
-    constructor(coordinator: Coordinator) {
-        super(coordinator);
-    }
-
-    abstract showEntry(param?:any):Promise<void>;
-
-    render(param?:any):JSX.Element {return null;}
-}
-
-export type VM = new (coordinator: Coordinator)=>VmPage;
-
-export abstract class VmEntity<T extends Entity, UI extends EntityUI> extends VmPage {
-    protected coordinator: CrEntity<T, UI>;
+export abstract class VmEntity<T extends Entity, UI extends EntityUI, C extends CrEntity<T, UI>> extends VmPage<C> {
+    //protected coordinator: CrEntity<T, UI>;
     protected entity: T;
     protected ui: UI;
     protected res: any;
-    constructor(coordinator: CrEntity<T, UI>) {
+    constructor(coordinator: C) {
         super(coordinator);
         this.entity = coordinator.entity;
         this.ui = coordinator.ui;

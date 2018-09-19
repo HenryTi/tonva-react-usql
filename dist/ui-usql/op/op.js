@@ -6,10 +6,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Page, meInFrame } from "tonva-tools";
+import { Page, meInFrame, Coordinator } from "tonva-tools";
 import React from "react";
 import { List, Muted, LMR } from "tonva-react-form";
-import { Coordinator } from "../vm/VM";
 import { CrApp } from '../vm/crApp';
 import { centerApi } from "../centerApi";
 import { entitiesRes } from '../res';

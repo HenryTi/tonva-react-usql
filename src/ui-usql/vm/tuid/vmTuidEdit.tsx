@@ -2,18 +2,18 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
-import { Page, nav } from 'tonva-tools';
+import { Page } from 'tonva-tools';
 import { VmForm } from '../form';
-import { VmPage, VmEntity } from '../VM';
+import { VmEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
 import { TuidMain, Tuid } from '../../entities';
 
 export type TypeVmTuidEdit = typeof VmTuidEdit;
 
-export class VmTuidEdit extends VmEntity<Tuid, TuidUI> {
+export class VmTuidEdit extends VmEntity<Tuid, TuidUI, CrTuidMain> {
     private vmForm: VmForm;
     private id: number;
-    protected coordinator: CrTuidMain;
+    //protected coordinator: CrTuidMain;
 
     async showEntry(param?:any):Promise<void> {
         this.vmForm = this.createForm(this.onSubmit, param);

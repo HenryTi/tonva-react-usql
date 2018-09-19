@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { UsqApi } from 'tonva-tools';
+import { UsqApi, Coordinator, UnitxApi, meInFrame } from 'tonva-tools';
 import { Entities } from '../../entities';
 import { CrLink } from '../link';
 import { CrBook } from '../book';
@@ -15,7 +15,6 @@ import { CrAction } from '../action';
 import { CrQuery, CrQuerySelect } from '../query';
 import { CrTuidMain, CrTuidMainSelect, CrTuidInfo } from '../tuid';
 import { CrMap } from '../map';
-import { Coordinator } from '../VM';
 import { PureJSONContent } from '../viewModel';
 import { VmUsq } from './vmUsq';
 export class CrUsq extends Coordinator {
@@ -66,7 +65,15 @@ export class CrUsq extends Coordinator {
         else {
             acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
         }
-        let usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+        let usqApi;
+        if (usq === '$$$/$unitx') {
+            // 这里假定，点击home link之后，已经设置unit了
+            // 调用 UnitxApi会自动搜索绑定 unitx service
+            usqApi = new UnitxApi(meInFrame.unit);
+        }
+        else {
+            usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+        }
         this.entities = new Entities(this, usqApi, appId); //, crApp.id, usqId, usqApi);
     }
     internalStart() {

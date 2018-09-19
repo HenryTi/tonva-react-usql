@@ -7,7 +7,7 @@ import { CrSheet, SheetUI } from './crSheet';
 
 const leftFlowStyle = {width: '8rem'};
 
-export abstract class VmSheetView extends VmEntity<Sheet, SheetUI> {
+export abstract class VmSheetView extends VmEntity<Sheet, SheetUI, CrSheet> {
     vmForm: VmForm;
     data: any;
     state: string;

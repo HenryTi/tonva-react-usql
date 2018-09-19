@@ -5,10 +5,10 @@ import { Page, nav } from 'tonva-tools';
 import { TuidMain, Query, Entity } from '../../entities';
 import { VmForm } from '../form';
 import { VmEntity } from '../VM';
-import { QueryUI } from './crQuery';
+import { QueryUI, CrQuery } from './crQuery';
 import { DefaultRow } from './defaultRow';
 
-export class VmQueryMain extends VmEntity<Query, QueryUI> {
+export class VmQueryMain extends VmEntity<Query, QueryUI, CrQuery> {
     protected vmForm: VmForm;
     private row: React.StatelessComponent;
 

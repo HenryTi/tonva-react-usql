@@ -1,5 +1,7 @@
+import { IObservableArray } from "mobx";
+import { VM } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
-import { CrEntity, EntityUI, VM } from "../VM";
+import { CrEntity, EntityUI } from "../VM";
 import { entitiesRes } from '../../res';
 import { VmSheetMain } from "./vmMain";
 import { VmSheetNew } from "./vmNew";
@@ -9,7 +11,6 @@ import { VmSheetSchema } from "./vmSchema";
 import { VmArchives } from "./vmArchives";
 import { VmSheetList } from "./vmList";
 import { VmArchived } from "./vmArchived";
-import { IObservableArray } from "mobx";
 
 export interface SheetActionUI {
     label: string;
@@ -52,7 +53,7 @@ export class CrSheet extends CrEntity<Sheet, SheetUI> {
     protected get VmSheetList(): typeof VmSheetList {return VmSheetList}
     protected get VmSheetAction(): typeof VmSheetAction {return VmSheetAction}
     protected async onEvent(type:string, value:any) {
-        let vm: VM;
+        let vm: VM<CrSheet>;
         switch (type) {
             default: return;
             case 'new': vm = this.VmSheetNew; break;

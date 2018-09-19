@@ -7,9 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import React from 'react';
-import { Page } from 'tonva-tools';
+import { VmPage, Page } from 'tonva-tools';
 import { Muted, LMR, FA, List } from 'tonva-react-form';
-import { VmPage } from '../vm/VM';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 export class VmSheet extends VmPage {

@@ -6,8 +6,8 @@ import { VmForm } from '../form';
 import { VmEntity } from '../VM';
 import { SheetUI, CrSheet } from './crSheet';
 
-export class VmSheetNew extends VmEntity<Sheet, SheetUI> {
-    protected coordinator: CrSheet;
+export class VmSheetNew extends VmEntity<Sheet, SheetUI, CrSheet> {
+    //protected coordinator: CrSheet;
 
     vmForm: VmForm;
 

@@ -4,10 +4,10 @@ import { Button } from 'reactstrap';
 import { TuidMain, Entity } from '../../entities';
 import { Page } from 'tonva-tools';
 import { CrLink } from '../link';
-import { VmPage, VmEntity } from '../VM';
+import { VmEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
 
-export class VmTuidMain extends VmEntity<TuidMain, TuidUI> {
+export class VmTuidMain extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
     protected coordinator: CrTuidMain;
     onNew = () => this.event('new'); //this.coordinator.navVm(VmTuidEdit);
     onList = () => this.event('list'); // this.coordinator.navVm(VmTuidList);

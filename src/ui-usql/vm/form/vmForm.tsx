@@ -10,7 +10,7 @@ import { VmArr } from './vmArr';
 import { FieldUI, FormUI, FormUIBase, Compute } from '../formUI';
 import { VmField } from './vmField';
 import { VmSubmit } from './vmSubmit';
-import { ObservableArray } from 'mobx/lib/types/observablearray';
+import { IObservableArray } from 'mobx';
 
 export type FieldCall = (form:VmForm, field:string, values:any) => Promise<any>;
 export interface FieldInput {
@@ -126,7 +126,7 @@ export class VmForm {
             let list = initValues[i];
             if (list === undefined) continue;
             //this.vmArrs[i].list.push(...list);
-            let arrList = values[i] as ObservableArray<any>;
+            let arrList = values[i] as IObservableArray<any>;
             arrList.clear();
             arrList.push(...list);
         }

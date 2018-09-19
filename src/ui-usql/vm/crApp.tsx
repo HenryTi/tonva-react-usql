@@ -1,13 +1,11 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { setXLang, Page, loadAppUsqs, nav, getUrlOrDebug, meInFrame} from 'tonva-tools';
+import { setXLang, Page, loadAppUsqs, nav, getUrlOrDebug, meInFrame, Coordinator} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import {Entities} from '../entities';
 import res from '../res';
 import { CrUsq, EntityType } from './usq';
 import { centerApi } from '../centerApi';
-import { Coordinator } from './VM';
-//import { OpCoordinator  } from '../op';
 
 export const entitiesCollection: {[api:string]: Entities} = {};
 

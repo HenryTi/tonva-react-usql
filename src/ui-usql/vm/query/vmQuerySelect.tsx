@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
 import { FA, SearchBox, List } from 'tonva-react-form';
-import { TuidMain, Entity, Tuid, Query } from '../../entities';
 import { Page, PagedItems } from 'tonva-tools';
+import { Query } from '../../entities';
 import { VmEntity } from '../VM';
-import { QueryUI } from './crQuery';
+import { QueryUI, CrQuerySelect } from './crQuery';
 import { DefaultRow } from './defaultRow';
 
-export class VmQuerySelect extends VmEntity<Query, QueryUI> {
+export class VmQuerySelect extends VmEntity<Query, QueryUI, CrQuerySelect> {
     private row: React.StatelessComponent;
 
     pagedItems:QueryPagedItems;

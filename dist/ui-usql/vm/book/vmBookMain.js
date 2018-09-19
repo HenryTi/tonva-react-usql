@@ -11,6 +11,7 @@ import { Page } from 'tonva-tools';
 import { VmEntity } from '../VM';
 export class VmBookMain extends VmEntity {
     constructor() {
+        //protected coordinator: CrBook;
         super(...arguments);
         this.view = () => React.createElement(Page, { header: this.label }, "Book");
     }

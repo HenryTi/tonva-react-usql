@@ -2,8 +2,7 @@
 import { VmEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';
-export declare class VmSheetMain extends VmEntity<Sheet, SheetUI> {
-    protected coordinator: CrSheet;
+export declare class VmSheetMain extends VmEntity<Sheet, SheetUI, CrSheet> {
     showEntry(): Promise<void>;
     newClick: () => Promise<void>;
     schemaClick: () => Promise<void>;

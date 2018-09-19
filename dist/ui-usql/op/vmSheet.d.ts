@@ -1,8 +1,7 @@
+import { VmPage } from 'tonva-tools';
 import { OpCoordinator } from './op';
-import { VmPage } from '../vm/VM';
 import { Sheet, To } from './model';
-export declare class VmSheet extends VmPage {
-    protected coordinator: OpCoordinator;
+export declare class VmSheet extends VmPage<OpCoordinator> {
     private sheet;
     private states;
     private selectablePosts;

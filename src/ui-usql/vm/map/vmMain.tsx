@@ -7,8 +7,8 @@ import { Map } from '../../entities';
 import { VmEntity } from '../VM';
 import { CrMap, MapItem, MapKey, MapUI } from './crMap';
 
-export class VmMapMain extends VmEntity<Map, MapUI> {
-    protected coordinator: CrMap;
+export class VmMapMain extends VmEntity<Map, MapUI, CrMap> {
+    //protected coordinator: CrMap;
     private mapKey: MapKey[];
 
     async showEntry(param?:any) {

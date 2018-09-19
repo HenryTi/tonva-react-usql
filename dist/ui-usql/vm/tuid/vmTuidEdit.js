@@ -58,6 +58,7 @@ export class VmTuidEdit extends VmEntity {
         });
         //protected view = TuidNewPage;
     }
+    //protected coordinator: CrTuidMain;
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vmForm = this.createForm(this.onSubmit, param);

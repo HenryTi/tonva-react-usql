@@ -7,8 +7,8 @@ import { VmEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';
 
-export class VmSheetMain extends VmEntity<Sheet, SheetUI> {
-    protected coordinator: CrSheet;
+export class VmSheetMain extends VmEntity<Sheet, SheetUI, CrSheet> {
+    //protected coordinator: CrSheet;
 
     async showEntry() {
         await this.coordinator.getStateSheetCount();

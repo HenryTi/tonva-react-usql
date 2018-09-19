@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { UsqApi, nav } from 'tonva-tools';
+import { UsqApi, Coordinator, UnitxApi, meInFrame } from 'tonva-tools';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
 import { CrLink } from '../link';
 import { CrBook, BookUI } from '../book';
@@ -9,7 +9,7 @@ import { ActionUI, CrAction } from '../action';
 import { QueryUI, CrQuery, CrQuerySelect } from '../query';
 import { CrTuidMain, TuidUI, CrTuidMainSelect, CrTuid, CrTuidInfo } from '../tuid';
 import { MapUI, CrMap } from '../map';
-import { CrEntity, EntityUI, Coordinator } from '../VM';
+import { CrEntity, EntityUI } from '../VM';
 import { PureJSONContent } from '../viewModel';
 import { VmUsq } from './vmUsq';
 
@@ -86,7 +86,15 @@ export class CrUsq extends Coordinator implements Usq {
         else {
             acc = access.split(';').map(v => v.trim()).filter(v => v.length > 0);
         }
-        let usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+        let usqApi:UsqApi;
+        if (usq === '$$$/$unitx') {
+            // 这里假定，点击home link之后，已经设置unit了
+            // 调用 UnitxApi会自动搜索绑定 unitx service
+            usqApi = new UnitxApi(meInFrame.unit);
+        }
+        else {
+            usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
+        }
         this.entities = new Entities(this, usqApi, appId); //, crApp.id, usqId, usqApi);
     }
 

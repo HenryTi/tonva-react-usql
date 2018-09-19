@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { CrEntity, EntityUI, Coordinator } from '../VM';
-import { Entity } from '../../entities';
+import { Coordinator } from 'tonva-tools';
 
 export abstract class Link {
     abstract onClick: () => void;

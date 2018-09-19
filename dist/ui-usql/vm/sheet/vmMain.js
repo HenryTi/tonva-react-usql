@@ -14,6 +14,7 @@ import { List, Muted, LMR } from 'tonva-react-form';
 import { VmEntity } from '../VM';
 export class VmSheetMain extends VmEntity {
     constructor() {
+        //protected coordinator: CrSheet;
         super(...arguments);
         this.newClick = () => this.event('new');
         this.schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);

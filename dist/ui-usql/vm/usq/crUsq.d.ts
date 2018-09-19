@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Coordinator } from 'tonva-tools';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
 import { CrLink } from '../link';
 import { CrBook } from '../book';
@@ -7,7 +8,7 @@ import { CrAction } from '../action';
 import { QueryUI, CrQuery, CrQuerySelect } from '../query';
 import { CrTuidMain, TuidUI, CrTuidMainSelect, CrTuidInfo } from '../tuid';
 import { MapUI, CrMap } from '../map';
-import { CrEntity, EntityUI, Coordinator } from '../VM';
+import { CrEntity, EntityUI } from '../VM';
 import { VmUsq } from './vmUsq';
 export declare type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
 export interface UsqUI {
