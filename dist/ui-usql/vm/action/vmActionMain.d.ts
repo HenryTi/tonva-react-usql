@@ -1,8 +1,8 @@
 /// <reference types="react" />
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { CrAction, ActionUI } from './crAction';
 import { Action } from '../../entities';
-export declare class VmActionMain extends VmEntity<Action, ActionUI, CrAction> {
+export declare class VmActionMain extends VEntity<Action, ActionUI, CrAction> {
     private vmForm;
     private returns;
     private onSubmit;

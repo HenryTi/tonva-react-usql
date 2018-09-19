@@ -6,7 +6,7 @@ export interface State {
     data: any;
 }
 export declare class VmArchived extends VmSheetView {
-    protected coordinator: CrSheet;
+    protected controller: CrSheet;
     brief: any;
     showEntry(inBrief: any): Promise<void>;
     protected view: () => JSX.Element;

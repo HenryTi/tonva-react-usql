@@ -1,9 +1,9 @@
 /// <reference types="react" />
 import { TuidMain } from '../../entities';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { TuidUI, CrTuidMain } from './crTuid';
-export declare abstract class VmTuidListBase extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
-    protected coordinator: CrTuidMain;
+export declare abstract class VmTuidListBase extends VEntity<TuidMain, TuidUI, CrTuidMain> {
+    protected controller: CrTuidMain;
     protected entity: TuidMain;
     ppp: string;
     ownerId: number;

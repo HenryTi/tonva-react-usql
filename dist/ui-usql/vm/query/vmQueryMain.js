@@ -10,9 +10,9 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { List, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { DefaultRow } from './defaultRow';
-export class VmQueryMain extends VmEntity {
+export class VmQueryMain extends VEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {

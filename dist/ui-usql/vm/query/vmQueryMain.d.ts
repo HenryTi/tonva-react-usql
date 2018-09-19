@@ -1,9 +1,9 @@
 /// <reference types="react" />
 import { Query } from '../../entities';
 import { VmForm } from '../form';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { QueryUI, CrQuery } from './crQuery';
-export declare class VmQueryMain extends VmEntity<Query, QueryUI, CrQuery> {
+export declare class VmQueryMain extends VEntity<Query, QueryUI, CrQuery> {
     protected vmForm: VmForm;
     private row;
     showEntry(param?: any): Promise<void>;

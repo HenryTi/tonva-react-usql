@@ -1,11 +1,11 @@
 /// <reference types="react" />
-import { Coordinator } from 'tonva-tools';
+import { Controller } from 'tonva-tools';
 import { Entities } from '../entities';
 import { CrUsq } from './usq';
 export declare const entitiesCollection: {
     [api: string]: Entities;
 };
-export declare class CrApp extends Coordinator {
+export declare class CrApp extends Controller {
     static instance: CrApp;
     private appOwner;
     private appName;

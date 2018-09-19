@@ -1,6 +1,6 @@
-import { Coordinator } from "tonva-tools";
+import { Controller } from "tonva-tools";
 import { Organization, Team, Section, Post, Sheet } from "./model";
-export declare class OpCoordinator extends Coordinator {
+export declare class OpController extends Controller {
     private crApp;
     private unitxUsq;
     private apps;

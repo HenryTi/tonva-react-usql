@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { UsqApi, Coordinator, UnitxApi, meInFrame } from 'tonva-tools';
+import { UsqApi, Controller, UnitxApi, meInFrame } from 'tonva-tools';
 import { Entities } from '../../entities';
 import { CrLink } from '../link';
 import { CrBook } from '../book';
@@ -17,7 +17,7 @@ import { CrTuidMain, CrTuidMainSelect, CrTuidInfo } from '../tuid';
 import { CrMap } from '../map';
 import { PureJSONContent } from '../viewModel';
 import { VmUsq } from './vmUsq';
-export class CrUsq extends Coordinator {
+export class CrUsq extends Controller {
     constructor(usq, appId, usqId, access, ui) {
         super();
         this.isSysVisible = false;

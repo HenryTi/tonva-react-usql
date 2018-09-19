@@ -10,13 +10,13 @@ import * as React from 'react';
 import { SearchBox, List, Muted } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmTuidMain extends VmEntity {
+import { VEntity } from '../VM';
+export class VmTuidMain extends VEntity {
     constructor() {
         super(...arguments);
-        this.onNew = () => this.event('new'); //this.coordinator.navVm(VmTuidEdit);
-        this.onList = () => this.event('list'); // this.coordinator.navVm(VmTuidList);
-        this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () { return this.event('list', key); }); //await this.coordinator.navVm(VmTuidList, key);
+        this.onNew = () => this.event('new'); //this.controller.navVm(VmTuidEdit);
+        this.onList = () => this.event('list'); // this.controller.navVm(VmTuidList);
+        this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () { return this.event('list', key); }); //await this.controller.navVm(VmTuidList, key);
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -32,7 +32,7 @@ export class VmTuidMain extends VmEntity {
         });
     }
     get view() {
-        let { label, proxyLinks } = this.coordinator;
+        let { label, proxyLinks } = this.controller;
         return () => React.createElement(Page, { header: label }, proxyLinks === undefined ?
             React.createElement(React.Fragment, null,
                 React.createElement(SearchBox, { className: "w-100", onSearch: this.onSearch, placeholder: '搜索' + label }),

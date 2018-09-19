@@ -16,7 +16,7 @@ export class VmSheetAction extends VmSheetView {
         super(...arguments);
         this.actionClick = (action) => __awaiter(this, void 0, void 0, function* () {
             let { id, flow, state } = this.brief;
-            let res = yield this.coordinator.action(id, flow, state, action.name);
+            let res = yield this.controller.action(id, flow, state, action.name);
             alert(JSON.stringify(res));
             yield this.backPage();
         });
@@ -28,7 +28,7 @@ export class VmSheetAction extends VmSheetView {
         });
         this.page = () => {
             let state = this.brief.state;
-            let stateLabel = this.coordinator.getStateLabel(state);
+            let stateLabel = this.controller.getStateLabel(state);
             let { states } = this.entity;
             let s = states.find(v => v.name === state);
             let actionButtons, startButtons;
@@ -54,7 +54,7 @@ export class VmSheetAction extends VmSheetView {
                     "]");
             }
             else {
-                actionButtons = React.createElement("div", { className: "flex-grow-1" }, s.actions.map((v, index) => React.createElement(Button, { key: index, className: "mr-2", color: "primary", onClick: () => this.actionClick(v) }, this.coordinator.getActionLabel(state, v.name))));
+                actionButtons = React.createElement("div", { className: "flex-grow-1" }, s.actions.map((v, index) => React.createElement(Button, { key: index, className: "mr-2", color: "primary", onClick: () => this.actionClick(v) }, this.controller.getActionLabel(state, v.name))));
                 if (state === '$') {
                     startButtons = React.createElement("div", null,
                         React.createElement(Button, { outline: true, className: "ml-2", color: "info", onClick: this.editClick }, "\u4FEE\u6539"),
@@ -75,13 +75,13 @@ export class VmSheetAction extends VmSheetView {
     //vmView: VmView;
     showEntry(sheetId) {
         return __awaiter(this, void 0, void 0, function* () {
-            let { brief, data, flows } = yield this.coordinator.getSheetData(sheetId);
+            let { brief, data, flows } = yield this.controller.getSheetData(sheetId);
             this.brief = brief;
             //this.sheetData = sheetData;
             this.flows = flows;
             this.data = data;
             this.state = this.brief.state;
-            //this.vmView = new VmView(this.coordinator, this.sheetData, this.brief.state, flows);
+            //this.vmView = new VmView(this.controller, this.sheetData, this.brief.state, flows);
             this.vmForm = this.createForm(undefined, this.data);
             this.openPage(this.page);
         });

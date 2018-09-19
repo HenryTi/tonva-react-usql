@@ -1,10 +1,10 @@
 /// <reference types="react" />
 import { VmForm } from '../form';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { TuidMain } from '../../entities';
 import { TuidUI, CrTuidMain } from './crTuid';
 export declare type TypeVmTuidView = typeof VmTuidView;
-export declare class VmTuidView extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
+export declare class VmTuidView extends VEntity<TuidMain, TuidUI, CrTuidMain> {
     vmForm: VmForm;
     id: number;
     showEntry(param?: any): Promise<void>;

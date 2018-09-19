@@ -10,12 +10,12 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmTuidListBase extends VmEntity {
+import { VEntity } from '../VM';
+export class VmTuidListBase extends VEntity {
     constructor() {
         super(...arguments);
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
-            yield this.coordinator.search(key);
+            yield this.controller.search(key);
             //await this.pagedItems.first(key);
         });
         this.renderRow = (item, index) => {
@@ -37,7 +37,7 @@ export class VmTuidListBase extends VmEntity {
             }
             return React.createElement(Page, { header: header },
                 ownerTop,
-                React.createElement(List, { items: this.coordinator.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
+                React.createElement(List, { items: this.controller.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
         });
     }
     showEntry(param) {
@@ -48,7 +48,7 @@ export class VmTuidListBase extends VmEntity {
                 this.ownerId = Number(param);
             // 初始查询, key是空的
             //await this.onSearch('');
-            yield this.coordinator.search('');
+            yield this.controller.search('');
             this.openPage(this.view);
         });
     }

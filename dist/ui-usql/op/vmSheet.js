@@ -94,7 +94,7 @@ export class VmSheet extends VmPage {
         });
     }
     stateClick(state) {
-        let { organizations, teams, sections, posts } = this.coordinator;
+        let { organizations, teams, sections, posts } = this.controller;
         let postTos = {};
         let { tos } = state;
         if (tos !== undefined) {
@@ -347,7 +347,7 @@ export class VmSheet extends VmPage {
                     });
                 }
             }
-            yield this.coordinator.saveSheetStatePosts(this.sheet, stateToName, toArr);
+            yield this.controller.saveSheetStatePosts(this.sheet, stateToName, toArr);
             let state = this.states.find(v => v.name === stateToName);
             state.tos = tos;
             let tosTexts = this.tosTexts(tos);

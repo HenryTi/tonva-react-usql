@@ -1,8 +1,8 @@
 /// <reference types="react" />
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CrSheet, SheetUI } from './crSheet';
-export declare class VmSheetMain extends VmEntity<Sheet, SheetUI, CrSheet> {
+export declare class VmSheetMain extends VEntity<Sheet, SheetUI, CrSheet> {
     showEntry(): Promise<void>;
     newClick: () => Promise<void>;
     schemaClick: () => Promise<void>;

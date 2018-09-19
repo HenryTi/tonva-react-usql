@@ -6,15 +6,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Coordinator, VmPage } from 'tonva-tools';
+import { Controller, VPage } from 'tonva-tools';
 import { VmForm } from './form';
-export class CoordinatorUsq extends Coordinator {
+export class ControllerUsq extends Controller {
     constructor(crUsq) {
         super();
         this.crUsq = crUsq;
     }
 }
-export class CrEntity extends CoordinatorUsq {
+export class CrEntity extends ControllerUsq {
     constructor(crUsq, entity, ui, res) {
         super(crUsq);
         this.entity = entity;
@@ -114,18 +114,18 @@ export class CrEntity extends CoordinatorUsq {
         return this.crUsq.crQuerySelect(queryName);
     }
 }
-export class VmEntity extends VmPage {
-    constructor(coordinator) {
-        super(coordinator);
-        this.entity = coordinator.entity;
-        this.ui = coordinator.ui;
-        this.res = coordinator.res;
+export class VEntity extends VPage {
+    constructor(controller) {
+        super(controller);
+        this.entity = controller.entity;
+        this.ui = controller.ui;
+        this.res = controller.res;
     }
-    get label() { return this.coordinator.label; }
+    get label() { return this.controller.label; }
     createForm(onSubmit, values) {
         if (this._form_$ !== undefined)
             return this._form_$;
-        return this.coordinator.createForm(onSubmit, values);
+        return this.controller.createForm(onSubmit, values);
     }
 }
 //# sourceMappingURL=VM.js.map

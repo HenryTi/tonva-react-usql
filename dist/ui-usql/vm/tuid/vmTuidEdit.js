@@ -10,8 +10,8 @@ import * as React from 'react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmTuidEdit extends VmEntity {
+import { VEntity } from '../VM';
+export class VmTuidEdit extends VEntity {
     constructor() {
         super(...arguments);
         /*
@@ -34,10 +34,10 @@ export class VmTuidEdit extends VmEntity {
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             let { values } = this.vmForm;
-            let ret = yield this.coordinator.entity.save(this.id, values);
+            let ret = yield this.controller.entity.save(this.id, values);
             let { id } = ret;
             if (id < 0) {
-                let { unique } = this.coordinator.entity;
+                let { unique } = this.controller.entity;
                 if (unique !== undefined) {
                     for (let u of unique) {
                         this.vmForm.setError(u, '不能重复');
@@ -58,7 +58,7 @@ export class VmTuidEdit extends VmEntity {
         });
         //protected view = TuidNewPage;
     }
-    //protected coordinator: CrTuidMain;
+    //protected controller: CrTuidMain;
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vmForm = this.createForm(this.onSubmit, param);

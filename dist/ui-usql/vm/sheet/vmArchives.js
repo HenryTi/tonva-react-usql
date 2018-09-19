@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { VmEntity } from '../VM';
-export class VmArchives extends VmEntity {
+import { VEntity } from '../VM';
+export class VmArchives extends VEntity {
     constructor() {
         super(...arguments);
         this.archiveClick = (brief) => __awaiter(this, void 0, void 0, function* () {

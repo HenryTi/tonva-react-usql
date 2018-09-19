@@ -8,13 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import _ from 'lodash';
-import { setXLang, Page, loadAppUsqs, nav, meInFrame, Coordinator } from 'tonva-tools';
+import { setXLang, Page, loadAppUsqs, nav, meInFrame, Controller } from 'tonva-tools';
 import { List, LMR } from 'tonva-react-form';
 import res from '../res';
 import { CrUsq } from './usq';
 import { centerApi } from '../centerApi';
 export const entitiesCollection = {};
-export class CrApp extends Coordinator {
+export class CrApp extends Controller {
     constructor(tonvaApp, ui) {
         super();
         this.crUsqCollection = {};
@@ -164,7 +164,7 @@ export class CrApp extends Coordinator {
     }
     /*
     opClick = async () => {
-        let coord = new OpCoordinator;
+        let coord = new OpController;
         let ret = await coord.call();
         alert('call returned in vmApp: ' + ret);
     }

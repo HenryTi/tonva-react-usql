@@ -8,21 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmActionMain extends VmEntity {
+import { VEntity } from '../VM';
+export class VmActionMain extends VEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            this.returns = yield this.coordinator.submit(this.vmForm.values);
+            this.returns = yield this.controller.submit(this.vmForm.values);
             this.closePage();
             this.openPage(this.resultPage);
         });
         this.mainPage = () => {
-            let { label } = this.coordinator;
+            let { label } = this.controller;
             return React.createElement(Page, { header: label }, this.vmForm.render('mx-3 my-2'));
         };
         this.resultPage = () => {
-            let { label } = this.coordinator;
+            let { label } = this.controller;
             return React.createElement(Page, { header: label, back: "close" },
                 "\u5B8C\u6210\uFF01",
                 React.createElement("pre", null, JSON.stringify(this.returns, undefined, ' ')));

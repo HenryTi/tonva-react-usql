@@ -1,10 +1,10 @@
 /// <reference types="react" />
 import { TuidMain } from '../../entities';
 import { CrLink } from '../link';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
-export declare class VmTuidMain extends VmEntity<TuidMain, TuidUI, CrTuidMain> {
-    protected coordinator: CrTuidMain;
+export declare class VmTuidMain extends VEntity<TuidMain, TuidUI, CrTuidMain> {
+    protected controller: CrTuidMain;
     onNew: () => Promise<void>;
     onList: () => Promise<void>;
     onSearch: (key: string) => Promise<void>;

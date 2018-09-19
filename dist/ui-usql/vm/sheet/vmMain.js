@@ -11,10 +11,10 @@ import { observer } from 'mobx-react';
 import { Button, Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
-import { VmEntity } from '../VM';
-export class VmSheetMain extends VmEntity {
+import { VEntity } from '../VM';
+export class VmSheetMain extends VEntity {
     constructor() {
-        //protected coordinator: CrSheet;
+        //protected controller: CrSheet;
         super(...arguments);
         this.newClick = () => this.event('new');
         this.schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);
@@ -25,10 +25,10 @@ export class VmSheetMain extends VmEntity {
             if (count === 0)
                 return null;
             let badge = React.createElement(Badge, { className: "ml-5 align-self-end", color: "success" }, count);
-            return React.createElement(LMR, { className: "px-3 py-2", left: this.coordinator.getStateLabel(state), right: badge });
+            return React.createElement(LMR, { className: "px-3 py-2", left: this.controller.getStateLabel(state), right: badge });
         };
         this.view = observer(() => {
-            let list = this.coordinator.statesCount.filter(row => row.count);
+            let list = this.controller.statesCount.filter(row => row.count);
             return React.createElement(Page, { header: this.label },
                 React.createElement("div", { className: "mx-3 my-2" },
                     React.createElement(Button, { className: "mr-2", color: "primary", onClick: this.newClick }, "\u65B0\u5EFA"),
@@ -44,7 +44,7 @@ export class VmSheetMain extends VmEntity {
     }
     showEntry() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.coordinator.getStateSheetCount();
+            yield this.controller.getStateSheetCount();
             this.openPage(this.view);
         });
     }

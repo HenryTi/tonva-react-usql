@@ -11,10 +11,10 @@ import classNames from 'classnames';
 export class Link {
 }
 export class CrLink extends Link {
-    constructor(coordinator) {
+    constructor(controller) {
         super();
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
-            yield this.coordinator.start();
+            yield this.controller.start();
         });
         this.view = (className) => {
             return React.createElement("div", { className: classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className), onClick: this.onClick },
@@ -22,9 +22,9 @@ export class CrLink extends Link {
                 " \u00A0 ",
                 this.label);
         };
-        this.coordinator = coordinator;
-        this.icon = coordinator.icon;
-        this.label = coordinator.label;
+        this.controller = controller;
+        this.icon = controller.icon;
+        this.label = controller.label;
     }
     render(className) {
         return React.createElement(this.view, className);

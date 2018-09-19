@@ -8,13 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmSheetNew extends VmEntity {
+import { VEntity } from '../VM';
+export class VmSheetNew extends VEntity {
     constructor() {
-        //protected coordinator: CrSheet;
+        //protected controller: CrSheet;
         super(...arguments);
         this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.coordinator.saveSheet(values);
+            let ret = yield this.controller.saveSheet(values);
             alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
             this.closePage();
         });

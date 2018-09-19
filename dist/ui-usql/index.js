@@ -1,5 +1,5 @@
 export * from './entities';
-export * from './vm';
+export * from './controllers';
 export * from './res';
 export * from './centerApi';
 export function converUIKeyToLowercase(obj) {

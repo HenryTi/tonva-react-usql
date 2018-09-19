@@ -9,8 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, FA, LMR } from 'tonva-react-form';
-import { VmEntity } from '../VM';
-export class VmSheetList extends VmEntity {
+import { VEntity } from '../VM';
+export class VmSheetList extends VEntity {
     constructor() {
         super(...arguments);
         this.rowClick = (brief) => __awaiter(this, void 0, void 0, function* () {
@@ -42,7 +42,7 @@ export class VmSheetList extends VmEntity {
     showEntry(item) {
         return __awaiter(this, void 0, void 0, function* () {
             this.stateName = item.state;
-            this.stateLabel = this.coordinator.getStateLabel(this.stateName);
+            this.stateLabel = this.controller.getStateLabel(this.stateName);
             yield this.entity.getStateSheets(this.stateName, 0, 30);
             this.openPage(this.view);
         });

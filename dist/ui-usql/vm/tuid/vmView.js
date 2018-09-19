@@ -11,8 +11,8 @@ import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmTuidView extends VmEntity {
+import { VEntity } from '../VM';
+export class VmTuidView extends VEntity {
     constructor() {
         super(...arguments);
         this.next = () => __awaiter(this, void 0, void 0, function* () {

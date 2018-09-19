@@ -19,7 +19,7 @@ export class VmArchived extends VmSheetView {
     }
     showEntry(inBrief) {
         return __awaiter(this, void 0, void 0, function* () {
-            let { brief, data, flows } = yield this.coordinator.getArchived(inBrief.id);
+            let { brief, data, flows } = yield this.controller.getArchived(inBrief.id);
             this.brief = brief;
             this.data = data;
             this.flows = flows;

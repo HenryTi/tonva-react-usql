@@ -1,9 +1,9 @@
 /// <reference types="react" />
 import { Sheet } from '../../entities';
 import { VmForm } from '../form';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { CrSheet, SheetUI } from './crSheet';
-export declare abstract class VmSheetView extends VmEntity<Sheet, SheetUI, CrSheet> {
+export declare abstract class VmSheetView extends VEntity<Sheet, SheetUI, CrSheet> {
     vmForm: VmForm;
     data: any;
     state: string;

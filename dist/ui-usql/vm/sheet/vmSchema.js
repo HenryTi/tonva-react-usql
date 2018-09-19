@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmSheetSchema extends VmEntity {
+import { VEntity } from '../VM';
+export class VmSheetSchema extends VEntity {
     constructor() {
         super(...arguments);
         this.view = () => React.createElement(Page, { header: this.label + "模板" },

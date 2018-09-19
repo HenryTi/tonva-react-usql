@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Page, meInFrame, Coordinator } from "tonva-tools";
+import { Page, meInFrame, Controller } from "tonva-tools";
 import React from "react";
 import { List, Muted, LMR } from "tonva-react-form";
 import { CrApp } from '../vm/crApp';
@@ -14,7 +14,7 @@ import { centerApi } from "../centerApi";
 import { entitiesRes } from '../res';
 import { VmSheet } from './vmSheet';
 // 单据跟操作的绑定设置
-export class OpCoordinator extends Coordinator {
+export class OpController extends Controller {
     constructor() {
         super(...arguments);
         this.appRender = (app, index) => {

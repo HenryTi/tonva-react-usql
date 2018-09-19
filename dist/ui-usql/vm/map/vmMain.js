@@ -11,8 +11,8 @@ import { observer } from 'mobx-react';
 import * as className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
-import { VmEntity } from '../VM';
-export class VmMapMain extends VmEntity {
+import { VEntity } from '../VM';
+export class VmMapMain extends VEntity {
     constructor() {
         super(...arguments);
         this.itemRender = (item, index) => {
@@ -20,11 +20,11 @@ export class VmMapMain extends VmEntity {
         };
         this.ItemRow = observer(({ item }) => {
             let { tuid, box, children, isLeaf, keyIndex } = item;
-            let keyUI = this.coordinator.keyUIs[keyIndex];
+            let keyUI = this.controller.keyUIs[keyIndex];
             let { content: keyContent, none: keyNone } = keyUI;
-            let add = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.coordinator.addClick(item) },
+            let add = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.addClick(item) },
                 React.createElement(FA, { name: "plus" }));
-            let remove = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.coordinator.removeClick(item) },
+            let remove = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.removeClick(item) },
                 React.createElement(FA, { className: "text-info", name: "trash" }));
             let right;
             if (isLeaf === false) {
@@ -60,7 +60,7 @@ export class VmMapMain extends VmEntity {
     }
     get view() {
         return () => React.createElement(Page, { header: this.label },
-            React.createElement(List, { items: this.coordinator.items, item: { className: 'my-2', onClick: undefined, render: this.itemRender } }));
+            React.createElement(List, { items: this.controller.items, item: { className: 'my-2', onClick: undefined, render: this.itemRender } }));
     }
     ;
 }

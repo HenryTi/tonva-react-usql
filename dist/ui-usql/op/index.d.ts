@@ -1,1 +1,1 @@
-export { OpCoordinator } from './op';
+export { OpController } from './op';

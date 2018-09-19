@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Coordinator } from 'tonva-tools';
+import { Controller } from 'tonva-tools';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
 import { CrLink } from '../link';
 import { CrBook } from '../book';
@@ -30,7 +30,7 @@ export interface UsqUI {
     };
     res?: any;
 }
-export declare class CrUsq extends Coordinator implements Usq {
+export declare class CrUsq extends Controller implements Usq {
     private access;
     private ui;
     private CrTuidMain;

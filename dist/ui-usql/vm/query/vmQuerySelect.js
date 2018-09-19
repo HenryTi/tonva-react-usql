@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page, PagedItems } from 'tonva-tools';
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { DefaultRow } from './defaultRow';
-export class VmQuerySelect extends VmEntity {
+export class VmQuerySelect extends VEntity {
     constructor() {
         super(...arguments);
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
@@ -32,7 +32,7 @@ export class VmQuerySelect extends VmEntity {
         return __awaiter(this, void 0, void 0, function* () {
             let { row, selectRow } = this.ui;
             this.row = selectRow || row || DefaultRow;
-            this.entity = this.coordinator.entity;
+            this.entity = this.controller.entity;
             this.pagedItems = new QueryPagedItems(this.entity);
             yield this.onSearch(param);
             this.openPage(this.view);

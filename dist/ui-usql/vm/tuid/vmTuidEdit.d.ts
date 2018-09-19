@@ -1,9 +1,9 @@
 /// <reference types="react" />
-import { VmEntity } from '../VM';
+import { VEntity } from '../VM';
 import { CrTuidMain, TuidUI } from './crTuid';
 import { Tuid } from '../../entities';
 export declare type TypeVmTuidEdit = typeof VmTuidEdit;
-export declare class VmTuidEdit extends VmEntity<Tuid, TuidUI, CrTuidMain> {
+export declare class VmTuidEdit extends VEntity<Tuid, TuidUI, CrTuidMain> {
     private vmForm;
     private id;
     showEntry(param?: any): Promise<void>;
