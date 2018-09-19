@@ -40,7 +40,7 @@ export declare abstract class VmInputControl extends VField {
     protected onBlur: () => void;
     protected onChange: (evt: React.ChangeEvent<any>) => void;
     protected onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-    protected view: () => JSX.Element;
+    protected view: any;
 }
 export declare const RedMark: () => JSX.Element;
 export declare class VmStringField extends VmInputControl {

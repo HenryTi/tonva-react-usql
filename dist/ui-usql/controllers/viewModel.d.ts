@@ -10,5 +10,5 @@ export declare abstract class ViewModel {
     render(className?: string | string[]): JSX.Element;
 }
 export declare const PureJSONContent: (values: any) => JSX.Element;
-export declare const JSONContent: (values: any) => JSX.Element;
+export declare const JSONContent: any;
 export declare const RowContent: (values: any) => JSX.Element;

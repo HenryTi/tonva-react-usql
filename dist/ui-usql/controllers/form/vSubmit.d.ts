@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { ViewModel } from "../viewModel";
 import { VForm } from './vForm';
 export declare class VSubmit extends ViewModel {
@@ -6,5 +5,5 @@ export declare class VSubmit extends ViewModel {
     constructor(vmForm: VForm);
     caption: string;
     className: string;
-    protected view: () => JSX.Element;
+    protected view: any;
 }

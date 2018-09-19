@@ -13,5 +13,5 @@ export declare class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
     renderRow: (item: any, index: number) => JSX.Element;
     protected view: () => JSX.Element;
     protected pageResult: () => JSX.Element;
-    protected queryResult: (result: any) => JSX.Element;
+    protected queryResult: any;
 }

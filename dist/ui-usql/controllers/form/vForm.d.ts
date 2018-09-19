@@ -54,9 +54,7 @@ export declare class VForm {
     arrEditCaption: string;
     private buildBands;
     private onFormSubmit;
-    protected view: ({ className }: {
-        className: string;
-    }) => JSX.Element;
+    protected view: any;
     readonly values: any;
     setValues(initValues: any): void;
     readonly isOk: boolean;

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Field, Tuid } from '../../../entities';
 import { VField } from "./vField";
 import { FieldUI } from '../../formUI';
@@ -9,5 +8,5 @@ export declare class VTuidField extends VField {
     protected tuid: Tuid;
     constructor(field: Field, fieldUI: FieldUI, vmForm: VForm);
     onClick: () => Promise<void>;
-    protected view: () => JSX.Element;
+    protected view: any;
 }

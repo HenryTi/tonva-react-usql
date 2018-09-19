@@ -4,10 +4,10 @@ import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
 export declare class VmSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
     showEntry(): Promise<void>;
-    newClick: () => Promise<void>;
-    schemaClick: () => Promise<void>;
-    archivesClick: () => Promise<void>;
-    sheetStateClick: (state: any) => Promise<void>;
+    newClick: () => any;
+    schemaClick: () => any;
+    archivesClick: () => any;
+    sheetStateClick: (state: any) => any;
     renderState: (item: any, index: number) => JSX.Element;
-    protected view: () => JSX.Element;
+    protected view: any;
 }
