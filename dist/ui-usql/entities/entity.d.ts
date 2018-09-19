@@ -14,7 +14,7 @@ export declare abstract class Entity {
     returns: ArrFields[];
     constructor(entities: Entities, name: string, typeId: number);
     face: any;
-    protected readonly tvApi: any;
+    protected readonly tvApi: import("tonva-tools/dist/net/usqApi").UsqApi;
     loadSchema(): Promise<void>;
     setSchema(schema: any): void;
     schemaStringify(): string;

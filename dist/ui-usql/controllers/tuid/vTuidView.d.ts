@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { TuidMain } from '../../entities';
@@ -12,5 +13,5 @@ export declare class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     protected finish: () => void;
     protected resetForm(): void;
     protected onSubmit: () => Promise<void>;
-    protected view: any;
+    protected view: () => JSX.Element;
 }

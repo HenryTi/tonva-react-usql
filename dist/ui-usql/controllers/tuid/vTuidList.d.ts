@@ -14,7 +14,7 @@ export declare abstract class VTuidListBase extends VEntity<TuidMain, TuidUI, CT
     protected abstract onSelected(item: any): Promise<void>;
     private callOnSelected;
     clickRow: (item: any) => void;
-    protected view: any;
+    protected view: () => JSX.Element;
 }
 export declare class VTuidList extends VTuidListBase {
     protected onSelected(item: any): Promise<void>;

@@ -30,7 +30,7 @@ export declare class VmArrBand extends VBand {
 export declare class VmFieldsBand extends VBand {
     protected vmFields: VField[];
     constructor(label: string, vmFields: VField[]);
-    protected readonly key: any;
+    protected readonly key: string;
     getVmFields(): VField[];
     protected renderContent(): JSX.Element;
 }

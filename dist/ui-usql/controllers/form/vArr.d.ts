@@ -27,5 +27,5 @@ export declare class VArr extends ViewModel {
     private showRow;
     private editRow;
     private addRow;
-    protected view: any;
+    protected view: () => JSX.Element;
 }
