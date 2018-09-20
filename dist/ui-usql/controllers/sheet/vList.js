@@ -17,7 +17,6 @@ export class VSheetList extends VEntity {
             if (brief.processing === 1)
                 return;
             this.event('action', brief.id);
-            //this.navVm(VmSheetAction, brief.id);
         });
         this.renderRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,

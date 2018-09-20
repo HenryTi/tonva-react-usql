@@ -11,59 +11,59 @@ export class VBand {
             React.createElement("div", { className: "col-sm-10" }, this.renderContent()));
     }
     get key() { return this.label; }
-    getVmFields() { return; }
-    getVmArr() { return; }
-    getVmSubmit() { return; }
+    getVFields() { return; }
+    getVArr() { return; }
+    getVSubmit() { return; }
     renderContent() {
         return React.createElement("div", { className: "form-control form-control-plaintext bg-white border border-info rounded " }, "content");
     }
 }
-export class VmFieldBand extends VBand {
-    constructor(label, vmField) {
+export class VFieldBand extends VBand {
+    constructor(label, vField) {
         super(label);
-        this.vmField = vmField;
+        this.vField = vField;
     }
-    get key() { return this.vmField.name; }
-    getVmFields() { return [this.vmField]; }
+    get key() { return this.vField.name; }
+    getVFields() { return [this.vField]; }
     renderContent() {
-        return this.vmField.render();
+        return this.vField.render();
         /*
         <div className="form-control form-control-plaintext bg-white border border-info rounded ">
-            {this.vmField.render()}
+            {this.vField.render()}
         </div>;*/
     }
 }
-export class VmArrBand extends VBand {
-    constructor(label, vmArr) {
+export class VArrBand extends VBand {
+    constructor(label, vArr) {
         super(label);
-        this.vmArr = vmArr;
+        this.vArr = vArr;
     }
-    get key() { return this.vmArr.name; }
-    getVmArr() { return this.vmArr; }
+    get key() { return this.vArr.name; }
+    getVArr() { return this.vArr; }
     render() {
-        return React.createElement("div", { key: this.key, className: "form-group row flex-column" }, this.vmArr && this.vmArr.render());
+        return React.createElement("div", { key: this.key, className: "form-group row flex-column" }, this.vArr && this.vArr.render());
     }
 }
-export class VmFieldsBand extends VBand {
-    constructor(label, vmFields) {
+export class VFieldsBand extends VBand {
+    constructor(label, vFields) {
         super(label);
-        this.vmFields = vmFields;
+        this.vFields = vFields;
     }
     get key() { return this.label || uid(); }
-    getVmFields() { return this.vmFields; }
+    getVFields() { return this.vFields; }
     renderContent() {
         return React.createElement("div", { className: "form-control form-control-plaintext bg-white border border-info rounded " }, "fields");
     }
 }
-export class VmSubmitBand extends VBand {
-    constructor(vmSubmit) {
+export class VSubmitBand extends VBand {
+    constructor(vSubmit) {
         super(undefined);
-        this.vmSubmit = vmSubmit;
+        this.vSubmit = vSubmit;
     }
-    getVmSubmit() { return this.vmSubmit; }
+    getVSubmit() { return this.vSubmit; }
     render() {
         return React.createElement("div", { key: "$submit", className: "form-group row" },
-            React.createElement("div", { className: "offset-sm-2 col-sm-10" }, this.vmSubmit.render()));
+            React.createElement("div", { className: "offset-sm-2 col-sm-10" }, this.vSubmit.render()));
     }
 }
 //# sourceMappingURL=vBand.js.map

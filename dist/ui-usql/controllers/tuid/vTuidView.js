@@ -16,14 +16,14 @@ export class VTuidView extends VEntity {
     constructor() {
         super(...arguments);
         this.next = () => __awaiter(this, void 0, void 0, function* () {
-            this.vmForm.reset();
+            this.vForm.reset();
             this.closePage();
         });
         this.finish = () => {
             this.closePage(2);
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.save(this.id, this.vmForm.values);
+            let ret = yield this.entity.save(this.id, this.vForm.values);
             if (ret) {
                 alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
             }
@@ -37,15 +37,12 @@ export class VTuidView extends VEntity {
                         React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
             return;
         });
-        this.view = observer(() => React.createElement(Page, { header: this.label }, this.vmForm.render('mx-3 my-2')));
+        this.view = observer(() => React.createElement(Page, { header: this.label }, this.vForm.render('mx-3 my-2')));
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = yield this.entity.valueFromId(param);
-            this.vmForm = this.createForm(undefined, data);
-            //this.vmForm.values = data;
-            //this.vmForm.readOnly = true;
-            //this.vmForm.onSubmit = this.onSubmit;
+            this.vForm = this.createForm(undefined, data);
             this.openPage(this.view);
         });
     }
@@ -55,7 +52,7 @@ export class VTuidView extends VEntity {
         });
     }
     resetForm() {
-        this.vmForm.reset();
+        this.vForm.reset();
     }
 }
 //# sourceMappingURL=vTuidView.js.map

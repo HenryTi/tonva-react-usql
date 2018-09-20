@@ -11,7 +11,6 @@ import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
 export class VBookMain extends VEntity {
     constructor() {
-        //protected controller: CrBook;
         super(...arguments);
         this.view = () => React.createElement(Page, { header: this.label }, "Book");
     }

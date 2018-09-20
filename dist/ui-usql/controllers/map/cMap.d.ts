@@ -7,7 +7,7 @@ export interface MapKey {
     none?: () => string;
 }
 export interface MapUI extends EntityUI {
-    CrMap?: typeof CMap;
+    CMap?: typeof CMap;
     keys?: MapKey[];
 }
 export declare class MapItem {
@@ -31,5 +31,5 @@ export declare class CMap extends CEntity<Map, MapUI> {
     searchOnKey(keyField: Field, param: any): Promise<number>;
     addClick: (item: MapItem) => Promise<void>;
     removeClick: (item: MapItem) => Promise<void>;
-    protected readonly VmMapMain: typeof VMapMain;
+    protected readonly VMapMain: typeof VMapMain;
 }

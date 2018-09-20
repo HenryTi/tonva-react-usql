@@ -10,8 +10,8 @@ import React from 'react';
 import classNames from 'classnames';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VmSheetView } from './vSheetView';
-export class VSheetAction extends VmSheetView {
+import { VSheetView } from './vSheetView';
+export class VSheetAction extends VSheetView {
     constructor() {
         super(...arguments);
         this.actionClick = (action) => __awaiter(this, void 0, void 0, function* () {
@@ -70,19 +70,14 @@ export class VSheetAction extends VmSheetView {
                     React.createElement(this.sheetView, null)));
         };
     }
-    //sheetData: any;
-    //flows: any[];
-    //vmView: VmView;
     showEntry(sheetId) {
         return __awaiter(this, void 0, void 0, function* () {
             let { brief, data, flows } = yield this.controller.getSheetData(sheetId);
             this.brief = brief;
-            //this.sheetData = sheetData;
             this.flows = flows;
             this.data = data;
             this.state = this.brief.state;
-            //this.vmView = new VmView(this.controller, this.sheetData, this.brief.state, flows);
-            this.vmForm = this.createForm(undefined, this.data);
+            this.vForm = this.createForm(undefined, this.data);
             this.openPage(this.page);
         });
     }

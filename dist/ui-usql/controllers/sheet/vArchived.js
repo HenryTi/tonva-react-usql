@@ -8,8 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VmSheetView } from './vSheetView';
-export class VArchived extends VmSheetView {
+import { VSheetView } from './vSheetView';
+export class VArchived extends VSheetView {
     constructor() {
         super(...arguments);
         this.view = () => {
@@ -23,7 +23,7 @@ export class VArchived extends VmSheetView {
             this.brief = brief;
             this.data = data;
             this.flows = flows;
-            this.vmForm = this.createForm(undefined, this.data);
+            this.vForm = this.createForm(undefined, this.data);
             this.openPage(this.view);
         });
     }

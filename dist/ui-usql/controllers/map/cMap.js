@@ -74,8 +74,8 @@ export class CMap extends CEntity {
         this.removeClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let keyField = this.keyFields[item.keyIndex];
             let tuid = keyField._tuid;
-            let crTuidMain = this.crUsq.crTuidMain(tuid.Main);
-            let label = crTuidMain.getLable(tuid);
+            let cTuidMain = this.cUsq.cTuidMain(tuid.Main);
+            let label = cTuidMain.getLable(tuid);
             let confirmDelete;
             if (this.res !== undefined) {
                 let cd = this.res.confirmDelete;
@@ -141,7 +141,7 @@ export class CMap extends CEntity {
                     item = newItem;
                 }
             }
-            yield this.showVPage(this.VmMapMain);
+            yield this.showVPage(this.VMapMain);
         });
     }
     createItem(parent, tuid, box, keyIndex, values) {
@@ -190,11 +190,11 @@ export class CMap extends CEntity {
     searchOnKey(keyField, param) {
         return __awaiter(this, void 0, void 0, function* () {
             let { _tuid } = keyField;
-            let crTuidSelect = this.crUsq.crTuidSelect(_tuid);
-            let ret = yield crTuidSelect.call(param);
+            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let ret = yield cTuidSelect.call(param);
             return _tuid.getIdFromObj(ret);
         });
     }
-    get VmMapMain() { return VMapMain; }
+    get VMapMain() { return VMapMain; }
 }
 //# sourceMappingURL=cMap.js.map

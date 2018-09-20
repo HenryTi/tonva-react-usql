@@ -3,8 +3,8 @@ import { Sheet } from '../../entities';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { CSheet, SheetUI } from './cSheet';
-export declare abstract class VmSheetView extends VEntity<Sheet, SheetUI, CSheet> {
-    vmForm: VForm;
+export declare abstract class VSheetView extends VEntity<Sheet, SheetUI, CSheet> {
+    vForm: VForm;
     data: any;
     state: string;
     flows: any[];

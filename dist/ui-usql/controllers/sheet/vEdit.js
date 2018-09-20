@@ -16,11 +16,11 @@ export class VSheetEdit extends VEntity {
             alert('not implemented');
             return;
         };
-        this.view = () => React.createElement(Page, { header: this.label }, this.vmForm.render());
+        this.view = () => React.createElement(Page, { header: this.label }, this.vForm.render());
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createForm(this.onSubmit, param);
+            this.vForm = this.createForm(this.onSubmit, param);
             this.openPage(this.view);
         });
     }

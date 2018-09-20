@@ -10,13 +10,13 @@ import { VTuidList } from "./vTuidList";
 import { VTuidInfo } from "./vTuidInfo";
 import { TuidPagedItems } from "./pagedItems";
 export interface TuidUI extends EntityUI {
-    CrTuidMain?: typeof CTuidMain;
-    CrTuidSelect?: typeof CTuidMainSelect;
-    CrTuidInfo?: typeof CTuidInfo;
+    CTuidMain: typeof CTuidMain;
+    CTuidSelect?: typeof CTuidMainSelect;
+    CTuidInfo?: typeof CTuidInfo;
     content?: React.StatelessComponent<any>;
     divs?: {
         [div: string]: {
-            CrTuidDivSelect?: typeof CTuidDivSelect;
+            CTuidDivSelect?: typeof CTuidDivSelect;
             content?: React.StatelessComponent<any>;
         };
     };
@@ -28,7 +28,7 @@ export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
     search(key: string): Promise<void>;
 }
 export declare class CTuidMain extends CTuid<TuidMain> {
-    constructor(crUsq: CUsq, entity: TuidMain, ui: TuidUI, res: any);
+    constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res: any);
     getLable(tuid: Tuid): string;
     proxies: {
         [name: string]: TuidMain;
@@ -44,13 +44,13 @@ export declare class CTuidMain extends CTuid<TuidMain> {
 }
 export declare class CTuidMainSelect extends CTuid<TuidMain> {
     protected internalStart(param?: any): Promise<void>;
-    protected readonly VmTuidSelect: typeof VTuidSelect;
+    protected readonly VTuidSelect: typeof VTuidSelect;
 }
 export declare class CTuidDivSelect extends CTuid<TuidDiv> {
     protected internalStart(param?: any): Promise<void>;
-    protected readonly VmTuidSelect: typeof VTuidSelect;
+    protected readonly VTuidSelect: typeof VTuidSelect;
 }
 export declare class CTuidInfo extends CTuid<Tuid> {
     protected internalStart(param?: any): Promise<void>;
-    protected readonly VmTuidInfo: typeof VTuidInfo;
+    protected readonly VTuidInfo: typeof VTuidInfo;
 }

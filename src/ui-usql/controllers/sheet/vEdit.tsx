@@ -6,10 +6,10 @@ import { VEntity } from '../VM';
 import { SheetUI, CSheet } from './cSheet';
 
 export class VSheetEdit extends VEntity<Sheet, SheetUI, CSheet> {
-    vmForm: VForm;
+    vForm: VForm;
 
     async showEntry(param?:any) {
-        this.vmForm = this.createForm(this.onSubmit, param);
+        this.vForm = this.createForm(this.onSubmit, param);
         this.openPage(this.view);
     }
 
@@ -19,6 +19,6 @@ export class VSheetEdit extends VEntity<Sheet, SheetUI, CSheet> {
     }
 
     protected view = () => <Page header={this.label}>
-        {this.vmForm.render()}
+        {this.vForm.render()}
     </Page>;
 }

@@ -1,7 +1,7 @@
 import { VBand } from "./vBand";
 import { VForm, FormOptions } from "./vForm";
 export declare class BandsBuilder {
-    private vmForm;
+    private vForm;
     private onSubmit;
     private fields;
     private arrs;
@@ -10,7 +10,7 @@ export declare class BandsBuilder {
     private res;
     private formValues;
     private readOnly;
-    constructor(vmForm: VForm, options: FormOptions, onSubmit: (values: any) => Promise<void>);
+    constructor(vForm: VForm, options: FormOptions, onSubmit: (values: any) => Promise<void>);
     build(): VBand[];
     private labelFromName;
     private bandsOnFly;
@@ -21,9 +21,9 @@ export declare class BandsBuilder {
     private bandFromArrUI;
     private bandFromFieldsUI;
     private bandFromSubmitUI;
-    private vmFieldFromField;
+    private vFieldFromField;
     private bandFromField;
     private bandFromArr;
-    private vmFieldFromUI;
-    private vmArrFromUI;
+    private vFieldFromUI;
+    private vArrFromUI;
 }

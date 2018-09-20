@@ -11,10 +11,10 @@ export class CBook extends CEntity<Book, BookUI> {
     get icon() {return entitiesRes['action'].icon}
 
     protected async internalStart() {
-        await this.showVPage(this.VmBookMain);
+        await this.showVPage(this.VBookMain);
     }
 
-    protected get VmBookMain():typeof VBookMain {return VBookMain}
+    protected get VBookMain():typeof VBookMain {return VBookMain}
     /*
     async submit(values:any) {
         return this.entity.submit(values);

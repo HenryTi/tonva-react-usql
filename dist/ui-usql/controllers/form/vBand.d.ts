@@ -8,35 +8,35 @@ export declare abstract class VBand {
     constructor(label: string);
     render(): JSX.Element;
     protected readonly key: string;
-    getVmFields(): VField[];
-    getVmArr(): VArr;
-    getVmSubmit(): VSubmit;
+    getVFields(): VField[];
+    getVArr(): VArr;
+    getVSubmit(): VSubmit;
     protected renderContent(): JSX.Element;
 }
-export declare class VmFieldBand extends VBand {
-    protected vmField: VField;
-    constructor(label: string, vmField: VField);
+export declare class VFieldBand extends VBand {
+    protected vField: VField;
+    constructor(label: string, vField: VField);
     protected readonly key: string;
-    getVmFields(): VField[];
+    getVFields(): VField[];
     protected renderContent(): JSX.Element;
 }
-export declare class VmArrBand extends VBand {
-    protected vmArr: VArr;
-    constructor(label: string, vmArr: VArr);
+export declare class VArrBand extends VBand {
+    protected vArr: VArr;
+    constructor(label: string, vArr: VArr);
     protected readonly key: string;
-    getVmArr(): VArr;
+    getVArr(): VArr;
     render(): JSX.Element;
 }
-export declare class VmFieldsBand extends VBand {
-    protected vmFields: VField[];
-    constructor(label: string, vmFields: VField[]);
+export declare class VFieldsBand extends VBand {
+    protected vFields: VField[];
+    constructor(label: string, vFields: VField[]);
     protected readonly key: string;
-    getVmFields(): VField[];
+    getVFields(): VField[];
     protected renderContent(): JSX.Element;
 }
-export declare class VmSubmitBand extends VBand {
-    protected vmSubmit: VSubmit;
-    constructor(vmSubmit: VSubmit);
-    getVmSubmit(): VSubmit;
+export declare class VSubmitBand extends VBand {
+    protected vSubmit: VSubmit;
+    constructor(vSubmit: VSubmit);
+    getVSubmit(): VSubmit;
     render(): JSX.Element;
 }

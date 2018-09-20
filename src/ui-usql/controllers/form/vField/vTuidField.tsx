@@ -13,15 +13,15 @@ const buttonStyle:React.CSSProperties = {
 };
 
 export class VTuidField extends VField {
-    protected vmForm: VForm;
+    protected vForm: VForm;
     protected input: FieldInput;
     protected tuid: Tuid;
 
-    constructor(field:Field, fieldUI: FieldUI, vmForm: VForm) {
-        super(field, fieldUI, vmForm.formValues, vmForm.compute, vmForm.readOnly);
+    constructor(field:Field, fieldUI: FieldUI, vForm: VForm) {
+        super(field, fieldUI, vForm.formValues, vForm.compute, vForm.readOnly);
         this.tuid = field._tuid;
-        this.vmForm = vmForm;
-        this.input = vmForm.inputs[field.name] as FieldInput;
+        this.vForm = vForm;
+        this.input = vForm.inputs[field.name] as FieldInput;
     }
 
     onClick = async () => {
@@ -32,7 +32,7 @@ export class VTuidField extends VField {
         }
         let id:number;
         if (this.input !== undefined) {
-            id = await this.input.call(this.vmForm, this.field.tuid, this.vmForm.values);
+            id = await this.input.call(this.vForm, this.field.tuid, this.vForm.values);
         }
         else {
             alert('call undefined');

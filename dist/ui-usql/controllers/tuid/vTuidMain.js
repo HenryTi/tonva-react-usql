@@ -14,9 +14,9 @@ import { VEntity } from '../VM';
 export class VTuidMain extends VEntity {
     constructor() {
         super(...arguments);
-        this.onNew = () => this.event('new'); //this.controller.navVm(VmTuidEdit);
-        this.onList = () => this.event('list'); // this.controller.navVm(VmTuidList);
-        this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () { return this.event('list', key); }); //await this.controller.navVm(VmTuidList, key);
+        this.onNew = () => this.event('new');
+        this.onList = () => this.event('list');
+        this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () { return this.event('list', key); });
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,30 +44,4 @@ export class VTuidMain extends VEntity {
                     " \u4EE3\u7406\u4E0B\u5217Tuid"), items: proxyLinks, item: { render: this.entityRender, onClick: this.entityClick } }));
     }
 }
-/*
-const MainPage = ({vm}:{vm:VmTuidMain}) => {
-    let {label, onNew, onList, onSearch} = vm;
-    return <Page header={label}>
-        <SearchBox className="w-100" onSearch={onSearch} placeholder={'搜索'+label} />
-        <div className='my-3'>
-            <Button className="ml-3" color="primary" onClick={onNew}>新增</Button>
-            <Button className="ml-3" color="primary" onClick={onList}>列表</Button>
-        </div>
-    </Page>;
-}
-        
-const ProxyMainPage = ({vm}:{vm:VmTuidMain}) => {
-    let {label, crUsq, entity, entityClick, entityRender, proxies} = vm;
-    let arr:string[] = [];
-    for (let i in proxies) {
-        arr.push(i);
-    }
-    return <Page header={label}>
-        <List className="my-2"
-            header={<Muted>{label} 代理下列Tuid</Muted>}
-            items={arr.map(v => crUsq.vmLinkFromName('tuid', v))}
-            item={{render: entityRender, onClick:entityClick}} />
-    </Page>
-}
-*/ 
 //# sourceMappingURL=vTuidMain.js.map

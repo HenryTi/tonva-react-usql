@@ -10,7 +10,6 @@ import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { ViewModel } from "../../viewModel";
 import { RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
-//export type TypeControl = React.StatelessComponent<{vm: ViewModel, className:string}>;
 export class VField extends ViewModel {
     constructor(field, fieldUI, formValues, formCompute, readOnly) {
         super();
@@ -66,7 +65,7 @@ __decorate([
 __decorate([
     computed
 ], VField.prototype, "value", null);
-export class VmUnknownField extends VField {
+export class VUnknownField extends VField {
     constructor() {
         super(...arguments);
         this.view = () => {
@@ -75,7 +74,7 @@ export class VmUnknownField extends VField {
         };
     }
 }
-export class VmInputControl extends VField {
+export class VInputControl extends VField {
     constructor() {
         super(...arguments);
         this.renderError = (className) => {
@@ -154,7 +153,7 @@ export class VmInputControl extends VField {
     }
 }
 export const RedMark = () => React.createElement("b", { style: { color: 'red', position: 'absolute', left: '0.1em', top: '0.5em' } }, "*");
-export class VmStringField extends VmInputControl {
+export class VStringField extends VInputControl {
     constructor() {
         super(...arguments);
         this.inputType = 'text';
@@ -163,7 +162,7 @@ export class VmStringField extends VmInputControl {
 }
 const KeyCode_Neg = 45;
 const KeyCode_Dot = 46;
-export class VmNumberControl extends VmInputControl {
+export class VNumberControl extends VInputControl {
     constructor() {
         super(...arguments);
         this.inputType = 'number';
@@ -251,16 +250,16 @@ export class VmNumberControl extends VmInputControl {
         this.input.value = v;
     }
 }
-export class VmIntField extends VmNumberControl {
+export class VIntField extends VNumberControl {
     buildRules() {
         super.buildRules();
         this.rules.push(new RuleInt);
     }
 }
-export class VmDecField extends VmNumberControl {
+export class VDecField extends VNumberControl {
 }
-export class VmTextField extends VmStringField {
+export class VTextField extends VStringField {
 }
-export class VmDateTimeField extends VmStringField {
+export class VDateTimeField extends VStringField {
 }
 //# sourceMappingURL=vField.js.map

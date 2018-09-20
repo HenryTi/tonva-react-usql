@@ -42,7 +42,6 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     }
 
     view = () => {
-        //let {label, entity, onSelected, renderRow, clickRow, pagedItems, onSearch, ownerId} = vm;
         let header = <SearchBox className="mx-1 w-100"
             initKey={''}
             onSearch={this.onSearch} placeholder={'搜索'+this.label} />;
@@ -55,12 +54,6 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     };
 }
 
-/*
-type TypeRow = typeof Row;
-const Row = observer(({item, vm}:{item:any, vm:VmQuerySelect}) => {
-    return <div className="px-3 py-2">post:{JSON.stringify(item.$post)} - {JSON.stringify(item)}</div>;
-});
-*/
 class QueryPagedItems extends PagedItems<any> {
     private query: Query;
     constructor(query: Query) {

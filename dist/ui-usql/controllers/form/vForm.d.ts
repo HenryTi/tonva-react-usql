@@ -41,13 +41,13 @@ export declare class VForm {
     formValues: FormValues;
     compute: Compute;
     readOnly: boolean;
-    vmFields: {
+    vFields: {
         [name: string]: VField;
     };
-    vmArrs: {
+    vArrs: {
         [name: string]: VArr;
     };
-    vmSubmit: VSubmit;
+    vSubmit: VSubmit;
     inputs: FieldInputs;
     submitCaption: string;
     arrNewCaption: string;

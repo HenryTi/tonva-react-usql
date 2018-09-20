@@ -30,14 +30,14 @@ export class CTuid extends CEntity {
     }
 }
 export class CTuidMain extends CTuid {
-    constructor(crUsq, entity, ui, res) {
-        super(crUsq, entity, ui, res);
+    constructor(cUsq, entity, ui, res) {
+        super(cUsq, entity, ui, res);
         let tuid = this.entity;
         this.proxies = tuid.proxies;
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
-                let link = this.crUsq.linkFromName('tuid', i);
+                let link = this.cUsq.linkFromName('tuid', i);
                 this.proxyLinks.push(link);
             }
         }
@@ -69,14 +69,14 @@ export class CTuidMain extends CTuid {
     }
     onEvent(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            let vm;
+            let v;
             switch (type) {
                 default: return;
                 case 'new':
-                    vm = this.VTuidEdit;
+                    v = this.VTuidEdit;
                     break;
                 case 'list':
-                    vm = this.VTuidList;
+                    v = this.VTuidList;
                     break;
                 case 'edit':
                     yield this.edit(value);
@@ -85,17 +85,19 @@ export class CTuidMain extends CTuid {
                     this.itemChanged(value);
                     return;
             }
-            yield this.showVPage(vm, value);
+            yield this.showVPage(v, value);
         });
     }
     edit(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.entity.load(id);
-            let vm = this.VTuidEdit;
-            yield this.showVPage(vm, ret);
+            let v = this.VTuidEdit;
+            yield this.showVPage(v, ret);
         });
     }
     itemChanged({ id, values }) {
+        if (this.pagedItems === undefined)
+            return;
         let items = this.pagedItems.items;
         let item = items.find(v => v.id === id);
         if (item !== undefined) {
@@ -106,25 +108,25 @@ export class CTuidMain extends CTuid {
 export class CTuidMainSelect extends CTuid {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmTuidSelect, param);
+            yield this.showVPage(this.VTuidSelect, param);
         });
     }
-    get VmTuidSelect() { return VTuidSelect; }
+    get VTuidSelect() { return VTuidSelect; }
 }
 export class CTuidDivSelect extends CTuid {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmTuidSelect, param);
+            yield this.showVPage(this.VTuidSelect, param);
         });
     }
-    get VmTuidSelect() { return VTuidSelect; }
+    get VTuidSelect() { return VTuidSelect; }
 }
 export class CTuidInfo extends CTuid {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmTuidInfo, param);
+            yield this.showVPage(this.VTuidInfo, param);
         });
     }
-    get VmTuidInfo() { return VTuidInfo; }
+    get VTuidInfo() { return VTuidInfo; }
 }
 //# sourceMappingURL=cTuid.js.map

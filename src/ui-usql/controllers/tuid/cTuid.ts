@@ -13,13 +13,13 @@ import { VTuidInfo } from "./vTuidInfo";
 import { TuidPagedItems } from "./pagedItems";
 
 export interface TuidUI extends EntityUI {
-    CrTuidMain?: typeof CTuidMain;
-    CrTuidSelect?: typeof CTuidMainSelect;
-    CrTuidInfo?: typeof CTuidInfo;
+    CTuidMain?: typeof CTuidMain;
+    CTuidSelect?: typeof CTuidMainSelect;
+    CTuidInfo?: typeof CTuidInfo;
     content?: React.StatelessComponent<any>;
     divs?: {
         [div:string]: {
-            CrTuidDivSelect?: typeof CTuidDivSelect;
+            CTuidDivSelect?: typeof CTuidDivSelect;
             content?: React.StatelessComponent<any>;
         }
     }
@@ -43,14 +43,14 @@ export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 }
 
 export class CTuidMain extends CTuid<TuidMain> {
-    constructor(crUsq: CUsq, entity: TuidMain, ui: TuidUI, res) {
-        super(crUsq, entity, ui, res);
+    constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res) {
+        super(cUsq, entity, ui, res);
         let tuid = this.entity;
         this.proxies = tuid.proxies;
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
-                let link = this.crUsq.linkFromName('tuid', i);
+                let link = this.cUsq.linkFromName('tuid', i);
                 this.proxyLinks.push(link);
             }
         }
@@ -84,24 +84,25 @@ export class CTuidMain extends CTuid<TuidMain> {
     }
 
     protected async onEvent(type:string, value:any) {
-        let vm: TypeVPage<CTuidMain>;
+        let v: TypeVPage<CTuidMain>;
         switch (type) {
             default: return;
-            case 'new': vm = this.VTuidEdit; break;
-            case 'list': vm = this.VTuidList; break;
+            case 'new': v = this.VTuidEdit; break;
+            case 'list': v = this.VTuidList; break;
             case 'edit': await this.edit(value); return;
             case 'item-changed': this.itemChanged(value); return;
         }
-        await this.showVPage(vm, value);
+        await this.showVPage(v, value);
     }
 
     protected async edit(id:number) {
         let ret = await this.entity.load(id);
-        let vm = this.VTuidEdit;
-        await this.showVPage(vm, ret);
+        let v = this.VTuidEdit;
+        await this.showVPage(v, ret);
     }
 
     private itemChanged({id, values}:{id:number, values: any}) {
+        if (this.pagedItems === undefined) return;
         let items = this.pagedItems.items;
         let item = items.find(v => v.id === id);
         if (item !== undefined) {
@@ -112,21 +113,21 @@ export class CTuidMain extends CTuid<TuidMain> {
 
 export class CTuidMainSelect extends CTuid<TuidMain> {
     protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VmTuidSelect, param);
+        await this.showVPage(this.VTuidSelect, param);
     }
-    protected get VmTuidSelect():typeof VTuidSelect {return VTuidSelect}
+    protected get VTuidSelect():typeof VTuidSelect {return VTuidSelect}
 }
 
 export class CTuidDivSelect extends CTuid<TuidDiv> {
     protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VmTuidSelect, param);
+        await this.showVPage(this.VTuidSelect, param);
     }
-    protected get VmTuidSelect():typeof VTuidSelect {return VTuidSelect}
+    protected get VTuidSelect():typeof VTuidSelect {return VTuidSelect}
 }
 
 export class CTuidInfo extends CTuid<Tuid> {
     protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VmTuidInfo, param);
+        await this.showVPage(this.VTuidInfo, param);
     }
-    protected get VmTuidInfo():typeof VTuidInfo {return VTuidInfo}
+    protected get VTuidInfo():typeof VTuidInfo {return VTuidInfo}
 }

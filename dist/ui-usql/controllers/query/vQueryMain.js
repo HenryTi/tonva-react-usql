@@ -16,28 +16,24 @@ export class VQueryMain extends VEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let params = this.vmForm.values;
+            let params = this.vForm.values;
             if (this.entity.isPaged === true) {
                 yield this.entity.resetPage(30, params);
                 yield this.entity.loadPage();
-                //this.replacePage(<QueryResultPage vm={this} />);
                 this.replacePage(this.pageResult);
             }
             else {
                 let data = yield this.entity.query(params);
-                //let data = await this.unpackReturns(res);
-                //return data;
                 this.replacePage(this.queryResult, data);
             }
         });
         this.again = () => {
-            this.vmForm.reset();
-            //this.replacePage(<QueryPage vm={this} />);
+            this.vForm.reset();
             this.replacePage(this.view);
         };
         this.renderRow = (item, index) => React.createElement(this.row, Object.assign({}, item));
         this.view = () => React.createElement(Page, { header: this.label },
-            this.vmForm.render('mx-3 my-2'),
+            this.vForm.render('mx-3 my-2'),
             this.renderExtra());
         this.pageResult = () => {
             let { name, list } = this.entity;
@@ -57,7 +53,7 @@ export class VQueryMain extends VEntity {
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createForm(this.onSubmit, param);
+            this.vForm = this.createForm(this.onSubmit, param);
             let { row, queryRow } = this.ui;
             this.row = queryRow || row || DefaultRow;
             this.openPage(this.view);

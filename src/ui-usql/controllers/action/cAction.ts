@@ -4,7 +4,7 @@ import { VActionMain } from "./vActionMain";
 import { entitiesRes } from '../../res';
 
 export interface ActionUI extends EntityUI {
-    //main: typeof VmActionMain,
+    //main: typeof VActionMain,
 }
 
 export class CAction extends CEntity<Action, ActionUI> {

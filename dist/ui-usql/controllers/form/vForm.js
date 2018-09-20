@@ -11,8 +11,8 @@ import { BandsBuilder } from './bandsBuilder';
 import { computed, observable } from 'mobx';
 export class VForm {
     constructor(options, onSubmit) {
-        this.vmFields = {};
-        this.vmArrs = {};
+        this.vFields = {};
+        this.vArrs = {};
         this.onFormSubmit = (event) => {
             event.preventDefault();
             return false;
@@ -39,23 +39,23 @@ export class VForm {
         let bandsBuilder = new BandsBuilder(this, options, onSubmit);
         this.bands = bandsBuilder.build();
         for (let band of this.bands) {
-            let vmFields = band.getVmFields();
-            if (vmFields !== undefined)
-                for (let f of vmFields)
-                    this.vmFields[f.name] = f;
-            let vmArr = band.getVmArr();
-            if (vmArr !== undefined)
-                this.vmArrs[vmArr.name] = vmArr;
-            let vmSubmit = band.getVmSubmit();
-            if (vmSubmit !== undefined)
-                this.vmSubmit = vmSubmit;
+            let vFields = band.getVFields();
+            if (vFields !== undefined)
+                for (let f of vFields)
+                    this.vFields[f.name] = f;
+            let vArr = band.getVArr();
+            if (vArr !== undefined)
+                this.vArrs[vArr.name] = vArr;
+            let vSubmit = band.getVSubmit();
+            if (vSubmit !== undefined)
+                this.vSubmit = vSubmit;
         }
     }
     get values() {
         let values = {};
         _.merge(values, this.formValues.values);
-        for (let i in this.vmArrs) {
-            values[i] = this.vmArrs[i].list;
+        for (let i in this.vArrs) {
+            values[i] = this.vArrs[i].list;
         }
         return values;
     }
@@ -75,19 +75,18 @@ export class VForm {
             //}
         }
         // 还要设置arrs的values
-        for (let i in this.vmArrs) {
+        for (let i in this.vArrs) {
             let list = initValues[i];
             if (list === undefined)
                 continue;
-            //this.vmArrs[i].list.push(...list);
             let arrList = values[i];
             arrList.clear();
             arrList.push(...list);
         }
     }
     get isOk() {
-        for (let i in this.vmFields) {
-            if (this.vmFields[i].isOk === false)
+        for (let i in this.vFields) {
+            if (this.vFields[i].isOk === false)
                 return false;
         }
         return true;
@@ -100,28 +99,22 @@ export class VForm {
             values[fn] = null;
             errors[fn] = undefined;
         }
-        for (let i in this.vmFields) {
-            let ctrl = this.vmFields[i];
+        for (let i in this.vFields) {
+            let ctrl = this.vFields[i];
             let cn = ctrl.name;
             if (cn === undefined)
                 continue;
             //if (this.compute !== undefined && this.compute[cn] !== undefined) continue;
             ctrl.setValue(null);
         }
-        for (let i in this.vmArrs) {
-            let vmArr = this.vmArrs[i];
-            vmArr.reset();
+        for (let i in this.vArrs) {
+            let vArr = this.vArrs[i];
+            vArr.reset();
         }
     }
     getValue(fieldName) { return this.formValues.values[fieldName]; }
     setValue(fieldName, value) { this.formValues.values[fieldName] = value; }
     setError(fieldName, error) { this.formValues.errors[fieldName] = error; }
-    /*
-    // 如果要定制control，重载这个函数
-    protected buildControl(field: Field, fieldUI: FieldUI, formValues:FormValues):VmControl {
-        return buildControl(field, fieldUI, formValues, this.readOnly);
-    }
-    */
     buildFieldValues(fields) {
         let v = {};
         for (let f of fields) {

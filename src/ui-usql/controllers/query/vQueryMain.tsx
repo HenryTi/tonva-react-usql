@@ -9,35 +9,31 @@ import { QueryUI, CQuery } from './cQuery';
 import { DefaultRow } from './defaultRow';
 
 export class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
-    protected vmForm: VForm;
+    protected vForm: VForm;
     private row: React.StatelessComponent;
 
     async showEntry(param?:any):Promise<void> {
-        this.vmForm = this.createForm(this.onSubmit, param);
+        this.vForm = this.createForm(this.onSubmit, param);
         let {row, queryRow} = this.ui;
         this.row = queryRow || row || DefaultRow;
         this.openPage(this.view);
     }
 
     onSubmit = async () => {
-        let params = this.vmForm.values;
+        let params = this.vForm.values;
         if (this.entity.isPaged === true) {
             await this.entity.resetPage(30, params);
             await this.entity.loadPage();
-            //this.replacePage(<QueryResultPage vm={this} />);
             this.replacePage(this.pageResult);
         }
         else {
             let data = await this.entity.query(params);
-            //let data = await this.unpackReturns(res);
-            //return data;
             this.replacePage(this.queryResult, data);
         }
     }
 
     again = () => {
-        this.vmForm.reset();
-        //this.replacePage(<QueryPage vm={this} />);
+        this.vForm.reset();
         this.replacePage(this.view);
     }
 
@@ -48,7 +44,7 @@ export class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
     renderRow = (item:any, index:number) => <this.row {...item} />;
 
     protected view = () => <Page header={this.label}>
-        {this.vmForm.render('mx-3 my-2')}
+        {this.vForm.render('mx-3 my-2')}
         {this.renderExtra()}
     </Page>;
 

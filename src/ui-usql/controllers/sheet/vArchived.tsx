@@ -1,17 +1,13 @@
 import * as React from 'react';
-import {Button} from 'reactstrap';
-import {List} from 'tonva-react-form';
 import {Page} from 'tonva-tools';
-import { VmSheetView } from './vSheetView';
-import { VEntity } from '../VM';
-import { Sheet } from '../../entities';
+import { VSheetView } from './vSheetView';
 import { CSheet, SheetUI } from './cSheet';
 
 export interface State {
     flows: any;
     data: any;
 }
-export class VArchived extends VmSheetView { // VmEntity<Sheet, SheetUI> {
+export class VArchived extends VSheetView {
     protected controller: CSheet;
     brief: any;
 
@@ -20,7 +16,7 @@ export class VArchived extends VmSheetView { // VmEntity<Sheet, SheetUI> {
         this.brief = brief;
         this.data = data;
         this.flows = flows;
-        this.vmForm = this.createForm(undefined, this.data);
+        this.vForm = this.createForm(undefined, this.data);
         this.openPage(this.view);
     }
 

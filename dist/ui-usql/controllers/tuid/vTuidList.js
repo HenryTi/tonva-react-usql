@@ -25,7 +25,6 @@ export class VTuidListBase extends VEntity {
             this.callOnSelected(item);
         };
         this.view = observer(() => {
-            //let {label, entity, onSelected, renderRow, clickRow, pagedItems, onSearch, ownerId} = vm;
             let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: this.onSearch, placeholder: '搜索' + this.label });
             let { owner } = this.entity;
             let ownerTop;

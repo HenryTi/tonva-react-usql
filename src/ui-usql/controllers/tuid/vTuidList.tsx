@@ -44,7 +44,6 @@ export abstract class VTuidListBase  extends VEntity<TuidMain, TuidUI, CTuidMain
     }
 
     protected view = observer(() => {
-        //let {label, entity, onSelected, renderRow, clickRow, pagedItems, onSearch, ownerId} = vm;
         let header = <SearchBox className="mx-1 w-100"
             initKey={''}
             onSearch={this.onSearch} placeholder={'搜索'+this.label} />;

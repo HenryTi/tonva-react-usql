@@ -1,11 +1,11 @@
 /// <reference types="react" />
-import { VmSheetView } from './vSheetView';
+import { VSheetView } from './vSheetView';
 import { CSheet } from './cSheet';
 export interface State {
     flows: any;
     data: any;
 }
-export declare class VArchived extends VmSheetView {
+export declare class VArchived extends VSheetView {
     protected controller: CSheet;
     brief: any;
     showEntry(inBrief: any): Promise<void>;

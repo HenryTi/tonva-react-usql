@@ -10,7 +10,6 @@ import { centerApi } from '../centerApi';
 export const entitiesCollection: {[api:string]: Entities} = {};
 
 export class CApp extends Controller {
-    static instance:CApp;
     private appOwner:string;
     private appName:string;
     private ui:any;
@@ -21,7 +20,6 @@ export class CApp extends Controller {
 
     constructor(tonvaApp:string, ui:any) {
         super();
-        CApp.instance = this;
         this.init(tonvaApp, ui);
     }
     private init(tonvaApp:string, ui:any) {
@@ -38,7 +36,7 @@ export class CApp extends Controller {
         this.caption = this.res.caption || 'Tonva';
     }
 
-    crUsqCollection: {[api:string]: CUsq} = {};
+    cUsqCollection: {[usq:string]: CUsq} = {};
     async loadUsqs(): Promise<void> {
         let unit = meInFrame.unit;
         let app = await loadAppUsqs(this.appOwner, this.appName);
@@ -48,32 +46,28 @@ export class CApp extends Controller {
             let {id:usqId, usqOwner, usqName, url, urlDebug, ws, access, token} = appUsq;
             let usq = usqOwner + '/' + usqName;
             let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-            //let crUsq = this.newCrUsq(usqId, api, access, ui);
-            let crUsq = this.newCrUsq(usq, usqId, access, ui);
-            await crUsq.loadSchema();
-            this.crUsqCollection[usq] = crUsq;
+            let cUsq = this.newCUsq(usq, usqId, access, ui);
+            await cUsq.loadSchema();
+            this.cUsqCollection[usq] = cUsq;
         }
     }
 
-    //protected newCrUsq(usqId:number, usq:string, access:string, ui:any) {
-    protected newCrUsq(usq:string, usqId:number, access:string, ui:any) {
-        // 这里是可以重载的，写自己的CrUsq
-        //return new CrUsq(this, usqId, usq, access, ui);
+    protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
         return new CUsq(usq, this.id, usqId, access, ui);
     }
 
     protected caption: string; // = 'View Model 版的 Usql App';
 
-    get crUsqArr():CUsq[] {
+    get cUsqArr():CUsq[] {
         let ret:CUsq[] = [];
-        for (let i in this.crUsqCollection) {
-            ret.push(this.crUsqCollection[i]);
+        for (let i in this.cUsqCollection) {
+            ret.push(this.cUsqCollection[i]);
         }
         return ret;
     }
 
-    getCrUsq(apiName:string):CUsq {
-        return this.crUsqCollection[apiName];
+    getCUsq(apiName:string):CUsq {
+        return this.cUsqCollection[apiName];
     }
 
     async internalStart() {
@@ -139,31 +133,25 @@ export class CApp extends Controller {
                 let usqId = Number(parts[3]);
                 let sheetTypeId = Number(parts[4]);
                 let sheetId = Number(parts[5]);
-                let crUsq = this.getCrUsqFromId(usqId);
-                if (crUsq === undefined) {
+                let cUsq = this.getCUsqFromId(usqId);
+                if (cUsq === undefined) {
                     alert('unknown usqId: ' + usqId);
                     return;
                 }
                 this.clearPrevPages();
                 //nav.replace(<Page header="Sheet">API: {apiId} 编号：{sheetId}</Page>);
-                await crUsq.navSheet(sheetTypeId, sheetId);
+                await cUsq.navSheet(sheetTypeId, sheetId);
                 return;
             }
         }
         this.clearPrevPages();
         nav.push(<this.appPage />);
     }
-    /*
-    opClick = async () => {
-        let coord = new OpController;
-        let ret = await coord.call();
-        alert('call returned in vmApp: ' + ret);
-    }
-    */
-    private getCrUsqFromId(usqId:number): CUsq {
-        for (let i in this.crUsqCollection) {
-            let crUsq = this.crUsqCollection[i];
-            if (crUsq.id === usqId) return crUsq;
+
+    private getCUsqFromId(usqId:number): CUsq {
+        for (let i in this.cUsqCollection) {
+            let cUsq = this.cUsqCollection[i];
+            if (cUsq.id === usqId) return cUsq;
         }
         return;
     }
@@ -189,7 +177,7 @@ export class CApp extends Controller {
 
     protected appPage = () => {
         return <Page header={this.caption} logout={()=>{meInFrame.unit = undefined}}>
-            {this.crUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
+            {this.cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
         </Page>;
     };
     //<LMR className="px-3 py-2 my-2 bg-light"

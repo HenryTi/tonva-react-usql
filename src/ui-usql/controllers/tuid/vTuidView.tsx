@@ -11,15 +11,12 @@ import { TuidUI, CTuidMain } from './cTuid';
 export type TypeVTuidView = typeof VTuidView;
 
 export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
-    vmForm: VForm;
+    vForm: VForm;
     id: number;
 
     async showEntry(param?:any) {
         let data = await this.entity.valueFromId(param)
-        this.vmForm = this.createForm(undefined, data);
-        //this.vmForm.values = data;
-        //this.vmForm.readOnly = true;
-        //this.vmForm.onSubmit = this.onSubmit;
+        this.vForm = this.createForm(undefined, data);
         this.openPage(this.view);
     }
 
@@ -28,7 +25,7 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     }
 
     protected next = async () => {
-        this.vmForm.reset();
+        this.vForm.reset();
         this.closePage();
     }
 
@@ -37,11 +34,11 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     }
 
     protected resetForm() {
-        this.vmForm.reset();
+        this.vForm.reset();
     }
 
     protected onSubmit = async () => {
-        let ret = await this.entity.save(this.id, this.vmForm.values);
+        let ret = await this.entity.save(this.id, this.vForm.values);
         if (ret) {
             alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
         }
@@ -60,6 +57,6 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     }
 
     protected view = observer(() => <Page header={this.label}>
-            {this.vmForm.render('mx-3 my-2')}
+            {this.vForm.render('mx-3 my-2')}
     </Page>);
 }

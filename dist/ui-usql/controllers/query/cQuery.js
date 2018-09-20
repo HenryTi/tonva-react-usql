@@ -16,17 +16,17 @@ export class CQueryBase extends CEntity {
 export class CQuery extends CQueryBase {
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmQueryMain);
+            yield this.showVPage(this.VQueryMain);
         });
     }
-    get VmQueryMain() { return this.ui && this.ui.main || VQueryMain; }
+    get VQueryMain() { return this.ui && this.ui.main || VQueryMain; }
 }
 export class CQuerySelect extends CQueryBase {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmQuerySelect, param);
+            yield this.showVPage(this.VQuerySelect, param);
         });
     }
-    get VmQuerySelect() { return VQuerySelect; }
+    get VQuerySelect() { return VQuerySelect; }
 }
 //# sourceMappingURL=cQuery.js.map

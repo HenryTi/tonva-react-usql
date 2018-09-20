@@ -16,10 +16,10 @@ import { VUsq } from './vUsq';
 export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
 
 export interface UsqUI {
-    CrTuidMain?: typeof CTuidMain;
-    CrQuery?: typeof CQuery;
-    CrQuerySelect?: typeof CQuerySelect;
-    CrMap?: typeof CMap;
+    CTuidMain?: typeof CTuidMain;
+    CQuery?: typeof CQuery;
+    CQuerySelect?: typeof CQuerySelect;
+    CMap?: typeof CMap;
     tuid?: {[name:string]: TuidUI};
     sheet?: {[name:string]: SheetUI};
     map?: {[name:string]: MapUI};
@@ -30,10 +30,10 @@ export interface UsqUI {
 export class CUsq extends Controller implements Usq {
     private access:string;
     private ui:any;
-    private CrTuidMain: typeof CTuidMain;
-    private CrQuery: typeof CQuery;
-    private CrQuerySelect: typeof CQuerySelect;
-    private CrMap: typeof CMap;
+    private CTuidMain: typeof CTuidMain;
+    private CQuery: typeof CQuery;
+    private CQuerySelect: typeof CQuerySelect;
+    private CMap: typeof CMap;
 
     constructor(usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
         super();
@@ -49,10 +49,10 @@ export class CUsq extends Controller implements Usq {
         }
 
         if (ui !== undefined) {
-            this.CrTuidMain = ui.CrTuidMain;
-            this.CrQuery = ui.CrQuery;
-            this.CrQuerySelect = ui.CrQuerySelect;
-            this.CrMap = ui.CrMap;
+            this.CTuidMain = ui.CTuidMain;
+            this.CQuery = ui.CQuery;
+            this.CQuerySelect = ui.CQuerySelect;
+            this.CMap = ui.CMap;
         }
 
         this.res = this.res || {};
@@ -95,7 +95,7 @@ export class CUsq extends Controller implements Usq {
         else {
             usqApi = new UsqApi(baseUrl, usqOwner, usqName, acc, true);
         }
-        this.entities = new Entities(this, usqApi, appId); //, crApp.id, usqId, usqApi);
+        this.entities = new Entities(this, usqApi, appId);
     }
 
     protected async internalStart() {
@@ -167,41 +167,41 @@ export class CUsq extends Controller implements Usq {
             alert('sheetTypeId ' + sheetTypeId + ' is not exists!');
             return;
         }
-        let crSheet = this.crSheet(sheet);
-        await crSheet.startSheet(sheetId);
+        let cSheet = this.cSheet(sheet);
+        await cSheet.startSheet(sheetId);
     }
 
-    crFromName(entityType:EntityType, entityName:string): CEntity<Entity, EntityUI> {
+    cFromName(entityType:EntityType, entityName:string): CEntity<Entity, EntityUI> {
         switch (entityType) {
             case 'sheet':
                 let sheet = this.entities.sheet(entityName);
                 if (sheet === undefined) return;
-                return this.crSheet(sheet);
+                return this.cSheet(sheet);
             case 'action':
                 let action = this.entities.action(entityName);
                 if (action === undefined) return;
-                return this.crAction(action);
+                return this.cAction(action);
             case 'tuid':
                 let tuid = this.entities.tuid(entityName);
                 if (tuid === undefined) return;
-                return this.crTuidMain(tuid);
+                return this.cTuidMain(tuid);
             case 'query':
                 let query = this.entities.query(entityName);
                 if (query === undefined) return;
-                return this.crQuery(query);
+                return this.cQuery(query);
             case 'book':
                 let book = this.entities.book(entityName);
                 if (book === undefined) return;
-                return this.crBook(book);
+                return this.cBook(book);
             case 'map':
                 let map = this.entities.map(entityName);
                 if (map === undefined) return;
-                return this.crMap(map);
+                return this.cMap(map);
             }
         }
 
     linkFromName(entityType:EntityType, entityName:string) {
-        return this.link(this.crFromName(entityType, entityName));
+        return this.link(this.cFromName(entityType, entityName));
     }
 
     private getUI<T extends Entity, UI extends EntityUI>(t:T):{ui:UI, res:any} {
@@ -227,99 +227,79 @@ export class CUsq extends Controller implements Usq {
     }
     */
 
-    link(crEntity:CEntity<Entity, EntityUI>) {
-        return new CLink(crEntity);
+    link(cEntity:CEntity<Entity, EntityUI>) {
+        return new CLink(cEntity);
     }
 
     get tuidLinks() {
-        return this.entities.tuidArr.filter(v => this.isVisible(v)).map(v => this.link(this.crTuidMain(v)));
+        return this.entities.tuidArr.filter(v => this.isVisible(v)).map(v => this.link(this.cTuidMain(v)));
     }
-    crTuidMain(tuid:TuidMain):CTuidMain {
+    cTuidMain(tuid:TuidMain):CTuidMain {
         let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
-        return new (ui && ui.CrTuidMain || this.CrTuidMain || CTuidMain)(this, tuid, ui, res);
+        return new (ui && ui.CTuidMain || this.CTuidMain || CTuidMain)(this, tuid, ui, res);
     }
-    crTuidSelect(tuid:TuidMain):CTuidMainSelect {
+    cTuidSelect(tuid:TuidMain):CTuidMainSelect {
         let {ui, res} = this.getUI<Tuid, TuidUI>(tuid);
-        return new (ui && ui.CrTuidSelect || CTuidMainSelect)(this, tuid, ui, res);
+        return new (ui && ui.CTuidSelect || CTuidMainSelect)(this, tuid, ui, res);
     }
-    crTuidInfo(tuid:Tuid):CTuidInfo {
+    cTuidInfo(tuid:Tuid):CTuidInfo {
         let {ui, res} = this.getUI<Tuid, TuidUI>(tuid);
-        return new (ui && ui.CrTuidInfo || CTuidInfo)(this, tuid, ui, res);
+        return new (ui && ui.CTuidInfo || CTuidInfo)(this, tuid, ui, res);
     }
-    /*
-    newVmTuidView(tuid:Tuid):VmTuidView {
-        let ui = this.getUI<TuidUI>('tuid', tuid.name);
-        let vm = ui && ui.view;
-        if (vm === undefined) vm = VmTuidView;
-        return new vm(this, tuid, ui);
-    }*/
 
-    //get sheetTypeCaption() { return this.getUITypeCaption('sheet') || '凭单'; }
-    //protected newVmSheetLink(vmSheet:CrSheet) {
-    //    return new VmEntityLink(vmSheet);
-    //}
-    crSheet(sheet:Sheet):CSheet {
+    cSheet(sheet:Sheet):CSheet {
         let {ui, res} = this.getUI<Sheet, SheetUI>(sheet);
         return new CSheet(this, sheet, ui, res);
     }
     get sheetLinks() { 
         return this.entities.sheetArr.filter(v => this.isVisible(v)).map(v => {
-            return this.link(this.crSheet(v))
+            return this.link(this.cSheet(v))
         });
     }
 
-    crAction(action:Action):CAction {
+    cAction(action:Action):CAction {
         let {ui, res} = this.getUI<Action, ActionUI>(action);
         return new CAction(this, action, ui, res);
     }
     get actionLinks() { 
         return this.entities.actionArr.filter(v => this.isVisible(v)).map(v => {
-            return this.link(this.crAction(v))
+            return this.link(this.cAction(v))
         });
     }
 
-    crQuery(query:Query):CQuery {
+    cQuery(query:Query):CQuery {
         let {ui, res} = this.getUI<Query, QueryUI>(query);
-        return new (ui && ui.CrQuery || this.CrQuery || CQuery)(this, query, ui, res);
+        return new (ui && ui.CQuery || this.CQuery || CQuery)(this, query, ui, res);
     }
-    crQuerySelect(queryName:string):CQuerySelect {
+    cQuerySelect(queryName:string):CQuerySelect {
         let query = this.entities.query(queryName);
         if (query === undefined) return;
         let {ui, res} = this.getUI<Query, QueryUI>(query);
-        return new (ui && ui.CrQuerySelect || this.CrQuerySelect || CQuerySelect)(this, query, ui, res);
+        return new (ui && ui.CQuerySelect || this.CQuerySelect || CQuerySelect)(this, query, ui, res);
     }
     get queryLinks() {
         return this.entities.queryArr.filter(v => this.isVisible(v)).map(v => {
-            return this.link(this.crQuery(v))
+            return this.link(this.cQuery(v))
         });
     }
     
-    //get bookTypeCaption() { return this.getUITypeCaption('book') || '帐 - 仅供调试程序使用，普通用户不可见' }
-    //newVmBookLink(vmBook:CrBook) {
-    //    return new VmEntityLink(vmBook);
-    //}
-    crBook(book:Book):CBook {
+    cBook(book:Book):CBook {
         let {ui, res} = this.getUI<Book, BookUI>(book);
         return new CBook(this, book, ui, res);
     }
     get bookLinks() { 
         return this.entities.bookArr.filter(v => this.isVisible(v)).map(v => {
-            return this.link(this.crBook(v))
+            return this.link(this.cBook(v))
         });
     }
     
-    /*
-    get mapTypeCaption() { return this.getUITypeCaption('map') || '对照表' }
-    newVmMapLink(vmMap:CrMap) {
-        return new VmEntityLink(vmMap);
-    }*/
-    crMap(map:Map):CMap {
+    cMap(map:Map):CMap {
         let {ui, res} = this.getUI<Map, MapUI>(map);
-        return new (ui && ui.CrMap || this.CrMap || CMap)(this, map, ui, res);
+        return new (ui && ui.CMap || this.CMap || CMap)(this, map, ui, res);
     }
     get mapLinks() { 
         return this.entities.mapArr.filter(v => this.isVisible(v)).map(v => {
-            return this.link(this.crMap(v));
+            return this.link(this.cMap(v));
         });
     }
 
@@ -336,15 +316,15 @@ export class CUsq extends Controller implements Usq {
     }
 
     async showTuid(tuid:Tuid, id:number):Promise<void> {
-        let cr = this.crTuidInfo(tuid);
-        await cr.start(id);
+        let c = this.cTuidInfo(tuid);
+        await c.start(id);
     }
 
-    protected get VmUsq():typeof VUsq {return VUsq}
+    protected get VUsq():typeof VUsq {return VUsq}
 
     render() {
-        let vm = new (this.VmUsq)(this);
-        return vm.render();
+        let v = new (this.VUsq)(this);
+        return v.render();
     }
 }
 

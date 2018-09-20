@@ -12,14 +12,13 @@ import { Button, Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
 import { VEntity } from '../VM';
-export class VmSheetMain extends VEntity {
+export class VSheetMain extends VEntity {
     constructor() {
-        //protected controller: CrSheet;
         super(...arguments);
         this.newClick = () => this.event('new');
-        this.schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);
-        this.archivesClick = () => this.event('archives'); //await this.navVm(this.vmArchives);
-        this.sheetStateClick = (state) => this.event('state', state); // await this.navVm(this.vmSheetList, state);
+        this.schemaClick = () => this.event('schema');
+        this.archivesClick = () => this.event('archives');
+        this.sheetStateClick = (state) => this.event('state', state);
         this.renderState = (item, index) => {
             let { state, count } = item;
             if (count === 0)

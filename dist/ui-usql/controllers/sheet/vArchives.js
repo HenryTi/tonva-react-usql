@@ -17,7 +17,6 @@ export class VArchives extends VEntity {
             if (brief.processing === 1)
                 return;
             this.event('archived', brief);
-            //this.navVm(VmArchived, brief);
         });
         this.archiveRow = (row, index) => {
             let left = React.createElement(React.Fragment, null,

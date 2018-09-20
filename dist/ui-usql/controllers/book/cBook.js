@@ -13,9 +13,9 @@ export class CBook extends CEntity {
     get icon() { return entitiesRes['action'].icon; }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmBookMain);
+            yield this.showVPage(this.VBookMain);
         });
     }
-    get VmBookMain() { return VBookMain; }
+    get VBookMain() { return VBookMain; }
 }
 //# sourceMappingURL=cBook.js.map

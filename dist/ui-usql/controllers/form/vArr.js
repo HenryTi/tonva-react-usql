@@ -17,10 +17,10 @@ export class VArr extends ViewModel {
     constructor(ownerForm, arr, onEditRow) {
         super();
         this.rowPage = () => {
-            return React.createElement(Page, { header: this.label, back: "close" }, this.vmForm.render('p-3'));
+            return React.createElement(Page, { header: this.label, back: "close" }, this.vForm.render('p-3'));
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let values = this.vmForm.values;
+            let values = this.vForm.values;
             yield this.onRowChanged(values);
             //if (this.afterEditRow !== undefined) await this.afterEditRow(values);
         });
@@ -28,7 +28,7 @@ export class VArr extends ViewModel {
             if (this.rowValues === undefined) {
                 this.list.push(rowValues);
                 if (this.onEditRow === undefined)
-                    this.vmForm.reset();
+                    this.vForm.reset();
                 else
                     yield this.onEditRow(undefined, this.onRowChanged);
             }
@@ -47,30 +47,29 @@ export class VArr extends ViewModel {
                 yield this.onEditRow(rowValues, this.onRowChanged);
                 return;
             }
-            this.vmForm.reset();
+            this.vForm.reset();
             if (rowValues !== undefined)
-                this.vmForm.setValues(rowValues);
+                this.vForm.setValues(rowValues);
             nav.push(React.createElement(this.rowPage, null));
         });
         this.editRow = (rowValues) => __awaiter(this, void 0, void 0, function* () {
             this.rowValues = rowValues;
-            let { vmSubmit } = this.vmForm;
-            if (vmSubmit !== undefined) {
-                vmSubmit.caption = this.editSubmitCaption;
-                vmSubmit.className = 'btn btn-outline-success';
+            let { vSubmit } = this.vForm;
+            if (vSubmit !== undefined) {
+                vSubmit.caption = this.editSubmitCaption;
+                vSubmit.className = 'btn btn-outline-success';
             }
             yield this.showRow(rowValues);
         });
         this.addRow = () => __awaiter(this, void 0, void 0, function* () {
             this.rowValues = undefined;
-            let { vmSubmit } = this.vmForm;
-            vmSubmit.caption = this.newSubmitCaption;
-            vmSubmit.className = 'btn btn-outline-success';
+            let { vSubmit } = this.vForm;
+            vSubmit.caption = this.newSubmitCaption;
+            vSubmit.className = 'btn btn-outline-success';
             yield this.showRow(undefined);
-            this.vmForm.reset();
+            this.vForm.reset();
         });
         this.view = observer(() => {
-            //let {label, list, renderItem, start, addClick, header, footer, readOnly} = vm;
             let button;
             if (this.readOnly === false) {
                 button = React.createElement("button", { onClick: this.addRow, type: "button", className: "btn btn-outline-info btn-sm" },
@@ -95,7 +94,7 @@ export class VArr extends ViewModel {
         this.rowContent = JSONContent;
         this.readOnly = readOnly;
         if (this.onEditRow === undefined) {
-            this.vmForm = new VForm({
+            this.vForm = new VForm({
                 fields: fields,
                 arrs: undefined,
                 ui: arrUI,
@@ -112,38 +111,8 @@ export class VArr extends ViewModel {
         this.list = formValues.values[name];
     }
     reset() {
-        this.vmForm.reset();
+        this.vForm.reset();
         this.list.clear();
     }
 }
-/*
-const ArrList = ({vm}:{vm:VmArr}) => {
-    let {label, list, renderItem, start, addClick, header, footer, readOnly} = vm;
-    let button;
-    if (readOnly === false) {
-        button = <button onClick={addClick}
-            type="button"
-            className="btn btn-primary btn-sm">
-            <FA name="plus" />
-        </button>;
-    }
-    header = header || <div className="">
-        <div className="flex-fill align-self-center">{label}</div>
-        {button}
-    </div>;
-    return <List
-        header={header}
-        footer={footer}
-        items={list}
-        item={{render: renderItem, onClick: start}} />;
-};
-
-const RowPage = ({vm}:{vm:VmArr}) => {
-    let {label, vmForm} = vm;
-    
-    return <Page header={label}>
-        {vmForm.render()}
-    </Page>
-}
-*/ 
 //# sourceMappingURL=vArr.js.map

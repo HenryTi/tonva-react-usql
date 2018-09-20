@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { CEntity } from "../VM";
 import { entitiesRes } from '../../res';
-import { VmSheetMain } from "./vMain";
+import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
 import { VSheetEdit } from "./vEdit";
 import { VSheetAction } from "./vSheetAction";
@@ -20,11 +20,11 @@ export class CSheet extends CEntity {
     get icon() { return entitiesRes['sheet'].icon; }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VmSheetMain);
+            yield this.showVPage(this.VSheetMain);
         });
     }
-    get VmSheetMain() {
-        return (this.ui && this.ui.main) || VmSheetMain;
+    get VSheetMain() {
+        return (this.ui && this.ui.main) || VSheetMain;
     }
     onMessage(msg) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -41,29 +41,29 @@ export class CSheet extends CEntity {
     get VSheetAction() { return VSheetAction; }
     onEvent(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            let vm;
+            let c;
             switch (type) {
                 default: return;
                 case 'new':
-                    vm = this.VSheetNew;
+                    c = this.VSheetNew;
                     break;
                 case 'schema':
-                    vm = this.VSheetSchema;
+                    c = this.VSheetSchema;
                     break;
                 case 'archives':
-                    vm = this.VArchives;
+                    c = this.VArchives;
                     break;
                 case 'state':
-                    vm = this.VSheetList;
+                    c = this.VSheetList;
                     break;
                 case 'action':
-                    vm = this.VSheetAction;
+                    c = this.VSheetAction;
                     break;
                 case 'archived':
-                    vm = this.VArchived;
+                    c = this.VArchived;
                     break;
             }
-            yield this.showVPage(vm, value);
+            yield this.showVPage(c, value);
         });
     }
     startSheet(sheetId) {
@@ -71,9 +71,6 @@ export class CSheet extends CEntity {
         return __awaiter(this, void 0, void 0, function* () {
             _super("beforeStart").call(this);
             this.onEvent('action', sheetId);
-            //await this.run(new this.VmSheetAction(this));
-            //let vmAction = (this.ui && this.ui.action) || VmSheetAction;
-            //await this.navVm(vmAction, sheetId);
         });
     }
     getStateUI(stateName) {

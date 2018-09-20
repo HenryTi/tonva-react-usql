@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { Controller, VPage } from 'tonva-tools';
 import { VForm } from './form';
 export class ControllerUsq extends Controller {
-    constructor(crUsq) {
+    constructor(cUsq) {
         super();
-        this.crUsq = crUsq;
+        this.cUsq = cUsq;
     }
 }
 export class CEntity extends ControllerUsq {
-    constructor(crUsq, entity, ui, res) {
-        super(crUsq);
+    constructor(cUsq, entity, ui, res) {
+        super(cUsq);
         this.entity = entity;
         this.ui = ui;
         this.res = res;
@@ -43,11 +43,11 @@ export class CEntity extends ControllerUsq {
             arrEditCaption = this.res['arrEdit'];
         }
         if (submitCaption === undefined)
-            submitCaption = this.crUsq.res['submit'] || 'Submit';
+            submitCaption = this.cUsq.res['submit'] || 'Submit';
         if (arrNewCaption === undefined)
-            arrNewCaption = this.crUsq.res['arrNew'] || 'New';
+            arrNewCaption = this.cUsq.res['arrNew'] || 'New';
         if (arrEditCaption === undefined)
-            arrEditCaption = this.crUsq.res['arrEdit'] || 'Edit';
+            arrEditCaption = this.cUsq.res['arrEdit'] || 'Edit';
         let ret = {
             fields: fields,
             arrs: arrFields,
@@ -88,30 +88,28 @@ export class CEntity extends ControllerUsq {
             ret[name] = {
                 call: this.buildCall(field, arr),
                 content: this.buildContent(field, arr),
-                nullCaption: this.crUsq.getTuidNullCaption(_tuid),
+                nullCaption: this.cUsq.getTuidNullCaption(_tuid),
             };
         }
     }
     buildCall(field, arr) {
         let { _tuid } = field;
         return (form, field, values) => __awaiter(this, void 0, void 0, function* () {
-            let crTuidSelect = this.crUsq.crTuidSelect(_tuid);
-            let ret = yield crTuidSelect.call();
+            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let ret = yield cTuidSelect.call();
             let id = ret.id;
             _tuid.useId(id);
             return id;
         });
     }
     buildContent(field, arr) {
-        //return this.crUsq.getTuidContent(field._tuid);
-        //return JSONContent;
         return;
     }
     getRes() {
         return this.res;
     }
-    crQuerySelect(queryName) {
-        return this.crUsq.crQuerySelect(queryName);
+    cQuerySelect(queryName) {
+        return this.cUsq.cQuerySelect(queryName);
     }
 }
 export class VEntity extends VPage {

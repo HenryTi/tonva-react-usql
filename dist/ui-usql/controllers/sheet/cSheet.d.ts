@@ -2,7 +2,7 @@
 import { IObservableArray } from "mobx";
 import { Sheet, StateCount } from "../../entities";
 import { CEntity, EntityUI } from "../VM";
-import { VmSheetMain } from "./vMain";
+import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
 import { VSheetEdit } from "./vEdit";
 import { VSheetAction } from "./vSheetAction";
@@ -23,7 +23,7 @@ export interface SheetUI extends EntityUI {
     states?: {
         [name: string]: StateUI;
     };
-    main?: typeof VmSheetMain;
+    main?: typeof VSheetMain;
     new?: typeof VSheetNew;
     edit?: typeof VSheetEdit;
     action?: typeof VSheetAction;
@@ -31,7 +31,7 @@ export interface SheetUI extends EntityUI {
 export declare class CSheet extends CEntity<Sheet, SheetUI> {
     readonly icon: JSX.Element;
     protected internalStart(): Promise<void>;
-    protected readonly VmSheetMain: typeof VmSheetMain;
+    protected readonly VSheetMain: typeof VSheetMain;
     protected onMessage(msg: any): Promise<void>;
     protected readonly VSheetNew: typeof VSheetNew;
     protected readonly VSheetEdit: typeof VSheetEdit;

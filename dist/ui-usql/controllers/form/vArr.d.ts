@@ -12,7 +12,7 @@ export declare class VArr extends ViewModel {
     protected rowValues: any;
     protected onEditRow: ArrEditRow;
     protected ownerForm: VForm;
-    protected vmForm: VForm;
+    protected vForm: VForm;
     protected rowContent: TypeContent;
     protected newSubmitCaption: string;
     protected editSubmitCaption: string;

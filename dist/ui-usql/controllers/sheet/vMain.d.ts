@@ -2,7 +2,7 @@
 import { VEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
-export declare class VmSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
+export declare class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
     showEntry(): Promise<void>;
     newClick: () => Promise<void>;
     schemaClick: () => Promise<void>;

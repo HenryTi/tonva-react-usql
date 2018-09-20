@@ -8,5 +8,5 @@ export interface BookUI extends EntityUI {
 export declare class CBook extends CEntity<Book, BookUI> {
     readonly icon: JSX.Element;
     protected internalStart(): Promise<void>;
-    protected readonly VmBookMain: typeof VBookMain;
+    protected readonly VBookMain: typeof VBookMain;
 }

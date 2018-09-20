@@ -16,7 +16,6 @@ export class VArchives extends VEntity<Sheet, SheetUI, CSheet> {
     archiveClick = async (brief:any) => {
         if (brief.processing===1) return;
         this.event('archived', brief);
-        //this.navVm(VmArchived, brief);
     }
     archiveRow = (row:any, index:number) => {
         let left = <>

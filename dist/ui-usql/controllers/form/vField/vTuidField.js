@@ -16,8 +16,8 @@ const buttonStyle = {
     overflow: 'hidden'
 };
 export class VTuidField extends VField {
-    constructor(field, fieldUI, vmForm) {
-        super(field, fieldUI, vmForm.formValues, vmForm.compute, vmForm.readOnly);
+    constructor(field, fieldUI, vForm) {
+        super(field, fieldUI, vForm.formValues, vForm.compute, vForm.readOnly);
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
             if (this.readOnly === true) {
                 //alert('await super.onClick();');
@@ -26,7 +26,7 @@ export class VTuidField extends VField {
             }
             let id;
             if (this.input !== undefined) {
-                id = yield this.input.call(this.vmForm, this.field.tuid, this.vmForm.values);
+                id = yield this.input.call(this.vForm, this.field.tuid, this.vForm.values);
             }
             else {
                 alert('call undefined');
@@ -64,8 +64,8 @@ export class VTuidField extends VField {
                 React.createElement("button", { className: "form-control btn btn-outline-info", type: "button", style: buttonStyle, onClick: this.onClick }, content));
         });
         this.tuid = field._tuid;
-        this.vmForm = vmForm;
-        this.input = vmForm.inputs[field.name];
+        this.vForm = vForm;
+        this.input = vForm.inputs[field.name];
     }
 }
 //# sourceMappingURL=vTuidField.js.map

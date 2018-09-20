@@ -7,11 +7,11 @@ import { CQuerySelect } from './query';
 import { FormUI } from './formUI';
 
 export abstract class ControllerUsq extends Controller{
-    constructor(crUsq: CUsq) {
+    constructor(cUsq: CUsq) {
         super();
-        this.crUsq = crUsq;
+        this.cUsq = cUsq;
     }
-    crUsq: CUsq;
+    cUsq: CUsq;
 }
 
 export interface EntityUI {
@@ -21,8 +21,8 @@ export interface EntityUI {
 }
 
 export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(crUsq: CUsq, entity: T, ui: UI, res: any) {
-        super(crUsq);
+    constructor(cUsq: CUsq, entity: T, ui: UI, res: any) {
+        super(cUsq);
         this.entity = entity;
         this.ui = ui;
         this.res = res;
@@ -52,11 +52,11 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             arrEditCaption = this.res['arrEdit'];
         }
         if (submitCaption === undefined)
-            submitCaption = this.crUsq.res['submit'] || 'Submit';
+            submitCaption = this.cUsq.res['submit'] || 'Submit';
         if (arrNewCaption === undefined)
-            arrNewCaption = this.crUsq.res['arrNew'] || 'New';
+            arrNewCaption = this.cUsq.res['arrNew'] || 'New';
         if (arrEditCaption === undefined)
-            arrEditCaption = this.crUsq.res['arrEdit'] || 'Edit';
+            arrEditCaption = this.cUsq.res['arrEdit'] || 'Edit';
         let ret:FormOptions = {
             fields: fields,
             arrs: arrFields,
@@ -98,7 +98,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             ret[name] = {
                 call: this.buildCall(field, arr),
                 content: this.buildContent(field, arr),
-                nullCaption: this.crUsq.getTuidNullCaption(_tuid),
+                nullCaption: this.cUsq.getTuidNullCaption(_tuid),
             };
         }
     }
@@ -106,8 +106,8 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     protected buildCall(field:Field, arr:string):FieldCall {
         let {_tuid} = field;
         return async (form:VForm, field:string, values:any):Promise<any> => {
-            let crTuidSelect = this.crUsq.crTuidSelect(_tuid as TuidMain);
-            let ret = await crTuidSelect.call();
+            let cTuidSelect = this.cUsq.cTuidSelect(_tuid as TuidMain);
+            let ret = await cTuidSelect.call();
             let id = ret.id;
             _tuid.useId(id);
             return id;
@@ -115,8 +115,6 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     }
 
     protected buildContent(field:Field, arr:string): React.StatelessComponent<any> {
-        //return this.crUsq.getTuidContent(field._tuid);
-        //return JSONContent;
         return;
     }
 
@@ -124,13 +122,12 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         return this.res;
     }
 
-    crQuerySelect(queryName:string):CQuerySelect {
-        return this.crUsq.crQuerySelect(queryName);
+    cQuerySelect(queryName:string):CQuerySelect {
+        return this.cUsq.cQuerySelect(queryName);
     }
 }
 
 export abstract class VEntity<T extends Entity, UI extends EntityUI, C extends CEntity<T, UI>> extends VPage<C> {
-    //protected controller: CrEntity<T, UI>;
     protected entity: T;
     protected ui: UI;
     protected res: any;

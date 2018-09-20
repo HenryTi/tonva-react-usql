@@ -6,8 +6,8 @@ import { VQuerySelect } from "./vQuerySelect";
 import { entitiesRes } from '../../res';
 
 export interface QueryUI extends EntityUI {
-    CrQuery?: typeof CQuery;
-    CrQuerySelect?: typeof CQuerySelect;
+    CQuery?: typeof CQuery;
+    CQuerySelect?: typeof CQuerySelect;
     main?: typeof VQueryMain;
     row?: StatelessComponent;
     queryRow?: StatelessComponent;
@@ -20,16 +20,16 @@ export abstract class CQueryBase extends CEntity<Query, QueryUI> {
 
 export class CQuery extends CQueryBase {
     protected async internalStart() {
-        await this.showVPage(this.VmQueryMain);
+        await this.showVPage(this.VQueryMain);
     }
 
-    protected get VmQueryMain():typeof VQueryMain {return this.ui && this.ui.main || VQueryMain}
+    protected get VQueryMain():typeof VQueryMain {return this.ui && this.ui.main || VQueryMain}
 }
 
 export class CQuerySelect extends CQueryBase {
     protected async internalStart(param?:any) {
-        await this.showVPage(this.VmQuerySelect, param);
+        await this.showVPage(this.VQuerySelect, param);
     }
 
-    protected get VmQuerySelect():typeof VQuerySelect {return VQuerySelect}
+    protected get VQuerySelect():typeof VQuerySelect {return VQuerySelect}
 }

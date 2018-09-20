@@ -8,8 +8,6 @@ import { Rule, RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule'
 import { Field } from '../../../entities';
 import { FieldUI, InputUI, NumberUI, Compute, StringUI } from '../../formUI';
 
-//export type TypeControl = React.StatelessComponent<{vm: ViewModel, className:string}>;
-
 export abstract class VField extends ViewModel {
     protected fieldUI: FieldUI;
     protected field: Field;
@@ -68,7 +66,7 @@ export abstract class VField extends ViewModel {
     }
 }
 
-export class VmUnknownField extends VField {
+export class VUnknownField extends VField {
     protected view = () => {
         let {name, type} = this.fieldUI;
         return <input type="text" className="form-control form-control-plaintext border border-info rounded bg-light"
@@ -76,7 +74,7 @@ export class VmUnknownField extends VField {
     }
 }
 
-export abstract class VmInputControl extends VField {
+export abstract class VInputControl extends VField {
     protected fieldUI: InputUI;
     protected input: HTMLInputElement;
 
@@ -177,7 +175,7 @@ export abstract class VmInputControl extends VField {
 
 export const RedMark = () => <b style={{color:'red', position:'absolute', left:'0.1em', top:'0.5em'}}>*</b>;
 
-export class VmStringField extends VmInputControl {
+export class VStringField extends VInputControl {
     protected fieldUI: StringUI;
     protected inputType:string = 'text';
     protected get maxLength():number {return this.field.size}
@@ -186,7 +184,7 @@ export class VmStringField extends VmInputControl {
 const KeyCode_Neg = 45;
 const KeyCode_Dot = 46;
 
-export abstract class VmNumberControl extends VmInputControl {
+export abstract class VNumberControl extends VInputControl {
     protected fieldUI: NumberUI;
     protected extraChars: number[];
 
@@ -267,20 +265,20 @@ export abstract class VmNumberControl extends VmInputControl {
     }
 }
 
-export class VmIntField extends VmNumberControl {
+export class VIntField extends VNumberControl {
     protected buildRules() {
         super.buildRules();
         this.rules.push(new RuleInt);
     }
 }
 
-export class VmDecField extends VmNumberControl {
+export class VDecField extends VNumberControl {
 }
 
-export class VmTextField extends VmStringField {
+export class VTextField extends VStringField {
 
 }
 
-export class VmDateTimeField extends VmStringField {
+export class VDateTimeField extends VStringField {
 
 }

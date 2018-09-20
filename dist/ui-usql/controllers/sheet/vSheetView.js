@@ -2,30 +2,9 @@ import * as React from 'react';
 import { List, Muted, LMR, EasyDate, FA } from 'tonva-react-form';
 import { VEntity } from '../VM';
 const leftFlowStyle = { width: '8rem' };
-export class VmSheetView extends VEntity {
+export class VSheetView extends VEntity {
     constructor() {
         super(...arguments);
-        /*
-        constructor(crSheet:CrSheet, data: any, state:string, flows:any[]) {
-            super(crSheet);
-            this.data = data;
-            this.state = state;
-            this.flows = flows;
-        }
-        */
-        //async showEntry(param?:any) {}
-        /*
-        render() {
-            this.vmForm = this.createForm(this.data);
-            return <this.view />;
-        }
-        */
-        /*
-        protected get fieldsFormOptions():VmFormOptions {
-            let ret = super.fieldsFormOptions;
-            ret.readOnly = true;
-            return ret;
-        }*/
         this.flowRow = (item, index) => {
             let { date, user, preState, state, action } = item;
             if (action === undefined)
@@ -64,7 +43,7 @@ export class VmSheetView extends VEntity {
                 removed = React.createElement("div", { className: "mx-3 my-2", style: { color: 'red' } }, "\u672C\u5355\u636E\u4F5C\u5E9F");
             return React.createElement("div", null,
                 removed,
-                this.vmForm.render(),
+                this.vForm.render(),
                 React.createElement(List, { header: React.createElement(Muted, { className: "mx-3 my-1" }, "\u6D41\u7A0B"), items: this.flows, item: { render: this.flowRow } }));
         };
     }

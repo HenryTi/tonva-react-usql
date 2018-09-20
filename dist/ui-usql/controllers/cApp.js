@@ -17,7 +17,7 @@ export const entitiesCollection = {};
 export class CApp extends Controller {
     constructor(tonvaApp, ui) {
         super();
-        this.crUsqCollection = {};
+        this.cUsqCollection = {};
         this.renderRow = (item, index) => {
             let { id, nick, name } = item;
             return React.createElement(LMR, { className: "p-2", right: 'id: ' + id },
@@ -28,7 +28,7 @@ export class CApp extends Controller {
             yield this.start();
         });
         this.appPage = () => {
-            return React.createElement(Page, { header: this.caption, logout: () => { meInFrame.unit = undefined; } }, this.crUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render())));
+            return React.createElement(Page, { header: this.caption, logout: () => { meInFrame.unit = undefined; } }, this.cUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render())));
         };
         //<LMR className="px-3 py-2 my-2 bg-light"
         //left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
@@ -37,7 +37,6 @@ export class CApp extends Controller {
             return React.createElement(Page, { header: "\u9009\u62E9\u5C0F\u53F7", logout: true },
                 React.createElement(List, { items: this.appUnits, item: { render: this.renderRow, onClick: this.onRowClick } }));
         };
-        CApp.instance = this;
         this.init(tonvaApp, ui);
     }
     init(tonvaApp, ui) {
@@ -64,28 +63,24 @@ export class CApp extends Controller {
                 let { id: usqId, usqOwner, usqName, url, urlDebug, ws, access, token } = appUsq;
                 let usq = usqOwner + '/' + usqName;
                 let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-                //let crUsq = this.newCrUsq(usqId, api, access, ui);
-                let crUsq = this.newCrUsq(usq, usqId, access, ui);
-                yield crUsq.loadSchema();
-                this.crUsqCollection[usq] = crUsq;
+                let cUsq = this.newCUsq(usq, usqId, access, ui);
+                yield cUsq.loadSchema();
+                this.cUsqCollection[usq] = cUsq;
             }
         });
     }
-    //protected newCrUsq(usqId:number, usq:string, access:string, ui:any) {
-    newCrUsq(usq, usqId, access, ui) {
-        // 这里是可以重载的，写自己的CrUsq
-        //return new CrUsq(this, usqId, usq, access, ui);
+    newCUsq(usq, usqId, access, ui) {
         return new CUsq(usq, this.id, usqId, access, ui);
     }
-    get crUsqArr() {
+    get cUsqArr() {
         let ret = [];
-        for (let i in this.crUsqCollection) {
-            ret.push(this.crUsqCollection[i]);
+        for (let i in this.cUsqCollection) {
+            ret.push(this.cUsqCollection[i]);
         }
         return ret;
     }
-    getCrUsq(apiName) {
-        return this.crUsqCollection[apiName];
+    getCUsq(apiName) {
+        return this.cUsqCollection[apiName];
     }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -147,14 +142,14 @@ export class CApp extends Controller {
                     let usqId = Number(parts[3]);
                     let sheetTypeId = Number(parts[4]);
                     let sheetId = Number(parts[5]);
-                    let crUsq = this.getCrUsqFromId(usqId);
-                    if (crUsq === undefined) {
+                    let cUsq = this.getCUsqFromId(usqId);
+                    if (cUsq === undefined) {
                         alert('unknown usqId: ' + usqId);
                         return;
                     }
                     this.clearPrevPages();
                     //nav.replace(<Page header="Sheet">API: {apiId} 编号：{sheetId}</Page>);
-                    yield crUsq.navSheet(sheetTypeId, sheetId);
+                    yield cUsq.navSheet(sheetTypeId, sheetId);
                     return;
                 }
             }
@@ -162,18 +157,11 @@ export class CApp extends Controller {
             nav.push(React.createElement(this.appPage, null));
         });
     }
-    /*
-    opClick = async () => {
-        let coord = new OpController;
-        let ret = await coord.call();
-        alert('call returned in vmApp: ' + ret);
-    }
-    */
-    getCrUsqFromId(usqId) {
-        for (let i in this.crUsqCollection) {
-            let crUsq = this.crUsqCollection[i];
-            if (crUsq.id === usqId)
-                return crUsq;
+    getCUsqFromId(usqId) {
+        for (let i in this.cUsqCollection) {
+            let cUsq = this.cUsqCollection[i];
+            if (cUsq.id === usqId)
+                return cUsq;
         }
         return;
     }

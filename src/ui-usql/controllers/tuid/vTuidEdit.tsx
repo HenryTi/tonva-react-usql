@@ -11,12 +11,11 @@ import { TuidMain, Tuid } from '../../entities';
 export type TypeVTuidEdit = typeof VTuidEdit;
 
 export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
-    private vmForm: VForm;
+    private vForm: VForm;
     private id: number;
-    //protected controller: CrTuidMain;
 
     async showEntry(param?:any):Promise<void> {
-        this.vmForm = this.createForm(this.onSubmit, param);
+        this.vForm = this.createForm(this.onSubmit, param);
         if (param !== undefined) {
             this.id = param.id;
         }
@@ -25,7 +24,7 @@ export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
 
     protected get editView() {
         return () => <Page header={(this.id===undefined? '新增':'编辑') + ' - ' + this.label}>
-            {this.vmForm.render('mx-3 my-2')}
+            {this.vForm.render('mx-3 my-2')}
         </Page>;
     }
 
@@ -41,7 +40,7 @@ export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
     */
 
     protected next = async () => {
-        this.vmForm.reset();
+        this.vForm.reset();
         this.closePage();
     }
 
@@ -51,18 +50,18 @@ export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
     }
 
     protected resetForm() {
-        this.vmForm.reset();
+        this.vForm.reset();
     }
 
     protected onSubmit = async () => {
-        let {values} = this.vmForm;
+        let {values} = this.vForm;
         let ret = await this.controller.entity.save(this.id, values);
         let {id} = ret;
         if (id < 0) {
             let {unique} = this.controller.entity;
             if (unique !== undefined) {
                 for (let u of unique) {
-                    this.vmForm.setError(u, '不能重复');
+                    this.vForm.setError(u, '不能重复');
                 }
             }
             return;

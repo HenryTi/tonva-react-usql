@@ -9,14 +9,14 @@ import { ViewModel } from "../viewModel";
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 export class VSubmit extends ViewModel {
-    constructor(vmForm) {
+    constructor(vForm) {
         super();
         this.view = observer(() => {
-            let { onSubmit, isOk, formValues } = this.vmForm;
+            let { onSubmit, isOk, formValues } = this.vForm;
             return React.createElement("button", { type: "button", onClick: () => onSubmit(formValues.values), className: this.className, disabled: isOk === false }, this.caption);
         });
-        this.vmForm = vmForm;
-        this.caption = this.vmForm.submitCaption;
+        this.vForm = vForm;
+        this.caption = this.vForm.submitCaption;
         this.className = 'btn btn-primary';
     }
 }

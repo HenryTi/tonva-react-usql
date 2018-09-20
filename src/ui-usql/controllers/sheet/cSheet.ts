@@ -3,7 +3,7 @@ import { TypeVPage } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
 import { CEntity, EntityUI } from "../VM";
 import { entitiesRes } from '../../res';
-import { VmSheetMain } from "./vMain";
+import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
 import { VSheetEdit } from "./vEdit";
 import { VSheetAction } from "./vSheetAction";
@@ -23,7 +23,7 @@ export interface StateUI {
 
 export interface SheetUI extends EntityUI {
     states?: {[name:string]: StateUI};
-    main?: typeof VmSheetMain;
+    main?: typeof VSheetMain;
     new?: typeof VSheetNew;
     edit?: typeof VSheetEdit;
     action?: typeof VSheetAction;
@@ -33,11 +33,11 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     get icon() {return entitiesRes['sheet'].icon}
 
     protected async internalStart() {
-        await this.showVPage(this.VmSheetMain);
+        await this.showVPage(this.VSheetMain);
     }
 
-    protected get VmSheetMain():typeof VmSheetMain {
-        return (this.ui&&this.ui.main) || VmSheetMain;
+    protected get VSheetMain():typeof VSheetMain {
+        return (this.ui&&this.ui.main) || VSheetMain;
     }
 
     protected async onMessage(msg: any):Promise<void> {
@@ -53,25 +53,22 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     protected get VSheetList(): typeof VSheetList {return VSheetList}
     protected get VSheetAction(): typeof VSheetAction {return VSheetAction}
     protected async onEvent(type:string, value:any) {
-        let vm: TypeVPage<CSheet>;
+        let c: TypeVPage<CSheet>;
         switch (type) {
             default: return;
-            case 'new': vm = this.VSheetNew; break;
-            case 'schema': vm = this.VSheetSchema; break;
-            case 'archives': vm = this.VArchives; break;
-            case 'state': vm = this.VSheetList; break;
-            case 'action': vm = this.VSheetAction; break;
-            case 'archived': vm = this.VArchived; break;
+            case 'new': c = this.VSheetNew; break;
+            case 'schema': c = this.VSheetSchema; break;
+            case 'archives': c = this.VArchives; break;
+            case 'state': c = this.VSheetList; break;
+            case 'action': c = this.VSheetAction; break;
+            case 'archived': c = this.VArchived; break;
         }
-        await this.showVPage(vm, value);
+        await this.showVPage(c, value);
     }
 
     async startSheet(sheetId:number) {
         super.beforeStart();
         this.onEvent('action', sheetId);
-        //await this.run(new this.VmSheetAction(this));
-        //let vmAction = (this.ui && this.ui.action) || VmSheetAction;
-        //await this.navVm(vmAction, sheetId);
     }
 
     private getStateUI(stateName:string) {

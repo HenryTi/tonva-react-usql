@@ -5,8 +5,6 @@ import { VEntity } from '../VM';
 import { CBook, BookUI } from './cBook';
 
 export class VBookMain extends VEntity<Book, BookUI, CBook> {
-    //protected controller: CrBook;
-
     async showEntry(param?:any):Promise<void> {
         this.openPage(this.view);
     }

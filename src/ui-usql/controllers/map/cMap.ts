@@ -13,7 +13,7 @@ export interface MapKey {
 }
 
 export interface MapUI extends EntityUI {
-    CrMap?: typeof CMap;
+    CMap?: typeof CMap;
     keys?: MapKey[],
 }
 
@@ -70,7 +70,7 @@ export class CMap extends CEntity<Map, MapUI> {
             }
         }
 
-        await this.showVPage(this.VmMapMain);
+        await this.showVPage(this.VMapMain);
     }
 
     private createItem(parent:MapItem, tuid:Tuid, box:IdBox, keyIndex:number, values?:any) {
@@ -118,8 +118,8 @@ export class CMap extends CEntity<Map, MapUI> {
 
     async searchOnKey(keyField:Field, param):Promise<number> {
         let {_tuid} = keyField;
-        let crTuidSelect = this.crUsq.crTuidSelect(_tuid as TuidMain);
-        let ret = await crTuidSelect.call(param);
+        let cTuidSelect = this.cUsq.cTuidSelect(_tuid as TuidMain);
+        let ret = await cTuidSelect.call(param);
         return _tuid.getIdFromObj(ret);
     }
 
@@ -163,8 +163,8 @@ export class CMap extends CEntity<Map, MapUI> {
     removeClick = async(item:MapItem) => {
         let keyField = this.keyFields[item.keyIndex];
         let tuid = keyField._tuid;
-        let crTuidMain = this.crUsq.crTuidMain(tuid.Main);
-        let label = crTuidMain.getLable(tuid);
+        let cTuidMain = this.cUsq.cTuidMain(tuid.Main);
+        let label = cTuidMain.getLable(tuid);
         let confirmDelete:_.TemplateExecutor;
         if (this.res !== undefined) {
             let cd = this.res.confirmDelete;
@@ -192,7 +192,7 @@ export class CMap extends CEntity<Map, MapUI> {
         if (index >= 0) children.splice(index, 1);
     }
 
-    protected get VmMapMain():typeof VMapMain {return VMapMain}
+    protected get VMapMain():typeof VMapMain {return VMapMain}
     /*
     async submit(values:any) {
         return this.entity.submit(values);

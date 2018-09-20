@@ -22,7 +22,6 @@ export class VQuerySelect extends VEntity {
             this.callOnSelected(item);
         };
         this.view = () => {
-            //let {label, entity, onSelected, renderRow, clickRow, pagedItems, onSearch, ownerId} = vm;
             let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: this.onSearch, placeholder: '搜索' + this.label });
             return React.createElement(Page, { header: header },
                 React.createElement(List, { items: this.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
@@ -50,12 +49,6 @@ export class VQuerySelect extends VEntity {
         this.return(item);
     }
 }
-/*
-type TypeRow = typeof Row;
-const Row = observer(({item, vm}:{item:any, vm:VmQuerySelect}) => {
-    return <div className="px-3 py-2">post:{JSON.stringify(item.$post)} - {JSON.stringify(item)}</div>;
-});
-*/
 class QueryPagedItems extends PagedItems {
     constructor(query) {
         super();

@@ -7,35 +7,11 @@ import { CSheet, SheetUI } from './cSheet';
 
 const leftFlowStyle = {width: '8rem'};
 
-export abstract class VmSheetView extends VEntity<Sheet, SheetUI, CSheet> {
-    vmForm: VForm;
+export abstract class VSheetView extends VEntity<Sheet, SheetUI, CSheet> {
+    vForm: VForm;
     data: any;
     state: string;
     flows:any[];
-
-    /*
-    constructor(crSheet:CrSheet, data: any, state:string, flows:any[]) {
-        super(crSheet);
-        this.data = data;
-        this.state = state;
-        this.flows = flows;
-    }
-    */
-
-    //async showEntry(param?:any) {}
-
-    /*
-    render() {
-        this.vmForm = this.createForm(this.data);
-        return <this.view />;
-    }
-    */
-    /*
-    protected get fieldsFormOptions():VmFormOptions {
-        let ret = super.fieldsFormOptions;
-        ret.readOnly = true;
-        return ret;
-    }*/
 
     flowRow = (item:any, index:number):JSX.Element => {
         let {date, user, preState, state, action} = item;
@@ -66,7 +42,7 @@ export abstract class VmSheetView extends VEntity<Sheet, SheetUI, CSheet> {
             removed = <div className="mx-3 my-2" style={{color:'red'}}>本单据作废</div>;
         return <div>
             {removed}
-            {this.vmForm.render()}
+            {this.vForm.render()}
     
             <List header={<Muted className="mx-3 my-1">流程</Muted>}
                 items={this.flows}

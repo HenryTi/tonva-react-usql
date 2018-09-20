@@ -7,18 +7,16 @@ import { VEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
 
-export class VmSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
-    //protected controller: CrSheet;
-
+export class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
     async showEntry() {
         await this.controller.getStateSheetCount();
         this.openPage(this.view);
     }
 
     newClick = () => this.event('new');
-    schemaClick = () => this.event('schema'); // await this.navVm(this.vmSchema);
-    archivesClick = () => this.event('archives'); //await this.navVm(this.vmArchives);
-    sheetStateClick = (state) => this.event('state', state); // await this.navVm(this.vmSheetList, state);
+    schemaClick = () => this.event('schema'); 
+    archivesClick = () => this.event('archives');
+    sheetStateClick = (state) => this.event('state', state);
 
     renderState = (item:any, index:number) => {
         let {state, count} = item;

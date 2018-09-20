@@ -6,7 +6,6 @@ export declare const entitiesCollection: {
     [api: string]: Entities;
 };
 export declare class CApp extends Controller {
-    static instance: CApp;
     private appOwner;
     private appName;
     private ui;
@@ -16,18 +15,18 @@ export declare class CApp extends Controller {
     appUnits: any[];
     constructor(tonvaApp: string, ui: any);
     private init;
-    crUsqCollection: {
-        [api: string]: CUsq;
+    cUsqCollection: {
+        [usq: string]: CUsq;
     };
     loadUsqs(): Promise<void>;
-    protected newCrUsq(usq: string, usqId: number, access: string, ui: any): CUsq;
+    protected newCUsq(usq: string, usqId: number, access: string, ui: any): CUsq;
     protected caption: string;
-    readonly crUsqArr: CUsq[];
-    getCrUsq(apiName: string): CUsq;
+    readonly cUsqArr: CUsq[];
+    getCUsq(apiName: string): CUsq;
     internalStart(): Promise<void>;
     protected clearPrevPages(): void;
     private showMainPage;
-    private getCrUsqFromId;
+    private getCUsqFromId;
     private loadAppUnits;
     renderRow: (item: any, index: number) => JSX.Element;
     onRowClick: (item: any) => Promise<void>;

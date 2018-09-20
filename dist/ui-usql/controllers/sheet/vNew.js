@@ -11,18 +11,17 @@ import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
 export class VSheetNew extends VEntity {
     constructor() {
-        //protected controller: CrSheet;
         super(...arguments);
         this.onSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
             let ret = yield this.controller.saveSheet(values);
             alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
             this.closePage();
         });
-        this.view = () => React.createElement(Page, { header: this.label }, this.vmForm.render());
+        this.view = () => React.createElement(Page, { header: this.label }, this.vForm.render());
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createForm(this.onSubmit, param);
+            this.vForm = this.createForm(this.onSubmit, param);
             this.openPage(this.view);
         });
     }

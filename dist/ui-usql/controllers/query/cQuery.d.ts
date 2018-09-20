@@ -4,8 +4,8 @@ import { Query } from "../../entities";
 import { VQueryMain } from "./vQueryMain";
 import { VQuerySelect } from "./vQuerySelect";
 export interface QueryUI extends EntityUI {
-    CrQuery?: typeof CQuery;
-    CrQuerySelect?: typeof CQuerySelect;
+    CQuery?: typeof CQuery;
+    CQuerySelect?: typeof CQuerySelect;
     main?: typeof VQueryMain;
     row?: StatelessComponent;
     queryRow?: StatelessComponent;
@@ -16,9 +16,9 @@ export declare abstract class CQueryBase extends CEntity<Query, QueryUI> {
 }
 export declare class CQuery extends CQueryBase {
     protected internalStart(): Promise<void>;
-    protected readonly VmQueryMain: typeof VQueryMain;
+    protected readonly VQueryMain: typeof VQueryMain;
 }
 export declare class CQuerySelect extends CQueryBase {
     protected internalStart(param?: any): Promise<void>;
-    protected readonly VmQuerySelect: typeof VQuerySelect;
+    protected readonly VQuerySelect: typeof VQuerySelect;
 }

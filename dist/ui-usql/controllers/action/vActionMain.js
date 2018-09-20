@@ -13,13 +13,13 @@ export class VActionMain extends VEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            this.returns = yield this.controller.submit(this.vmForm.values);
+            this.returns = yield this.controller.submit(this.vForm.values);
             this.closePage();
             this.openPage(this.resultPage);
         });
         this.mainPage = () => {
             let { label } = this.controller;
-            return React.createElement(Page, { header: label }, this.vmForm.render('mx-3 my-2'));
+            return React.createElement(Page, { header: label }, this.vForm.render('mx-3 my-2'));
         };
         this.resultPage = () => {
             let { label } = this.controller;
@@ -30,7 +30,7 @@ export class VActionMain extends VEntity {
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createForm(this.onSubmit, param);
+            this.vForm = this.createForm(this.onSubmit, param);
             this.openPage(this.mainPage);
         });
     }

@@ -25,7 +25,7 @@ export class VTuidEdit extends VEntity {
         }
         */
         this.next = () => __awaiter(this, void 0, void 0, function* () {
-            this.vmForm.reset();
+            this.vForm.reset();
             this.closePage();
         });
         this.finish = () => {
@@ -33,14 +33,14 @@ export class VTuidEdit extends VEntity {
             this.event('edit-end');
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let { values } = this.vmForm;
+            let { values } = this.vForm;
             let ret = yield this.controller.entity.save(this.id, values);
             let { id } = ret;
             if (id < 0) {
                 let { unique } = this.controller.entity;
                 if (unique !== undefined) {
                     for (let u of unique) {
-                        this.vmForm.setError(u, '不能重复');
+                        this.vForm.setError(u, '不能重复');
                     }
                 }
                 return;
@@ -58,10 +58,9 @@ export class VTuidEdit extends VEntity {
         });
         //protected view = TuidNewPage;
     }
-    //protected controller: CrTuidMain;
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vmForm = this.createForm(this.onSubmit, param);
+            this.vForm = this.createForm(this.onSubmit, param);
             if (param !== undefined) {
                 this.id = param.id;
             }
@@ -69,10 +68,10 @@ export class VTuidEdit extends VEntity {
         });
     }
     get editView() {
-        return () => React.createElement(Page, { header: (this.id === undefined ? '新增' : '编辑') + ' - ' + this.label }, this.vmForm.render('mx-3 my-2'));
+        return () => React.createElement(Page, { header: (this.id === undefined ? '新增' : '编辑') + ' - ' + this.label }, this.vForm.render('mx-3 my-2'));
     }
     resetForm() {
-        this.vmForm.reset();
+        this.vForm.reset();
     }
 }
 /*

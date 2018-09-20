@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { VmSheetView } from './vSheetView';
-export declare class VSheetAction extends VmSheetView {
+import { VSheetView } from './vSheetView';
+export declare class VSheetAction extends VSheetView {
     brief: any;
     showEntry(sheetId: number): Promise<void>;
     actionClick: (action: any) => Promise<void>;

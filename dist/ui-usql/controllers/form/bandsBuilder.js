@@ -1,11 +1,11 @@
-import { VmFieldBand, VmArrBand, VmFieldsBand, VmSubmitBand } from "./vBand";
+import { VFieldBand, VArrBand, VFieldsBand, VSubmitBand } from "./vBand";
 import { VSubmit } from "./vSubmit";
-import { buildVmField, VComputeField } from "./vField";
+import { buildVField, VComputeField } from "./vField";
 import { VArr } from "./vArr";
 import { VTuidField } from "./vField/vTuidField";
 export class BandsBuilder {
-    constructor(vmForm, options, onSubmit) {
-        this.vmForm = vmForm;
+    constructor(vForm, options, onSubmit) {
+        this.vForm = vForm;
         this.onSubmit = onSubmit;
         let { fields, arrs, ui, res } = options;
         this.fields = fields;
@@ -16,8 +16,8 @@ export class BandsBuilder {
             this.compute = compute;
         }
         this.res = res;
-        this.formValues = vmForm.formValues;
-        this.readOnly = vmForm.readOnly;
+        this.formValues = vForm.formValues;
+        this.readOnly = vForm.readOnly;
     }
     build() {
         return this.bandUIs === undefined ? this.bandsOnFly() : this.bandsFromUI();
@@ -38,7 +38,7 @@ export class BandsBuilder {
                 bands.push(this.bandFromArr(arr));
         }
         if (this.onSubmit !== undefined) {
-            bands.push(new VmSubmitBand(new VSubmit(this.vmForm)));
+            bands.push(new VSubmitBand(new VSubmit(this.vForm)));
         }
         return bands;
     }
@@ -67,26 +67,26 @@ export class BandsBuilder {
     }
     bandFromFieldUI(bandUI) {
         let { label } = bandUI;
-        let vmField = this.vmFieldFromUI(bandUI);
-        return new VmFieldBand(label, vmField);
+        let vField = this.vFieldFromUI(bandUI);
+        return new VFieldBand(label, vField);
     }
     bandFromArrUI(bandUI) {
         let { label, name } = bandUI;
-        let vmArr = this.vmArrFromUI(bandUI);
-        return new VmArrBand(label, vmArr);
+        let vArr = this.vArrFromUI(bandUI);
+        return new VArrBand(label, vArr);
     }
     bandFromFieldsUI(bandUI) {
         let { label, fieldUIs } = bandUI;
-        let vmFields = fieldUIs.map(v => this.vmFieldFromUI(v));
-        return new VmFieldsBand(label, vmFields);
+        let vFields = fieldUIs.map(v => this.vFieldFromUI(v));
+        return new VFieldsBand(label, vFields);
     }
     bandFromSubmitUI(bandUI) {
         if (this.onSubmit === undefined)
             return;
-        let vmSubmit = new VSubmit(this.vmForm);
-        return new VmSubmitBand(vmSubmit);
+        let vSubmit = new VSubmit(this.vForm);
+        return new VSubmitBand(vSubmit);
     }
-    vmFieldFromField(field) {
+    vFieldFromField(field) {
         let fieldUI = undefined;
         if (this.compute !== undefined) {
             let fieldCompute = this.compute[field.name];
@@ -94,28 +94,28 @@ export class BandsBuilder {
                 return new VComputeField(field, fieldUI, this.formValues);
             }
         }
-        let ret = buildVmField(field, fieldUI, this.formValues, this.compute, this.readOnly);
+        let ret = buildVField(field, fieldUI, this.formValues, this.compute, this.readOnly);
         if (ret !== undefined)
             return ret;
-        return new VTuidField(field, fieldUI, this.vmForm);
+        return new VTuidField(field, fieldUI, this.vForm);
     }
     bandFromField(field, res) {
         let { name } = field;
-        let vmField = this.vmFieldFromField(field);
-        return new VmFieldBand(this.labelFromName(name, res) || name, vmField);
+        let vField = this.vFieldFromField(field);
+        return new VFieldBand(this.labelFromName(name, res) || name, vField);
     }
     bandFromArr(arr) {
         let { name, fields } = arr;
         //let row = JSONContent;
-        //let bands:VmBand[] = [];
+        //let bands:VBand[] = [];
         //this.bandsFromFields(bands, fields, res);
-        let vmArr = new VArr(this.vmForm, arr); // name, res && res.label || name, row, bands);
-        return new VmArrBand(name, vmArr);
+        let vArr = new VArr(this.vForm, arr); // name, res && res.label || name, row, bands);
+        return new VArrBand(name, vArr);
     }
-    vmFieldFromUI(fieldUI) {
+    vFieldFromUI(fieldUI) {
         return;
     }
-    vmArrFromUI(arrBandUI) {
+    vArrFromUI(arrBandUI) {
         return;
     }
 }

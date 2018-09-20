@@ -8,7 +8,6 @@ import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
 
 export class VSheetList extends VEntity<Sheet, SheetUI, CSheet> {
-    //protected controller: CrSheet;
     stateName: string;
     stateLabel: string;
 
@@ -22,7 +21,6 @@ export class VSheetList extends VEntity<Sheet, SheetUI, CSheet> {
     rowClick = async (brief:any) => {
         if (brief.processing===1) return;
         this.event('action', brief.id);
-        //this.navVm(VmSheetAction, brief.id);
     }
 
     renderRow = (row:any, index:number) => {

@@ -8,7 +8,6 @@ import { VEntity } from '../VM';
 import { CMap, MapItem, MapKey, MapUI } from './cMap';
 
 export class VMapMain extends VEntity<Map, MapUI, CMap> {
-    //protected controller: CrMap;
     private mapKey: MapKey[];
 
     async showEntry(param?:any) {

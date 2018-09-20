@@ -23,10 +23,10 @@ export declare abstract class VField extends ViewModel {
     protected parse(str: string): any;
     readonly readOnly: boolean;
 }
-export declare class VmUnknownField extends VField {
+export declare class VUnknownField extends VField {
     protected view: () => JSX.Element;
 }
-export declare abstract class VmInputControl extends VField {
+export declare abstract class VInputControl extends VField {
     protected fieldUI: InputUI;
     protected input: HTMLInputElement;
     protected inputType: string;
@@ -43,12 +43,12 @@ export declare abstract class VmInputControl extends VField {
     protected view: () => JSX.Element;
 }
 export declare const RedMark: () => JSX.Element;
-export declare class VmStringField extends VmInputControl {
+export declare class VStringField extends VInputControl {
     protected fieldUI: StringUI;
     protected inputType: string;
     protected readonly maxLength: number;
 }
-export declare abstract class VmNumberControl extends VmInputControl {
+export declare abstract class VNumberControl extends VInputControl {
     protected fieldUI: NumberUI;
     protected extraChars: number[];
     protected init(): void;
@@ -59,12 +59,12 @@ export declare abstract class VmNumberControl extends VmInputControl {
     private onKeyDot;
     private onKeyNeg;
 }
-export declare class VmIntField extends VmNumberControl {
+export declare class VIntField extends VNumberControl {
     protected buildRules(): void;
 }
-export declare class VmDecField extends VmNumberControl {
+export declare class VDecField extends VNumberControl {
 }
-export declare class VmTextField extends VmStringField {
+export declare class VTextField extends VStringField {
 }
-export declare class VmDateTimeField extends VmStringField {
+export declare class VDateTimeField extends VStringField {
 }

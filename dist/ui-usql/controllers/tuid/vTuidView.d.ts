@@ -5,7 +5,7 @@ import { TuidMain } from '../../entities';
 import { TuidUI, CTuidMain } from './cTuid';
 export declare type TypeVTuidView = typeof VTuidView;
 export declare class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
-    vmForm: VForm;
+    vForm: VForm;
     id: number;
     showEntry(param?: any): Promise<void>;
     loadId(id: number): Promise<void>;
