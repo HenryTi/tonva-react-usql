@@ -1,13 +1,24 @@
 /// <reference types="react" />
-import { TuidMain } from '../../entities';
+import { TuidMain, TuidDiv } from '../../entities';
 import { VEntity } from '../VM';
-import { TuidUI, CTuidMain } from './cTuid';
-export declare abstract class VTuidListBase extends VEntity<TuidMain, TuidUI, CTuidMain> {
-    protected controller: CTuidMain;
-    protected entity: TuidMain;
-    ppp: string;
-    ownerId: number;
-    param: any;
+import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';
+export declare abstract class VTuidMainListBase extends VEntity<TuidMain, TuidUI, CTuidMain> {
+    protected rowContent: (row: any) => JSX.Element;
+    protected ownerId: number;
+    showEntry(param?: any): Promise<void>;
+    onSearch: (key: string) => Promise<void>;
+    renderRow: (item: any, index: number) => JSX.Element;
+    protected abstract onSelected(item: any): Promise<void>;
+    private callOnSelected;
+    clickRow: (item: any) => void;
+    private rowKey;
+    protected view: () => JSX.Element;
+}
+export declare class VTuidMainList extends VTuidMainListBase {
+    protected onSelected(item: any): Promise<void>;
+}
+export declare abstract class VTuidDivListBase extends VEntity<TuidDiv, TuidUI, CTuidDiv> {
+    protected ownerId: number;
     showEntry(param?: any): Promise<void>;
     onSearch: (key: string) => Promise<void>;
     renderRow: (item: any, index: number) => JSX.Element;
@@ -16,6 +27,6 @@ export declare abstract class VTuidListBase extends VEntity<TuidMain, TuidUI, CT
     clickRow: (item: any) => void;
     protected view: () => JSX.Element;
 }
-export declare class VTuidList extends VTuidListBase {
+export declare class VTuidDivList extends VTuidDivListBase {
     protected onSelected(item: any): Promise<void>;
 }

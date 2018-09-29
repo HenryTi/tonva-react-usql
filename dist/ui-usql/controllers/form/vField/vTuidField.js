@@ -16,17 +16,18 @@ const buttonStyle = {
     overflow: 'hidden'
 };
 export class VTuidField extends VField {
-    constructor(field, fieldUI, vForm) {
-        super(field, fieldUI, vForm.formValues, vForm.compute, vForm.readOnly);
+    constructor(field, fieldUI, fieldRes, vForm) {
+        super(field, fieldUI, fieldRes, vForm.formValues, vForm.compute, vForm.readOnly);
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
             if (this.readOnly === true) {
-                //alert('await super.onClick();');
+                if (!this.value)
+                    return;
                 yield this.tuid.showInfo(this.value.id);
                 return;
             }
             let id;
             if (this.input !== undefined) {
-                id = yield this.input.call(this.vForm, this.field.tuid, this.vForm.values);
+                id = yield this.input.select(this.vForm, this.field, this.vForm.values);
             }
             else {
                 alert('call undefined');
@@ -35,16 +36,17 @@ export class VTuidField extends VField {
             this.setValue(id);
         });
         this.view = observer(() => {
+            let { placeHolder } = this.fieldRes;
+            let disabled = false;
+            let { _ownerField } = this.field;
+            if (_ownerField !== undefined) {
+                let { name, arr } = _ownerField;
+                disabled = this.vForm.getValue(name) === null;
+            }
             let content;
             if (this.value === null)
-                content = React.createElement(React.Fragment, null, this.input.nullCaption);
+                content = React.createElement(React.Fragment, null, placeHolder || this.input.placeHolder);
             else if (typeof this.value === 'object') {
-                //this.tuid.useId(this.value);
-                //let v = this.tuid.valueFromId(this.value);
-                //v.templet = this.input.content;
-                //content = <this.input.content {...v} />;
-                //content = v.content;
-                // content = this.tuid.createID(this.value).content();
                 content = this.value.content();
             }
             else {
@@ -61,7 +63,7 @@ export class VTuidField extends VField {
             }
             return React.createElement(React.Fragment, null,
                 redDot,
-                React.createElement("button", { className: "form-control btn btn-outline-info", type: "button", style: buttonStyle, onClick: this.onClick }, content));
+                React.createElement("button", { className: "form-control btn btn-outline-info", type: "button", disabled: disabled, style: buttonStyle, onClick: this.onClick }, content));
         });
         this.tuid = field._tuid;
         this.vForm = vForm;

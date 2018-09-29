@@ -14,18 +14,21 @@ export declare class VArr extends ViewModel {
     protected ownerForm: VForm;
     protected vForm: VForm;
     protected rowContent: TypeContent;
+    protected none: string;
     protected newSubmitCaption: string;
     protected editSubmitCaption: string;
+    protected addRow: () => Promise<void>;
     name: string;
     list: IObservableArray<any>;
     constructor(ownerForm: VForm, arr: ArrFields, onEditRow?: ArrEditRow);
     reset(): void;
+    setAddRow(addRow: () => Promise<void>): void;
     protected rowPage: () => JSX.Element;
     private onSubmit;
     private onRowChanged;
     private renderItem;
     private showRow;
     private editRow;
-    private addRow;
+    private internalAddRow;
     protected view: () => JSX.Element;
 }

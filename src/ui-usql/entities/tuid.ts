@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {observable, IObservableValue} from 'mobx';
-import * as _ from 'lodash';
+import {observable} from 'mobx';
+import _ from 'lodash';
 import { Entity } from './entity';
 import { Entities, Field, ArrFields } from './entities';
 import { isNumber } from 'util';
@@ -9,6 +9,7 @@ export class IdBox {
     id: number;
     obj?: any;
     content: (templet?:React.StatelessComponent<any>)=>JSX.Element;
+    valueFromFieldName: (fieldName:string)=>IdBox;
 }
 
 const maxCacheSize = 1000;
@@ -40,7 +41,7 @@ export abstract class Tuid extends Entity {
         prototype.content = function(templet?:React.StatelessComponent<any>) {
             let t:Tuid = this._$tuid;
             let com = templet || t.entities.usq.getTuidContent(t);
-            let val = this._$tuid.valueFromId(this.id);
+            let val = t.valueFromId(this.id);
             if (typeof val === 'number') val = {id: val};
             return React.createElement(com, val);
         }
@@ -50,6 +51,10 @@ export abstract class Tuid extends Entity {
                 return this._$tuid.valueFromId(this.id);
             }
         });
+        prototype.valueFromFieldName = function(fieldName:string):IdBox {
+            let t:Tuid = this._$tuid;
+            return t.valueFromFieldName(fieldName, this.obj);
+        };
         prototype.toJSON = function() {return this.id}
     }
     createID(id:number):IdBox {
@@ -76,7 +81,21 @@ export abstract class Tuid extends Entity {
     }
 
     valueFromId(id:number):any {
-        return this.cache.get(id);
+        let v = this.cache.get(id);
+        if (this.owner !== undefined && typeof v === 'object') {
+            v.$owner = this.owner.createID(v.owner); // this.owner.valueFromId(v.owner);
+        }
+        return v;
+    }
+    valueFromFieldName(fieldName:string, obj:any):IdBox {
+        if (obj === undefined) return;
+        let f = this.fields.find(v => v.name === fieldName);
+        if (f === undefined) return;
+        let v = obj[fieldName];
+        let {_tuid} = f;
+        if (_tuid === undefined) return v;
+        let id = typeof v === 'object'? v.id : v;
+        return _tuid.valueFromId(id);
     }
     resetCache(id:number) {
         this.cache.delete(id);
@@ -154,6 +173,11 @@ export abstract class Tuid extends Entity {
         return true;
     }
     protected afterCacheId(tuidValue:any) {
+        for (let f of this.fields) {
+            let {_tuid} = f;
+            if (_tuid === undefined) continue;
+            _tuid.useId(tuidValue[f.name]);
+        }
     }
     async cacheIds():Promise<void> {
         if (this.waitingIds.length === 0) return;
@@ -168,16 +192,18 @@ export abstract class Tuid extends Entity {
         let tuids = await this.tvApi.tuidIds(name, arr, this.waitingIds);
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
+            this.cacheTuidFieldValues(tuidValue);
             this.afterCacheId(tuidValue);
         }
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
         let values = await this.tvApi.tuidGet(this.name, id);
-        this.cacheTuidValues(values);
+        this.cacheValue(values);
+        this.cacheTuidFieldValues(values);
         return values;
     }
-    private cacheTuidValues(values:any) {
+    private cacheTuidFieldValues(values:any) {
         let {fields, arrs} = this.schema;
         this.cacheFieldsInValue(values, fields);
         if (arrs !== undefined) {
@@ -185,7 +211,10 @@ export abstract class Tuid extends Entity {
                 let {name, fields} = arr;
                 let arrValues = values[name];
                 if (arrValues === undefined) continue;
-                this.cacheFieldsInValue(arrValues, fields);
+                for (let row of arrValues) {
+                    row.$owner = this.createID(row.owner); 
+                    this.cacheFieldsInValue(row, fields);
+                }
             }
         }
     }
@@ -204,21 +233,11 @@ export abstract class Tuid extends Entity {
         return await this.tvApi.tuidSave(this.name, params);
     }
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {
-        return this.searchArr(undefined, key, pageStart, pageSize);
-        /*
-        let name:string, arr:string;
-        if (this.owner !== undefined) {
-            name = this.owner.name;
-            arr = this.name;
-        }
-        else {
-            name = this.name;
-            arr = undefined;
-        }
-        let ret = await this.tvApi.tuidSearch(name, arr, undefined, key, pageStart, pageSize);
-        return ret;*/
+        let ret:any[] = await this.searchArr(undefined, key, pageStart, pageSize);
+        return ret;
     }
     async searchArr(owner:number, key:string, pageStart:string|number, pageSize:number):Promise<any> {
+        let {fields} = this.schema;
         let name:string, arr:string;
         if (this.owner !== undefined) {
             name = this.owner.name;
@@ -229,6 +248,10 @@ export abstract class Tuid extends Entity {
             arr = undefined;
         }
         let ret = await this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
+        for (let row of ret) {
+            this.cacheFieldsInValue(row, fields);
+            if (this.owner !== undefined) row.$owner = this.owner.createID(row.owner);
+        }
         return ret;
     }
     async loadArr(arr:string, owner:number, id:number):Promise<any> {
@@ -246,16 +269,6 @@ export abstract class Tuid extends Entity {
     }
     async posArr(arr:string, owner:number, id:number, order:number) {
         return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
-    }
-    async bindSlaveSave(slave:string, first:number, masterId:number, id:number, props:any) {
-        let params = _.clone(props);
-        params["$master"] = masterId;
-        params["$first"] = first;
-        params["$id"] = id;
-        return await this.tvApi.tuidBindSlaveSave(this.name, slave, params);
-    }
-    async bindSlaves(slave:string, masterId:number, order:number, pageSize):Promise<any[]> {
-        return await this.tvApi.tuidBindSlaves(this.name, slave, masterId, order, pageSize);
     }
     
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
@@ -275,13 +288,6 @@ export class TuidMain extends Tuid {
 
     public setSchema(schema:any) {
         super.setSchema(schema);
-        //let {slaves} = schema;
-        //if (slaves === undefined) return;
-        //this.slaves = {};
-        //for (let i in slaves) {
-        //    let slave = slaves[i];
-        //    this.slaves[i] = this.buildSlave(slave);
-        //}
         let {arrs} = schema;
         if (arrs !== undefined) {
             this.divs = {};
@@ -316,6 +322,7 @@ export class TuidMain extends Tuid {
     }
     */
     protected afterCacheId(tuidValue:any) {
+        super.afterCacheId(tuidValue);
         if (this.proxies === undefined) return;
         let {type, $proxy} = tuidValue;
         let pTuid = this.proxies[type];

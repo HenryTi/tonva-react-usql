@@ -25,7 +25,7 @@ export interface FieldsBandUI extends BandUI {
     fieldUIs: FieldUI[];
 }
 export interface ArrUI extends FormUIBase {
-    row?: React.StatelessComponent<any>;
+    rowContent?: React.StatelessComponent<any>;
 }
 export interface ArrBandUI extends BandUI {
     name: string;
@@ -51,7 +51,6 @@ export interface QueryUI extends FieldUI {
 export interface QueryBandUI extends BandUI, QueryUI {
 }
 export interface InputUI extends FieldUI {
-    placeHolder: string;
 }
 export interface StringUI extends InputUI {
     type: 'string';

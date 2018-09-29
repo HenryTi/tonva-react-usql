@@ -13,16 +13,16 @@ export interface EntityUI {
     form?: FormUI;
 }
 export declare abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui: UI, res: any);
+    constructor(cUsq: CUsq, entity: T, ui?: UI, res?: any);
     entity: T;
     ui: UI;
     res: any;
     protected beforeStart(): Promise<void>;
-    createForm(onSubmit: (values: any) => Promise<void>, values?: any): VForm;
+    createForm(onSubmit: (values: any) => Promise<void>, values?: any, readonly?: boolean): VForm;
     private buildFormOptions;
     private buildInputs;
     private buildFieldsInputs;
-    protected buildCall(field: Field, arr: string): FieldCall;
+    protected buildSelect(field: Field, arr: string): FieldCall;
     protected buildContent(field: Field, arr: string): React.StatelessComponent<any>;
     protected getRes(): any;
     cQuerySelect(queryName: string): CQuerySelect;

@@ -11,11 +11,68 @@ import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
-export class VTuidListBase extends VEntity {
+import { RowContent } from '../viewModel';
+export class VTuidMainListBase extends VEntity {
     constructor() {
         super(...arguments);
         this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
-            yield this.controller.search(key);
+            yield this.controller.searchMain(key);
+            //await this.pagedItems.first(key);
+        });
+        this.renderRow = (item, index) => React.createElement(this.rowContent, Object.assign({}, item));
+        this.clickRow = (item) => {
+            this.callOnSelected(item);
+        };
+        this.rowKey = (item) => {
+            let { id } = item;
+            return id;
+        };
+        this.view = observer(() => {
+            let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: this.onSearch, placeholder: '搜索' + this.label });
+            let { owner } = this.entity;
+            let ownerTop;
+            if (owner !== undefined) {
+                let ownerObj = owner.valueFromId(this.ownerId);
+                ownerTop = React.createElement("div", null,
+                    "owner: ",
+                    JSON.stringify(ownerObj));
+            }
+            return React.createElement(Page, { header: header },
+                ownerTop,
+                React.createElement(List, { items: this.controller.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow, key: this.rowKey }, before: '搜索' + this.label + '资料' }));
+        });
+    }
+    showEntry(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.rowContent = this.ui.rowContent || RowContent;
+            if (this.entity.owner !== undefined)
+                this.ownerId = Number(param);
+            // 初始查询, key是空的
+            //await this.onSearch('');
+            yield this.controller.searchMain('');
+            this.openPage(this.view);
+        });
+    }
+    callOnSelected(item) {
+        if (this.onSelected === undefined) {
+            alert('onSelect is undefined');
+            return;
+        }
+        this.onSelected(item);
+    }
+}
+export class VTuidMainList extends VTuidMainListBase {
+    onSelected(item) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.event('edit', item.id);
+        });
+    }
+}
+export class VTuidDivListBase extends VEntity {
+    constructor() {
+        super(...arguments);
+        this.onSearch = (key) => __awaiter(this, void 0, void 0, function* () {
+            yield this.controller.searchMain(key);
             //await this.pagedItems.first(key);
         });
         this.renderRow = (item, index) => {
@@ -42,12 +99,11 @@ export class VTuidListBase extends VEntity {
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             //this.pagedItems = new TuidPagedItems(this.entity);
-            this.param = param;
             if (this.entity.owner !== undefined)
                 this.ownerId = Number(param);
             // 初始查询, key是空的
             //await this.onSearch('');
-            yield this.controller.search('');
+            yield this.controller.searchMain('');
             this.openPage(this.view);
         });
     }
@@ -59,7 +115,7 @@ export class VTuidListBase extends VEntity {
         this.onSelected(item);
     }
 }
-export class VTuidList extends VTuidListBase {
+export class VTuidDivList extends VTuidDivListBase {
     onSelected(item) {
         return __awaiter(this, void 0, void 0, function* () {
             this.event('edit', item.id);

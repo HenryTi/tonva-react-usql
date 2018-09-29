@@ -12,7 +12,7 @@ export declare class BandsBuilder {
     private readOnly;
     constructor(vForm: VForm, options: FormOptions, onSubmit: (values: any) => Promise<void>);
     build(): VBand[];
-    private labelFromName;
+    private resFromName;
     private bandsOnFly;
     private bandsFromFields;
     private bandsFromUI;

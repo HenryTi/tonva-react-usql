@@ -6,18 +6,20 @@ import { VTuidEdit } from './vTuidEdit';
 import { VTuidSelect } from './vTuidSelect';
 import { CUsq } from "../usq/cUsq";
 import { CLink } from "../link";
-import { VTuidList } from "./vTuidList";
 import { VTuidInfo } from "./vTuidInfo";
 import { TuidPagedItems } from "./pagedItems";
+import { VTuidMainList } from './vTuidList';
 export interface TuidUI extends EntityUI {
-    CTuidMain: typeof CTuidMain;
-    CTuidSelect?: typeof CTuidMainSelect;
+    CTuidMain?: typeof CTuidMain;
+    CTuidSelect?: typeof CTuidSelect;
     CTuidInfo?: typeof CTuidInfo;
-    content?: React.StatelessComponent<any>;
+    inputContent?: React.StatelessComponent<any>;
+    rowContent?: React.StatelessComponent<any>;
     divs?: {
         [div: string]: {
-            CTuidDivSelect?: typeof CTuidDivSelect;
-            content?: React.StatelessComponent<any>;
+            CTuidSelect?: typeof CTuidSelect;
+            inputContent?: React.StatelessComponent<any>;
+            rowContent?: React.StatelessComponent<any>;
         };
     };
 }
@@ -25,7 +27,8 @@ export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
     constructor(cUsq: CUsq, entity: T, ui: TuidUI, res: any);
     readonly icon: JSX.Element;
     pagedItems: TuidPagedItems;
-    search(key: string): Promise<void>;
+    searchMain(key: string): Promise<void>;
+    getDivItems(ownerId: number): Promise<any[]>;
 }
 export declare class CTuidMain extends CTuid<TuidMain> {
     constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res: any);
@@ -36,21 +39,21 @@ export declare class CTuidMain extends CTuid<TuidMain> {
     proxyLinks: CLink[];
     protected readonly VTuidMain: typeof VTuidMain;
     protected readonly VTuidEdit: typeof VTuidEdit;
-    protected readonly VTuidList: typeof VTuidList;
+    protected readonly VTuidList: typeof VTuidMainList;
     protected internalStart(): Promise<void>;
     protected onEvent(type: string, value: any): Promise<void>;
     protected edit(id: number): Promise<void>;
     private itemChanged;
 }
-export declare class CTuidMainSelect extends CTuid<TuidMain> {
-    protected internalStart(param?: any): Promise<void>;
-    protected readonly VTuidSelect: typeof VTuidSelect;
+export declare class CTuidDiv extends CTuid<TuidDiv> {
+    protected internalStart(): Promise<void>;
 }
-export declare class CTuidDivSelect extends CTuid<TuidDiv> {
+export declare class CTuidSelect extends CTuid<Tuid> {
     protected internalStart(param?: any): Promise<void>;
+    protected beforeStart(): Promise<void>;
     protected readonly VTuidSelect: typeof VTuidSelect;
 }
 export declare class CTuidInfo extends CTuid<Tuid> {
-    protected internalStart(param?: any): Promise<void>;
+    protected internalStart(id: any): Promise<void>;
     protected readonly VTuidInfo: typeof VTuidInfo;
 }

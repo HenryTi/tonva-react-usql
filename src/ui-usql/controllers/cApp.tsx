@@ -4,21 +4,24 @@ import { setXLang, Page, loadAppUsqs, nav, getUrlOrDebug, meInFrame, Controller}
 import { List, LMR, FA } from 'tonva-react-form';
 import {Entities} from '../entities';
 import res from '../res';
-import { CUsq, EntityType } from './usq';
+import { CUsq, EntityType, UsqUI } from './usq';
 import { centerApi } from '../centerApi';
 
-export const entitiesCollection: {[api:string]: Entities} = {};
+export interface AppUI {
+    CUsq?: typeof CUsq;
+    usqs: {[usq:string]: UsqUI};
+}
 
 export class CApp extends Controller {
     private appOwner:string;
     private appName:string;
-    private ui:any;
-    private res:any;
     private isProduction:boolean;    
+    protected ui:AppUI;
+    protected res:any;
     id: number;
     appUnits:any[];
 
-    constructor(tonvaApp:string, ui:any) {
+    constructor(tonvaApp:string, ui:AppUI) {
         super();
         this.init(tonvaApp, ui);
     }
@@ -37,7 +40,7 @@ export class CApp extends Controller {
     }
 
     cUsqCollection: {[usq:string]: CUsq} = {};
-    async loadUsqs(): Promise<void> {
+    protected async loadUsqs(): Promise<void> {
         let unit = meInFrame.unit;
         let app = await loadAppUsqs(this.appOwner, this.appName);
         let {id, usqs} = app;
@@ -53,7 +56,7 @@ export class CApp extends Controller {
     }
 
     protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
-        return new CUsq(usq, this.id, usqId, access, ui);
+        return new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);
     }
 
     protected caption: string; // = 'View Model 版的 Usql App';

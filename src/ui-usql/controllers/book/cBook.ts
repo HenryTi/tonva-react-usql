@@ -4,6 +4,7 @@ import { VBookMain } from "./vBookMain";
 import { entitiesRes } from '../../res';
 
 export interface BookUI extends EntityUI {
+    CBook?: typeof CBook;
     main: typeof VBookMain,
 }
 

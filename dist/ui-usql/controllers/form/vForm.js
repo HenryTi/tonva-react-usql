@@ -5,10 +5,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import * as React from 'react';
-import * as _ from 'lodash';
 import { observer } from "mobx-react";
 import { BandsBuilder } from './bandsBuilder';
 import { computed, observable } from 'mobx';
+import { FA } from 'tonva-react-form';
 export class VForm {
     constructor(options, onSubmit) {
         this.vFields = {};
@@ -20,25 +20,32 @@ export class VForm {
         this.view = observer(({ className }) => {
             return React.createElement("form", { className: className, onSubmit: this.onFormSubmit }, this.bands.map(v => v.render()));
         });
-        this.fields = options.fields;
-        this.arrs = options.arrs;
-        this.ui = options.ui;
+        let { fields, arrs, ui, res, inputs, none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton, readonly } = options;
+        this.fields = fields;
+        this.arrs = arrs;
+        this.ui = ui;
         if (this.ui !== undefined)
             this.compute = this.ui.compute;
-        this.res = options.res;
-        this.inputs = options.inputs;
-        this.submitCaption = options.submitCaption;
-        this.arrNewCaption = options.arrNewCaption;
-        this.arrEditCaption = options.arrEditCaption;
-        this.readOnly = onSubmit === undefined;
+        this.res = res;
+        this.inputs = inputs;
+        this.none = none;
+        this.submitCaption = submitCaption;
+        this.arrNewCaption = arrNewCaption;
+        this.arrEditCaption = arrEditCaption;
+        this.arrTitleNewButton = arrTitleNewButton || React.createElement("small", null,
+            React.createElement(FA, { name: "plus" }),
+            " \u65B0\u589E");
+        this.readOnly = readonly === true || onSubmit === undefined;
         this.formValues = this.buildFormValues();
         this.buildBands(options, onSubmit);
         this.onSubmit = onSubmit;
     }
     buildBands(options, onSubmit) {
+        this.bandColl = {};
         let bandsBuilder = new BandsBuilder(this, options, onSubmit);
         this.bands = bandsBuilder.build();
         for (let band of this.bands) {
+            this.bandColl[band.key] = band;
             let vFields = band.getVFields();
             if (vFields !== undefined)
                 for (let f of vFields)
@@ -51,13 +58,61 @@ export class VForm {
                 this.vSubmit = vSubmit;
         }
     }
+    getBand(name) {
+        return this.bandColl[name];
+    }
     get values() {
-        let values = {};
-        _.merge(values, this.formValues.values);
-        for (let i in this.vArrs) {
-            values[i] = this.vArrs[i].list;
+        let ret = {};
+        let { values } = this.formValues;
+        for (let f of this.fields) {
+            let { name } = f;
+            let v = values[name];
+            ret[name] = v !== null && typeof v === 'object' ? v.id : v;
         }
-        return values;
+        if (this.arrs !== undefined) {
+            for (let arr of this.arrs) {
+                let { name, fields, id, order } = arr;
+                let list = ret[name] = [];
+                let rows = this.vArrs[name].list;
+                for (let row of rows) {
+                    let item = {};
+                    if (id !== undefined)
+                        item[id] = row[id];
+                    if (order !== undefined)
+                        item[order] = row[order];
+                    for (let f of fields) {
+                        let { name: fn } = f;
+                        let v = row[fn];
+                        item[fn] = v !== null && typeof v === 'object' ? v.id : v;
+                    }
+                    list.push(item);
+                }
+            }
+        }
+        return ret;
+    }
+    get valueBoxs() {
+        let ret = {};
+        let { values } = this.formValues;
+        for (let f of this.fields) {
+            let { name, _tuid } = f;
+            let v = values[name];
+            ret[name] = _tuid === undefined || typeof v === 'object' ? v : _tuid.createID(v);
+        }
+        if (this.arrs !== undefined) {
+            for (let arr of this.arrs) {
+                let { name, fields, id, order } = arr;
+                let list = ret[name] = this.vArrs[name].list.slice();
+                for (let row of list) {
+                    for (let f of fields) {
+                        let { name: fn, _tuid } = f;
+                        let v = row[fn];
+                        row[fn] = _tuid === undefined || typeof v === 'object' ? v : _tuid.createID(v);
+                    }
+                }
+            }
+        }
+        return ret;
     }
     setValues(initValues) {
         if (initValues === undefined) {
@@ -112,7 +167,9 @@ export class VForm {
             vArr.reset();
         }
     }
-    getValue(fieldName) { return this.formValues.values[fieldName]; }
+    getValue(fieldName) {
+        return this.formValues.values[fieldName];
+    }
     setValue(fieldName, value) { this.formValues.values[fieldName] = value; }
     setError(fieldName, error) { this.formValues.errors[fieldName] = error; }
     buildFieldValues(fields) {
@@ -153,7 +210,7 @@ export class VForm {
             errors: observable(this.buildFieldValues(this.fields)),
         };
     }
-    render(className = "p-3") {
+    render(className = "py-3") {
         return React.createElement(this.view, { className: className });
     }
 }

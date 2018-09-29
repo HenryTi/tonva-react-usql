@@ -27,13 +27,6 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     renderRow = (item:any, index:number) => <this.row {...item} />;
 
     private callOnSelected(item:any) {
-        /*
-        if (this.onSelected === undefined) {
-            alert('onSelect is undefined');
-            return;
-        }
-        this.onSelected(item);
-        */
        this.closePage();
        this.return(item);
     }

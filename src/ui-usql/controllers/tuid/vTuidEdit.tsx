@@ -24,20 +24,9 @@ export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
 
     protected get editView() {
         return () => <Page header={(this.id===undefined? '新增':'编辑') + ' - ' + this.label}>
-            {this.vForm.render('mx-3 my-2')}
+            {this.vForm.render('py-3')}
         </Page>;
     }
-
-    /*
-    protected async beforeStart(param?:any) {
-        this.vmForm = this.createVmFieldsForm();
-        if (param !== undefined) {
-            this.id = param.id;
-            this.vmForm.values = param;
-        }
-        this.vmForm.onSubmit = this.onSubmit;
-    }
-    */
 
     protected next = async () => {
         this.vForm.reset();

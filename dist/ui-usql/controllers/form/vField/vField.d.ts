@@ -4,14 +4,16 @@ import { FormValues } from '../vForm';
 import { Rule } from '../rule';
 import { Field } from '../../../entities';
 import { FieldUI, InputUI, NumberUI, Compute, StringUI } from '../../formUI';
+import { FieldRes } from '../vBand';
 export declare abstract class VField extends ViewModel {
     protected fieldUI: FieldUI;
+    protected fieldRes: FieldRes;
     protected field: Field;
     protected formValues: FormValues;
     protected formReadOnly: boolean;
     protected rules: Rule[];
     protected formCompute: Compute;
-    constructor(field: Field, fieldUI: FieldUI, formValues: FormValues, formCompute: Compute, readOnly: boolean);
+    constructor(field: Field, fieldUI: FieldUI, fieldRes: FieldRes, formValues: FormValues, formCompute: Compute, readOnly: boolean);
     name: string;
     protected init(): void;
     protected buildRules(): void;
@@ -35,7 +37,7 @@ export declare abstract class VInputControl extends VField {
     readonly value: any;
     setValue(v: any): void;
     protected ref: (input: HTMLInputElement) => void;
-    private setInputValue;
+    protected setInputValue(): void;
     protected onFocus: () => void;
     protected onBlur: () => void;
     protected onChange: (evt: React.ChangeEvent<any>) => void;
@@ -55,6 +57,7 @@ export declare abstract class VNumberControl extends VInputControl {
     protected buildRules(): void;
     inputType: string;
     protected parse(text: string): any;
+    protected setInputValue(): void;
     protected onKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     private onKeyDot;
     private onKeyNeg;

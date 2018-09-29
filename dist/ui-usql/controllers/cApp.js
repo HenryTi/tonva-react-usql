@@ -13,7 +13,6 @@ import { List, LMR } from 'tonva-react-form';
 import res from '../res';
 import { CUsq } from './usq';
 import { centerApi } from '../centerApi';
-export const entitiesCollection = {};
 export class CApp extends Controller {
     constructor(tonvaApp, ui) {
         super();
@@ -70,7 +69,7 @@ export class CApp extends Controller {
         });
     }
     newCUsq(usq, usqId, access, ui) {
-        return new CUsq(usq, this.id, usqId, access, ui);
+        return new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);
     }
     get cUsqArr() {
         let ret = [];

@@ -3,16 +3,10 @@ import { FieldInputs, FormValues } from '..';
 import { VField, VIntField, VDecField, VStringField, VTextField, VDateTimeField } from './vField';
 import { VTuidField } from './vTuidField';
 import { Field } from '../../../entities';
+import { FieldRes } from '../vBand';
 
-export function buildVField(field: Field, fieldUI: FieldUI, formValues:FormValues, formCompute:Compute, readOnly:boolean): VField {
-    let vField:new (field:Field, ui:FieldUI, formValues:FormValues, formCompute:Compute, readOnly:boolean) => VField;
-    /*
-    switch (fieldUI.type) {
-        default: ctrl = new VUnknownField(field, fieldUI, formValues, readOnly); break;
-        case 'string': ctrl = new VStringField(field, fieldUI, formValues, readOnly); break;
-        case 'dec': ctrl = new VDecField(field, fieldUI, formValues, readOnly); break;
-        case 'int': ctrl = new VIntField(field, fieldUI, formValues, readOnly); break;
-    }*/
+export function buildVField(field: Field, fieldUI: FieldUI, fieldRes:FieldRes, formValues:FormValues, formCompute:Compute, readOnly:boolean): VField {
+    let vField:new (field:Field, ui:FieldUI, fieldRes:FieldRes, formValues:FormValues, formCompute:Compute, readOnly:boolean) => VField;
     switch (field.type) {
         default: return;
         case 'tinyint':
@@ -21,8 +15,8 @@ export function buildVField(field: Field, fieldUI: FieldUI, formValues:FormValue
             vField = VIntField;
             break;
         case 'bigint':
-            let tuid = field.tuid;
-            if (tuid !== undefined) return;// new VTuidField(field, fieldUI, calls, formValues, readOnly);
+            let {_tuid} = field;
+            if (_tuid !== undefined) return;
             vField = VIntField;
             break;
         case 'dec':
@@ -38,7 +32,7 @@ export function buildVField(field: Field, fieldUI: FieldUI, formValues:FormValue
             vField = VDateTimeField;
             break;
     }
-    return new vField(field, fieldUI, formValues, formCompute, readOnly);
+    return new vField(field, fieldUI, fieldRes, formValues, formCompute, readOnly);
     //return ctrl;
 }
 

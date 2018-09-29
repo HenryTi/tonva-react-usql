@@ -19,11 +19,15 @@ export interface Field {
     url?: string;
     null?: boolean;
     size?: number;
+    owner?: string;
+    _ownerField: Field;
     _tuid: Tuid;
 }
 export interface ArrFields {
     name: string;
     fields: Field[];
+    id?: string;
+    order?: string;
 }
 export declare class Entities {
     private tuids;
@@ -71,6 +75,6 @@ export declare class Entities {
     private fromType;
     private fromObj;
     private buildSheet;
-    buildFieldTuid(fields: Field[]): void;
-    buildArrFieldsTuid(arrFields: ArrFields[]): void;
+    buildFieldTuid(fields: Field[], mainFields?: Field[]): void;
+    buildArrFieldsTuid(arrFields: ArrFields[], mainFields: Field[]): void;
 }

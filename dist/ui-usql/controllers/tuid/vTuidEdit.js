@@ -14,16 +14,6 @@ import { VEntity } from '../VM';
 export class VTuidEdit extends VEntity {
     constructor() {
         super(...arguments);
-        /*
-        protected async beforeStart(param?:any) {
-            this.vmForm = this.createVmFieldsForm();
-            if (param !== undefined) {
-                this.id = param.id;
-                this.vmForm.values = param;
-            }
-            this.vmForm.onSubmit = this.onSubmit;
-        }
-        */
         this.next = () => __awaiter(this, void 0, void 0, function* () {
             this.vForm.reset();
             this.closePage();
@@ -68,7 +58,7 @@ export class VTuidEdit extends VEntity {
         });
     }
     get editView() {
-        return () => React.createElement(Page, { header: (this.id === undefined ? '新增' : '编辑') + ' - ' + this.label }, this.vForm.render('mx-3 my-2'));
+        return () => React.createElement(Page, { header: (this.id === undefined ? '新增' : '编辑') + ' - ' + this.label }, this.vForm.render('py-3'));
     }
     resetForm() {
         this.vForm.reset();

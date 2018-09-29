@@ -25,7 +25,6 @@ export class Map extends Entity {
             query.setSchema(schema);
             this.queries[i] = query;
         }
-        //t = this.schemaStringify();
     }
 }
 //# sourceMappingURL=map.js.map

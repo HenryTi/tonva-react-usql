@@ -7,7 +7,9 @@ export declare type TypeVTuidView = typeof VTuidView;
 export declare class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     vForm: VForm;
     id: number;
-    showEntry(param?: any): Promise<void>;
+    protected buildForm(param: any): void;
+    showEntry(param: any): Promise<void>;
+    render(param: any): JSX.Element;
     loadId(id: number): Promise<void>;
     protected next: () => Promise<void>;
     protected finish: () => void;

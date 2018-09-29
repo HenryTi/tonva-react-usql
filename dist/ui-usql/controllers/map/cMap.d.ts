@@ -2,8 +2,10 @@ import React from 'react';
 import { CEntity, EntityUI } from "../VM";
 import { Map, Tuid, IdBox, Field } from "../../entities";
 import { VMapMain } from "./vMain";
+import { VForm } from '../form';
 export interface MapKey {
     content: React.StatelessComponent;
+    valuesContent?: React.StatelessComponent;
     none?: () => string;
 }
 export interface MapUI extends EntityUI {
@@ -21,11 +23,13 @@ export declare class MapItem {
     constructor(parent: MapItem, tuid: Tuid, box: IdBox, keyIndex: number);
 }
 export declare class CMap extends CEntity<Map, MapUI> {
+    form: VForm;
     items: MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
     readonly icon: JSX.Element;
     protected internalStart(): Promise<void>;
+    private onValuesSubmit;
     private createItem;
     addItem(item: MapItem, row: any): MapItem;
     searchOnKey(keyField: Field, param: any): Promise<number>;

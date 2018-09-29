@@ -6,9 +6,12 @@ import { VMapMain } from "./vMain";
 import { entitiesRes } from '../../res';
 import { observable } from "mobx";
 import { PureJSONContent } from '../viewModel';
+import { VForm } from '../form';
+import { VInputValues } from './inputValues';
 
 export interface MapKey {
     content: React.StatelessComponent,
+    valuesContent?: React.StatelessComponent,
     none?: ()=>string;
 }
 
@@ -23,7 +26,7 @@ export class MapItem {
     box: IdBox;
     isLeaf: boolean;
     keyIndex:number;
-    @observable children: MapItem[] = [];
+    children: MapItem[] = observable.array([], {deep: true});
     values: any;
     constructor(parent:MapItem, tuid:Tuid, box:IdBox, keyIndex:number) {
         this.parent = parent;
@@ -35,6 +38,7 @@ export class MapItem {
 }
 
 export class CMap extends CEntity<Map, MapUI> {
+    form: VForm;
     items:MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
@@ -42,11 +46,14 @@ export class CMap extends CEntity<Map, MapUI> {
     get icon() {return entitiesRes['map'].icon}
 
     protected async internalStart() {
-        let {keys} = this.entity;
+        let {keys, fields} = this.entity;
+        if (fields && fields.length > 0) {
+            this.form = this.createForm(this.onValuesSubmit);
+        }
         let q = this.entity.queries.all;
-        let res = await q.query({});
+        let result = await q.query({});
         //let data = await this.entity.unpackReturns(res);
-        let ret = res.ret;
+        let ret = result.ret;
         let keysLen = keys.length;
         this.keyUIs = _.clone(this.ui.keys || []);
         this.keyFields = [];
@@ -59,10 +66,9 @@ export class CMap extends CEntity<Map, MapUI> {
                 });
             }
         }
-        this.items = [];
+        this.items = observable([]);
         let item:MapItem = undefined;
         for (let r of ret) {
-            let team = r.$team;
             let newItem = this.addItem(item, r);
             if (newItem !== undefined) {
                 this.items.push(newItem);
@@ -71,6 +77,11 @@ export class CMap extends CEntity<Map, MapUI> {
         }
 
         await this.showVPage(this.VMapMain);
+    }
+
+    private onValuesSubmit = async (values:any) => {
+        this.ceasePage();
+        this.return(values);
     }
 
     private createItem(parent:MapItem, tuid:Tuid, box:IdBox, keyIndex:number, values?:any) {
@@ -117,9 +128,16 @@ export class CMap extends CEntity<Map, MapUI> {
     }
 
     async searchOnKey(keyField:Field, param):Promise<number> {
-        let {_tuid} = keyField;
-        let cTuidSelect = this.cUsq.cTuidSelect(_tuid as TuidMain);
-        let ret = await cTuidSelect.call(param);
+        let {_tuid, _ownerField} = keyField;
+        let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+        let callParam = param;
+        if (_ownerField !== undefined) {
+            callParam = param[_ownerField.name];
+            if (typeof callParam === 'object') {
+                callParam = callParam.id;
+            }
+        }
+        let ret = await cTuidSelect.call(callParam);
         return _tuid.getIdFromObj(ret);
     }
 
@@ -142,21 +160,45 @@ export class CMap extends CEntity<Map, MapUI> {
 
         let id = await this.searchOnKey(keyField, searchParam);
         if (id === undefined || id <= 0) return;
+        tuid.useId(id);
+        let idBox = tuid.createID(id);
         let arr1 = {} as any;
+        let values:any = {};
         if (keyIndex+1===keysLast) {
-            arr1['_' + kn] = id;
+            tuid.useId(id);
+            values[kn] = arr1['_' + kn] = idBox;
+            if (this.form !== undefined) {
+                let ret = await this.vCall(VInputValues, data);
+                for (let i in ret) {
+                    values[i] = arr1['_' + i] = ret[i];                    
+                }
+            }
         }
         else {
-            data['_' + kn] = id;
+            values[kn] = data['_' + kn] = idBox;
             for (let i=idx+1;i<keysLast;i++)
                 data['_' + this.keyFields[i].name] = 0;
             arr1['_' + this.keyFields[keysLast].name] = 0;
         }
         data.arr1 = [arr1];
         await this.entity.actions.add.submit(data);
-        if (children.find(v => v.box.id === id) === undefined) {
-            tuid.useId(id);
-            children.push(this.createItem(item, tuid, tuid.createID(id), idx, undefined));
+        let rowIndex = children.findIndex(v => v.box.id === id);
+        if (rowIndex < 0) {
+            children.push(this.createItem(item, tuid, idBox, idx, values));
+        }
+        else {
+            let {fields} = this.entity;
+            if (fields !== undefined && fields.length > 0) {
+                let row = children[rowIndex];
+                children.splice(rowIndex, 1);
+                row.values = values;
+                /*
+                for (let f of fields) {
+                    let {name:fn} = f;
+                    row.values[fn] = values[fn];
+                }*/
+                children.splice(rowIndex, 0, row);
+            }
         }
     }
 

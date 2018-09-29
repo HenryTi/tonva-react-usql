@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button } from 'reactstrap';
+import classNames from 'classnames'
 import { ViewModel } from "../viewModel";
 import { VForm } from './vForm';
 import { observer } from 'mobx-react';
@@ -11,14 +11,20 @@ export class VSubmit extends ViewModel {
         super();
         this.vForm = vForm;
         this.caption = this.vForm.submitCaption;
-        this.className = 'btn btn-primary';
+        this.className = 'btn btn-primary w-25';
     }
     @observable caption: string;
     @observable className: string;
+
+    private onClickSubmit = async () => {
+        let {onSubmit, values} = this.vForm;
+        await onSubmit(values);
+    }
+
     protected view = observer(() => {
-        let {onSubmit, isOk, formValues} = this.vForm;
+        let {isOk} = this.vForm;
         return <button type="button" 
-            onClick={() => onSubmit(formValues.values)}
+            onClick={this.onClickSubmit}
             className={this.className}
             disabled={isOk === false}>
             {this.caption}

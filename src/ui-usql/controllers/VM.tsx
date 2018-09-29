@@ -21,12 +21,13 @@ export interface EntityUI {
 }
 
 export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui: UI, res: any) {
+    constructor(cUsq: CUsq, entity: T, ui?: UI, res?: any) {
         super(cUsq);
         this.entity = entity;
-        this.ui = ui;
-        this.res = res;
-        this.label = (res && res.label) || entity.name;
+        let entityUI = cUsq.getUI<T, UI>(entity);
+        this.ui = ui || entityUI.ui;
+        this.res = res || entityUI.res;
+        this.label = (this.res && this.res.label) || entity.name;
     }
     entity: T;
     ui: UI;
@@ -37,19 +38,26 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         await this.entity.loadSchema();
     }
 
-    createForm(onSubmit:(values:any)=>Promise<void>, values?:any) {
-        let ret = new VForm(this.buildFormOptions(), onSubmit);
+    createForm(onSubmit:(values:any)=>Promise<void>, values?:any, readonly?:boolean) {
+        let options = this.buildFormOptions();
+        options.readonly = readonly;
+        let ret = new VForm(options, onSubmit);
         ret.setValues(values);
         return ret;
     }
 
     private buildFormOptions():FormOptions {
         let {fields, arrFields} = this.entity;
-        let submitCaption, arrNewCaption, arrEditCaption;
+        let none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton;
         if (this.res !== undefined) {
+            none = this.res['none'];
             submitCaption = this.res['submit'];
             arrNewCaption = this.res['arrNew'];
             arrEditCaption = this.res['arrEdit'];
+            arrTitleNewButton = this.res['arrTitleNewButton'];
+        }
+        if (none === undefined) {
+            none = this.cUsq.res['none'] || 'none';
         }
         if (submitCaption === undefined)
             submitCaption = this.cUsq.res['submit'] || 'Submit';
@@ -57,15 +65,20 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             arrNewCaption = this.cUsq.res['arrNew'] || 'New';
         if (arrEditCaption === undefined)
             arrEditCaption = this.cUsq.res['arrEdit'] || 'Edit';
+        if (arrTitleNewButton === undefined)
+        arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
         let ret:FormOptions = {
             fields: fields,
             arrs: arrFields,
             ui: this.ui && this.ui.form,
             res: this.res || {},
             inputs: this.buildInputs(),
+            none: none,
             submitCaption: submitCaption,
             arrNewCaption: arrNewCaption,
             arrEditCaption: arrEditCaption,
+            arrTitleNewButton: arrTitleNewButton,
+            readonly: undefined,
         }
         return ret;
     }
@@ -92,22 +105,24 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             }
         }
         for (let field of fields) {
-            let {name, tuid, _tuid} = field;
-            if (tuid === undefined) continue;
-            //let fn = arr === undefined? name : arr+'.'+name;
+            let {name, _tuid} = field;
+            if (_tuid === undefined) continue;
             ret[name] = {
-                call: this.buildCall(field, arr),
+                select: this.buildSelect(field, arr),
                 content: this.buildContent(field, arr),
-                nullCaption: this.cUsq.getTuidNullCaption(_tuid),
+                placeHolder: this.cUsq.getTuidPlaceHolder(_tuid),
             };
         }
     }
 
-    protected buildCall(field:Field, arr:string):FieldCall {
-        let {_tuid} = field;
-        return async (form:VForm, field:string, values:any):Promise<any> => {
-            let cTuidSelect = this.cUsq.cTuidSelect(_tuid as TuidMain);
-            let ret = await cTuidSelect.call();
+    protected buildSelect(field:Field, arr:string):FieldCall {
+        //let {_tuid} = field;
+        return async (form:VForm, field:Field, values:any):Promise<any> => {
+            let {_tuid, _ownerField} = field;
+            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let ownerValue:any = undefined;
+            if (_ownerField !== undefined) ownerValue = form.getValue(_ownerField.name);
+            let ret = await cTuidSelect.call(ownerValue);
             let id = ret.id;
             _tuid.useId(id);
             return id;

@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { IObservableArray, observable } from 'mobx';
-import * as _ from 'lodash';
-import { List, FA } from 'tonva-react-form';
+import _ from 'lodash';
+import { List, FA, Muted } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
 import { ViewModel, RowContent, TypeContent, JSONContent } from '../viewModel';
 import { ArrFields, Field } from '../../entities';
 import { VForm, FieldInputs } from './vForm';
-import { SubmitBandUI } from '../formUI';
-import { VBand } from './vBand';
-import { observer } from 'mobx-react';
 
 export type ArrEditRow = (initValues:any, onRowChanged:(rowValues:any)=>void) => Promise<void>;
 
@@ -22,8 +19,10 @@ export class VArr extends ViewModel {
     protected ownerForm:VForm;
     protected vForm:VForm;
     protected rowContent:TypeContent;
+    protected none: string;
     protected newSubmitCaption: string;
     protected editSubmitCaption: string;
+    protected addRow: ()=>Promise<void>;
 
     name:string;
     list: IObservableArray<any>;
@@ -36,12 +35,13 @@ export class VArr extends ViewModel {
         let {ui, res, readOnly, inputs, formValues} = ownerForm;
         let arrsRes = res.arrs;
         let arrRes = arrsRes !== undefined? arrsRes[name] : {};
-        let {label, newSubmit, editSubmit} = arrRes;
+        let {label, none, newSubmit, editSubmit} = arrRes;
+        this.none = none || ownerForm.none;
         this.newSubmitCaption = newSubmit || ownerForm.arrNewCaption;
         this.editSubmitCaption = editSubmit || ownerForm.arrEditCaption;
         this.label = label || name;
-        let arrUI = ui && ui.arrs && ui.arrs[name];
-        this.rowContent = JSONContent;
+        let arrUI = (ui && ui.arrs && ui.arrs[name]) || {};
+        this.rowContent = arrUI.rowContent;// || JSONContent;
         this.readOnly = readOnly;
         if (this.onEditRow === undefined) {
             this.vForm = new VForm({
@@ -50,9 +50,12 @@ export class VArr extends ViewModel {
                 ui: arrUI,
                 res: arrRes,
                 inputs: inputs[name] as FieldInputs,
+                none: ownerForm.none,
                 submitCaption: 'submit',
                 arrNewCaption: undefined,
                 arrEditCaption: undefined,
+                arrTitleNewButton: undefined,
+                readonly: false,
             }, this.readOnly===true? undefined: this.onSubmit);
         }
         else {
@@ -66,14 +69,18 @@ export class VArr extends ViewModel {
         this.list.clear();
     }
 
+    setAddRow(addRow:()=>Promise<void>) {
+        this.addRow = addRow;
+    }
+
     protected rowPage = () => {
         return <Page header={this.label} back="close">
-            {this.vForm.render('p-3')}
+            {this.vForm.render('py-3')}
         </Page>
     }
     private onSubmit = async () => {
-        let values = this.vForm.values;
-        await this.onRowChanged(values);
+        let {valueBoxs} = this.vForm;
+        await this.onRowChanged(valueBoxs);
         //if (this.afterEditRow !== undefined) await this.afterEditRow(values);
     }
 
@@ -92,7 +99,9 @@ export class VArr extends ViewModel {
     }
 
     private renderItem = (item:any, index:number) => {
-        return <div className="px-3 py-2"><this.rowContent {...item} /></div>;
+        if (this.rowContent === undefined)
+            return <div className="px-3 py-2"><JSONContent {...item} /></div>
+        return <this.rowContent {...item} />;
     }
     private showRow = async (rowValues:any):Promise<any> => {
         if (this.onEditRow !== undefined) {
@@ -112,7 +121,7 @@ export class VArr extends ViewModel {
         }
         await this.showRow(rowValues);
     }
-    private addRow = async () => {
+    private internalAddRow = async () => {
         this.rowValues = undefined;
         let {vSubmit} = this.vForm;
         vSubmit.caption = this.newSubmitCaption;
@@ -121,22 +130,23 @@ export class VArr extends ViewModel {
         this.vForm.reset();
     }
 
-    protected view = observer(() => {
+    protected view = () => {
         let button;
-        if (this.readOnly === false) {
-            button = <button onClick={this.addRow}
+        if (this.addRow !== undefined || this.readOnly === false) {
+            button = <button onClick={this.addRow || this.internalAddRow}
                 type="button" 
-                className="btn btn-outline-info btn-sm">
-                <FA name="plus" />
+                className="btn btn-link p-0">
+                {this.ownerForm.arrTitleNewButton}
             </button>;
         }
-        let header = this.header || <div className="px-3 bg-light" style={{paddingTop:'1px', paddingBottom:'1px'}}>
+        let header = this.header || <div className="px-3 bg-light small" style={{paddingTop:'1px', paddingBottom:'1px'}}>
             <div className="flex-fill align-self-center">{this.label}</div>
             {button}
         </div>;
-        return <List
+        return <List className="pb-3"
             header={header}
-            items={this.list} 
+            none={<Muted className="px-3 py-2">{this.none}</Muted>}
+            items={this.list}
             item={{render: this.renderItem, onClick: this.editRow}} />;
-    });
+    };
 }

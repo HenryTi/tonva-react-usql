@@ -4,6 +4,7 @@ import { Field, Tuid } from '../../../entities';
 import { VField, RedMark } from "./vField";
 import { FieldUI } from '../../formUI';
 import { FieldInputs, FormValues, FieldCall, VForm, FieldInput } from '../vForm';
+import { FieldRes } from '../vBand';
 
 const buttonStyle:React.CSSProperties = {
     textAlign:'left', 
@@ -17,8 +18,8 @@ export class VTuidField extends VField {
     protected input: FieldInput;
     protected tuid: Tuid;
 
-    constructor(field:Field, fieldUI: FieldUI, vForm: VForm) {
-        super(field, fieldUI, vForm.formValues, vForm.compute, vForm.readOnly);
+    constructor(field:Field, fieldUI: FieldUI, fieldRes:FieldRes, vForm: VForm) {
+        super(field, fieldUI, fieldRes, vForm.formValues, vForm.compute, vForm.readOnly);
         this.tuid = field._tuid;
         this.vForm = vForm;
         this.input = vForm.inputs[field.name] as FieldInput;
@@ -26,13 +27,13 @@ export class VTuidField extends VField {
 
     onClick = async () => {
         if (this.readOnly === true) {
-            //alert('await super.onClick();');
+            if (!this.value) return;
             await this.tuid.showInfo(this.value.id);
             return;
         }
         let id:number;
         if (this.input !== undefined) {
-            id = await this.input.call(this.vForm, this.field.tuid, this.vForm.values);
+            id = await this.input.select(this.vForm, this.field, this.vForm.values);
         }
         else {
             alert('call undefined');
@@ -41,16 +42,17 @@ export class VTuidField extends VField {
         this.setValue(id);
     }
     protected view = observer(() => {
+        let {placeHolder} = this.fieldRes;
+        let disabled:boolean = false;
+        let {_ownerField} = this.field;
+        if (_ownerField !== undefined) {
+            let {name, arr} = _ownerField;
+            disabled = this.vForm.getValue(name) === null;
+        }
         let content;
         if (this.value === null)
-            content = <>{this.input.nullCaption}</>;
+            content = <>{placeHolder || this.input.placeHolder}</>;
         else if (typeof this.value === 'object') {
-            //this.tuid.useId(this.value);
-            //let v = this.tuid.valueFromId(this.value);
-            //v.templet = this.input.content;
-            //content = <this.input.content {...v} />;
-            //content = v.content;
-            // content = this.tuid.createID(this.value).content();
             content = this.value.content();
         }
         else {
@@ -73,6 +75,7 @@ export class VTuidField extends VField {
             {redDot}
             <button className="form-control btn btn-outline-info"
                 type="button"
+                disabled={disabled}
                 style={buttonStyle}
                 onClick={this.onClick}>
                 {content}

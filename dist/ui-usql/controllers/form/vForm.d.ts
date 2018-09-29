@@ -5,11 +5,11 @@ import { VArr } from './vArr';
 import { FormUI, FormUIBase, Compute } from '../formUI';
 import { VField } from './vField';
 import { VSubmit } from './vSubmit';
-export declare type FieldCall = (form: VForm, field: string, values: any) => Promise<any>;
+export declare type FieldCall = (form: VForm, field: Field, values: any) => Promise<any>;
 export interface FieldInput {
-    call: FieldCall;
+    select: FieldCall;
     content: React.StatelessComponent<any>;
-    nullCaption: string;
+    placeHolder: string;
 }
 export interface FieldInputs {
     [fieldOrArr: string]: FieldInput | {
@@ -29,11 +29,17 @@ export interface FormOptions {
     submitCaption: string;
     arrNewCaption: string;
     arrEditCaption: string;
+    arrTitleNewButton: JSX.Element;
+    none: string;
+    readonly: boolean;
 }
 export declare class VForm {
     protected fields: Field[];
     protected arrs: ArrFields[];
     protected bands: VBand[];
+    protected bandColl: {
+        [key: string]: VBand;
+    };
     constructor(options: FormOptions, onSubmit: (values: any) => Promise<void>);
     onSubmit: (values: any) => Promise<void>;
     ui: FormUI;
@@ -49,15 +55,19 @@ export declare class VForm {
     };
     vSubmit: VSubmit;
     inputs: FieldInputs;
+    none: string;
     submitCaption: string;
     arrNewCaption: string;
     arrEditCaption: string;
+    arrTitleNewButton: JSX.Element;
     private buildBands;
     private onFormSubmit;
     protected view: ({ className }: {
         className: string;
     }) => JSX.Element;
+    getBand(name: string): VBand;
     readonly values: any;
+    readonly valueBoxs: any;
     setValues(initValues: any): void;
     readonly isOk: boolean;
     reset(): void;

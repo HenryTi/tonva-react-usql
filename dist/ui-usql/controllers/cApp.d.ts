@@ -1,24 +1,26 @@
 /// <reference types="react" />
 import { Controller } from 'tonva-tools';
-import { Entities } from '../entities';
-import { CUsq } from './usq';
-export declare const entitiesCollection: {
-    [api: string]: Entities;
-};
+import { CUsq, UsqUI } from './usq';
+export interface AppUI {
+    CUsq?: typeof CUsq;
+    usqs: {
+        [usq: string]: UsqUI;
+    };
+}
 export declare class CApp extends Controller {
     private appOwner;
     private appName;
-    private ui;
-    private res;
     private isProduction;
+    protected ui: AppUI;
+    protected res: any;
     id: number;
     appUnits: any[];
-    constructor(tonvaApp: string, ui: any);
+    constructor(tonvaApp: string, ui: AppUI);
     private init;
     cUsqCollection: {
         [usq: string]: CUsq;
     };
-    loadUsqs(): Promise<void>;
+    protected loadUsqs(): Promise<void>;
     protected newCUsq(usq: string, usqId: number, access: string, ui: any): CUsq;
     protected caption: string;
     readonly cUsqArr: CUsq[];

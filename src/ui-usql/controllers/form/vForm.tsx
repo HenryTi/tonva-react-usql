@@ -10,12 +10,13 @@ import { FieldUI, FormUI, FormUIBase, Compute } from '../formUI';
 import { VField } from './vField';
 import { VSubmit } from './vSubmit';
 import { IObservableArray } from 'mobx';
+import { FA } from 'tonva-react-form';
 
-export type FieldCall = (form:VForm, field:string, values:any) => Promise<any>;
+export type FieldCall = (form:VForm, field:Field, values:any) => Promise<any>;
 export interface FieldInput {
-    call: FieldCall;
+    select: FieldCall;
     content: React.StatelessComponent<any>;
-    nullCaption: string;
+    placeHolder: string;
 }
 // [arr.field]: FieldCall;
 export interface FieldInputs {
@@ -36,23 +37,30 @@ export interface FormOptions {
     submitCaption: string;
     arrNewCaption: string;
     arrEditCaption: string;
+    arrTitleNewButton: JSX.Element;
+    none: string;
+    readonly: boolean;
 }
 
 export class VForm {
     protected fields: Field[];
     protected arrs: ArrFields[];
     protected bands: VBand[];
+    protected bandColl: {[key:string]: VBand};
     constructor(options: FormOptions, onSubmit: (values:any)=>Promise<void>) {
-        this.fields = options.fields;
-        this.arrs = options.arrs;
-        this.ui = options.ui;
+        let {fields, arrs, ui, res, inputs, none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton, readonly} = options;
+        this.fields = fields;
+        this.arrs = arrs;
+        this.ui = ui;
         if (this.ui !== undefined) this.compute = this.ui.compute;
-        this.res = options.res;
-        this.inputs = options.inputs;
-        this.submitCaption = options.submitCaption;
-        this.arrNewCaption = options.arrNewCaption;
-        this.arrEditCaption = options.arrEditCaption;
-        this.readOnly = onSubmit === undefined;
+        this.res = res;
+        this.inputs = inputs;
+        this.none = none;
+        this.submitCaption = submitCaption;
+        this.arrNewCaption = arrNewCaption;
+        this.arrEditCaption = arrEditCaption;
+        this.arrTitleNewButton = arrTitleNewButton || <small><FA name="plus" /> 新增</small>;
+        this.readOnly = readonly === true || onSubmit === undefined;
         this.formValues = this.buildFormValues();
         this.buildBands(options, onSubmit);
         this.onSubmit = onSubmit;
@@ -68,14 +76,18 @@ export class VForm {
     vArrs: {[name:string]: VArr} = {};
     vSubmit: VSubmit;
     inputs: FieldInputs;
+    none: string;
     submitCaption: string;
     arrNewCaption: string;
     arrEditCaption: string;
+    arrTitleNewButton: JSX.Element;
 
     private buildBands(options: FormOptions, onSubmit: (values:any)=>Promise<void>) {
+        this.bandColl = {};
         let bandsBuilder = new BandsBuilder(this, options, onSubmit);
         this.bands = bandsBuilder.build();
         for (let band of this.bands) {
+            this.bandColl[band.key] = band;
             let vFields = band.getVFields();
             if (vFields !== undefined) for (let f of vFields) this.vFields[f.name] = f;
             let vArr = band.getVArr();
@@ -96,13 +108,61 @@ export class VForm {
         </form>;
     });
 
+    getBand(name:string) {
+        return this.bandColl[name];
+    }
+
     get values() {
-        let values:any = {};
-        _.merge(values, this.formValues.values);
-        for (let i in this.vArrs) {
-            values[i] = this.vArrs[i].list;
+        let ret:any = {};
+        let {values} = this.formValues;
+        for (let f of this.fields) {
+            let {name} = f;
+            let v = values[name]
+            ret[name] =  v !== null && typeof v === 'object' ? v.id : v;
         }
-        return values;
+        if (this.arrs !== undefined) {
+            for (let arr of this.arrs) {
+                let {name, fields, id, order} = arr;
+                let list = ret[name] = [];
+                let rows = this.vArrs[name].list;
+                for (let row of rows) {
+                    let item = {} as any;
+                    if (id !== undefined) item[id] = row[id];
+                    if (order !== undefined) item[order] = row[order];
+                    for (let f of fields) {
+                        let {name:fn} = f;
+                        let v = row[fn]
+                        item[fn] =  v !== null && typeof v === 'object' ? v.id : v;
+                    }
+                    list.push(item);
+                }
+            }
+        }
+        return ret;
+    }
+
+    get valueBoxs() {
+        let ret:any = {};
+        let {values} = this.formValues;
+        for (let f of this.fields) {
+            let {name, _tuid} = f;
+            let v = values[name]
+            ret[name] =  _tuid === undefined || typeof v === 'object' ? v : _tuid.createID(v);
+        }
+        if (this.arrs !== undefined) {
+            for (let arr of this.arrs) {
+                let {name, fields, id, order} = arr;
+                let list = ret[name] = this.vArrs[name].list.slice();
+                for (let row of list) {
+                    for (let f of fields) {
+                        let {name:fn, _tuid} = f;
+                        let v = row[fn]
+                        row[fn] =  _tuid === undefined || typeof v === 'object' ? v : _tuid.createID(v);
+                    }
+                }
+            }
+        }
+        return ret;
     }
 
     setValues(initValues:any) {
@@ -157,7 +217,9 @@ export class VForm {
         }
     }
 
-    getValue(fieldName: string) { return this.formValues.values[fieldName] }
+    getValue(fieldName: string) {
+        return this.formValues.values[fieldName];
+    }
     setValue(fieldName: string, value: any) { this.formValues.values[fieldName] = value }
 
     setError(fieldName:string, error:string) {this.formValues.errors[fieldName] = error}
@@ -201,7 +263,7 @@ export class VForm {
         }
     }
 
-    render(className:string = "p-3"):JSX.Element {
+    render(className:string = "py-3"):JSX.Element {
         return <this.view className={className} />
     }
 }

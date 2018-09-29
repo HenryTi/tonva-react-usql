@@ -38,13 +38,6 @@ export class VQuerySelect extends VEntity {
         });
     }
     callOnSelected(item) {
-        /*
-        if (this.onSelected === undefined) {
-            alert('onSelect is undefined');
-            return;
-        }
-        this.onSelected(item);
-        */
         this.closePage();
         this.return(item);
     }

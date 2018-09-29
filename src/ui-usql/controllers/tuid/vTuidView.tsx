@@ -14,10 +14,18 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     vForm: VForm;
     id: number;
 
-    async showEntry(param?:any) {
-        let data = await this.entity.valueFromId(param)
-        this.vForm = this.createForm(undefined, data);
+    protected buildForm(param:any) {
+        this.vForm = this.createForm(undefined, param);
+    }
+
+    async showEntry(param:any) {
+        this.buildForm(param);
         this.openPage(this.view);
+    }
+
+    render(param:any) {
+        this.buildForm(param);
+        return this.vForm.render();
     }
 
     async loadId(id: number) {
@@ -56,7 +64,7 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
         return;
     }
 
-    protected view = observer(() => <Page header={this.label}>
-            {this.vForm.render('mx-3 my-2')}
-    </Page>);
+    protected view = () => <Page header={this.label}>
+            {this.vForm.render('py-3')}
+    </Page>;
 }

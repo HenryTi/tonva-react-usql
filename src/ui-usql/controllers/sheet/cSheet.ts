@@ -22,11 +22,13 @@ export interface StateUI {
 }
 
 export interface SheetUI extends EntityUI {
+    CSheet?: typeof CSheet;
     states?: {[name:string]: StateUI};
     main?: typeof VSheetMain;
-    new?: typeof VSheetNew;
-    edit?: typeof VSheetEdit;
-    action?: typeof VSheetAction;
+    sheetNew?: typeof VSheetNew;
+    sheetEdit?: typeof VSheetEdit;
+    sheetAction?: typeof VSheetAction;
+    listRow?: (row:any) => JSX.Element;
 }
 
 export class CSheet extends CEntity<Sheet, SheetUI> {
@@ -45,13 +47,13 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
         this.entity.onMessage(msg);
     }
 
-    protected get VSheetNew(): typeof VSheetNew {return VSheetNew}
-    protected get VSheetEdit(): typeof VSheetEdit {return VSheetEdit}
+    protected get VSheetNew(): typeof VSheetNew {return this.ui.sheetNew || VSheetNew}
+    protected get VSheetEdit(): typeof VSheetEdit {return this.ui.sheetEdit || VSheetEdit}
     protected get VSheetSchema(): typeof VSheetSchema {return VSheetSchema}
     protected get VArchives(): typeof VArchives {return VArchives}
     protected get VArchived(): typeof VArchived {return VArchived}
     protected get VSheetList(): typeof VSheetList {return VSheetList}
-    protected get VSheetAction(): typeof VSheetAction {return VSheetAction}
+    protected get VSheetAction(): typeof VSheetAction {return this.ui.sheetAction || VSheetAction}
     protected async onEvent(type:string, value:any) {
         let c: TypeVPage<CSheet>;
         switch (type) {

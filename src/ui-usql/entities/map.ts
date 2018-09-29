@@ -10,7 +10,6 @@ interface MapActions {
 interface MapQueries {
     all: Query;
     page: Query;
-    slavePage: Query;
 }
 
 export class Map extends Entity {
@@ -38,6 +37,5 @@ export class Map extends Entity {
             query.setSchema(schema);
             this.queries[i] = query;
         }
-        //t = this.schemaStringify();
     }
 }

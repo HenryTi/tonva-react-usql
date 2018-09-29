@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { computed, action } from 'mobx';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { ViewModel } from "../../viewModel";
@@ -7,19 +8,22 @@ import { FormValues, FieldCall, FieldInputs } from '../vForm';
 import { Rule, RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
 import { Field } from '../../../entities';
 import { FieldUI, InputUI, NumberUI, Compute, StringUI } from '../../formUI';
+import { FieldRes } from '../vBand';
 
 export abstract class VField extends ViewModel {
     protected fieldUI: FieldUI;
+    protected fieldRes:FieldRes;
     protected field: Field;
     protected formValues: FormValues;
     protected formReadOnly: boolean;
     protected rules: Rule[];
     protected formCompute: Compute;
-    constructor(field:Field, fieldUI: FieldUI, formValues:FormValues, formCompute: Compute, readOnly:boolean) {
+    constructor(field:Field, fieldUI: FieldUI, fieldRes:FieldRes, formValues:FormValues, formCompute: Compute, readOnly:boolean) {
         super();
         this.field = field;
         this.name = field.name;
         this.fieldUI = fieldUI || {} as any;
+        this.fieldRes = fieldRes || {} as any;
         this.formValues = formValues;
         this.formCompute = formCompute;
         this.formReadOnly = readOnly;
@@ -100,7 +104,7 @@ export abstract class VInputControl extends VField {
         this.setInputValue();
     }
 
-    private setInputValue() {
+    protected setInputValue() {
         if (!this.input) return;
         let v = this.value;
         this.input.value = v === null || v === undefined? '' : v;
@@ -134,31 +138,22 @@ export abstract class VInputControl extends VField {
     protected onKeyPress: (event:React.KeyboardEvent<HTMLInputElement>) => void;
     
     protected view = observer(() => {
-        let {placeHolder, required} = this.fieldUI;
-        let ctrlCN = 'form-control form-control-input';
+        let {required} = this.fieldUI;
+        let {placeHolder, suffix} = this.fieldRes;
+        let ctrlCN = ['form-control', 'form-control-input'];
         let errCN = 'text-danger small mt-1 mx-2';
-        /*
-        if (className !== undefined) {
-            if (typeof className === 'string') ctrlCN = className;
-            else if (isArray(className) === true) {
-                ctrlCN = className[0];
-                errCN = className[1];
-            }
-        }*/
-        if (this.readOnly === true)
-            return <input className={ctrlCN}
+    
+        let redDot;
+        let input;
+        if (this.readOnly === true) {
+            input = <input className={classNames(ctrlCN, 'bg-light')}
                 ref={this.ref}
                 type={this.inputType}
                 readOnly={true}
             />;
-    
-        let redDot;
-        if (required === true || this.field.null === false) {
-            redDot = <RedMark />;
         }
-        return <>
-            {redDot}
-            <input className={ctrlCN}
+        else {
+            input = <input className={classNames(ctrlCN)}
                 ref={this.ref}
                 type={this.inputType}
                 onFocus={this.onFocus}
@@ -167,7 +162,27 @@ export abstract class VInputControl extends VField {
                 placeholder={placeHolder}
                 readOnly={this.readOnly}
                 maxLength={this.maxLength}
-                onKeyPress={this.onKeyPress} />
+                onKeyPress={this.onKeyPress}
+            />;
+            if (required === true || this.field.null === false) {
+                redDot = <RedMark />;
+            }
+        }
+
+        let inputGroup;
+        if (suffix === undefined)
+            inputGroup = input;
+        else
+            inputGroup = <div className="input-group">
+                {input}
+                <div className="input-group-append">
+                    <span className="input-group-text">{suffix}</span>
+                </div>
+            </div>;
+
+        return <>
+            {redDot}
+            {inputGroup}
             {this.renderError(errCN)}
         </>
     });
@@ -234,6 +249,13 @@ export abstract class VNumberControl extends VInputControl {
         catch {
             return null;
         }
+    }
+
+    protected setInputValue() {
+        if (!this.input) return;
+        let v = this.value;
+        if (this.parse(this.input.value) == v) return;
+        this.input.value = v === null || v === undefined? '' : v;
     }
 
     protected onKeyPress = (event:React.KeyboardEvent<HTMLInputElement>) => {

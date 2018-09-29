@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { List, FA, LMR } from 'tonva-react-form';
+import { List, Muted, LMR, EasyDate } from 'tonva-react-form';
 import { VEntity } from '../VM';
 export class VSheetList extends VEntity {
     constructor() {
@@ -18,20 +18,19 @@ export class VSheetList extends VEntity {
                 return;
             this.event('action', brief.id);
         });
-        this.renderRow = (row, index) => {
+        this.rowContent = (row) => {
+            let { id, no, discription, date, processing } = row;
             let left = React.createElement(React.Fragment, null,
-                row.processing === 1 ? '... ' : '',
-                "id:",
-                row.id,
-                ", no:",
-                row.no,
-                ", discription:",
-                row.discription,
-                ", date:",
-                row.date);
-            let right = React.createElement(FA, { className: "align-self-center", name: "angle-right" });
+                no,
+                " \u00A0 ",
+                React.createElement(Muted, null, discription),
+                " ",
+                processing === 1 ? '...' : '');
+            let right = React.createElement(Muted, null,
+                React.createElement(EasyDate, { date: date }));
             return React.createElement(LMR, { className: "px-3 py-2", left: left, right: right });
         };
+        this.renderRow = (row, index) => React.createElement(this.row, Object.assign({}, row));
         this.view = () => {
             let sheets = this.entity.stateSheets;
             return React.createElement(Page, { header: this.label + ' - ' + this.stateLabel },
@@ -40,6 +39,7 @@ export class VSheetList extends VEntity {
     }
     showEntry(item) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.row = this.ui.listRow || this.rowContent;
             this.stateName = item.state;
             this.stateLabel = this.controller.getStateLabel(this.stateName);
             yield this.entity.getStateSheets(this.stateName, 0, 30);

@@ -13,17 +13,21 @@ export abstract class VBand {
     }
 
     render():JSX.Element {
-        return <div key={this.key} className='form-group row'>
-            <label className='col-sm-2 col-form-label text-sm-right'>
-                {this.label}
-            </label>
-            <div className="col-sm-10">
-                {this.renderContent()}
+        //text-sm-right
+        return <div key={this.key} className="px-3">
+            <div className="form-group row">
+                <label className="col-sm-2 col-form-label">
+                    {this.label}
+                </label>
+                <div className="col-sm-10">
+                    {this.renderContent()}
+                </div>
             </div>
         </div>;
     }
 
-    protected get key() {return this.label}
+    setAddRow(addRow:()=>Promise<void>) {}
+    get key() {return this.label}
     public getVFields():VField[] {return;}
     public getVArr():VArr {return;}
     public getVSubmit():VSubmit {return;}
@@ -33,6 +37,11 @@ export abstract class VBand {
     }
 }
 
+export interface FieldRes {
+    label: string;
+    placeHolder: string;
+    suffix: string;
+}
 export class VFieldBand extends VBand {
     protected vField:VField;
     constructor(label:string, vField:VField) {
@@ -40,7 +49,7 @@ export class VFieldBand extends VBand {
         this.vField = vField;
     }
 
-    protected get key() {return this.vField.name}
+    get key() {return this.vField.name}
     public getVFields():VField[] {return [this.vField];}
 
     protected renderContent():JSX.Element {
@@ -59,13 +68,14 @@ export class VArrBand extends VBand {
         this.vArr = vArr;
     }
 
-    protected get key() {return this.vArr.name}
+    setAddRow(addRow:()=>Promise<void>) {this.vArr.setAddRow(addRow)}
+    get key() {return this.vArr.name}
     public getVArr():VArr {return this.vArr;}
 
     render():JSX.Element {
-        return <div key={this.key} className="form-group row flex-column">
+        return <React.Fragment key={this.key}>
             {this.vArr && this.vArr.render()}
-        </div>;
+        </React.Fragment>;
     }
 }
 
@@ -76,7 +86,7 @@ export class VFieldsBand extends VBand {
         this.vFields = vFields;
     }
 
-    protected get key() {return this.label || uid()}
+    get key() {return this.vFields[0].name}
     public getVFields():VField[] {return this.vFields;}
 
     protected renderContent():JSX.Element {
@@ -93,12 +103,16 @@ export class VSubmitBand extends VBand {
         this.vSubmit = vSubmit;
     }
 
+    get key() {return '$submit'}
+
     public getVSubmit():VSubmit {return this.vSubmit;}
 
     render():JSX.Element {
-        return <div key="$submit" className="form-group row">
-            <div className="offset-sm-2 col-sm-10">
-                {this.vSubmit.render()}
+        return <div key="$submit" className="px-3">
+            <div className="form-group row">
+                <div className="offset-sm-2 col-sm-10">
+                    {this.vSubmit.render()}
+                </div>
             </div>
         </div>;
     }

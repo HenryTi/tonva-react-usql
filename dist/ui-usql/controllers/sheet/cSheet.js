@@ -32,13 +32,13 @@ export class CSheet extends CEntity {
             this.entity.onMessage(msg);
         });
     }
-    get VSheetNew() { return VSheetNew; }
-    get VSheetEdit() { return VSheetEdit; }
+    get VSheetNew() { return this.ui.sheetNew || VSheetNew; }
+    get VSheetEdit() { return this.ui.sheetEdit || VSheetEdit; }
     get VSheetSchema() { return VSheetSchema; }
     get VArchives() { return VArchives; }
     get VArchived() { return VArchived; }
     get VSheetList() { return VSheetList; }
-    get VSheetAction() { return VSheetAction; }
+    get VSheetAction() { return this.ui.sheetAction || VSheetAction; }
     onEvent(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
             let c;

@@ -248,7 +248,7 @@ export class Entities {
         }
         return ret;
     }*/
-    buildFieldTuid(fields) {
+    buildFieldTuid(fields, mainFields) {
         if (fields === undefined)
             return;
         for (let f of fields) {
@@ -257,15 +257,34 @@ export class Entities {
                 continue;
             f._tuid = this.getTuid(tuid, arr, url);
         }
+        for (let f of fields) {
+            let { owner } = f;
+            if (owner === undefined)
+                continue;
+            let ownerField = fields.find(v => v.name === owner);
+            if (ownerField === undefined) {
+                if (mainFields !== undefined) {
+                    ownerField = mainFields.find(v => v.name === owner);
+                }
+                if (ownerField === undefined) {
+                    throw `owner field ${owner} is undefined`;
+                }
+            }
+            f._ownerField = ownerField;
+            let { arr, url } = f;
+            f._tuid = this.getTuid(ownerField._tuid.name, arr, url);
+            if (f._tuid === undefined)
+                throw 'owner field ${owner} is not tuid';
+        }
     }
-    buildArrFieldsTuid(arrFields) {
+    buildArrFieldsTuid(arrFields, mainFields) {
         if (arrFields === undefined)
             return;
         for (let af of arrFields) {
             let { fields } = af;
             if (fields === undefined)
                 continue;
-            this.buildFieldTuid(fields);
+            this.buildFieldTuid(fields, mainFields);
         }
     }
 }

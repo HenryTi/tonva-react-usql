@@ -29,7 +29,7 @@ export interface FieldsBandUI extends BandUI {
 }
 
 export interface ArrUI extends FormUIBase {
-    row?: React.StatelessComponent<any>;     // arr 行的显示方式
+    rowContent?: React.StatelessComponent<any>;     // arr 行的显示方式
 }
 
 export interface ArrBandUI extends BandUI {
@@ -67,7 +67,7 @@ export interface QueryBandUI extends BandUI, QueryUI {
 }
 
 export interface InputUI extends FieldUI {
-    placeHolder: string;
+    //placeHolder: string;
 }
 
 export interface StringUI extends InputUI {

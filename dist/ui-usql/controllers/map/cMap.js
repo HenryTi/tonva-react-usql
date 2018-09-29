@@ -1,9 +1,3 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -18,9 +12,10 @@ import { VMapMain } from "./vMain";
 import { entitiesRes } from '../../res';
 import { observable } from "mobx";
 import { PureJSONContent } from '../viewModel';
+import { VInputValues } from './inputValues';
 export class MapItem {
     constructor(parent, tuid, box, keyIndex) {
-        this.children = [];
+        this.children = observable.array([], { deep: true });
         this.parent = parent;
         this.tuid = tuid;
         this.box = box;
@@ -28,12 +23,13 @@ export class MapItem {
         this.isLeaf = false;
     }
 }
-__decorate([
-    observable
-], MapItem.prototype, "children", void 0);
 export class CMap extends CEntity {
     constructor() {
         super(...arguments);
+        this.onValuesSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
+            this.ceasePage();
+            this.return(values);
+        });
         this.addClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let { keyIndex, children } = item;
             let keysLen = this.keyFields.length;
@@ -54,21 +50,45 @@ export class CMap extends CEntity {
             let id = yield this.searchOnKey(keyField, searchParam);
             if (id === undefined || id <= 0)
                 return;
+            tuid.useId(id);
+            let idBox = tuid.createID(id);
             let arr1 = {};
+            let values = {};
             if (keyIndex + 1 === keysLast) {
-                arr1['_' + kn] = id;
+                tuid.useId(id);
+                values[kn] = arr1['_' + kn] = idBox;
+                if (this.form !== undefined) {
+                    let ret = yield this.vCall(VInputValues, data);
+                    for (let i in ret) {
+                        values[i] = arr1['_' + i] = ret[i];
+                    }
+                }
             }
             else {
-                data['_' + kn] = id;
+                values[kn] = data['_' + kn] = idBox;
                 for (let i = idx + 1; i < keysLast; i++)
                     data['_' + this.keyFields[i].name] = 0;
                 arr1['_' + this.keyFields[keysLast].name] = 0;
             }
             data.arr1 = [arr1];
             yield this.entity.actions.add.submit(data);
-            if (children.find(v => v.box.id === id) === undefined) {
-                tuid.useId(id);
-                children.push(this.createItem(item, tuid, tuid.createID(id), idx, undefined));
+            let rowIndex = children.findIndex(v => v.box.id === id);
+            if (rowIndex < 0) {
+                children.push(this.createItem(item, tuid, idBox, idx, values));
+            }
+            else {
+                let { fields } = this.entity;
+                if (fields !== undefined && fields.length > 0) {
+                    let row = children[rowIndex];
+                    children.splice(rowIndex, 1);
+                    row.values = values;
+                    /*
+                    for (let f of fields) {
+                        let {name:fn} = f;
+                        row.values[fn] = values[fn];
+                    }*/
+                    children.splice(rowIndex, 0, row);
+                }
             }
         });
         this.removeClick = (item) => __awaiter(this, void 0, void 0, function* () {
@@ -114,11 +134,14 @@ export class CMap extends CEntity {
     get icon() { return entitiesRes['map'].icon; }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            let { keys } = this.entity;
+            let { keys, fields } = this.entity;
+            if (fields && fields.length > 0) {
+                this.form = this.createForm(this.onValuesSubmit);
+            }
             let q = this.entity.queries.all;
-            let res = yield q.query({});
+            let result = yield q.query({});
             //let data = await this.entity.unpackReturns(res);
-            let ret = res.ret;
+            let ret = result.ret;
             let keysLen = keys.length;
             this.keyUIs = _.clone(this.ui.keys || []);
             this.keyFields = [];
@@ -131,10 +154,9 @@ export class CMap extends CEntity {
                     });
                 }
             }
-            this.items = [];
+            this.items = observable([]);
             let item = undefined;
             for (let r of ret) {
-                let team = r.$team;
                 let newItem = this.addItem(item, r);
                 if (newItem !== undefined) {
                     this.items.push(newItem);
@@ -189,9 +211,16 @@ export class CMap extends CEntity {
     }
     searchOnKey(keyField, param) {
         return __awaiter(this, void 0, void 0, function* () {
-            let { _tuid } = keyField;
+            let { _tuid, _ownerField } = keyField;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
-            let ret = yield cTuidSelect.call(param);
+            let callParam = param;
+            if (_ownerField !== undefined) {
+                callParam = param[_ownerField.name];
+                if (typeof callParam === 'object') {
+                    callParam = callParam.id;
+                }
+            }
+            let ret = yield cTuidSelect.call(callParam);
             return _tuid.getIdFromObj(ret);
         });
     }

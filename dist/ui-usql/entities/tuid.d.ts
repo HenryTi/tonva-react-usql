@@ -5,6 +5,7 @@ export declare class IdBox {
     id: number;
     obj?: any;
     content: (templet?: React.StatelessComponent<any>) => JSX.Element;
+    valueFromFieldName: (fieldName: string) => IdBox;
 }
 export declare abstract class Tuid extends Entity {
     private idCreater;
@@ -23,6 +24,7 @@ export declare abstract class Tuid extends Entity {
     setSchema(schema: any): void;
     private moveToHead;
     valueFromId(id: number): any;
+    valueFromFieldName(fieldName: string, obj: any): IdBox;
     resetCache(id: number): void;
     useId(id: number, defer?: boolean): void;
     proxied(name: string, id: number): Promise<any>;
@@ -30,7 +32,7 @@ export declare abstract class Tuid extends Entity {
     protected afterCacheId(tuidValue: any): void;
     cacheIds(): Promise<void>;
     load(id: number): Promise<any>;
-    private cacheTuidValues;
+    private cacheTuidFieldValues;
     private cacheFieldsInValue;
     save(id: number, props: any): Promise<any>;
     search(key: string, pageStart: string | number, pageSize: number): Promise<any>;
@@ -38,8 +40,6 @@ export declare abstract class Tuid extends Entity {
     loadArr(arr: string, owner: number, id: number): Promise<any>;
     saveArr(arr: string, owner: number, id: number, props: any): Promise<any>;
     posArr(arr: string, owner: number, id: number, order: number): Promise<any>;
-    bindSlaveSave(slave: string, first: number, masterId: number, id: number, props: any): Promise<any>;
-    bindSlaves(slave: string, masterId: number, order: number, pageSize: any): Promise<any[]>;
     showInfo(id: number): Promise<void>;
 }
 export declare class TuidMain extends Tuid {

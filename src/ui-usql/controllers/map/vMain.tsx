@@ -6,6 +6,7 @@ import { Page, nav } from 'tonva-tools';
 import { Map } from '../../entities';
 import { VEntity } from '../VM';
 import { CMap, MapItem, MapKey, MapUI } from './cMap';
+import { PureJSONContent } from '../viewModel';
 
 export class VMapMain extends VEntity<Map, MapUI, CMap> {
     private mapKey: MapKey[];
@@ -19,9 +20,9 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
     }
 
     private ItemRow = observer(({item}: {item:MapItem}) => {
-        let {tuid, box, children, isLeaf, keyIndex} = item;
+        let {tuid, box, children, isLeaf, keyIndex, values} = item;
         let keyUI = this.controller.keyUIs[keyIndex];
-        let {content:keyContent, none:keyNone} = keyUI;
+        let {content:keyContent, valuesContent, none:keyNone} = keyUI;
         let add = <button className="btn btn-link btn-sm" onClick={()=>this.controller.addClick(item)}>
             <FA name="plus" />
         </button>;
@@ -38,9 +39,12 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
         else if (keyIndex > 0) {
             right = remove;
         }
-        let content, border;
+        let content, border, valuesView;
         if (isLeaf === true) {
             content = undefined; //<div className="ml-5">leaf</div>;
+            if (values) {
+                valuesView = (valuesContent || PureJSONContent)(values);
+            }
         }
         else {
             border = "border-bottom";
@@ -55,7 +59,9 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
             <LMR className={className('px-2', 'py-1', border)} 
                 left={<div className="py-1">{box.content(keyContent)}</div>}
                 right={right}
-            />
+            >
+                {valuesView}
+            </LMR>
             {content}
         </div>;
     });

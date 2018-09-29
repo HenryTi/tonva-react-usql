@@ -1,4 +1,4 @@
-import { VBand, VFieldBand, VArrBand, VFieldsBand, VSubmitBand } from "./vBand";
+import { VBand, VFieldBand, VArrBand, VFieldsBand, VSubmitBand, FieldRes } from "./vBand";
 import { Field, ArrFields } from "../../entities";
 import { VForm, FieldInputs, FormOptions, FormValues } from "./vForm";
 import { FormUI, BandUI, FieldBandUI, ArrBandUI, FieldsBandUI, SubmitBandUI, FieldUI, Compute } from "../formUI";
@@ -7,6 +7,7 @@ import { VField, buildVField, VComputeField } from "./vField";
 import { JSONContent } from "..";
 import { VArr } from "./vArr";
 import { VTuidField } from "./vField/vTuidField";
+import { unwatchFile } from "fs";
 
 export class BandsBuilder {
     private vForm: VForm;
@@ -39,7 +40,7 @@ export class BandsBuilder {
         return this.bandUIs === undefined? this.bandsOnFly() : this.bandsFromUI();
     }
 
-    private labelFromName(name:string, res:any):string {
+    private resFromName(name:string, res:any):string|FieldRes {
         if (res === undefined) return;
         let {fields} = res;
         if (fields === undefined) return;
@@ -103,22 +104,31 @@ export class BandsBuilder {
         return new VSubmitBand(vSubmit);
     }
 
-    private vFieldFromField(field:Field): VField {
+    private vFieldFromField(field:Field, fieldRes:FieldRes): VField {
         let fieldUI:FieldUI = undefined;
         if (this.compute !== undefined) {
             let fieldCompute = this.compute[field.name];
             if (fieldCompute !== undefined) {
-                return new VComputeField(field, fieldUI, this.formValues);
+                return new VComputeField(field, fieldUI, fieldRes, this.formValues);
             }
         }
-        let ret = buildVField(field, fieldUI, this.formValues, this.compute, this.readOnly);
+        let ret = buildVField(field, fieldUI, fieldRes, this.formValues, this.compute, this.readOnly);
         if (ret !== undefined) return ret;
-        return new VTuidField(field, fieldUI, this.vForm);
+        return new VTuidField(field, fieldUI, fieldRes, this.vForm);
     }
     private bandFromField(field:Field, res:any):VBand {
         let {name} = field;
-        let vField = this.vFieldFromField(field);
-        return new VFieldBand(this.labelFromName(name, res) || name, vField);
+        let fieldRes = this.resFromName(name, res);
+        let label:string;
+        if (typeof fieldRes === 'object') {
+            label = fieldRes.label;
+        }
+        else {
+            label = fieldRes;
+            fieldRes = undefined;
+        }
+        let vField = this.vFieldFromField(field, fieldRes as FieldRes);
+        return new VFieldBand(label || name, vField);
     }
 
     private bandFromArr(arr: ArrFields):VBand {

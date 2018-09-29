@@ -41,8 +41,8 @@ export abstract class Entity {
         let {name, fields, arrs, returns} = schema;
         if (name !== this.name) this.jName = name;
         this.entities.buildFieldTuid(this.fields = fields);
-        this.entities.buildArrFieldsTuid(this.arrFields = arrs);
-        this.entities.buildArrFieldsTuid(this.returns = returns);
+        this.entities.buildArrFieldsTuid(this.arrFields = arrs, fields);
+        this.entities.buildArrFieldsTuid(this.returns = returns, fields);
         //this.newMain = this.buildCreater(fields);
         //this.newArr = this.buildArrCreater(arrs);
         //this.newRet = this.buildArrCreater(returns);
@@ -97,6 +97,7 @@ export abstract class Entity {
     private escape(d:any):any {
         switch (typeof d) {
             default: return d;
+            case 'object': return d.id;
             case 'string':
                 let len = d.length;
                 let r = '', p = 0;

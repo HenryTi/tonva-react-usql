@@ -12,6 +12,7 @@ import * as className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
+import { PureJSONContent } from '../viewModel';
 export class VMapMain extends VEntity {
     constructor() {
         super(...arguments);
@@ -19,9 +20,9 @@ export class VMapMain extends VEntity {
             return React.createElement(this.ItemRow, { item: item });
         };
         this.ItemRow = observer(({ item }) => {
-            let { tuid, box, children, isLeaf, keyIndex } = item;
+            let { tuid, box, children, isLeaf, keyIndex, values } = item;
             let keyUI = this.controller.keyUIs[keyIndex];
-            let { content: keyContent, none: keyNone } = keyUI;
+            let { content: keyContent, valuesContent, none: keyNone } = keyUI;
             let add = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.addClick(item) },
                 React.createElement(FA, { name: "plus" }));
             let remove = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.removeClick(item) },
@@ -39,9 +40,12 @@ export class VMapMain extends VEntity {
             else if (keyIndex > 0) {
                 right = remove;
             }
-            let content, border;
+            let content, border, valuesView;
             if (isLeaf === true) {
                 content = undefined; //<div className="ml-5">leaf</div>;
+                if (values) {
+                    valuesView = (valuesContent || PureJSONContent)(values);
+                }
             }
             else {
                 border = "border-bottom";
@@ -49,7 +53,7 @@ export class VMapMain extends VEntity {
                 content = React.createElement(List, { className: "ml-4", items: children, item: { onClick: undefined, render: this.itemRender }, none: none });
             }
             return React.createElement("div", { className: "d-flex flex-column" },
-                React.createElement(LMR, { className: className('px-2', 'py-1', border), left: React.createElement("div", { className: "py-1" }, box.content(keyContent)), right: right }),
+                React.createElement(LMR, { className: className('px-2', 'py-1', border), left: React.createElement("div", { className: "py-1" }, box.content(keyContent)), right: right }, valuesView),
                 content);
         });
     }

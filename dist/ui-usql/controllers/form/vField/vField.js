@@ -6,16 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import * as React from 'react';
 import { computed } from 'mobx';
+import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { ViewModel } from "../../viewModel";
 import { RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
 export class VField extends ViewModel {
-    constructor(field, fieldUI, formValues, formCompute, readOnly) {
+    constructor(field, fieldUI, fieldRes, formValues, formCompute, readOnly) {
         super();
         this.field = field;
         this.name = field.name;
         this.fieldUI = fieldUI || {};
+        this.fieldRes = fieldRes || {};
         this.formValues = formValues;
         this.formCompute = formCompute;
         this.formReadOnly = readOnly;
@@ -114,26 +116,32 @@ export class VInputControl extends VField {
             this.setValue(v);
         };
         this.view = observer(() => {
-            let { placeHolder, required } = this.fieldUI;
-            let ctrlCN = 'form-control form-control-input';
+            let { required } = this.fieldUI;
+            let { placeHolder, suffix } = this.fieldRes;
+            let ctrlCN = ['form-control', 'form-control-input'];
             let errCN = 'text-danger small mt-1 mx-2';
-            /*
-            if (className !== undefined) {
-                if (typeof className === 'string') ctrlCN = className;
-                else if (isArray(className) === true) {
-                    ctrlCN = className[0];
-                    errCN = className[1];
-                }
-            }*/
-            if (this.readOnly === true)
-                return React.createElement("input", { className: ctrlCN, ref: this.ref, type: this.inputType, readOnly: true });
             let redDot;
-            if (required === true || this.field.null === false) {
-                redDot = React.createElement(RedMark, null);
+            let input;
+            if (this.readOnly === true) {
+                input = React.createElement("input", { className: classNames(ctrlCN, 'bg-light'), ref: this.ref, type: this.inputType, readOnly: true });
             }
+            else {
+                input = React.createElement("input", { className: classNames(ctrlCN), ref: this.ref, type: this.inputType, onFocus: this.onFocus, onBlur: this.onBlur, onChange: this.onChange, placeholder: placeHolder, readOnly: this.readOnly, maxLength: this.maxLength, onKeyPress: this.onKeyPress });
+                if (required === true || this.field.null === false) {
+                    redDot = React.createElement(RedMark, null);
+                }
+            }
+            let inputGroup;
+            if (suffix === undefined)
+                inputGroup = input;
+            else
+                inputGroup = React.createElement("div", { className: "input-group" },
+                    input,
+                    React.createElement("div", { className: "input-group-append" },
+                        React.createElement("span", { className: "input-group-text" }, suffix)));
             return React.createElement(React.Fragment, null,
                 redDot,
-                React.createElement("input", { className: ctrlCN, ref: this.ref, type: this.inputType, onFocus: this.onFocus, onBlur: this.onBlur, onChange: this.onChange, placeholder: placeHolder, readOnly: this.readOnly, maxLength: this.maxLength, onKeyPress: this.onKeyPress }),
+                inputGroup,
                 this.renderError(errCN));
         });
     }
@@ -233,6 +241,14 @@ export class VNumberControl extends VInputControl {
         catch (_a) {
             return null;
         }
+    }
+    setInputValue() {
+        if (!this.input)
+            return;
+        let v = this.value;
+        if (this.parse(this.input.value) == v)
+            return;
+        this.input.value = v === null || v === undefined ? '' : v;
     }
     onKeyDot() {
         let v = this.input.value;

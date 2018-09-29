@@ -6,5 +6,6 @@ export declare class VSubmit extends ViewModel {
     constructor(vForm: VForm);
     caption: string;
     className: string;
+    private onClickSubmit;
     protected view: () => JSX.Element;
 }

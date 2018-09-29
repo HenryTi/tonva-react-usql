@@ -20,13 +20,15 @@ export interface StateUI {
     };
 }
 export interface SheetUI extends EntityUI {
+    CSheet?: typeof CSheet;
     states?: {
         [name: string]: StateUI;
     };
     main?: typeof VSheetMain;
-    new?: typeof VSheetNew;
-    edit?: typeof VSheetEdit;
-    action?: typeof VSheetAction;
+    sheetNew?: typeof VSheetNew;
+    sheetEdit?: typeof VSheetEdit;
+    sheetAction?: typeof VSheetAction;
+    listRow?: (row: any) => JSX.Element;
 }
 export declare class CSheet extends CEntity<Sheet, SheetUI> {
     readonly icon: JSX.Element;
