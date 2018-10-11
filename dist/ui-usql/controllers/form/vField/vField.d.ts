@@ -1,19 +1,17 @@
 import * as React from 'react';
-import { ViewModel } from "../../viewModel";
-import { FormValues } from '../vForm';
+import { ViewModel } from "../viewModel";
+import { VForm } from '../vForm';
 import { Rule } from '../rule';
 import { Field } from '../../../entities';
-import { FieldUI, InputUI, NumberUI, Compute, StringUI } from '../../formUI';
 import { FieldRes } from '../vBand';
+import { FieldEdit, FieldInput, FieldString, FieldNumber } from '../../formUI';
 export declare abstract class VField extends ViewModel {
-    protected fieldUI: FieldUI;
+    protected form: VForm;
+    protected fieldUI: FieldEdit;
     protected fieldRes: FieldRes;
     protected field: Field;
-    protected formValues: FormValues;
-    protected formReadOnly: boolean;
     protected rules: Rule[];
-    protected formCompute: Compute;
-    constructor(field: Field, fieldUI: FieldUI, fieldRes: FieldRes, formValues: FormValues, formCompute: Compute, readOnly: boolean);
+    constructor(form: VForm, field: Field, fieldUI: FieldEdit, fieldRes: FieldRes);
     name: string;
     protected init(): void;
     protected buildRules(): void;
@@ -23,13 +21,13 @@ export declare abstract class VField extends ViewModel {
     setValue(v: any): void;
     error: any;
     protected parse(str: string): any;
-    readonly readOnly: boolean;
+    readonly readonly: boolean;
 }
 export declare class VUnknownField extends VField {
     protected view: () => JSX.Element;
 }
 export declare abstract class VInputControl extends VField {
-    protected fieldUI: InputUI;
+    protected fieldUI: FieldInput;
     protected input: HTMLInputElement;
     protected inputType: string;
     protected readonly maxLength: number;
@@ -46,12 +44,12 @@ export declare abstract class VInputControl extends VField {
 }
 export declare const RedMark: () => JSX.Element;
 export declare class VStringField extends VInputControl {
-    protected fieldUI: StringUI;
+    protected fieldUI: FieldString;
     protected inputType: string;
     protected readonly maxLength: number;
 }
 export declare abstract class VNumberControl extends VInputControl {
-    protected fieldUI: NumberUI;
+    protected fieldUI: FieldNumber;
     protected extraChars: number[];
     protected init(): void;
     protected buildRules(): void;

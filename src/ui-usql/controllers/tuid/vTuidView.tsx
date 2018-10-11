@@ -46,7 +46,8 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
     }
 
     protected onSubmit = async () => {
-        let ret = await this.entity.save(this.id, this.vForm.values);
+        let values = this.vForm.getValues();
+        let ret = await this.entity.save(this.id, values);
         if (ret) {
             alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
         }

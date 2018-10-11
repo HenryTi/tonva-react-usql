@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VBand } from './vBand';
 import { Field, ArrFields } from '../../entities';
 import { VArr } from './vArr';
-import { FormUI, FormUIBase, Compute } from '../formUI';
+import { FormUI, FormUIBase, FormItems } from '../formUI';
 import { VField } from './vField';
 import { VSubmit } from './vSubmit';
 export declare type FieldCall = (form: VForm, field: Field, values: any) => Promise<any>;
@@ -16,9 +16,10 @@ export interface FieldInputs {
         [field: string]: FieldInput;
     };
 }
-export interface FormValues {
-    values: any;
-    errors: any;
+export declare enum FormMode {
+    new = 0,
+    edit = 1,
+    readonly = 2
 }
 export interface FormOptions {
     fields: Field[];
@@ -31,7 +32,7 @@ export interface FormOptions {
     arrEditCaption: string;
     arrTitleNewButton: JSX.Element;
     none: string;
-    readonly: boolean;
+    mode: FormMode;
 }
 export declare class VForm {
     protected fields: Field[];
@@ -40,13 +41,14 @@ export declare class VForm {
     protected bandColl: {
         [key: string]: VBand;
     };
-    constructor(options: FormOptions, onSubmit: (values: any) => Promise<void>);
-    onSubmit: (values: any) => Promise<void>;
+    protected onSubmit: () => Promise<void>;
+    constructor(options: FormOptions, onSubmit: () => Promise<void>);
     ui: FormUI;
     res: any;
-    formValues: FormValues;
-    compute: Compute;
-    readOnly: boolean;
+    values: any;
+    errors: any;
+    formItems: FormItems;
+    mode: FormMode;
     vFields: {
         [name: string]: VField;
     };
@@ -66,7 +68,9 @@ export declare class VForm {
         className: string;
     }) => JSX.Element;
     getBand(name: string): VBand;
-    readonly values: any;
+    computeFields(): void;
+    submit(): Promise<void>;
+    getValues(): any;
     readonly valueBoxs: any;
     setValues(initValues: any): void;
     readonly isOk: boolean;

@@ -16,10 +16,10 @@ const buttonStyle = {
     overflow: 'hidden'
 };
 export class VTuidField extends VField {
-    constructor(field, fieldUI, fieldRes, vForm) {
-        super(field, fieldUI, fieldRes, vForm.formValues, vForm.compute, vForm.readOnly);
+    constructor(vForm, field, fieldUI, fieldRes) {
+        super(vForm, field, fieldUI, fieldRes);
         this.onClick = () => __awaiter(this, void 0, void 0, function* () {
-            if (this.readOnly === true) {
+            if (this.readonly === true) {
                 if (!this.value)
                     return;
                 yield this.tuid.showInfo(this.value.id);
@@ -27,7 +27,7 @@ export class VTuidField extends VField {
             }
             let id;
             if (this.input !== undefined) {
-                id = yield this.input.select(this.vForm, this.field, this.vForm.values);
+                id = yield this.input.select(this.vForm, this.field, this.vForm.getValues());
             }
             else {
                 alert('call undefined');
@@ -53,7 +53,7 @@ export class VTuidField extends VField {
                 let idBox = this.tuid.createID(this.value);
                 content = idBox.content();
             }
-            if (this.readOnly === true) {
+            if (this.readonly === true) {
                 return React.createElement("div", { className: "form-control form-control-plaintext border border-info rounded bg-light cursor-pointer", onClick: this.onClick }, content);
             }
             let redDot;

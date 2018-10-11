@@ -29,6 +29,12 @@ export interface SheetUI extends EntityUI {
     sheetEdit?: typeof VSheetEdit;
     sheetAction?: typeof VSheetAction;
     listRow?: (row: any) => JSX.Element;
+    sheetTitle?: (sheetValues: any) => string;
+}
+export interface SheetData {
+    brief: any;
+    data: any;
+    flows: any[];
 }
 export declare class CSheet extends CEntity<Sheet, SheetUI> {
     readonly icon: JSX.Element;
@@ -44,17 +50,16 @@ export declare class CSheet extends CEntity<Sheet, SheetUI> {
     protected readonly VSheetAction: typeof VSheetAction;
     protected onEvent(type: string, value: any): Promise<void>;
     startSheet(sheetId: number): Promise<void>;
+    showAction(sheetId: number): Promise<void>;
+    editSheet(sheetData: SheetData): Promise<any>;
+    showArchived(inBrief: any): Promise<void>;
     private getStateUI;
     getStateLabel(stateName: string): any;
     getActionLabel(stateName: string, actionName: string): any;
     getStateSheetCount(): Promise<void>;
-    getSheetData(sheetId: number): Promise<any>;
-    getArchived(sheetId: number): Promise<{
-        brief: any;
-        data: any;
-        flows: any[];
-    }>;
-    saveSheet(values: any): Promise<number>;
+    getSheetData(sheetId: number): Promise<SheetData>;
+    getArchived(sheetId: number): Promise<SheetData>;
+    saveSheet(values: any, valuesWithBox: any): Promise<number>;
     action(id: number, flow: number, state: string, actionName: string): Promise<any>;
     readonly statesCount: IObservableArray<StateCount>;
 }

@@ -1,4 +1,4 @@
-import { VFieldBand, VArrBand, VFieldsBand, VSubmitBand } from "./vBand";
+import { VFieldBand, VArrBand, VSubmitBand } from "./vBand";
 import { VSubmit } from "./vSubmit";
 import { buildVField, VComputeField } from "./vField";
 import { VArr } from "./vArr";
@@ -11,16 +11,15 @@ export class BandsBuilder {
         this.fields = fields;
         this.arrs = arrs;
         if (ui !== undefined) {
-            let { bandUIs, compute } = ui;
-            this.bandUIs = bandUIs;
-            this.compute = compute;
+            let { items, layout } = ui;
+            this.formItems = items;
+            this.layout = layout;
         }
         this.res = res;
-        this.formValues = vForm.formValues;
-        this.readOnly = vForm.readOnly;
     }
     build() {
-        return this.bandUIs === undefined ? this.bandsOnFly() : this.bandsFromUI();
+        //return this.bandUIs === undefined? this.bandsOnFly() : this.bandsFromUI();
+        return this.layout === undefined ? this.bandsOnFly() : this.bandsFromLayout();
     }
     resFromName(name, res) {
         if (res === undefined)
@@ -48,69 +47,89 @@ export class BandsBuilder {
         for (let field of fields)
             bands.push(this.bandFromField(field, res));
     }
-    bandsFromUI() {
+    bandsFromLayout() {
         let bands = [];
-        for (let bandUI of this.bandUIs) {
+        /*
+        for (let bandUI of this.bandUIs)  {
             let band = this.bandFromUI(bandUI);
             bands.push(band);
         }
+        */
         return bands;
     }
-    bandFromUI(bandUI) {
-        let { band } = bandUI;
+    /*
+    private bandFromUI(bandUI:BandUI):VBand {
+        let {band} = bandUI;
         switch (band) {
-            default: return this.bandFromFieldUI(bandUI);
-            case 'arr': return this.bandFromArrUI(bandUI);
-            case 'fields': return this.bandFromFieldsUI(bandUI);
-            case 'submit': return this.bandFromSubmitUI(bandUI);
+            default: return this.bandFromFieldUI(bandUI as FieldBandUI);
+            case 'arr': return this.bandFromArrUI(bandUI as ArrBandUI);
+            case 'fields': return this.bandFromFieldsUI(bandUI as FieldsBandUI);
+            case 'submit': return this.bandFromSubmitUI(bandUI as SubmitBandUI);
         }
     }
-    bandFromFieldUI(bandUI) {
-        let { label } = bandUI;
+    
+    private bandFromFieldUI(bandUI: FieldBandUI): VFieldBand {
+        let {label} = bandUI;
         let vField = this.vFieldFromUI(bandUI);
         return new VFieldBand(label, vField);
     }
-    bandFromArrUI(bandUI) {
-        let { label, name } = bandUI;
+    private bandFromArrUI(bandUI: ArrBandUI): VArrBand {
+        let {label, name} = bandUI;
         let vArr = this.vArrFromUI(bandUI);
         return new VArrBand(label, vArr);
     }
-    bandFromFieldsUI(bandUI) {
-        let { label, fieldUIs } = bandUI;
+    private bandFromFieldsUI(bandUI: FieldsBandUI): VFieldsBand {
+        let {label, fieldUIs} = bandUI;
         let vFields = fieldUIs.map(v => this.vFieldFromUI(v));
         return new VFieldsBand(label, vFields);
     }
-    bandFromSubmitUI(bandUI) {
-        if (this.onSubmit === undefined)
-            return;
+    private bandFromSubmitUI(bandUI: SubmitBandUI): VSubmitBand {
+        if (this.onSubmit === undefined) return;
         let vSubmit = new VSubmit(this.vForm);
         return new VSubmitBand(vSubmit);
     }
-    vFieldFromField(field, fieldRes) {
-        let fieldUI = undefined;
-        if (this.compute !== undefined) {
-            let fieldCompute = this.compute[field.name];
-            if (fieldCompute !== undefined) {
-                return new VComputeField(field, fieldUI, fieldRes, this.formValues);
+    */
+    /*
+        private vFieldFromField(field:Field, fieldRes:FieldRes, formItem: FormItem): VField {
+            let fieldUI:FieldUI = undefined;
+            if (formItem !== undefined) {
+                if (typeof formItem === 'function') {
+                    return new VComputeField(this.vForm, field, fieldRes);
+                }
             }
+            let ret = buildVField(this.vForm, field, formItem, fieldRes);
+            if (ret !== undefined) return ret;
+            return new VTuidField(field, fieldUI, fieldRes, this.vForm);
         }
-        let ret = buildVField(field, fieldUI, fieldRes, this.formValues, this.compute, this.readOnly);
-        if (ret !== undefined)
-            return ret;
-        return new VTuidField(field, fieldUI, fieldRes, this.vForm);
-    }
+    */
     bandFromField(field, res) {
         let { name } = field;
-        let fieldRes = this.resFromName(name, res);
+        let fieldRes;
+        let rfn = this.resFromName(name, res);
         let label;
-        if (typeof fieldRes === 'object') {
-            label = fieldRes.label;
+        if (typeof rfn === 'object') {
+            label = rfn.label;
+            fieldRes = rfn;
         }
         else {
-            label = fieldRes;
+            label = rfn;
             fieldRes = undefined;
         }
-        let vField = this.vFieldFromField(field, fieldRes);
+        let vField;
+        let formItem;
+        if (this.formItems !== undefined)
+            formItem = this.formItems[name];
+        //let vField = this.vFieldFromField(field, fieldRes as FieldRes, formItem);
+        //let fieldUI:FieldUI = undefined;
+        if (typeof formItem === 'function') {
+            vField = new VComputeField(this.vForm, field, fieldRes);
+        }
+        else {
+            vField = buildVField(this.vForm, field, formItem, fieldRes);
+        }
+        if (vField === undefined) {
+            vField = new VTuidField(this.vForm, field, formItem, fieldRes);
+        }
         return new VFieldBand(label || name, vField);
     }
     bandFromArr(arr) {
@@ -120,12 +139,6 @@ export class BandsBuilder {
         //this.bandsFromFields(bands, fields, res);
         let vArr = new VArr(this.vForm, arr); // name, res && res.label || name, row, bands);
         return new VArrBand(name, vArr);
-    }
-    vFieldFromUI(fieldUI) {
-        return;
-    }
-    vArrFromUI(arrBandUI) {
-        return;
     }
 }
 //# sourceMappingURL=bandsBuilder.js.map

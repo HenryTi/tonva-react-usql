@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Controller, VPage } from 'tonva-tools';
 import { Entity, Field } from '../entities';
 import { CUsq } from './usq/cUsq';
-import { VForm, FieldCall } from './form';
+import { VForm, FieldCall, FormMode } from './form';
 import { CQuerySelect } from './query';
 import { FormUI } from './formUI';
 export declare abstract class ControllerUsq extends Controller {
@@ -18,7 +18,7 @@ export declare abstract class CEntity<T extends Entity, UI extends EntityUI> ext
     ui: UI;
     res: any;
     protected beforeStart(): Promise<void>;
-    createForm(onSubmit: (values: any) => Promise<void>, values?: any, readonly?: boolean): VForm;
+    createForm(onSubmit: () => Promise<void>, values?: any, mode?: FormMode): VForm;
     private buildFormOptions;
     private buildInputs;
     private buildFieldsInputs;
@@ -33,6 +33,5 @@ export declare abstract class VEntity<T extends Entity, UI extends EntityUI, C e
     protected res: any;
     constructor(controller: C);
     readonly label: string;
-    private _form_$;
-    protected createForm(onSubmit: (values: any) => Promise<void>, values?: any): VForm;
+    protected createForm(onSubmit: () => Promise<void>, values?: any, mode?: FormMode): VForm;
 }

@@ -1,17 +1,16 @@
 import React from 'react';
-import { FieldUI } from '../../formUI';
 import { VField } from './vField';
 import { Field } from '../../../entities';
-import { FormValues } from '../vForm';
+import { VForm } from '../vForm';
 import { observer } from 'mobx-react';
 import { FieldRes } from '../vBand';
 
 export class VComputeField extends VField {
-    constructor(field: Field, fieldUI: FieldUI, fieldRes: FieldRes, formValues:FormValues) {
-        super(field, fieldUI, fieldRes, formValues, undefined, true);
+    constructor(form:VForm, field: Field, fieldRes: FieldRes) {
+        super(form, field, undefined, fieldRes);
     }
     protected view = observer(() => {
-        let value = this.formValues.values[this.field.name];
+        let value = this.form.values[this.field.name];
         let {placeHolder, suffix} = this.fieldRes;
         let ctrlCN = 'form-control form-control-input bg-light';
         if (value === null) value = '';

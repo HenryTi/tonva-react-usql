@@ -5,7 +5,7 @@ import { Map, Tuid, IdBox, Field, TuidMain } from "../../entities";
 import { VMapMain } from "./vMain";
 import { entitiesRes } from '../../res';
 import { observable } from "mobx";
-import { PureJSONContent } from '../viewModel';
+import { PureJSONContent } from '../form/viewModel';
 import { VForm } from '../form';
 import { VInputValues } from './inputValues';
 
@@ -38,7 +38,7 @@ export class MapItem {
 }
 
 export class CMap extends CEntity<Map, MapUI> {
-    form: VForm;
+    vForm: VForm;
     items:MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
@@ -48,7 +48,7 @@ export class CMap extends CEntity<Map, MapUI> {
     protected async internalStart() {
         let {keys, fields} = this.entity;
         if (fields && fields.length > 0) {
-            this.form = this.createForm(this.onValuesSubmit);
+            this.vForm = this.createForm(this.onValuesSubmit);
         }
         let q = this.entity.queries.all;
         let result = await q.query({});
@@ -79,8 +79,9 @@ export class CMap extends CEntity<Map, MapUI> {
         await this.showVPage(this.VMapMain);
     }
 
-    private onValuesSubmit = async (values:any) => {
+    private onValuesSubmit = async () => {
         this.ceasePage();
+        let values = this.vForm.getValues();
         this.return(values);
     }
 
@@ -167,7 +168,7 @@ export class CMap extends CEntity<Map, MapUI> {
         if (keyIndex+1===keysLast) {
             tuid.useId(id);
             values[kn] = arr1['_' + kn] = idBox;
-            if (this.form !== undefined) {
+            if (this.vForm !== undefined) {
                 let ret = await this.vCall(VInputValues, data);
                 for (let i in ret) {
                     values[i] = arr1['_' + i] = ret[i];                    

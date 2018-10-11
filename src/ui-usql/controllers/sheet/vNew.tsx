@@ -5,6 +5,7 @@ import { Sheet } from '../../entities';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { SheetUI, CSheet } from './cSheet';
+import { FA } from 'tonva-react-form';
 
 export class VSheetNew extends VEntity<Sheet, SheetUI, CSheet> {
     vForm: VForm;
@@ -14,13 +15,30 @@ export class VSheetNew extends VEntity<Sheet, SheetUI, CSheet> {
         this.openPage(this.view);
     }
 
-    onSubmit = async (values:any):Promise<void> => {
-        let ret = await this.controller.saveSheet(values);
-        alert('[' + this.label + '] 已保存: ' + JSON.stringify(ret));
-        this.closePage();
+    onSubmit = async ():Promise<void> => {
+        let values = this.vForm.getValues();
+        let ret = await this.controller.saveSheet(values, this.vForm.values);
+        this.ceasePage();
+        this.openPage(this.finishedPage);
     }
 
     protected view = () => <Page header={this.label}>
         {this.vForm.render()}
     </Page>;
+
+    private restart = async () => {
+        this.ceasePage();
+        await this.event('new');
+    }
+    private finishedPage = () => {
+        return <Page header="已保存" back="close">
+            <div className="p-3 d-flex flex-column align-items-center">
+                <div className="text-success"><FA name="check-circle-o" /> 成功</div>
+                <div className="p-3">
+                    <button className="btn btn-sm btn-primary" onClick={this.restart}>继续开单</button>
+                    <button className="ml-3 btn btn-sm btn-outline-info" onClick={()=>this.backPage()}>返回</button>
+                </div>
+            </div>
+        </Page>;
+    }
 }

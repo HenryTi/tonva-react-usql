@@ -10,7 +10,7 @@ import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
 import { SearchBox, List } from 'tonva-react-form';
 import React from 'react';
-import { RowContent } from '../viewModel';
+import { RowContent } from '../form/viewModel';
 import { observer } from 'mobx-react';
 export class VTuidSelect extends VEntity {
     constructor() {
@@ -26,7 +26,7 @@ export class VTuidSelect extends VEntity {
         });
         this.renderMainRow = (item, index) => React.createElement(this.mainRowContent, Object.assign({}, item));
         this.clickMainRow = (item) => __awaiter(this, void 0, void 0, function* () {
-            this.ceasePage();
+            this.closePage();
             if (this.controller.entity.owner === undefined) {
                 this.return(item);
                 return;
@@ -39,7 +39,7 @@ export class VTuidSelect extends VEntity {
         };
         this.renderDivRow = (item, index) => React.createElement(this.divRowContent, Object.assign({}, item));
         this.clickDivRow = (item) => {
-            this.ceasePage();
+            this.closePage();
             this.return(item);
         };
     }

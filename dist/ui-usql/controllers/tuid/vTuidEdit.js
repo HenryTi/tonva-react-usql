@@ -23,7 +23,7 @@ export class VTuidEdit extends VEntity {
             this.event('edit-end');
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let { values } = this.vForm;
+            let values = this.vForm.getValues();
             let ret = yield this.controller.entity.save(this.id, values);
             let { id } = ret;
             if (id < 0) {

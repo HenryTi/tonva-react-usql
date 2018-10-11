@@ -23,7 +23,7 @@ export declare class MapItem {
     constructor(parent: MapItem, tuid: Tuid, box: IdBox, keyIndex: number);
 }
 export declare class CMap extends CEntity<Map, MapUI> {
-    form: VForm;
+    vForm: VForm;
     items: MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];

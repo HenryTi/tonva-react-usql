@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames'
-import { ViewModel } from "../viewModel";
+import { ViewModel } from "./viewModel";
 import { VForm } from './vForm';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
@@ -17,8 +17,7 @@ export class VSubmit extends ViewModel {
     @observable className: string;
 
     private onClickSubmit = async () => {
-        let {onSubmit, values} = this.vForm;
-        await onSubmit(values);
+        this.vForm.submit();
     }
 
     protected view = observer(() => {

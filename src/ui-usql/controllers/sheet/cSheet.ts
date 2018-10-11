@@ -29,6 +29,13 @@ export interface SheetUI extends EntityUI {
     sheetEdit?: typeof VSheetEdit;
     sheetAction?: typeof VSheetAction;
     listRow?: (row:any) => JSX.Element;
+    sheetTitle?: (sheetValues:any) => string;      // 返回单据的描述
+}
+
+export interface SheetData {
+    brief: any;
+    data: any;
+    flows: any[];
 }
 
 export class CSheet extends CEntity<Sheet, SheetUI> {
@@ -62,8 +69,8 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
             case 'schema': c = this.VSheetSchema; break;
             case 'archives': c = this.VArchives; break;
             case 'state': c = this.VSheetList; break;
-            case 'action': c = this.VSheetAction; break;
-            case 'archived': c = this.VArchived; break;
+            case 'archived': await this.showArchived(value); return;
+            case 'action': await this.showAction(value); return;
         }
         await this.showVPage(c, value);
     }
@@ -71,6 +78,22 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     async startSheet(sheetId:number) {
         super.beforeStart();
         this.onEvent('action', sheetId);
+    }
+
+    async showAction(sheetId:number) {
+        let sheetData:SheetData = await this.getSheetData(sheetId);
+        await this.showVPage(this.VSheetAction, sheetData);
+    }
+
+    async editSheet(sheetData:SheetData):Promise<any> {
+        //alert('修改单据：程序正在设计中');
+        let values = await this.vCall(this.VSheetEdit, sheetData);
+        return values;
+    }
+
+    async showArchived(inBrief:any) {
+        let sheetData = await this.getArchived(inBrief.id);
+        await this.showVPage(this.VArchived, sheetData);
     }
 
     private getStateUI(stateName:string) {
@@ -101,16 +124,18 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
         await this.entity.getStateSheetCount();
     }
 
-    async getSheetData(sheetId:number):Promise<any> {
+    async getSheetData(sheetId:number):Promise<SheetData> {
         return await this.entity.getSheet(sheetId);
     }
 
-    async getArchived(sheetId:number):Promise<{brief:any, data:any, flows:any[]}> {
+    async getArchived(sheetId:number):Promise<SheetData> {
         return await this.entity.getArchive(sheetId);
     }
 
-    async saveSheet(values:any):Promise<number> {
-        return await this.entity.save(this.label, values);
+    async saveSheet(values:any, valuesWithBox:any):Promise<number> {
+        let {sheetTitle} = this.ui;
+        let disc = sheetTitle === undefined? this.label : sheetTitle(valuesWithBox);
+        return await this.entity.save(disc, values);
     }
 
     async action(id:number, flow:number, state:string, actionName:string):Promise<any> {

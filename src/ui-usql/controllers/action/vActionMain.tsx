@@ -6,18 +6,19 @@ import { CAction, ActionUI } from './cAction';
 import { Action } from '../../entities';
 
 export class VActionMain extends VEntity<Action, ActionUI, CAction> {
-    private vForm: VForm;
-    private returns: any;
-
-    private onSubmit = async () => {
-        this.returns = await this.controller.submit(this.vForm.values);
-        this.closePage();
-        this.openPage(this.resultPage);
-    }
+    protected vForm: VForm;
+    protected returns: any;
 
     async showEntry(param?:any):Promise<void> {
         this.vForm = this.createForm(this.onSubmit, param);
         this.openPage(this.mainPage);
+    }
+
+    private onSubmit = async () => {
+        let values = this.vForm.getValues();
+        this.returns = await this.controller.submit(values);
+        this.closePage();
+        this.openPage(this.resultPage);
     }
 
     protected mainPage = () => {

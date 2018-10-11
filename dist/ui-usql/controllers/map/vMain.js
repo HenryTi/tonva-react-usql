@@ -12,7 +12,7 @@ import * as className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
-import { PureJSONContent } from '../viewModel';
+import { PureJSONContent } from '../form/viewModel';
 export class VMapMain extends VEntity {
     constructor() {
         super(...arguments);

@@ -20,7 +20,7 @@ export class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
     }
 
     onSubmit = async () => {
-        let params = this.vForm.values;
+        let params = this.vForm.getValues();
         if (this.entity.isPaged === true) {
             await this.entity.resetPage(30, params);
             await this.entity.loadPage();

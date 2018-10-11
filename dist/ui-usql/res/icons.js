@@ -28,6 +28,10 @@ export const entitiesRes = {
         caption: 'History',
         icon: icon('text-info', 'hand-o-right'),
     },
+    pending: {
+        caption: 'Pending',
+        icon: icon('text-info', 'forward'),
+    },
     sheet: {
         caption: 'Sheet',
         icon: icon('text-primary', 'wpforms'),

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Field, Tuid } from '../../../entities';
 import { VField, RedMark } from "./vField";
-import { FieldUI } from '../../formUI';
-import { FieldInputs, FormValues, FieldCall, VForm, FieldInput } from '../vForm';
+import { FieldEdit } from '../../formUI';
+import { VForm, FieldInput, FormMode } from '../vForm';
 import { FieldRes } from '../vBand';
 
 const buttonStyle:React.CSSProperties = {
@@ -18,22 +18,22 @@ export class VTuidField extends VField {
     protected input: FieldInput;
     protected tuid: Tuid;
 
-    constructor(field:Field, fieldUI: FieldUI, fieldRes:FieldRes, vForm: VForm) {
-        super(field, fieldUI, fieldRes, vForm.formValues, vForm.compute, vForm.readOnly);
+    constructor(vForm: VForm, field:Field, fieldUI: FieldEdit, fieldRes:FieldRes) {
+        super(vForm, field, fieldUI, fieldRes);
         this.tuid = field._tuid;
         this.vForm = vForm;
         this.input = vForm.inputs[field.name] as FieldInput;
     }
 
     onClick = async () => {
-        if (this.readOnly === true) {
+        if (this.readonly === true) {
             if (!this.value) return;
             await this.tuid.showInfo(this.value.id);
             return;
         }
         let id:number;
         if (this.input !== undefined) {
-            id = await this.input.select(this.vForm, this.field, this.vForm.values);
+            id = await this.input.select(this.vForm, this.field, this.vForm.getValues());
         }
         else {
             alert('call undefined');
@@ -59,7 +59,8 @@ export class VTuidField extends VField {
             let idBox = this.tuid.createID(this.value);
             content = idBox.content();
         }
-        if (this.readOnly === true) {
+        if (this.readonly === true)
+        {
             return <div 
                 className="form-control form-control-plaintext border border-info rounded bg-light cursor-pointer"
                 onClick={this.onClick}>

@@ -3,15 +3,16 @@ import {List, Muted, LMR, EasyDate, FA} from 'tonva-react-form';
 import { Sheet } from '../../entities';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
-import { CSheet, SheetUI } from './cSheet';
+import { CSheet, SheetUI, SheetData } from './cSheet';
 
 const leftFlowStyle = {width: '8rem'};
 
 export abstract class VSheetView extends VEntity<Sheet, SheetUI, CSheet> {
-    vForm: VForm;
-    data: any;
-    state: string;
-    flows:any[];
+    protected vForm: VForm;
+    protected sheetData: SheetData;
+    //data: any;
+    //state: string;
+    //flows:any[];
 
     flowRow = (item:any, index:number):JSX.Element => {
         let {date, user, preState, state, action} = item;
@@ -37,15 +38,16 @@ export abstract class VSheetView extends VEntity<Sheet, SheetUI, CSheet> {
     }
 
     protected sheetView = () => {
+        let {brief, flows} = this.sheetData;
         let removed;
-        if (this.state === '-')
+        if (brief.state === '-')
             removed = <div className="mx-3 my-2" style={{color:'red'}}>本单据作废</div>;
         return <div>
             {removed}
             {this.vForm.render()}
     
             <List header={<Muted className="mx-3 my-1">流程</Muted>}
-                items={this.flows}
+                items={flows}
                 item={{render:this.flowRow}}/>
         </div>;
     };

@@ -15,7 +15,7 @@ import { CAction } from '../action';
 import { CQuery, CQuerySelect } from '../query';
 import { CTuidMain, CTuidInfo, CTuidSelect } from '../tuid';
 import { CMap } from '../map';
-import { PureJSONContent } from '../viewModel';
+import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
 export class CUsq extends Controller {
     constructor(usq, appId, usqId, access, ui) {
@@ -23,8 +23,9 @@ export class CUsq extends Controller {
         this.isSysVisible = false;
         this.usq = usq;
         this.id = usqId;
-        if (ui === undefined)
-            this.ui = {};
+        if (ui === undefined) {
+            ui = this.ui = {};
+        }
         else {
             this.ui = ui;
             if (ui.res !== undefined) {

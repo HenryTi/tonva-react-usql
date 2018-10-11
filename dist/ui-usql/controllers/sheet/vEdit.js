@@ -8,19 +8,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
-export class VSheetEdit extends VEntity {
+import { FormMode } from '../form';
+import { VSheetView } from './vSheetView';
+export class VSheetEdit extends VSheetView {
     constructor() {
         super(...arguments);
-        this.onSubmit = (values) => {
-            alert('not implemented');
-            return;
-        };
+        this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
+            let values = this.vForm.getValues();
+            yield this.controller.saveSheet(values, this.vForm.values);
+            this.closePage();
+            this.return(this.vForm.values);
+        });
         this.view = () => React.createElement(Page, { header: this.label }, this.vForm.render());
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.vForm = this.createForm(this.onSubmit, param);
+            this.sheetData = param;
+            this.vForm = this.createForm(this.onSubmit, param.data, FormMode.edit);
             this.openPage(this.view);
         });
     }

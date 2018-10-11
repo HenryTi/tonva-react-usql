@@ -11,7 +11,7 @@ import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
-import { RowContent } from '../viewModel';
+import { RowContent } from '../form/viewModel';
 export class VTuidMainListBase extends VEntity {
     constructor() {
         super(...arguments);

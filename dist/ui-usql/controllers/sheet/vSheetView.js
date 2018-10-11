@@ -5,6 +5,9 @@ const leftFlowStyle = { width: '8rem' };
 export class VSheetView extends VEntity {
     constructor() {
         super(...arguments);
+        //data: any;
+        //state: string;
+        //flows:any[];
         this.flowRow = (item, index) => {
             let { date, user, preState, state, action } = item;
             if (action === undefined)
@@ -38,13 +41,14 @@ export class VSheetView extends VEntity {
                 React.createElement("div", { className: "p-2" }, to));
         };
         this.sheetView = () => {
+            let { brief, flows } = this.sheetData;
             let removed;
-            if (this.state === '-')
+            if (brief.state === '-')
                 removed = React.createElement("div", { className: "mx-3 my-2", style: { color: 'red' } }, "\u672C\u5355\u636E\u4F5C\u5E9F");
             return React.createElement("div", null,
                 removed,
                 this.vForm.render(),
-                React.createElement(List, { header: React.createElement(Muted, { className: "mx-3 my-1" }, "\u6D41\u7A0B"), items: this.flows, item: { render: this.flowRow } }));
+                React.createElement(List, { header: React.createElement(Muted, { className: "mx-3 my-1" }, "\u6D41\u7A0B"), items: flows, item: { render: this.flowRow } }));
         };
     }
 }

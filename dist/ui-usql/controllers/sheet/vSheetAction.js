@@ -15,7 +15,7 @@ export class VSheetAction extends VSheetView {
     constructor() {
         super(...arguments);
         this.actionClick = (action) => __awaiter(this, void 0, void 0, function* () {
-            let { id, flow, state } = this.brief;
+            let { id, flow, state } = this.sheetData.brief;
             let res = yield this.controller.action(id, flow, state, action.name);
             alert(JSON.stringify(res));
             yield this.backPage();
@@ -24,10 +24,13 @@ export class VSheetAction extends VSheetView {
             alert('单据作废：程序正在设计中');
         });
         this.editClick = () => __awaiter(this, void 0, void 0, function* () {
-            alert('修改单据：程序正在设计中');
+            //alert('修改单据：程序正在设计中');
+            let values = yield this.controller.editSheet(this.sheetData);
+            this.vForm.setValues(values);
         });
         this.page = () => {
-            let state = this.brief.state;
+            let { brief } = this.sheetData;
+            let { state, no } = brief;
             let stateLabel = this.controller.getStateLabel(state);
             let { states } = this.entity;
             let s = states.find(v => v.name === state);
@@ -62,7 +65,7 @@ export class VSheetAction extends VSheetView {
                 }
             }
             ;
-            return React.createElement(Page, { header: this.label + ':' + stateLabel + '-' + this.brief.no },
+            return React.createElement(Page, { header: this.label + ':' + stateLabel + '-' + no },
                 React.createElement("div", { className: "mb-2" },
                     React.createElement("div", { className: "d-flex px-3 py-2 border-bottom bg-light" },
                         actionButtons,
@@ -70,14 +73,15 @@ export class VSheetAction extends VSheetView {
                     React.createElement(this.sheetView, null)));
         };
     }
-    showEntry(sheetId) {
+    showEntry(sheetData) {
         return __awaiter(this, void 0, void 0, function* () {
-            let { brief, data, flows } = yield this.controller.getSheetData(sheetId);
-            this.brief = brief;
-            this.flows = flows;
-            this.data = data;
-            this.state = this.brief.state;
-            this.vForm = this.createForm(undefined, this.data);
+            this.sheetData = sheetData;
+            //let {brief, data, flows} = await this.controller.getSheetData(sheetId);
+            //this.brief = brief;
+            //this.flows = flows;
+            //this.data = data;
+            //this.state = this.brief.state;
+            this.vForm = this.createForm(undefined, sheetData.data);
             this.openPage(this.page);
         });
     }

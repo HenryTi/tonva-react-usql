@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { TypeVPage } from 'tonva-tools';
+import { TypeVPage, PagedItems } from 'tonva-tools';
 import { CEntity, EntityUI } from "../VM";
 import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
@@ -34,11 +34,15 @@ export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 
     get icon() {return entitiesRes['tuid'].icon}
 
-    pagedItems:TuidPagedItems;
+    pagedItems:PagedItems<any>;
+
+    protected buildPagedItems():PagedItems<any> {
+        return new TuidPagedItems(this.entity.owner || this.entity);
+    }
 
     async searchMain(key:string) {
         if (this.pagedItems === undefined) {
-            this.pagedItems = new TuidPagedItems(this.entity.owner || this.entity);
+            this.pagedItems = this.buildPagedItems();
         }
         if (key !== undefined) await this.pagedItems.first(key);
     }
@@ -132,24 +136,11 @@ export class CTuidSelect extends CTuid<Tuid> {
         if (this.pagedItems !== undefined) this.pagedItems.reset();
     }
     protected get VTuidSelect():typeof VTuidSelect {return VTuidSelect}
-    //protected get VTuidMainSelect():typeof VTuidMainSelect {return VTuidMainSelect}
-    //protected get VTuidDivSelect():typeof VTuidDivSelect {return VTuidDivSelect}
-}
-/*
-export class CTuidMainSelect extends CTuidSelect<TuidMain> {
-    protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VTuidMainSelect, param);
+    idFromItem(item:any) {
+        return item.id;
     }
-    protected get VTuidMainSelect():typeof VTuidMainSelect {return VTuidMainSelect}
 }
 
-export class CTuidDivSelect extends CTuidSelect<TuidDiv> {
-    protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VTuidDivSelect, param);
-    }
-    protected get VTuidDivSelect():typeof VTuidDivSelect {return VTuidDivSelect}
-}
-*/
 export class CTuidInfo extends CTuid<Tuid> {
     protected async internalStart(id: any):Promise<void> {
         let data = await this.entity.load(id)

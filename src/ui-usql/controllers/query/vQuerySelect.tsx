@@ -47,13 +47,14 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     };
 }
 
-class QueryPagedItems extends PagedItems<any> {
+export class QueryPagedItems extends PagedItems<any> {
     private query: Query;
     constructor(query: Query) {
         super();
         this.query = query;
     }
     protected async load():Promise<any[]> {
+        await  this.query.loadSchema();
         let ret:any[];
         if (this.query.isPaged === true)
             ret = await this.query.page(this.param, this.pageStart, this.pageSize);

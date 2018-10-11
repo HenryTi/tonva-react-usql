@@ -16,7 +16,7 @@ export class VQueryMain extends VEntity {
     constructor() {
         super(...arguments);
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let params = this.vForm.values;
+            let params = this.vForm.getValues();
             if (this.entity.isPaged === true) {
                 yield this.entity.resetPage(30, params);
                 yield this.entity.loadPage();

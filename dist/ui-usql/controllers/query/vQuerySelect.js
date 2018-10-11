@@ -42,13 +42,14 @@ export class VQuerySelect extends VEntity {
         this.return(item);
     }
 }
-class QueryPagedItems extends PagedItems {
+export class QueryPagedItems extends PagedItems {
     constructor(query) {
         super();
         this.query = query;
     }
     load() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.query.loadSchema();
             let ret;
             if (this.query.isPaged === true)
                 ret = yield this.query.page(this.param, this.pageStart, this.pageSize);

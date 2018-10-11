@@ -14,10 +14,9 @@ export declare class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> 
     clickRow: (item: any) => void;
     view: () => JSX.Element;
 }
-declare class QueryPagedItems extends PagedItems<any> {
+export declare class QueryPagedItems extends PagedItems<any> {
     private query;
     constructor(query: Query);
     protected load(): Promise<any[]>;
     protected setPageStart(item: any): void;
 }
-export {};

@@ -6,7 +6,7 @@ import { Page, nav } from 'tonva-tools';
 import { Map } from '../../entities';
 import { VEntity } from '../VM';
 import { CMap, MapItem, MapKey, MapUI } from './cMap';
-import { PureJSONContent } from '../viewModel';
+import { PureJSONContent } from '../form/viewModel';
 
 export class VMapMain extends VEntity<Map, MapUI, CMap> {
     private mapKey: MapKey[];

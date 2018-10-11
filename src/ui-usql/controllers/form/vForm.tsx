@@ -6,7 +6,7 @@ import { BandsBuilder } from './bandsBuilder';
 import { Field, ArrFields } from '../../entities';
 import { computed, observable, IObservableObject } from 'mobx';
 import { VArr } from './vArr';
-import { FieldUI, FormUI, FormUIBase, Compute } from '../formUI';
+import { FormUI, FormUIBase, FormItems } from '../formUI';
 import { VField } from './vField';
 import { VSubmit } from './vSubmit';
 import { IObservableArray } from 'mobx';
@@ -18,15 +18,10 @@ export interface FieldInput {
     content: React.StatelessComponent<any>;
     placeHolder: string;
 }
-// [arr.field]: FieldCall;
 export interface FieldInputs {
     [fieldOrArr:string]: FieldInput | {[field:string]: FieldInput};
 }
-
-export interface FormValues {
-    values: any;
-    errors: any;
-}
+export enum FormMode {new, edit, readonly}
 
 export interface FormOptions {
     fields: Field[];
@@ -39,7 +34,7 @@ export interface FormOptions {
     arrEditCaption: string;
     arrTitleNewButton: JSX.Element;
     none: string;
-    readonly: boolean;
+    mode: FormMode;
 }
 
 export class VForm {
@@ -47,12 +42,14 @@ export class VForm {
     protected arrs: ArrFields[];
     protected bands: VBand[];
     protected bandColl: {[key:string]: VBand};
-    constructor(options: FormOptions, onSubmit: (values:any)=>Promise<void>) {
-        let {fields, arrs, ui, res, inputs, none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton, readonly} = options;
+    protected onSubmit: ()=>Promise<void>;
+
+    constructor(options: FormOptions, onSubmit: ()=>Promise<void>) {
+        let {fields, arrs, ui, res, inputs, none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton, mode} = options;
         this.fields = fields;
         this.arrs = arrs;
         this.ui = ui;
-        if (this.ui !== undefined) this.compute = this.ui.compute;
+        if (this.ui !== undefined) this.formItems = this.ui.items; //.compute = this.ui.compute;
         this.res = res;
         this.inputs = inputs;
         this.none = none;
@@ -60,18 +57,19 @@ export class VForm {
         this.arrNewCaption = arrNewCaption;
         this.arrEditCaption = arrEditCaption;
         this.arrTitleNewButton = arrTitleNewButton || <small><FA name="plus" /> 新增</small>;
-        this.readOnly = readonly === true || onSubmit === undefined;
-        this.formValues = this.buildFormValues();
+        if (onSubmit === undefined) this.mode = FormMode.readonly;
+        else this.mode = mode;
+        this.buildFormValues();
         this.buildBands(options, onSubmit);
         this.onSubmit = onSubmit;
     }
 
-    onSubmit: (values:any)=>Promise<void>;
     ui: FormUI;
     res: any;
-    formValues: FormValues;
-    compute: Compute;
-    readOnly: boolean;
+    values: any;
+    errors: any;
+    formItems: FormItems;
+    mode: FormMode;
     vFields: {[name:string]:VField} = {};
     vArrs: {[name:string]: VArr} = {};
     vSubmit: VSubmit;
@@ -112,9 +110,24 @@ export class VForm {
         return this.bandColl[name];
     }
 
-    get values() {
+    computeFields() {
+        if (this.formItems === undefined) return;
+        let values = this.values;
+        for (let i in this.formItems) {
+            let item = this.formItems[i];
+            if (typeof item !== 'function') continue;
+            values[i] = item.call(values);
+        }
+    }
+
+    async submit() {
+        if (this.onSubmit === undefined) return;
+        await this.onSubmit();
+    }
+    
+    getValues() {
         let ret:any = {};
-        let {values} = this.formValues;
+        let values = this.values;
         for (let f of this.fields) {
             let {name} = f;
             let v = values[name]
@@ -143,7 +156,7 @@ export class VForm {
 
     get valueBoxs() {
         let ret:any = {};
-        let {values} = this.formValues;
+        let values = this.values;
         for (let f of this.fields) {
             let {name, _tuid} = f;
             let v = values[name]
@@ -170,15 +183,13 @@ export class VForm {
             this.reset();
             return;
         }
-        let {values, errors} = this.formValues;
-        //let compute = this.ui && this.ui.compute;
+        let values = this.values;
+        let errors = this.errors;
         for (let f of this.fields) {
             let fn = f.name;
-            //if (compute === undefined || compute[fn] === undefined) {
-                errors[fn] = undefined;
-                let v =  initValues[fn];
-                values[fn] = v;
-            //}
+            errors[fn] = undefined;
+            let v =  initValues[fn];
+            values[fn] = v;
         }
         // 还要设置arrs的values
         for (let i in this.vArrs) {
@@ -197,7 +208,8 @@ export class VForm {
         return true;
     }
     reset() {
-        let {values, errors} = this.formValues;
+        let values = this.values;
+        let errors = this.errors;
         for (let f of this.fields) {
             let fn = f.name;
             //if (this.compute !== undefined && this.compute[fn] !== undefined) continue;
@@ -218,20 +230,17 @@ export class VForm {
     }
 
     getValue(fieldName: string) {
-        return this.formValues.values[fieldName];
+        return this.values[fieldName];
     }
-    setValue(fieldName: string, value: any) { this.formValues.values[fieldName] = value }
+    setValue(fieldName: string, value: any) { this.values[fieldName] = value }
 
-    setError(fieldName:string, error:string) {this.formValues.errors[fieldName] = error}
+    setError(fieldName:string, error:string) {this.errors[fieldName] = error}
 
     private buildFieldValues(fields: Field[]):any {
         let v: {[p:string]: any} = {};
         for (let f of fields) {
             let fn = f.name;
-            //if (this.compute === undefined || this.compute[fn] === undefined)
-            {
-                v[fn] = null;
-            }
+            v[fn] = null;
         }
         return v;
     }
@@ -243,24 +252,11 @@ export class VForm {
             }
         }
         let ret = observable(v);
-        /*
-        for (let f of this.fields) {
-            let fn = f.name;
-            if (this.compute === undefined) continue;
-            let func = this.compute[fn];
-            if (func === undefined) continue;
-            Object.defineProperty(ret, fn, {
-                enumerable: true,
-                get: func,
-            });
-        }*/
         return ret;
     }
-    private buildFormValues():FormValues {
-        return {
-            values: this.buildObservableValues(),
-            errors: observable(this.buildFieldValues(this.fields)),
-        }
+    private buildFormValues() {
+        this.values = this.buildObservableValues();
+        this.errors = observable(this.buildFieldValues(this.fields));
     }
 
     render(className:string = "py-3"):JSX.Element {

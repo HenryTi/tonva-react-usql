@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Controller, VPage, View } from 'tonva-tools';
 import { Entity, Field, TuidMain } from '../entities';
 import { CUsq } from './usq/cUsq';
-import { VForm, FieldInputs, FieldCall, FormOptions } from './form';
+import { VForm, FieldInputs, FieldCall, FormOptions, FormMode } from './form';
 import { CQuerySelect } from './query';
 import { FormUI } from './formUI';
 
@@ -38,15 +38,14 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         await this.entity.loadSchema();
     }
 
-    createForm(onSubmit:(values:any)=>Promise<void>, values?:any, readonly?:boolean) {
-        let options = this.buildFormOptions();
-        options.readonly = readonly;
+    createForm(onSubmit:()=>Promise<void>, values?:any, mode?:FormMode) {
+        let options = this.buildFormOptions(mode);
         let ret = new VForm(options, onSubmit);
         ret.setValues(values);
         return ret;
     }
 
-    private buildFormOptions():FormOptions {
+    private buildFormOptions(mode?:FormMode):FormOptions {
         let {fields, arrFields} = this.entity;
         let none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton;
         if (this.res !== undefined) {
@@ -67,6 +66,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             arrEditCaption = this.cUsq.res['arrEdit'] || 'Edit';
         if (arrTitleNewButton === undefined)
         arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
+        if (mode === undefined) mode = FormMode.new;
         let ret:FormOptions = {
             fields: fields,
             arrs: arrFields,
@@ -78,7 +78,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             arrNewCaption: arrNewCaption,
             arrEditCaption: arrEditCaption,
             arrTitleNewButton: arrTitleNewButton,
-            readonly: undefined,
+            mode: mode,
         }
         return ret;
     }
@@ -116,14 +116,14 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     }
 
     protected buildSelect(field:Field, arr:string):FieldCall {
-        //let {_tuid} = field;
         return async (form:VForm, field:Field, values:any):Promise<any> => {
             let {_tuid, _ownerField} = field;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
             let ownerValue:any = undefined;
             if (_ownerField !== undefined) ownerValue = form.getValue(_ownerField.name);
             let ret = await cTuidSelect.call(ownerValue);
-            let id = ret.id;
+            if (ret === undefined) return undefined;
+            let id = cTuidSelect.idFromItem(ret);
             _tuid.useId(id);
             return id;
         };
@@ -155,9 +155,9 @@ export abstract class VEntity<T extends Entity, UI extends EntityUI, C extends C
 
     get label():string {return this.controller.label}
 
-    private _form_$: VForm;
-    protected createForm(onSubmit:(values:any)=>Promise<void>, values?:any): VForm {
-        if (this._form_$ !== undefined) return this._form_$;
-        return this.controller.createForm(onSubmit, values);
+    //private _form_$: VForm;
+    protected createForm(onSubmit:()=>Promise<void>, values?:any, mode?:FormMode): VForm {
+        //if (this._form_$ !== undefined) return this._form_$;
+        return this.controller.createForm(onSubmit, values, mode);
     }
 }

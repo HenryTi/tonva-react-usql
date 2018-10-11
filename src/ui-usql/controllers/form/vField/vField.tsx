@@ -3,30 +3,26 @@ import { computed, action } from 'mobx';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
-import { ViewModel } from "../../viewModel";
-import { FormValues, FieldCall, FieldInputs } from '../vForm';
+import { ViewModel } from "../viewModel";
+import { VForm, FormMode } from '../vForm';
 import { Rule, RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
 import { Field } from '../../../entities';
-import { FieldUI, InputUI, NumberUI, Compute, StringUI } from '../../formUI';
 import { FieldRes } from '../vBand';
+import { FieldEdit, FieldInput, FieldString, FieldNumber } from '../../formUI';
 
 export abstract class VField extends ViewModel {
-    protected fieldUI: FieldUI;
+    protected form: VForm;
+    protected fieldUI: FieldEdit;
     protected fieldRes:FieldRes;
     protected field: Field;
-    protected formValues: FormValues;
-    protected formReadOnly: boolean;
     protected rules: Rule[];
-    protected formCompute: Compute;
-    constructor(field:Field, fieldUI: FieldUI, fieldRes:FieldRes, formValues:FormValues, formCompute: Compute, readOnly:boolean) {
+    constructor(form:VForm, field:Field, fieldUI: FieldEdit, fieldRes:FieldRes) {
         super();
+        this.form = form;
         this.field = field;
         this.name = field.name;
         this.fieldUI = fieldUI || {} as any;
         this.fieldRes = fieldRes || {} as any;
-        this.formValues = formValues;
-        this.formCompute = formCompute;
-        this.formReadOnly = readOnly;
         this.init();
     }
 
@@ -56,37 +52,38 @@ export abstract class VField extends ViewModel {
         return defy.length === 0;
     }
 
-    @computed get value() { return this.formValues.values[this.name]; }
+    @computed get value() { return this.form.values[this.name]; }
     setValue(v:any) {
-        this.formValues.values[this.name]=v; 
+        this.form.values[this.name]=v; 
     }
-    get error() { return this.formValues.errors[this.name]; }
-    set error(err:any) { this.formValues.errors[this.name]=err; }
+    get error() { return this.form.errors[this.name]; }
+    set error(err:any) { this.form.errors[this.name]=err; }
     protected parse(str:string):any {return str;}
-    get readOnly() {
-        //let {readOnly} = this.fieldUI;
-        //if (readOnly === true) return true;
-        return this.formReadOnly === true;
+    get readonly():boolean {
+        let {mode} = this.form;
+        return mode === FormMode.readonly || 
+            mode === FormMode.edit && this.fieldUI.editable === false;
     }
 }
 
 export class VUnknownField extends VField {
     protected view = () => {
-        let {name, type} = this.fieldUI;
+        //let {name, type} = this.fieldUI;
+        let type='', name = '';
         return <input type="text" className="form-control form-control-plaintext border border-info rounded bg-light"
             placeholder={'unkown control: ' + type + '-' + name} />;
     }
 }
 
 export abstract class VInputControl extends VField {
-    protected fieldUI: InputUI;
+    protected fieldUI: FieldInput;
     protected input: HTMLInputElement;
 
     protected inputType:string;
     protected get maxLength():number {return}
 
     protected renderError = (className:string) => {
-        let {errors} = this.formValues;
+        let {errors} = this.form;
         let error = errors[this.name];
         if (error === undefined) return;
         return <div className={className}><FA name="exclamation-circle" /> {error}</div>
@@ -119,12 +116,7 @@ export abstract class VInputControl extends VField {
         if (defy.length > 0) {
             this.error = defy[0];
         }
-        if (this.formCompute !== undefined) {
-            let {values} = this.formValues;
-            for (let i in this.formCompute) {
-                values[i] = this.formCompute[i].call(values);
-            }
-        }
+        this.form.computeFields();
     }
 
     protected onChange = (evt: React.ChangeEvent<any>) => {
@@ -145,7 +137,7 @@ export abstract class VInputControl extends VField {
     
         let redDot;
         let input;
-        if (this.readOnly === true) {
+        if (this.readonly === true) {
             input = <input className={classNames(ctrlCN, 'bg-light')}
                 ref={this.ref}
                 type={this.inputType}
@@ -160,7 +152,7 @@ export abstract class VInputControl extends VField {
                 onBlur={this.onBlur}
                 onChange={this.onChange}
                 placeholder={placeHolder}
-                readOnly={this.readOnly}
+                readOnly={false}
                 maxLength={this.maxLength}
                 onKeyPress={this.onKeyPress}
             />;
@@ -191,7 +183,7 @@ export abstract class VInputControl extends VField {
 export const RedMark = () => <b style={{color:'red', position:'absolute', left:'0.1em', top:'0.5em'}}>*</b>;
 
 export class VStringField extends VInputControl {
-    protected fieldUI: StringUI;
+    protected fieldUI: FieldString;
     protected inputType:string = 'text';
     protected get maxLength():number {return this.field.size}
 }
@@ -200,7 +192,7 @@ const KeyCode_Neg = 45;
 const KeyCode_Dot = 46;
 
 export abstract class VNumberControl extends VInputControl {
-    protected fieldUI: NumberUI;
+    protected fieldUI: FieldNumber;
     protected extraChars: number[];
 
     protected init() {

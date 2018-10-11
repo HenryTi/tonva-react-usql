@@ -43,7 +43,7 @@ export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
     }
 
     protected onSubmit = async () => {
-        let {values} = this.vForm;
+        let values = this.vForm.getValues();
         let ret = await this.controller.entity.save(this.id, values);
         let {id} = ret;
         if (id < 0) {

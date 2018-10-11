@@ -1,5 +1,5 @@
 import { VIntField, VDecField, VStringField, VTextField, VDateTimeField } from './vField';
-export function buildVField(field, fieldUI, fieldRes, formValues, formCompute, readOnly) {
+export function buildVField(form, field, fieldUI, fieldRes) {
     let vField;
     switch (field.type) {
         default: return;
@@ -27,7 +27,6 @@ export function buildVField(field, fieldUI, fieldRes, formValues, formCompute, r
             vField = VDateTimeField;
             break;
     }
-    return new vField(field, fieldUI, fieldRes, formValues, formCompute, readOnly);
-    //return ctrl;
+    return new vField(form, field, fieldUI, fieldRes);
 }
 //# sourceMappingURL=buildVmField.js.map

@@ -20,10 +20,13 @@ export class CTuid extends CEntity {
         super(cUsq, entity, ui, res);
     }
     get icon() { return entitiesRes['tuid'].icon; }
+    buildPagedItems() {
+        return new TuidPagedItems(this.entity.owner || this.entity);
+    }
     searchMain(key) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.pagedItems === undefined) {
-                this.pagedItems = new TuidPagedItems(this.entity.owner || this.entity);
+                this.pagedItems = this.buildPagedItems();
             }
             if (key !== undefined)
                 yield this.pagedItems.first(key);
@@ -134,22 +137,10 @@ export class CTuidSelect extends CTuid {
         });
     }
     get VTuidSelect() { return VTuidSelect; }
-}
-/*
-export class CTuidMainSelect extends CTuidSelect<TuidMain> {
-    protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VTuidMainSelect, param);
+    idFromItem(item) {
+        return item.id;
     }
-    protected get VTuidMainSelect():typeof VTuidMainSelect {return VTuidMainSelect}
 }
-
-export class CTuidDivSelect extends CTuidSelect<TuidDiv> {
-    protected async internalStart(param?: any):Promise<void> {
-        await this.showVPage(this.VTuidDivSelect, param);
-    }
-    protected get VTuidDivSelect():typeof VTuidDivSelect {return VTuidDivSelect}
-}
-*/
 export class CTuidInfo extends CTuid {
     internalStart(id) {
         return __awaiter(this, void 0, void 0, function* () {

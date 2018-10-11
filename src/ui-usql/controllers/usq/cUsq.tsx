@@ -10,7 +10,7 @@ import { QueryUI, CQuery, CQuerySelect } from '../query';
 import { CTuidMain, TuidUI, CTuid, CTuidInfo, CTuidSelect } from '../tuid';
 import { MapUI, CMap } from '../map';
 import { CEntity, EntityUI } from '../VM';
-import { PureJSONContent } from '../viewModel';
+import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
 
 export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
@@ -49,8 +49,9 @@ export class CUsq extends Controller implements Usq {
         super();
         this.usq = usq;
         this.id = usqId;
-        if (ui === undefined)
-            this.ui = {};
+        if (ui === undefined) {
+            ui = this.ui = {};
+        }
         else {
             this.ui = ui;
             if (ui.res !== undefined) {

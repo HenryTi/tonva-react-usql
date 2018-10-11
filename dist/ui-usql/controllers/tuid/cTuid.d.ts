@@ -1,4 +1,5 @@
 /// <reference types="react" />
+import { PagedItems } from 'tonva-tools';
 import { CEntity, EntityUI } from "../VM";
 import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
@@ -7,7 +8,6 @@ import { VTuidSelect } from './vTuidSelect';
 import { CUsq } from "../usq/cUsq";
 import { CLink } from "../link";
 import { VTuidInfo } from "./vTuidInfo";
-import { TuidPagedItems } from "./pagedItems";
 import { VTuidMainList } from './vTuidList';
 export interface TuidUI extends EntityUI {
     CTuidMain?: typeof CTuidMain;
@@ -26,7 +26,8 @@ export interface TuidUI extends EntityUI {
 export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
     constructor(cUsq: CUsq, entity: T, ui: TuidUI, res: any);
     readonly icon: JSX.Element;
-    pagedItems: TuidPagedItems;
+    pagedItems: PagedItems<any>;
+    protected buildPagedItems(): PagedItems<any>;
     searchMain(key: string): Promise<void>;
     getDivItems(ownerId: number): Promise<any[]>;
 }
@@ -52,6 +53,7 @@ export declare class CTuidSelect extends CTuid<Tuid> {
     protected internalStart(param?: any): Promise<void>;
     protected beforeStart(): Promise<void>;
     protected readonly VTuidSelect: typeof VTuidSelect;
+    idFromItem(item: any): any;
 }
 export declare class CTuidInfo extends CTuid<Tuid> {
     protected internalStart(id: any): Promise<void>;

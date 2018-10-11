@@ -1,19 +1,68 @@
 export type FieldUIType = 'tuid' | 'query' | 'string' | 'int' | 'dec' | 'text' | 'check' | 'select' | 'radio';
-
+//export type FormItemType = 'arr' | 'group' | 'compute' | undefined;
+/*
 export interface Compute {
     [field:string]: ()=>number;
 }
+*/
+/*
+export interface FormItem {
+    //type: FormItemType;
+}
+*/
 
+/*
+export interface FieldCompute {
+    //type: 'compute';
+    compute: ()=>number;
+};*/
+export interface FieldEdit {
+    //type: undefined;
+    editable?: boolean;     // false则不可编辑修改，edit界面上，不可更改。readonly界面上，也不可更改。
+    required?: boolean;
+}
+export interface FieldInput extends FieldEdit {
+}
+export interface FieldString extends FieldInput {
+    length?: number;
+}
+export interface FieldNumber extends FieldInput {
+    min?: number;
+    max?: number;
+}
+export interface FieldGroup /*extends FormItem*/ {
+    //type: 'group';
+    edits: FieldEdit[];
+}
+export interface FormArr extends /*FormItem,*/ FormUIBase {
+    //type: 'arr';
+    //className?: string;
+    //items: {[name:string]: FieldCompute|FieldEdit|FieldGroup};
+    rowContent?: React.StatelessComponent<any>;     // arr 行的显示方式
+    //layout?: string[];          // band按name排序
+}
+export type FormItem = FieldEdit|FieldGroup|FormArr|((values:any)=>number);
+export type FormItems = {[name:string]: FormItem;}
 export interface FormUIBase {
     className?: string;
-    bandUIs?: BandUI[];
+    items?: FormItems;
+    /*
     compute?: Compute;
+    fields?: {[fieldName:string]: FieldEdit};
+    groups?: {[groupName:string]: FieldGroup};
+    */
+    //bandUIs?: BandUI[];
+    layout?: string[];          // band按name排序
 }
 
 export interface FormUI extends FormUIBase {
-    arrs?: {[arr:string]: ArrUI},
+    //arrs?: {[arr:string]: ArrUI},
+    //className?: string;
+    //items?: {[name:string]: FieldCompute|FieldEdit|FieldGroup|FormArr};
+    //layout?: string[];          // band按name排序
 }
 
+/*
 export interface BandUI {
     band: 'arr' | 'fields' | 'submit' | undefined; // undefined表示FieldUI
     label: string;
@@ -35,11 +84,6 @@ export interface ArrUI extends FormUIBase {
 export interface ArrBandUI extends BandUI {
     name: string;
     band: 'arr';
-    /*
-    row?: React.StatelessComponent<any>;     // arr 行的显示方式
-    bandUIs?: BandUI[];                      // 下一级页面的展开描述
-    compute?: Compute;
-    */
 }
 
 export interface SubmitBandUI extends BandUI {
@@ -124,3 +168,4 @@ export interface RadioUI extends OptionsUI {
 }
 export interface RadioBandUI extends BandUI, RadioUI {
 }
+*/

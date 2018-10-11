@@ -11,7 +11,7 @@ import { CEntity } from "../VM";
 import { VMapMain } from "./vMain";
 import { entitiesRes } from '../../res';
 import { observable } from "mobx";
-import { PureJSONContent } from '../viewModel';
+import { PureJSONContent } from '../form/viewModel';
 import { VInputValues } from './inputValues';
 export class MapItem {
     constructor(parent, tuid, box, keyIndex) {
@@ -26,8 +26,9 @@ export class MapItem {
 export class CMap extends CEntity {
     constructor() {
         super(...arguments);
-        this.onValuesSubmit = (values) => __awaiter(this, void 0, void 0, function* () {
+        this.onValuesSubmit = () => __awaiter(this, void 0, void 0, function* () {
             this.ceasePage();
+            let values = this.vForm.getValues();
             this.return(values);
         });
         this.addClick = (item) => __awaiter(this, void 0, void 0, function* () {
@@ -57,7 +58,7 @@ export class CMap extends CEntity {
             if (keyIndex + 1 === keysLast) {
                 tuid.useId(id);
                 values[kn] = arr1['_' + kn] = idBox;
-                if (this.form !== undefined) {
+                if (this.vForm !== undefined) {
                     let ret = yield this.vCall(VInputValues, data);
                     for (let i in ret) {
                         values[i] = arr1['_' + i] = ret[i];
@@ -136,7 +137,7 @@ export class CMap extends CEntity {
         return __awaiter(this, void 0, void 0, function* () {
             let { keys, fields } = this.entity;
             if (fields && fields.length > 0) {
-                this.form = this.createForm(this.onValuesSubmit);
+                this.vForm = this.createForm(this.onValuesSubmit);
             }
             let q = this.entity.queries.all;
             let result = yield q.query({});

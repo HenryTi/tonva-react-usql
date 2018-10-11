@@ -56,12 +56,12 @@ export class CSheet extends CEntity {
                 case 'state':
                     c = this.VSheetList;
                     break;
-                case 'action':
-                    c = this.VSheetAction;
-                    break;
                 case 'archived':
-                    c = this.VArchived;
-                    break;
+                    yield this.showArchived(value);
+                    return;
+                case 'action':
+                    yield this.showAction(value);
+                    return;
             }
             yield this.showVPage(c, value);
         });
@@ -71,6 +71,25 @@ export class CSheet extends CEntity {
         return __awaiter(this, void 0, void 0, function* () {
             _super("beforeStart").call(this);
             this.onEvent('action', sheetId);
+        });
+    }
+    showAction(sheetId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sheetData = yield this.getSheetData(sheetId);
+            yield this.showVPage(this.VSheetAction, sheetData);
+        });
+    }
+    editSheet(sheetData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //alert('修改单据：程序正在设计中');
+            let values = yield this.vCall(this.VSheetEdit, sheetData);
+            return values;
+        });
+    }
+    showArchived(inBrief) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sheetData = yield this.getArchived(inBrief.id);
+            yield this.showVPage(this.VArchived, sheetData);
         });
     }
     getStateUI(stateName) {
@@ -115,9 +134,11 @@ export class CSheet extends CEntity {
             return yield this.entity.getArchive(sheetId);
         });
     }
-    saveSheet(values) {
+    saveSheet(values, valuesWithBox) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.entity.save(this.label, values);
+            let { sheetTitle } = this.ui;
+            let disc = sheetTitle === undefined ? this.label : sheetTitle(valuesWithBox);
+            return yield this.entity.save(disc, values);
         });
     }
     action(id, flow, state, actionName) {

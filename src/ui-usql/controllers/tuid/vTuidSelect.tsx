@@ -5,7 +5,7 @@ import { Tuid } from '../../entities';
 import { CTuid, TuidUI } from './cTuid';
 import { SearchBox, List } from 'tonva-react-form';
 import React from 'react';
-import { RowContent } from '../viewModel';
+import { RowContent } from '../form/viewModel';
 import { observer } from 'mobx-react';
 
 export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
@@ -55,7 +55,7 @@ export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
     }
     renderMainRow = (item:any, index:number):JSX.Element => <this.mainRowContent {...item} />;
     clickMainRow = async (item:any) => {
-        this.ceasePage();
+        this.closePage();
         if (this.controller.entity.owner === undefined) {
             this.return(item);
             return;
@@ -72,7 +72,7 @@ export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
     }
     renderDivRow = (item:any, index:number):JSX.Element => <this.divRowContent {...item} />;
     clickDivRow = (item:any) => {
-        this.ceasePage();
+        this.closePage();
         this.return(item);
     }
 }

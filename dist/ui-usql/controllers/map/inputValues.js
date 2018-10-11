@@ -13,12 +13,12 @@ export class VInputValues extends VEntity {
     constructor() {
         super(...arguments);
         this.view = () => {
-            return React.createElement(Page, null, this.controller.form.render());
+            return React.createElement(Page, null, this.controller.vForm.render());
         };
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.controller.form.reset();
+            this.controller.vForm.reset();
             this.openPageElement(React.createElement(this.view, null));
         });
     }

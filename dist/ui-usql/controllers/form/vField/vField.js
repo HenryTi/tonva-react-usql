@@ -9,18 +9,17 @@ import { computed } from 'mobx';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
-import { ViewModel } from "../../viewModel";
+import { ViewModel } from "../viewModel";
+import { FormMode } from '../vForm';
 import { RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
 export class VField extends ViewModel {
-    constructor(field, fieldUI, fieldRes, formValues, formCompute, readOnly) {
+    constructor(form, field, fieldUI, fieldRes) {
         super();
+        this.form = form;
         this.field = field;
         this.name = field.name;
         this.fieldUI = fieldUI || {};
         this.fieldRes = fieldRes || {};
-        this.formValues = formValues;
-        this.formCompute = formCompute;
-        this.formReadOnly = readOnly;
         this.init();
     }
     init() {
@@ -45,17 +44,17 @@ export class VField extends ViewModel {
         let defy = this.checkRules;
         return defy.length === 0;
     }
-    get value() { return this.formValues.values[this.name]; }
+    get value() { return this.form.values[this.name]; }
     setValue(v) {
-        this.formValues.values[this.name] = v;
+        this.form.values[this.name] = v;
     }
-    get error() { return this.formValues.errors[this.name]; }
-    set error(err) { this.formValues.errors[this.name] = err; }
+    get error() { return this.form.errors[this.name]; }
+    set error(err) { this.form.errors[this.name] = err; }
     parse(str) { return str; }
-    get readOnly() {
-        //let {readOnly} = this.fieldUI;
-        //if (readOnly === true) return true;
-        return this.formReadOnly === true;
+    get readonly() {
+        let { mode } = this.form;
+        return mode === FormMode.readonly ||
+            mode === FormMode.edit && this.fieldUI.editable === false;
     }
 }
 __decorate([
@@ -71,7 +70,8 @@ export class VUnknownField extends VField {
     constructor() {
         super(...arguments);
         this.view = () => {
-            let { name, type } = this.fieldUI;
+            //let {name, type} = this.fieldUI;
+            let type = '', name = '';
             return React.createElement("input", { type: "text", className: "form-control form-control-plaintext border border-info rounded bg-light", placeholder: 'unkown control: ' + type + '-' + name });
         };
     }
@@ -80,7 +80,7 @@ export class VInputControl extends VField {
     constructor() {
         super(...arguments);
         this.renderError = (className) => {
-            let { errors } = this.formValues;
+            let { errors } = this.form;
             let error = errors[this.name];
             if (error === undefined)
                 return;
@@ -101,12 +101,7 @@ export class VInputControl extends VField {
             if (defy.length > 0) {
                 this.error = defy[0];
             }
-            if (this.formCompute !== undefined) {
-                let { values } = this.formValues;
-                for (let i in this.formCompute) {
-                    values[i] = this.formCompute[i].call(values);
-                }
-            }
+            this.form.computeFields();
         };
         this.onChange = (evt) => {
             let v = this.parse(evt.currentTarget.value);
@@ -122,11 +117,11 @@ export class VInputControl extends VField {
             let errCN = 'text-danger small mt-1 mx-2';
             let redDot;
             let input;
-            if (this.readOnly === true) {
+            if (this.readonly === true) {
                 input = React.createElement("input", { className: classNames(ctrlCN, 'bg-light'), ref: this.ref, type: this.inputType, readOnly: true });
             }
             else {
-                input = React.createElement("input", { className: classNames(ctrlCN), ref: this.ref, type: this.inputType, onFocus: this.onFocus, onBlur: this.onBlur, onChange: this.onChange, placeholder: placeHolder, readOnly: this.readOnly, maxLength: this.maxLength, onKeyPress: this.onKeyPress });
+                input = React.createElement("input", { className: classNames(ctrlCN), ref: this.ref, type: this.inputType, onFocus: this.onFocus, onBlur: this.onBlur, onChange: this.onChange, placeholder: placeHolder, readOnly: false, maxLength: this.maxLength, onKeyPress: this.onKeyPress });
                 if (required === true || this.field.null === false) {
                     redDot = React.createElement(RedMark, null);
                 }

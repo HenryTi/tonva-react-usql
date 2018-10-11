@@ -2,10 +2,10 @@ import React from 'react';
 import { VField } from './vField';
 import { observer } from 'mobx-react';
 export class VComputeField extends VField {
-    constructor(field, fieldUI, fieldRes, formValues) {
-        super(field, fieldUI, fieldRes, formValues, undefined, true);
+    constructor(form, field, fieldRes) {
+        super(form, field, undefined, fieldRes);
         this.view = observer(() => {
-            let value = this.formValues.values[this.field.name];
+            let value = this.form.values[this.field.name];
             let { placeHolder, suffix } = this.fieldRes;
             let ctrlCN = 'form-control form-control-input bg-light';
             if (value === null)

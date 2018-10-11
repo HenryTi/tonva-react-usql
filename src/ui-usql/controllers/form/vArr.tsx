@@ -3,14 +3,15 @@ import { IObservableArray, observable } from 'mobx';
 import _ from 'lodash';
 import { List, FA, Muted } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
-import { ViewModel, RowContent, TypeContent, JSONContent } from '../viewModel';
+import { ViewModel, RowContent, TypeContent, JSONContent } from './viewModel';
 import { ArrFields, Field } from '../../entities';
-import { VForm, FieldInputs } from './vForm';
+import { VForm, FieldInputs, FormMode } from './vForm';
+import { FormArr } from '../formUI';
 
 export type ArrEditRow = (initValues:any, onRowChanged:(rowValues:any)=>void) => Promise<void>;
 
 export class VArr extends ViewModel {
-    protected readOnly: boolean;
+    protected mode: FormMode;
     protected label: any;
     protected header: any;
     protected footer: any;
@@ -32,7 +33,7 @@ export class VArr extends ViewModel {
         this.ownerForm = ownerForm;
         let {name, fields} = arr;
         this.name = name;
-        let {ui, res, readOnly, inputs, formValues} = ownerForm;
+        let {ui, res, mode, inputs, values} = ownerForm;
         let arrsRes = res.arrs;
         let arrRes = arrsRes !== undefined? arrsRes[name] : {};
         let {label, none, newSubmit, editSubmit} = arrRes;
@@ -40,9 +41,9 @@ export class VArr extends ViewModel {
         this.newSubmitCaption = newSubmit || ownerForm.arrNewCaption;
         this.editSubmitCaption = editSubmit || ownerForm.arrEditCaption;
         this.label = label || name;
-        let arrUI = (ui && ui.arrs && ui.arrs[name]) || {};
+        let arrUI = ((ui && ui.items[name]) || {}) as FormArr;
         this.rowContent = arrUI.rowContent;// || JSONContent;
-        this.readOnly = readOnly;
+        this.mode = mode;
         if (this.onEditRow === undefined) {
             this.vForm = new VForm({
                 fields: fields,
@@ -55,13 +56,13 @@ export class VArr extends ViewModel {
                 arrNewCaption: undefined,
                 arrEditCaption: undefined,
                 arrTitleNewButton: undefined,
-                readonly: false,
-            }, this.readOnly===true? undefined: this.onSubmit);
+                mode: mode,
+            }, mode===FormMode.readonly? undefined: this.onSubmit);
         }
         else {
             this.onEditRow = onEditRow;
         }
-        this.list = formValues.values[name];
+        this.list = values[name];
     }
 
     reset() {
@@ -81,7 +82,6 @@ export class VArr extends ViewModel {
     private onSubmit = async () => {
         let {valueBoxs} = this.vForm;
         await this.onRowChanged(valueBoxs);
-        //if (this.afterEditRow !== undefined) await this.afterEditRow(values);
     }
 
     private onRowChanged = async (rowValues:any) => {
@@ -119,6 +119,7 @@ export class VArr extends ViewModel {
             vSubmit.caption = this.editSubmitCaption;
             vSubmit.className = 'btn btn-outline-success';
         }
+        this.vForm.mode = this.ownerForm.mode;
         await this.showRow(rowValues);
     }
     private internalAddRow = async () => {
@@ -126,13 +127,14 @@ export class VArr extends ViewModel {
         let {vSubmit} = this.vForm;
         vSubmit.caption = this.newSubmitCaption;
         vSubmit.className = 'btn btn-outline-success';
-        await this.showRow(undefined);
         this.vForm.reset();
+        this.vForm.mode = FormMode.new;
+        await this.showRow(undefined);
     }
 
     protected view = () => {
         let button;
-        if (this.addRow !== undefined || this.readOnly === false) {
+        if (this.addRow !== undefined || this.mode !== FormMode.readonly) {
             button = <button onClick={this.addRow || this.internalAddRow}
                 type="button" 
                 className="btn btn-link p-0">

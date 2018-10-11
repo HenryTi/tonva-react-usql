@@ -5,7 +5,7 @@ import { Page, PagedItems } from 'tonva-tools';
 import { TuidMain, Entity, Tuid, TuidDiv } from '../../entities';
 import { VEntity } from '../VM';
 import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';
-import { JSONContent, RowContent } from '../viewModel';
+import { JSONContent, RowContent } from '../form/viewModel';
 
 export abstract class VTuidMainListBase  extends VEntity<TuidMain, TuidUI, CTuidMain> {
     protected rowContent: (row:any) => JSX.Element;

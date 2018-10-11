@@ -6,13 +6,13 @@ import { Page } from "tonva-tools";
 
 export class VInputValues extends VEntity<Map, MapUI, CMap> {
     async showEntry(param?:any) {
-        this.controller.form.reset();
+        this.controller.vForm.reset();
         this.openPageElement(<this.view />);
     }
 
     private view = () => {
         return <Page>
-            {this.controller.form.render()}
+            {this.controller.vForm.render()}
         </Page>
     }
 }

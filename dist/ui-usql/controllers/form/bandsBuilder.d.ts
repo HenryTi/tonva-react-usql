@@ -5,25 +5,15 @@ export declare class BandsBuilder {
     private onSubmit;
     private fields;
     private arrs;
-    private bandUIs;
-    private compute;
+    private formItems;
+    private layout;
     private res;
-    private formValues;
-    private readOnly;
     constructor(vForm: VForm, options: FormOptions, onSubmit: (values: any) => Promise<void>);
     build(): VBand[];
     private resFromName;
     private bandsOnFly;
     private bandsFromFields;
-    private bandsFromUI;
-    private bandFromUI;
-    private bandFromFieldUI;
-    private bandFromArrUI;
-    private bandFromFieldsUI;
-    private bandFromSubmitUI;
-    private vFieldFromField;
+    private bandsFromLayout;
     private bandFromField;
     private bandFromArr;
-    private vFieldFromUI;
-    private vArrFromUI;
 }

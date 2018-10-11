@@ -13,15 +13,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { ViewModel } from "../viewModel";
+import { ViewModel } from "./viewModel";
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 export class VSubmit extends ViewModel {
     constructor(vForm) {
         super();
         this.onClickSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let { onSubmit, values } = this.vForm;
-            yield onSubmit(values);
+            this.vForm.submit();
         });
         this.view = observer(() => {
             let { isOk } = this.vForm;

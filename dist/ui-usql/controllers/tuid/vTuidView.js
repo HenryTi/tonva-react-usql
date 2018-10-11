@@ -22,7 +22,8 @@ export class VTuidView extends VEntity {
             this.closePage(2);
         };
         this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.save(this.id, this.vForm.values);
+            let values = this.vForm.getValues();
+            let ret = yield this.entity.save(this.id, values);
             if (ret) {
                 alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
             }
