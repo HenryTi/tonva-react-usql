@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import {List, LMR, FA} from 'tonva-react-form';
+import {List, LMR, FA, EasyDate, Muted} from 'tonva-react-form';
 import { VEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { SheetUI, CSheet } from './cSheet';
@@ -18,11 +18,12 @@ export class VArchives extends VEntity<Sheet, SheetUI, CSheet> {
         this.event('archived', brief);
     }
     archiveRow = (row:any, index:number) => {
+        let {id, no, discription, date} = row;
         let left = <>
             {row.processing===1? '... ' : ''}
-            id:{row.id}, no:{row.no}, discription:{row.discription}, date:{row.date}
+            {row.no} &nbsp; {row.discription}
         </>;
-        let right = <FA className="align-self-center" name="angle-right" />;
+        let right = <Muted><EasyDate date={date} /></Muted>;
         return <LMR className="px-3 py-2" left={left} right={right} />
     }
 

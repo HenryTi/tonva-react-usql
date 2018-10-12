@@ -1,31 +1,19 @@
 {
+    "extends": "../tsproject.json",
     "compilerOptions": {
-      "outDir": "./dist",
-      "module": "esnext",
-      "moduleResolution": "node",
-      "allowSyntheticDefaultImports": true,
-      "target": "es6",
-      "declaration": true,
-      "lib": ["es2016", "dom"],
-      "sourceMap": true,
-      "jsx": "react",
-      "rootDir": "src",
-      "forceConsistentCasingInFileNames": true,
-      "noImplicitReturns": false,
-      "noImplicitThis": true,
-      "noImplicitAny": false,
-      "strictNullChecks": false,
-      "suppressImplicitAnyIndexErrors": true,
-      "noUnusedLocals": false,
-      "experimentalDecorators": true,
-      "composite": true,
-      "skipLibCheck": true
+        "composite": true,
+        "outDir": "./dist",
+        "rootDir": "."
     },
+    "references": [
+        { "path": "../tonva-tools" },
+        { "path": "../tonva-react-form" }
+    ],
     "include": [
-      "src/**/*"
+        "src/**/*"
     ],
     "exclude": [
-      "dist",
-      "node_modules"
+        "dist",
+        "node_modules"
     ]
 }

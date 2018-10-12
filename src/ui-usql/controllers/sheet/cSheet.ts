@@ -76,8 +76,8 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     }
 
     async startSheet(sheetId:number) {
-        super.beforeStart();
-        this.onEvent('action', sheetId);
+        await super.beforeStart();
+        await this.onEvent('action', sheetId);
     }
 
     async showAction(sheetId:number) {
