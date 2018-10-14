@@ -24,8 +24,6 @@ export interface TuidUI extends EntityUI {
     };
 }
 export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
-    constructor(cUsq: CUsq, entity: T, ui: TuidUI, res: any);
-    readonly icon: JSX.Element;
     pagedItems: PagedItems<any>;
     protected buildPagedItems(): PagedItems<any>;
     searchMain(key: string): Promise<void>;

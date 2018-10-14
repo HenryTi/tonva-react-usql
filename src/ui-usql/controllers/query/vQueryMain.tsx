@@ -51,7 +51,7 @@ export class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
     protected pageResult = () => {
         let {name, list} = this.entity;
         let rightClose = <button
-            className="btn btn-outline-success btn-sm"
+            className="btn btn-outline-success"
             onClick={this.again}>
             <FA name="search" /> 再查询
         </button>;
@@ -62,7 +62,7 @@ export class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
 
     protected queryResult = observer((result:any) => {
         let rightClose = <button
-            className="btn btn-outline-success btn-sm"
+            className="btn btn-outline-success"
             onClick={this.again}>
             <FA name="search" /> 再查询
         </button>;

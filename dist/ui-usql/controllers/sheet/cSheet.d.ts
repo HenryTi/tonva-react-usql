@@ -1,15 +1,8 @@
 /// <reference types="react" />
 import { IObservableArray } from "mobx";
+import { TypeVPage } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
 import { CEntity, EntityUI } from "../VM";
-import { VSheetMain } from "./vMain";
-import { VSheetNew } from "./vNew";
-import { VSheetEdit } from "./vEdit";
-import { VSheetAction } from "./vSheetAction";
-import { VSheetSchema } from "./vSchema";
-import { VArchives } from "./vArchives";
-import { VSheetList } from "./vList";
-import { VArchived } from "./vArchived";
 export interface SheetActionUI {
     label: string;
 }
@@ -24,12 +17,13 @@ export interface SheetUI extends EntityUI {
     states?: {
         [name: string]: StateUI;
     };
-    main?: typeof VSheetMain;
-    sheetNew?: typeof VSheetNew;
-    sheetEdit?: typeof VSheetEdit;
-    sheetAction?: typeof VSheetAction;
+    main?: TypeVPage<CSheet>;
+    sheetNew?: TypeVPage<CSheet>;
+    sheetSaved?: TypeVPage<CSheet>;
+    sheetEdit?: TypeVPage<CSheet>;
+    sheetAction?: TypeVPage<CSheet>;
     listRow?: (row: any) => JSX.Element;
-    sheetTitle?: (sheetValues: any) => string;
+    sheetTitle?: (sheetValues: any, x: any) => string;
 }
 export interface SheetData {
     brief: any;
@@ -37,22 +31,24 @@ export interface SheetData {
     flows: any[];
 }
 export declare class CSheet extends CEntity<Sheet, SheetUI> {
-    readonly icon: JSX.Element;
     protected internalStart(): Promise<void>;
-    protected readonly VSheetMain: typeof VSheetMain;
     protected onMessage(msg: any): Promise<void>;
-    protected readonly VSheetNew: typeof VSheetNew;
-    protected readonly VSheetEdit: typeof VSheetEdit;
-    protected readonly VSheetSchema: typeof VSheetSchema;
-    protected readonly VArchives: typeof VArchives;
-    protected readonly VArchived: typeof VArchived;
-    protected readonly VSheetList: typeof VSheetList;
-    protected readonly VSheetAction: typeof VSheetAction;
+    protected readonly VSheetMain: TypeVPage<CSheet>;
+    protected readonly VSheetNew: TypeVPage<CSheet>;
+    protected readonly VSheetSaved: TypeVPage<CSheet>;
+    protected readonly VSheetEdit: TypeVPage<CSheet>;
+    protected readonly VSheetSchema: TypeVPage<CSheet>;
+    protected readonly VArchives: TypeVPage<CSheet>;
+    protected readonly VArchived: TypeVPage<CSheet>;
+    protected readonly VSheetList: TypeVPage<CSheet>;
+    protected readonly VSheetAction: TypeVPage<CSheet>;
     protected onEvent(type: string, value: any): Promise<void>;
     startSheet(sheetId: number): Promise<void>;
     showAction(sheetId: number): Promise<void>;
     editSheet(sheetData: SheetData): Promise<any>;
     showArchived(inBrief: any): Promise<void>;
+    onSave: (values: any, valuesWithBox: any) => Promise<void>;
+    showSaved(sheetData: any): Promise<void>;
     private getStateUI;
     getStateLabel(stateName: string): any;
     getActionLabel(stateName: string, actionName: string): any;

@@ -1,14 +1,6 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as className from 'classnames';
+import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
@@ -44,23 +36,21 @@ export class VMapMain extends VEntity {
             if (isLeaf === true) {
                 content = undefined; //<div className="ml-5">leaf</div>;
                 if (values) {
-                    valuesView = (valuesContent || PureJSONContent)(values);
+                    valuesView = (valuesContent || PureJSONContent)(values, this.x);
                 }
             }
             else {
                 border = "border-bottom";
-                let none = keyNone && keyNone();
+                let none = keyNone && keyNone(this.x);
                 content = React.createElement(List, { className: "ml-4", items: children, item: { onClick: undefined, render: this.itemRender }, none: none });
             }
             return React.createElement("div", { className: "d-flex flex-column" },
-                React.createElement(LMR, { className: className('px-2', 'py-1', border), left: React.createElement("div", { className: "py-1" }, box.content(keyContent)), right: right }, valuesView),
+                React.createElement(LMR, { className: className('px-2', 'py-1', border), left: React.createElement("div", { className: "py-1" }, box.content(keyContent, this.x)), right: right }, valuesView),
                 content);
         });
     }
-    showEntry(param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.openPage(this.view);
-        });
+    async showEntry(param) {
+        this.openPage(this.view);
     }
     get view() {
         return () => React.createElement(Page, { header: this.label },

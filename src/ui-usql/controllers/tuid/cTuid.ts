@@ -7,7 +7,6 @@ import { VTuidEdit } from './vTuidEdit';
 import { VTuidSelect } from './vTuidSelect';
 import { CUsq } from "../usq/cUsq";
 import { CLink } from "../link";
-import { entitiesRes } from '../../res';
 import { VTuidInfo } from "./vTuidInfo";
 import { TuidPagedItems } from "./pagedItems";
 import { VTuidMainList } from './vTuidList';
@@ -28,11 +27,10 @@ export interface TuidUI extends EntityUI {
 }
 
 export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
+    /*
     constructor(cUsq: CUsq, entity: T, ui: TuidUI, res) {
         super(cUsq, entity, ui, res);
-    }
-
-    get icon() {return entitiesRes['tuid'].icon}
+    }*/
 
     pagedItems:PagedItems<any>;
 
@@ -54,7 +52,7 @@ export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 }
 
 export class CTuidMain extends CTuid<TuidMain> {
-    constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res) {
+    constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res:any) {
         super(cUsq, entity, ui, res);
         let tuid = this.entity;
         this.proxies = tuid.proxies;
@@ -70,14 +68,12 @@ export class CTuidMain extends CTuid<TuidMain> {
     getLable(tuid:Tuid):string {
         if (tuid === this.entity) return this.label;
         let {name} = tuid;
-        if (this.res !== undefined) {
-            let {arrs} = this.res;
-            if (arrs !== undefined) {
-                let arr = arrs[name];
-                if (arr !== undefined) {
-                    let label = arr.label;
-                    if (label !== undefined) return label;
-                }
+        let {arrs} = this.res;
+        if (arrs !== undefined) {
+            let arr = arrs[name];
+            if (arr !== undefined) {
+                let label = arr.label;
+                if (label !== undefined) return label;
             }
         }
         return name;

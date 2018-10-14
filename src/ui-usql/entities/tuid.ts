@@ -8,7 +8,7 @@ import { isNumber } from 'util';
 export class IdBox {
     id: number;
     obj?: any;
-    content: (templet?:React.StatelessComponent<any>)=>JSX.Element;
+    content: (templet?:(values?:any, x?:any)=>JSX.Element, x?:any)=>JSX.Element;
     valueFromFieldName: (fieldName:string)=>IdBox;
 }
 
@@ -38,11 +38,13 @@ export abstract class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
-        prototype.content = function(templet?:React.StatelessComponent<any>) {
+        prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
             let t:Tuid = this._$tuid;
             let com = templet || t.entities.usq.getTuidContent(t);
             let val = t.valueFromId(this.id);
             if (typeof val === 'number') val = {id: val};
+            if (templet !== undefined) return templet(val, x);
+            //return com(val, x);
             return React.createElement(com, val);
         }
         Object.defineProperty(prototype, 'obj', {

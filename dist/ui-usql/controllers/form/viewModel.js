@@ -7,7 +7,7 @@ export class ViewModel {
         return React.createElement(this.view, { vm: this, className: className });
     }
 }
-export const PureJSONContent = (values) => React.createElement(React.Fragment, null,
+export const PureJSONContent = (values, x) => React.createElement(React.Fragment, null,
     "content: ",
     JSON.stringify(values));
 export const JSONContent = observer(PureJSONContent);

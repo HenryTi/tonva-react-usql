@@ -7,4 +7,5 @@ export declare class VSheetAction extends VSheetView {
     deleteClick: () => Promise<void>;
     editClick: () => Promise<void>;
     protected page: () => JSX.Element;
+    private acted;
 }

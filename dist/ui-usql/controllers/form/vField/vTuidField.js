@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { VField, RedMark } from "./vField";
@@ -18,23 +10,23 @@ const buttonStyle = {
 export class VTuidField extends VField {
     constructor(vForm, field, fieldUI, fieldRes) {
         super(vForm, field, fieldUI, fieldRes);
-        this.onClick = () => __awaiter(this, void 0, void 0, function* () {
+        this.onClick = async () => {
             if (this.readonly === true) {
                 if (!this.value)
                     return;
-                yield this.tuid.showInfo(this.value.id);
+                await this.tuid.showInfo(this.value.id);
                 return;
             }
             let id;
             if (this.input !== undefined) {
-                id = yield this.input.select(this.vForm, this.field, this.vForm.getValues());
+                id = await this.input.select(this.vForm, this.field, this.vForm.getValues());
             }
             else {
                 alert('call undefined');
                 id = 0;
             }
             this.setValue(id);
-        });
+        };
         this.view = observer(() => {
             let { placeHolder } = this.fieldRes;
             let disabled = false;

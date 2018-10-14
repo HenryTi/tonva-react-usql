@@ -3,7 +3,6 @@ import { CEntity, EntityUI } from "../VM";
 import { Query } from "../../entities";
 import { VQueryMain } from "./vQueryMain";
 import { VQuerySelect } from "./vQuerySelect";
-import { entitiesRes } from '../../res';
 
 export interface QueryUI extends EntityUI {
     CQuery?: typeof CQuery;
@@ -15,7 +14,6 @@ export interface QueryUI extends EntityUI {
 }
 
 export abstract class CQueryBase extends CEntity<Query, QueryUI> {
-    get icon() {return entitiesRes['query'].icon}
 }
 
 export class CQuery extends CQueryBase {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash';
-import { UsqApi, Controller, UnitxApi, meInFrame } from 'tonva-tools';
+import { UsqApi, Controller, UnitxApi, meInFrame, resLang, nav } from 'tonva-tools';
 import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
 import { CLink } from '../link';
 import { CBook, BookUI } from '../book';
@@ -46,18 +46,11 @@ export class CUsq extends Controller implements Usq {
     private CBook: typeof CBook;
 
     constructor(usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
-        super();
+        super(resLang(ui.res, nav.language, nav.culture));
         this.usq = usq;
         this.id = usqId;
-        if (ui === undefined) {
-            ui = this.ui = {};
-        }
-        else {
-            this.ui = ui;
-            if (ui.res !== undefined) {
-                this.res = ui.res.zh.CN;
-            }
-        }
+        this.ui = ui;
+        this.access = access;
 
         this.CTuidMain = ui.CTuidMain || CTuidMain;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
@@ -68,9 +61,6 @@ export class CUsq extends Controller implements Usq {
         this.CAction = ui.CAction || CAction;
         this.CSheet = ui.CSheet || CSheet;
         this.CBook = ui.CBook || CBook;
-
-        this.res = this.res || {};
-        this.access = access;
 
         let token = undefined;
         let usqOwner:string, usqName:string;
@@ -220,7 +210,7 @@ export class CUsq extends Controller implements Usq {
         return this.link(this.cFromName(entityType, entityName));
     }
 
-    getUI<T extends Entity, UI extends EntityUI>(t:T):{ui:UI, res:any} {
+    private getUI<T extends Entity, UI extends EntityUI>(t:T):{ui:UI, res:any} {
         let ui, res;
         let {name, typeName} = t;
         if (this.ui !== undefined) {
@@ -256,11 +246,12 @@ export class CUsq extends Controller implements Usq {
         return new (ui && ui.CTuidInfo || this.CTuidInfo)(this, tuid, ui, res);
     }
 
-    cSheet(sheet:Sheet, sheetUI?:SheetUI, sheetRes?:any):CSheet {
+    cSheet(sheet:Sheet/*, sheetUI?:SheetUI, sheetRes?:any*/):CSheet {
         let {ui, res} = this.getUI<Sheet, SheetUI>(sheet);
-        if (sheetUI !== undefined) ui = sheetUI;
-        if (sheetRes !== undefined) res = sheetRes;
-        return new (ui && ui.CSheet || this.CSheet)(this, sheet, sheetUI, sheetRes);
+        //if (sheetUI !== undefined) ui = sheetUI;
+        //if (sheetRes !== undefined) res = sheetRes;
+        //return new (ui && ui.CSheet || this.CSheet)(this, sheet, sheetUI, sheetRes);
+        return new (ui && ui.CSheet || this.CSheet)(this, sheet, ui, res);
     }
     get sheetLinks() { 
         return this.entities.sheetArr.filter(v => this.isVisible(v)).map(v => {

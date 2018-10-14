@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/ui-usql/pages/action/index.ts"],"names":[],"mappings":"AAEA,OAAO,EAAC,QAAQ,EAAC,MAAM,YAAY,CAAC;AACpC,OAAO,EAAC,UAAU,EAAC,MAAM,eAAe,CAAC;AAEzC,MAAM,CAAC,MAAM,eAAe,GAAoD;IAC5E,OAAO,EAAE,IAAI;IACb,IAAI,EAAE,eAAe;IACrB,MAAM,EAAE;QACJ,IAAI,EAAE,UAAU;QAChB,QAAQ,EAAE,QAAQ;KACrB;CACJ,CAAA"}

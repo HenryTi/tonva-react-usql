@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
@@ -15,10 +7,8 @@ export class VSheetSchema extends VEntity {
         this.view = () => React.createElement(Page, { header: this.label + "模板" },
             React.createElement("pre", { className: "mx-3 my-2" }, this.entity.schemaStringify()));
     }
-    showEntry(param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.openPage(this.view);
-        });
+    async showEntry(param) {
+        this.openPage(this.view);
     }
 }
 //# sourceMappingURL=vSchema.js.map

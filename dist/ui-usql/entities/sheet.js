@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { observable } from 'mobx';
 import { Entity } from './entity';
 export class Sheet extends Entity {
@@ -58,24 +50,22 @@ export class Sheet extends Entity {
             s.actions.push(action);
         }
     }*/
-    onMessage(msg) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let { $type, id, state, preState } = msg;
-            if ($type !== 'sheetAct')
-                return;
-            this.changeStateCount(state, 1);
-            this.changeStateCount(preState, -1);
-            if (this.curState === state) {
-                if (this.stateSheets.findIndex(v => v.id === id) < 0) {
-                    this.stateSheets.push(msg);
-                }
+    async onMessage(msg) {
+        let { $type, id, state, preState } = msg;
+        if ($type !== 'sheetAct')
+            return;
+        this.changeStateCount(state, 1);
+        this.changeStateCount(preState, -1);
+        if (this.curState === state) {
+            if (this.stateSheets.findIndex(v => v.id === id) < 0) {
+                this.stateSheets.push(msg);
             }
-            else if (this.curState === preState) {
-                let index = this.stateSheets.findIndex(v => v.id === id);
-                if (index >= 0)
-                    this.stateSheets.splice(index, 1);
-            }
-        });
+        }
+        else if (this.curState === preState) {
+            let index = this.stateSheets.findIndex(v => v.id === id);
+            if (index >= 0)
+                this.stateSheets.splice(index, 1);
+        }
     }
     changeStateCount(state, delta) {
         let index = this.statesCount.findIndex(v => v.state === state);
@@ -85,76 +75,60 @@ export class Sheet extends Entity {
         stateCount.count += delta;
         //this.statesCount.splice(index, 1, stateCount);
     }
-    save(discription, data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let { appId } = this.entities;
-            let text = this.pack(data);
-            let ret = yield this.tvApi.sheetSave(this.name, { app: appId, discription: discription, data: text });
-            let { id, state } = ret;
-            if (id > 0)
-                this.changeStateCount(state, 1);
-            return id;
-        });
+    async save(discription, data) {
+        let { appId } = this.entities;
+        let text = this.pack(data);
+        let ret = await this.tvApi.sheetSave(this.name, { app: appId, discription: discription, data: text });
+        let { id, state } = ret;
+        if (id > 0)
+            this.changeStateCount(state, 1);
+        return ret;
     }
-    action(id, flow, state, action) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.tvApi.sheetAction(this.name, { id: id, flow: flow, state: state, action: action });
-        });
+    async action(id, flow, state, action) {
+        return await this.tvApi.sheetAction(this.name, { id: id, flow: flow, state: state, action: action });
     }
-    getStateSheets(state, pageStart, pageSize) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.curState = state;
-            this.stateSheets.clear();
-            let ret = yield this.tvApi.stateSheets(this.name, { state: state, pageStart: pageStart, pageSize: pageSize });
-            this.stateSheets.spliceWithArray(0, 0, ret);
-        });
+    async getStateSheets(state, pageStart, pageSize) {
+        this.curState = state;
+        this.stateSheets.clear();
+        let ret = await this.tvApi.stateSheets(this.name, { state: state, pageStart: pageStart, pageSize: pageSize });
+        this.stateSheets.spliceWithArray(0, 0, ret);
     }
-    getStateSheetCount() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.statesCount.clear();
-            let ret = yield this.tvApi.stateSheetCount(this.name);
-            this.statesCount.spliceWithArray(0, 0, this.states.map(s => {
-                let n = s.name, count = 0;
-                let r = ret.find(v => v.state === n);
-                if (r !== undefined)
-                    count = r.count;
-                return { state: n, count: count };
-            }));
-        });
+    async getStateSheetCount() {
+        this.statesCount.clear();
+        let ret = await this.tvApi.stateSheetCount(this.name);
+        this.statesCount.spliceWithArray(0, 0, this.states.map(s => {
+            let n = s.name, count = 0;
+            let r = ret.find(v => v.state === n);
+            if (r !== undefined)
+                count = r.count;
+            return { state: n, count: count };
+        }));
     }
-    unpack(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //if (this.schema === undefined) await this.loadSchema();
-            let ret = data[0];
-            let brief = ret[0];
-            let sheetData = this.unpackSheet(brief.data);
-            let flows = data[1];
-            return {
-                brief: brief,
-                data: sheetData,
-                flows: flows,
-            };
-        });
+    async unpack(data) {
+        //if (this.schema === undefined) await this.loadSchema();
+        let ret = data[0];
+        let brief = ret[0];
+        let sheetData = this.unpackSheet(brief.data);
+        let flows = data[1];
+        return {
+            brief: brief,
+            data: sheetData,
+            flows: flows,
+        };
     }
-    getSheet(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.tvApi.getSheet(this.name, id);
-            if (ret[0].length === 0)
-                return yield this.getArchive(id);
-            return yield this.unpack(ret);
-        });
+    async getSheet(id) {
+        let ret = await this.tvApi.getSheet(this.name, id);
+        if (ret[0].length === 0)
+            return await this.getArchive(id);
+        return await this.unpack(ret);
     }
-    getArchive(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.tvApi.sheetArchive(this.name, id);
-            return yield this.unpack(ret);
-        });
+    async getArchive(id) {
+        let ret = await this.tvApi.sheetArchive(this.name, id);
+        return await this.unpack(ret);
     }
-    getArchives(pageStart, pageSize) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.tvApi.sheetArchives(this.name, { pageStart: pageStart, pageSize: pageSize });
-            return ret;
-        });
+    async getArchives(pageStart, pageSize) {
+        let ret = await this.tvApi.sheetArchives(this.name, { pageStart: pageStart, pageSize: pageSize });
+        return ret;
     }
 }
 //# sourceMappingURL=sheet.js.map

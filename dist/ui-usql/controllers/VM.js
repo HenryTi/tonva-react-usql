@@ -1,34 +1,27 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { Controller, VPage } from 'tonva-tools';
 import { VForm, FormMode } from './form';
+import { entityIcons } from './icons';
 export class ControllerUsq extends Controller {
-    constructor(cUsq) {
-        super();
+    constructor(cUsq, res) {
+        super(res);
         this.cUsq = cUsq;
     }
 }
 export class CEntity extends ControllerUsq {
     constructor(cUsq, entity, ui, res) {
-        super(cUsq);
+        super(cUsq, res);
+        Object.setPrototypeOf(this.x, cUsq.x);
+        let { name, typeName } = entity;
         this.entity = entity;
-        let entityUI = cUsq.getUI(entity);
-        this.ui = ui || entityUI.ui;
-        this.res = res || entityUI.res;
-        this.label = (this.res && this.res.label) || entity.name;
+        //let entityUI = cUsq.getUI<T, UI>(entity);
+        //let {ui, res} = entityUI;
+        this.ui = ui; // || entityUI.ui;
+        this.label = this.res.label || name;
+        this.icon = entityIcons[typeName];
     }
-    beforeStart() {
-        const _super = name => super[name];
-        return __awaiter(this, void 0, void 0, function* () {
-            yield _super("beforeStart").call(this);
-            yield this.entity.loadSchema();
-        });
+    async beforeStart() {
+        await super.beforeStart();
+        await this.entity.loadSchema();
     }
     createForm(onSubmit, values, mode) {
         let options = this.buildFormOptions(mode);
@@ -106,25 +99,22 @@ export class CEntity extends ControllerUsq {
         }
     }
     buildSelect(field, arr) {
-        return (form, field, values) => __awaiter(this, void 0, void 0, function* () {
+        return async (form, field, values) => {
             let { _tuid, _ownerField } = field;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
             let ownerValue = undefined;
             if (_ownerField !== undefined)
                 ownerValue = form.getValue(_ownerField.name);
-            let ret = yield cTuidSelect.call(ownerValue);
+            let ret = await cTuidSelect.call(ownerValue);
             if (ret === undefined)
                 return undefined;
             let id = cTuidSelect.idFromItem(ret);
             _tuid.useId(id);
             return id;
-        });
+        };
     }
     buildContent(field, arr) {
         return;
-    }
-    getRes() {
-        return this.res;
     }
     cQuerySelect(queryName) {
         return this.cUsq.cQuerySelect(queryName);
@@ -135,7 +125,6 @@ export class VEntity extends VPage {
         super(controller);
         this.entity = controller.entity;
         this.ui = controller.ui;
-        this.res = controller.res;
     }
     get label() { return this.controller.label; }
     //private _form_$: VForm;

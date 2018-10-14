@@ -1,32 +1,27 @@
 import * as React from 'react';
 import _ from 'lodash';
-import { setXLang, Page, loadAppUsqs, nav, getUrlOrDebug, meInFrame, Controller} from 'tonva-tools';
+import { Page, loadAppUsqs, nav, meInFrame, Controller, TypeVPage, VPage, resLang} from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import {Entities} from '../entities';
-import res from '../res';
 import { CUsq, EntityType, UsqUI } from './usq';
 import { centerApi } from '../centerApi';
 
 export interface AppUI {
     CUsq?: typeof CUsq;
+    main?: TypeVPage<CApp>;
     usqs: {[usq:string]: UsqUI};
+    res?: any;
 }
 
 export class CApp extends Controller {
     private appOwner:string;
     private appName:string;
-    private isProduction:boolean;    
+    private isProduction:boolean;
     protected ui:AppUI;
-    protected res:any;
     id: number;
     appUnits:any[];
 
     constructor(tonvaApp:string, ui:AppUI) {
-        super();
-        this.init(tonvaApp, ui);
-    }
-    private init(tonvaApp:string, ui:any) {
-        setXLang('zh', 'CN');
+        super(resLang(ui.res, nav.language, nav.culture));
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
@@ -34,10 +29,10 @@ export class CApp extends Controller {
         this.appOwner = parts[0];
         this.appName = parts[1];
         this.ui = ui;
-        this.res = _.clone(res);
-        if (ui !== undefined) _.merge(this.res, ui.res);
         this.caption = this.res.caption || 'Tonva';
     }
+
+    readonly caption: string; // = 'View Model 版的 Usql App';
 
     cUsqCollection: {[usq:string]: CUsq} = {};
     protected async loadUsqs(): Promise<void> {
@@ -49,17 +44,17 @@ export class CApp extends Controller {
             let {id:usqId, usqOwner, usqName, url, urlDebug, ws, access, token} = appUsq;
             let usq = usqOwner + '/' + usqName;
             let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-            let cUsq = this.newCUsq(usq, usqId, access, ui);
+            let cUsq = this.newCUsq(usq, usqId, access, ui || {});
             await cUsq.loadSchema();
             this.cUsqCollection[usq] = cUsq;
         }
     }
 
     protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
-        return new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);
+        let cUsq = new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);
+        Object.setPrototypeOf(cUsq.x, this.x);
+        return cUsq;
     }
-
-    protected caption: string; // = 'View Model 版的 Usql App';
 
     get cUsqArr():CUsq[] {
         let ret:CUsq[] = [];
@@ -72,6 +67,8 @@ export class CApp extends Controller {
     getCUsq(apiName:string):CUsq {
         return this.cUsqCollection[apiName];
     }
+
+    protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
 
     async internalStart() {
         try {
@@ -148,7 +145,8 @@ export class CApp extends Controller {
             }
         }
         this.clearPrevPages();
-        nav.push(<this.appPage />);
+        //nav.push(<this.appPage />);
+        this.showVPage(this.VAppMain);
     }
 
     private getCUsqFromId(usqId:number): CUsq {
@@ -169,7 +167,7 @@ export class CApp extends Controller {
 
     renderRow = (item: any, index: number):JSX.Element => {
         let {id, nick, name} = item;
-        return <LMR className="p-2" right={'id: ' + id}>
+        return <LMR className="px-3 py-2" right={'id: ' + id}>
             <div>{nick || name}</div>
         </LMR>;
     }
@@ -178,11 +176,13 @@ export class CApp extends Controller {
         await this.start();
     }
 
+    /*
     protected appPage = () => {
         return <Page header={this.caption} logout={()=>{meInFrame.unit = undefined}}>
             {this.cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
         </Page>;
     };
+    */
     //<LMR className="px-3 py-2 my-2 bg-light"
     //left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
     //onClick={this.opClick}>设置操作权限</LMR>
@@ -192,4 +192,17 @@ export class CApp extends Controller {
             <List items={this.appUnits} item={{render: this.renderRow, onClick: this.onRowClick}}/>
         </Page>
     }
+}
+
+class VAppMain extends VPage<CApp> {
+    async showEntry(param?:any) {
+        this.openPage(this.appPage);
+    }
+
+    protected appPage = () => {
+        let {caption, cUsqArr} = this.controller;
+        return <Page header={caption} logout={()=>{meInFrame.unit = undefined}}>
+            {cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
+        </Page>;
+    };
 }

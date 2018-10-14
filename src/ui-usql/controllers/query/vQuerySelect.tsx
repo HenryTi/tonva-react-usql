@@ -15,7 +15,7 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     async showEntry(param?:any) {
         let {row, selectRow} = this.ui;
         this.row = selectRow || row || DefaultRow;
-        this.entity = this.controller.entity;
+        //this.entity = this.controller.entity;
         this.pagedItems = new QueryPagedItems(this.entity);
         await this.onSearch(param);
         this.openPage(this.view);

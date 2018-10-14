@@ -3,16 +3,15 @@ import _ from 'lodash';
 import { CEntity, EntityUI } from "../VM";
 import { Map, Tuid, IdBox, Field, TuidMain } from "../../entities";
 import { VMapMain } from "./vMain";
-import { entitiesRes } from '../../res';
 import { observable } from "mobx";
 import { PureJSONContent } from '../form/viewModel';
 import { VForm } from '../form';
 import { VInputValues } from './inputValues';
 
 export interface MapKey {
-    content: React.StatelessComponent,
-    valuesContent?: React.StatelessComponent,
-    none?: ()=>string;
+    content: (values, x?:any) => JSX.Element;
+    valuesContent?: (values, x?:any) => JSX.Element;
+    none?: (x:any)=>string;
 }
 
 export interface MapUI extends EntityUI {
@@ -42,8 +41,6 @@ export class CMap extends CEntity<Map, MapUI> {
     items:MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
-
-    get icon() {return entitiesRes['map'].icon}
 
     protected async internalStart() {
         let {keys, fields} = this.entity;
@@ -208,12 +205,9 @@ export class CMap extends CEntity<Map, MapUI> {
         let tuid = keyField._tuid;
         let cTuidMain = this.cUsq.cTuidMain(tuid.Main);
         let label = cTuidMain.getLable(tuid);
-        let confirmDelete:_.TemplateExecutor;
-        if (this.res !== undefined) {
-            let cd = this.res.confirmDelete;
-            if (cd !== undefined) confirmDelete = cd;
-        }
-        if (confirmDelete === undefined) confirmDelete = _.template('do you really want to remove ${label}?');        
+        let confirmDelete:_.TemplateExecutor = 
+            this.res.confirmDelete 
+            || _.template('do you really want to remove ${label}?');
         if (confirm(confirmDelete({label:label})) === false) return;
         let map:Map = this.entity;
         let data = {} as any;

@@ -6,17 +6,16 @@ import { VForm, FieldCall, FormMode } from './form';
 import { CQuerySelect } from './query';
 import { FormUI } from './formUI';
 export declare abstract class ControllerUsq extends Controller {
-    constructor(cUsq: CUsq);
+    constructor(cUsq: CUsq, res: any);
     cUsq: CUsq;
 }
 export interface EntityUI {
     form?: FormUI;
 }
 export declare abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui?: UI, res?: any);
-    entity: T;
-    ui: UI;
-    res: any;
+    constructor(cUsq: CUsq, entity: T, ui: UI, res: any);
+    readonly entity: T;
+    readonly ui: UI;
     protected beforeStart(): Promise<void>;
     createForm(onSubmit: () => Promise<void>, values?: any, mode?: FormMode): VForm;
     private buildFormOptions;
@@ -24,13 +23,11 @@ export declare abstract class CEntity<T extends Entity, UI extends EntityUI> ext
     private buildFieldsInputs;
     protected buildSelect(field: Field, arr: string): FieldCall;
     protected buildContent(field: Field, arr: string): React.StatelessComponent<any>;
-    protected getRes(): any;
     cQuerySelect(queryName: string): CQuerySelect;
 }
 export declare abstract class VEntity<T extends Entity, UI extends EntityUI, C extends CEntity<T, UI>> extends VPage<C> {
-    protected entity: T;
-    protected ui: UI;
-    protected res: any;
+    protected readonly entity: T;
+    protected readonly ui: UI;
     constructor(controller: C);
     readonly label: string;
     protected createForm(onSubmit: () => Promise<void>, values?: any, mode?: FormMode): VForm;

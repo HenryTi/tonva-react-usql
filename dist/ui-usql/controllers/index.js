@@ -9,4 +9,5 @@ export * from './form/viewModel';
 export * from './form';
 export * from './VM';
 export * from './link';
+export * from './icons';
 //# sourceMappingURL=index.js.map

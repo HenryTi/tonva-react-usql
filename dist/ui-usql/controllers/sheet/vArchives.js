@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, LMR, EasyDate, Muted } from 'tonva-react-form';
@@ -13,11 +5,11 @@ import { VEntity } from '../VM';
 export class VArchives extends VEntity {
     constructor() {
         super(...arguments);
-        this.archiveClick = (brief) => __awaiter(this, void 0, void 0, function* () {
+        this.archiveClick = async (brief) => {
             if (brief.processing === 1)
                 return;
             this.event('archived', brief);
-        });
+        };
         this.archiveRow = (row, index) => {
             let { id, no, discription, date } = row;
             let left = React.createElement(React.Fragment, null,
@@ -34,11 +26,9 @@ export class VArchives extends VEntity {
                 React.createElement(List, { items: this.list, item: { render: this.archiveRow, onClick: this.archiveClick } }));
         };
     }
-    showEntry() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.list = yield this.entity.getArchives(undefined, 10);
-            this.openPage(this.view);
-        });
+    async showEntry() {
+        this.list = await this.entity.getArchives(undefined, 10);
+        this.openPage(this.view);
     }
 }
 //# sourceMappingURL=vArchives.js.map

@@ -4,6 +4,7 @@ import { Button } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
 import { VSheetView } from './vSheetView';
 import { SheetData } from './cSheet';
+import { FA } from 'tonva-react-form';
 
 export class VSheetAction extends VSheetView { 
     async showEntry(sheetData:SheetData) {
@@ -20,8 +21,10 @@ export class VSheetAction extends VSheetView {
     actionClick = async (action:any) => {
         let {id, flow, state} = this.sheetData.brief;
         let res = await this.controller.action(id, flow, state, action.name);
-        alert(JSON.stringify(res));
-        await this.backPage();
+        this.ceasePage();
+        this.openPage(this.acted);
+        //alert(JSON.stringify(res));
+        //await this.backPage();
     }
 
     deleteClick = async () => {
@@ -86,5 +89,18 @@ export class VSheetAction extends VSheetView {
                 <this.sheetView />
             </div>
         </Page>;
+    }
+
+    private acted = () => {
+        let {discription} = this.sheetData.brief;
+        return <Page header="已处理" back="close">
+            <div className="p-3 d-flex flex-column align-items-center">
+                <div className="p-3">{discription}</div>
+                <div className="text-success"><FA name="check-circle-o" /> 单据已处理！</div>
+                <div className="p-3">
+                    <button className="btn btn-outline-info" onClick={()=>this.backPage()}>返回</button>
+                </div>
+            </div>
+        </Page>
     }
 }

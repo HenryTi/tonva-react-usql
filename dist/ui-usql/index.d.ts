@@ -1,5 +1,5 @@
+import { AppUI } from './controllers';
 export * from './entities';
 export * from './controllers';
-export * from './res';
 export * from './centerApi';
-export declare function convertUIKeyToLowercase(obj: any): void;
+export declare function startApp(appName: string, ui: AppUI): Promise<void>;

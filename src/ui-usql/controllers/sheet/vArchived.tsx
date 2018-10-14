@@ -25,7 +25,7 @@ export class VArchived extends VSheetView {
 
     protected view = () => {
         let {brief} = this.sheetData;
-        return <Page header={this.label + '-' + brief.no}>
+        return <Page header={this.label + ':' + '-' + brief.no}>
             <this.sheetView />
         </Page>;
     };

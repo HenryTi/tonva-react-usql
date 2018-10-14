@@ -5,10 +5,11 @@ import { CUsq } from './usq/cUsq';
 import { VForm, FieldInputs, FieldCall, FormOptions, FormMode } from './form';
 import { CQuerySelect } from './query';
 import { FormUI } from './formUI';
+import { entityIcons } from './icons';
 
 export abstract class ControllerUsq extends Controller{
-    constructor(cUsq: CUsq) {
-        super();
+    constructor(cUsq: CUsq, res:any) {
+        super(res);
         this.cUsq = cUsq;
     }
     cUsq: CUsq;
@@ -21,17 +22,19 @@ export interface EntityUI {
 }
 
 export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui?: UI, res?: any) {
-        super(cUsq);
+    constructor(cUsq: CUsq, entity: T, ui: UI, res: any) {
+        super(cUsq, res);
+        Object.setPrototypeOf(this.x, cUsq.x);
+        let {name, typeName} = entity;
         this.entity = entity;
-        let entityUI = cUsq.getUI<T, UI>(entity);
-        this.ui = ui || entityUI.ui;
-        this.res = res || entityUI.res;
-        this.label = (this.res && this.res.label) || entity.name;
+        //let entityUI = cUsq.getUI<T, UI>(entity);
+        //let {ui, res} = entityUI;
+        this.ui = ui; // || entityUI.ui;
+        this.label = this.res.label || name;
+        this.icon = entityIcons[typeName];
     }
-    entity: T;
-    ui: UI;
-    res: any;
+    readonly entity: T;
+    readonly ui: UI;
 
     protected async beforeStart() {
         await super.beforeStart();
@@ -133,24 +136,18 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         return;
     }
 
-    protected getRes() {
-        return this.res;
-    }
-
     cQuerySelect(queryName:string):CQuerySelect {
         return this.cUsq.cQuerySelect(queryName);
     }
 }
 
 export abstract class VEntity<T extends Entity, UI extends EntityUI, C extends CEntity<T, UI>> extends VPage<C> {
-    protected entity: T;
-    protected ui: UI;
-    protected res: any;
+    protected readonly entity: T;
+    protected readonly ui: UI;
     constructor(controller: C) {
         super(controller);
         this.entity = controller.entity;
         this.ui = controller.ui;
-        this.res = controller.res;
     }
 
     get label():string {return this.controller.label}

@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import * as React from 'react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
@@ -14,17 +6,17 @@ import { VEntity } from '../VM';
 export class VTuidEdit extends VEntity {
     constructor() {
         super(...arguments);
-        this.next = () => __awaiter(this, void 0, void 0, function* () {
+        this.next = async () => {
             this.vForm.reset();
             this.closePage();
-        });
+        };
         this.finish = () => {
             this.closePage(2);
             this.event('edit-end');
         };
-        this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
+        this.onSubmit = async () => {
             let values = this.vForm.getValues();
-            let ret = yield this.controller.entity.save(this.id, values);
+            let ret = await this.controller.entity.save(this.id, values);
             let { id } = ret;
             if (id < 0) {
                 let { unique } = this.controller.entity;
@@ -45,17 +37,15 @@ export class VTuidEdit extends VEntity {
                         React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
             this.event('item-changed', { id: this.id, values: values });
             return;
-        });
+        };
         //protected view = TuidNewPage;
     }
-    showEntry(param) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.vForm = this.createForm(this.onSubmit, param);
-            if (param !== undefined) {
-                this.id = param.id;
-            }
-            this.openPage(this.editView);
-        });
+    async showEntry(param) {
+        this.vForm = this.createForm(this.onSubmit, param);
+        if (param !== undefined) {
+            this.id = param.id;
+        }
+        this.openPage(this.editView);
     }
     get editView() {
         return () => React.createElement(Page, { header: (this.id === undefined ? '新增' : '编辑') + ' - ' + this.label }, this.vForm.render('py-3'));

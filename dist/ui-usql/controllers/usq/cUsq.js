@@ -1,12 +1,4 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import { UsqApi, Controller, UnitxApi, meInFrame } from 'tonva-tools';
+import { UsqApi, Controller, UnitxApi, meInFrame, resLang, nav } from 'tonva-tools';
 import { Entities } from '../../entities';
 import { CLink } from '../link';
 import { CBook } from '../book';
@@ -19,19 +11,12 @@ import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
 export class CUsq extends Controller {
     constructor(usq, appId, usqId, access, ui) {
-        super();
+        super(resLang(ui.res, nav.language, nav.culture));
         this.isSysVisible = false;
         this.usq = usq;
         this.id = usqId;
-        if (ui === undefined) {
-            ui = this.ui = {};
-        }
-        else {
-            this.ui = ui;
-            if (ui.res !== undefined) {
-                this.res = ui.res.zh.CN;
-            }
-        }
+        this.ui = ui;
+        this.access = access;
         this.CTuidMain = ui.CTuidMain || CTuidMain;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
         this.CTuidInfo = ui.CTuidInfo || CTuidInfo;
@@ -41,8 +26,6 @@ export class CUsq extends Controller {
         this.CAction = ui.CAction || CAction;
         this.CSheet = ui.CSheet || CSheet;
         this.CBook = ui.CBook || CBook;
-        this.res = this.res || {};
-        this.access = access;
         let token = undefined;
         let usqOwner, usqName;
         let p = usq.split('/');
@@ -80,50 +63,44 @@ export class CUsq extends Controller {
         }
         this.entities = new Entities(this, usqApi, appId);
     }
-    internalStart() {
-        return __awaiter(this, void 0, void 0, function* () {
-        });
+    async internalStart() {
     }
-    loadSchema() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.entities.load();
-                if (this.id === undefined)
-                    this.id = this.entities.usqId;
-                for (let i in this.ui) {
-                    let g = this.ui[i];
-                    if (g === undefined)
-                        continue;
-                    let { caption, collection } = g;
-                    if (collection === undefined)
-                        continue;
-                    for (let j in collection) {
-                        if (this.entities[i](j) === undefined) {
-                            console.warn(i + ':' + '\'' + j + '\' is not usql entity');
-                        }
+    async loadSchema() {
+        try {
+            await this.entities.load();
+            if (this.id === undefined)
+                this.id = this.entities.usqId;
+            for (let i in this.ui) {
+                let g = this.ui[i];
+                if (g === undefined)
+                    continue;
+                let { caption, collection } = g;
+                if (collection === undefined)
+                    continue;
+                for (let j in collection) {
+                    if (this.entities[i](j) === undefined) {
+                        console.warn(i + ':' + '\'' + j + '\' is not usql entity');
                     }
                 }
             }
-            catch (err) {
-                debugger;
-            }
-        });
+        }
+        catch (err) {
+            debugger;
+        }
     }
     getTuid(name) { return this.entities.tuid(name); }
-    getQuerySearch(name) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let query = this.entities.query(name);
-            if (query === undefined)
-                alert(`QUERY ${name} 没有定义!`);
-            else {
-                yield query.loadSchema();
-                let { returns } = query;
-                if (returns.length > 1) {
-                    alert(`QUERY ${name} 返回多张表, 无法做QuerySearch`);
-                }
+    async getQuerySearch(name) {
+        let query = this.entities.query(name);
+        if (query === undefined)
+            alert(`QUERY ${name} 没有定义!`);
+        else {
+            await query.loadSchema();
+            let { returns } = query;
+            if (returns.length > 1) {
+                alert(`QUERY ${name} 返回多张表, 无法做QuerySearch`);
             }
-            return query;
-        });
+        }
+        return query;
     }
     getTuidPlaceHolder(tuid) {
         let { tuidPlaceHolder, entity } = this.res;
@@ -144,16 +121,14 @@ export class CUsq extends Controller {
     isVisible(entity) {
         return entity.sys !== true || this.isSysVisible;
     }
-    navSheet(sheetTypeId, sheetId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let sheet = this.entities.sheetFromTypeId(sheetTypeId);
-            if (sheet === undefined) {
-                alert('sheetTypeId ' + sheetTypeId + ' is not exists!');
-                return;
-            }
-            let cSheet = this.cSheet(sheet);
-            yield cSheet.startSheet(sheetId);
-        });
+    async navSheet(sheetTypeId, sheetId) {
+        let sheet = this.entities.sheetFromTypeId(sheetTypeId);
+        if (sheet === undefined) {
+            alert('sheetTypeId ' + sheetTypeId + ' is not exists!');
+            return;
+        }
+        let cSheet = this.cSheet(sheet);
+        await cSheet.startSheet(sheetId);
     }
     cFromName(entityType, entityName) {
         switch (entityType) {
@@ -225,13 +200,12 @@ export class CUsq extends Controller {
         let { ui, res } = this.getUI(tuid);
         return new (ui && ui.CTuidInfo || this.CTuidInfo)(this, tuid, ui, res);
     }
-    cSheet(sheet, sheetUI, sheetRes) {
+    cSheet(sheet /*, sheetUI?:SheetUI, sheetRes?:any*/) {
         let { ui, res } = this.getUI(sheet);
-        if (sheetUI !== undefined)
-            ui = sheetUI;
-        if (sheetRes !== undefined)
-            res = sheetRes;
-        return new (ui && ui.CSheet || this.CSheet)(this, sheet, sheetUI, sheetRes);
+        //if (sheetUI !== undefined) ui = sheetUI;
+        //if (sheetRes !== undefined) res = sheetRes;
+        //return new (ui && ui.CSheet || this.CSheet)(this, sheet, sheetUI, sheetRes);
+        return new (ui && ui.CSheet || this.CSheet)(this, sheet, ui, res);
     }
     get sheetLinks() {
         return this.entities.sheetArr.filter(v => this.isVisible(v)).map(v => {
@@ -292,12 +266,10 @@ export class CUsq extends Controller {
             return (ui && ui.divs && ui.divs[tuid.name].inputContent) || PureJSONContent;
         }
     }
-    showTuid(tuid, id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let { owner } = tuid;
-            let c = this.cTuidInfo(owner || tuid);
-            yield c.start(id);
-        });
+    async showTuid(tuid, id) {
+        let { owner } = tuid;
+        let c = this.cTuidInfo(owner || tuid);
+        await c.start(id);
     }
     get VUsq() { return VUsq; }
     render() {

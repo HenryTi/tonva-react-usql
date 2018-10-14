@@ -1,10 +1,10 @@
-import * as React from 'react';
+/// <reference types="react" />
 import { Entity } from './entity';
 import { Entities } from './entities';
 export declare class IdBox {
     id: number;
     obj?: any;
-    content: (templet?: React.StatelessComponent<any>) => JSX.Element;
+    content: (templet?: (values?: any, x?: any) => JSX.Element, x?: any) => JSX.Element;
     valueFromFieldName: (fieldName: string) => IdBox;
 }
 export declare abstract class Tuid extends Entity {

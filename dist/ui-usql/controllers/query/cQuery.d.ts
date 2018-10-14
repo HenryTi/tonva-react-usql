@@ -12,7 +12,6 @@ export interface QueryUI extends EntityUI {
     selectRow?: StatelessComponent;
 }
 export declare abstract class CQueryBase extends CEntity<Query, QueryUI> {
-    readonly icon: JSX.Element;
 }
 export declare class CQuery extends CQueryBase {
     protected internalStart(): Promise<void>;

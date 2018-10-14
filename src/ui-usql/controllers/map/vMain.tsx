@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import * as className from 'classnames';
+import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
 import { Map } from '../../entities';
@@ -9,8 +9,6 @@ import { CMap, MapItem, MapKey, MapUI } from './cMap';
 import { PureJSONContent } from '../form/viewModel';
 
 export class VMapMain extends VEntity<Map, MapUI, CMap> {
-    private mapKey: MapKey[];
-
     async showEntry(param?:any) {
         this.openPage(this.view);
     }
@@ -43,12 +41,12 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
         if (isLeaf === true) {
             content = undefined; //<div className="ml-5">leaf</div>;
             if (values) {
-                valuesView = (valuesContent || PureJSONContent)(values);
+                valuesView = (valuesContent || PureJSONContent)(values, this.x);
             }
         }
         else {
             border = "border-bottom";
-            let none = keyNone && keyNone();
+            let none = keyNone && keyNone(this.x);
             content = <List 
                 className="ml-4" 
                 items={children} 
@@ -57,7 +55,7 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
         }
         return <div className="d-flex flex-column">
             <LMR className={className('px-2', 'py-1', border)} 
-                left={<div className="py-1">{box.content(keyContent)}</div>}
+                left={<div className="py-1">{box.content(keyContent, this.x)}</div>}
                 right={right}
             >
                 {valuesView}

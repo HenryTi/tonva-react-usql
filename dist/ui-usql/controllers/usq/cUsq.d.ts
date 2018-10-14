@@ -63,16 +63,13 @@ export declare class CUsq extends Controller implements Usq {
     navSheet(sheetTypeId: number, sheetId: number): Promise<void>;
     cFromName(entityType: EntityType, entityName: string): CEntity<Entity, EntityUI>;
     linkFromName(entityType: EntityType, entityName: string): CLink;
-    getUI<T extends Entity, UI extends EntityUI>(t: T): {
-        ui: UI;
-        res: any;
-    };
+    private getUI;
     link(cEntity: CEntity<Entity, EntityUI>): CLink;
     readonly tuidLinks: CLink[];
     cTuidMain(tuid: TuidMain): CTuidMain;
     cTuidSelect(tuid: Tuid): CTuidSelect;
     cTuidInfo(tuid: TuidMain): CTuidInfo;
-    cSheet(sheet: Sheet, sheetUI?: SheetUI, sheetRes?: any): CSheet;
+    cSheet(sheet: Sheet): CSheet;
     readonly sheetLinks: CLink[];
     cAction(action: Action): CAction;
     readonly actionLinks: CLink[];

@@ -6,6 +6,7 @@ import { List, Muted, LMR } from 'tonva-react-form';
 import { VEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
+import { eventNames } from 'cluster';
 
 export class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
     async showEntry() {
@@ -27,19 +28,23 @@ export class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
 
     protected view = observer(() => {
         let list = this.controller.statesCount.filter(row=>row.count);
+        let right = <button className="btn btn-outline-primary" onClick={this.archivesClick}>已归档</button>;
+        let templet;
+        if (this.isDev === true) {
+            templet = <button className="btn btn-primary mr-2" color="primary" onClick={this.schemaClick}>模板</button>;
+        }
         return <Page header={this.label}>
-            <div className="mx-3 my-2">
-                <Button className="mr-2" color="primary" onClick={this.newClick}>新建</Button>
-                <Button className="mr-2" color="primary" onClick={this.schemaClick}>模板</Button>
-            </div>
+            <LMR
+                className="mx-3 my-2"
+                right={right}>
+                <button className="btn btn-primary mr-2" color="primary" onClick={this.newClick}>新建</button>
+                {templet}
+            </LMR>
             <List className="my-2"
                 header={<Muted className="mx-3 my-1">待处理{this.label}</Muted>}
                 none="[ 无 ]"
                 items={list}
                 item={{render:this.renderState, onClick:this.sheetStateClick}} />
-            <div className="mx-3 my-2">
-                <Button color="primary" onClick={this.archivesClick}>已归档{this.label}</Button>
-            </div>
         </Page>;
     });
 }

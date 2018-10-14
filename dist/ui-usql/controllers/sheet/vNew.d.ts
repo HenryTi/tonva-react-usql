@@ -6,8 +6,6 @@ import { SheetUI, CSheet } from './cSheet';
 export declare class VSheetNew extends VEntity<Sheet, SheetUI, CSheet> {
     vForm: VForm;
     showEntry(param?: any): Promise<void>;
-    onSubmit: () => Promise<void>;
+    private onSubmit;
     protected view: () => JSX.Element;
-    private restart;
-    private finishedPage;
 }

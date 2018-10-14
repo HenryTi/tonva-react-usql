@@ -1,4 +1,5 @@
 export * from './cSheet';
+export * from './vSheet';
 export * from './vMain';
 export * from './vNew';
 export * from './vEdit';

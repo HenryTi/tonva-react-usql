@@ -1,9 +1,0 @@
-import * as React from 'react';
-import { SheetUIProps } from '../../ui';
-export declare class SheetNew extends React.Component<SheetUIProps> {
-    private mainDetails;
-    constructor(props: any);
-    successCallback(): void;
-    onSubmit(values: any): Promise<void>;
-    render(): JSX.Element;
-}

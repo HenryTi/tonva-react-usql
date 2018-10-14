@@ -1,12 +1,12 @@
-import React from 'react';
+/// <reference types="react" />
 import { CEntity, EntityUI } from "../VM";
 import { Map, Tuid, IdBox, Field } from "../../entities";
 import { VMapMain } from "./vMain";
 import { VForm } from '../form';
 export interface MapKey {
-    content: React.StatelessComponent;
-    valuesContent?: React.StatelessComponent;
-    none?: () => string;
+    content: (values: any, x?: any) => JSX.Element;
+    valuesContent?: (values: any, x?: any) => JSX.Element;
+    none?: (x: any) => string;
 }
 export interface MapUI extends EntityUI {
     CMap?: typeof CMap;
@@ -27,7 +27,6 @@ export declare class CMap extends CEntity<Map, MapUI> {
     items: MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
-    readonly icon: JSX.Element;
     protected internalStart(): Promise<void>;
     private onValuesSubmit;
     private createItem;

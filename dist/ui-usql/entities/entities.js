@@ -1,11 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 //import {UsqlApi} from './usqlApi';
 import { TuidMain } from './tuid';
 import { Action } from './action';
@@ -58,13 +50,11 @@ export class Entities {
                 return sheet;
         }
     }
-    load() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let accesses = yield this.usqApi.loadAccess();
-            let { access, tuids } = accesses;
-            this.buildTuids(tuids);
-            this.buildAccess(access);
-        });
+    async load() {
+        let accesses = await this.usqApi.loadAccess();
+        let { access, tuids } = accesses;
+        this.buildTuids(tuids);
+        this.buildAccess(access);
     }
     getTuid(name, arr, tuidUrl) {
         let tuid = this.tuids[name];
