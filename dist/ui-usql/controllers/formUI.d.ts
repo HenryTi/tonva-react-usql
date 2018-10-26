@@ -1,25 +1,28 @@
 /// <reference types="react" />
 export declare type FieldUIType = 'tuid' | 'query' | 'string' | 'int' | 'dec' | 'text' | 'check' | 'select' | 'radio';
-export interface FieldEdit {
+export interface FieldUI {
     editable?: boolean;
     required?: boolean;
 }
-export interface FieldInput extends FieldEdit {
+export interface FieldInputUI extends FieldUI {
 }
-export interface FieldString extends FieldInput {
+export interface FieldStringUI extends FieldInputUI {
     length?: number;
 }
-export interface FieldNumber extends FieldInput {
+export interface FieldNumberUI extends FieldInputUI {
     min?: number;
     max?: number;
 }
+export interface FieldTuidUI extends FieldInputUI {
+    autoList?: boolean;
+}
 export interface FieldGroup {
-    edits: FieldEdit[];
+    edits: FieldUI[];
 }
 export interface FormArr extends /*FormItem,*/ FormUIBase {
     rowContent?: React.StatelessComponent<any>;
 }
-export declare type FormItem = FieldEdit | FieldGroup | FormArr | ((values: any) => number);
+export declare type FormItem = FieldUI | FieldGroup | FormArr | ((values: any) => number);
 export declare type FormItems = {
     [name: string]: FormItem;
 };

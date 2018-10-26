@@ -17,11 +17,6 @@ export class MapItem {
 export class CMap extends CEntity {
     constructor() {
         super(...arguments);
-        this.onValuesSubmit = async () => {
-            this.ceasePage();
-            let values = this.vForm.getValues();
-            this.return(values);
-        };
         this.addClick = async (item) => {
             let { keyIndex, children } = item;
             let keysLen = this.keyFields.length;
@@ -43,13 +38,13 @@ export class CMap extends CEntity {
             if (id === undefined || id <= 0)
                 return;
             tuid.useId(id);
-            let idBox = tuid.createID(id);
+            let idBox = tuid.boxId(id);
             let arr1 = {};
             let values = {};
             if (keyIndex + 1 === keysLast) {
                 tuid.useId(id);
                 values[kn] = arr1['_' + kn] = idBox;
-                if (this.vForm !== undefined) {
+                if (this.entity.fields.length > 0) {
                     let ret = await this.vCall(VInputValues, data);
                     for (let i in ret) {
                         values[i] = arr1['_' + i] = ret[i];
@@ -82,6 +77,7 @@ export class CMap extends CEntity {
                     children.splice(rowIndex, 0, row);
                 }
             }
+            this.removeCeased();
         };
         this.removeClick = async (item) => {
             let keyField = this.keyFields[item.keyIndex];
@@ -118,10 +114,7 @@ export class CMap extends CEntity {
         }*/
     }
     async internalStart() {
-        let { keys, fields } = this.entity;
-        if (fields && fields.length > 0) {
-            this.vForm = this.createForm(this.onValuesSubmit);
-        }
+        let { keys } = this.entity;
         let q = this.entity.queries.all;
         let result = await q.query({});
         //let data = await this.entity.unpackReturns(res);

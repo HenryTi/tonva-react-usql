@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA, SearchBox, List } from 'tonva-react-form';
-import { Page, PagedItems } from 'tonva-tools';
+import { Page, PageItems } from 'tonva-tools';
 import { TuidMain, Entity, Tuid, TuidDiv } from '../../entities';
 import { VEntity } from '../VM';
 import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';
@@ -22,7 +22,7 @@ export abstract class VTuidMainListBase  extends VEntity<TuidMain, TuidUI, CTuid
 
     onSearch = async (key:string) => {
         await this.controller.searchMain(key);
-        //await this.pagedItems.first(key);
+        //await this.PageItems.first(key);
     }
     renderRow = (item:any, index:number):JSX.Element => <this.rowContent {...item} />;
 
@@ -54,7 +54,7 @@ export abstract class VTuidMainListBase  extends VEntity<TuidMain, TuidUI, CTuid
         return <Page header={header}>
             {ownerTop}
             <List
-                items={this.controller.pagedItems.items}
+                items={this.controller.PageItems.items}
                 item={{render: this.renderRow, onClick: this.clickRow, key:this.rowKey}}
                 before={'搜索'+this.label+'资料'} />
         </Page>;
@@ -71,7 +71,7 @@ export abstract class VTuidDivListBase  extends VEntity<TuidDiv, TuidUI, CTuidDi
     protected ownerId: number;
 
     async showEntry(param?:any) {
-        //this.pagedItems = new TuidPagedItems(this.entity);
+        //this.PageItems = new TuidPageItems(this.entity);
         if (this.entity.owner !== undefined) this.ownerId = Number(param);
         // 初始查询, key是空的
         //await this.onSearch('');
@@ -81,7 +81,7 @@ export abstract class VTuidDivListBase  extends VEntity<TuidDiv, TuidUI, CTuidDi
 
     onSearch = async (key:string) => {
         await this.controller.searchMain(key);
-        //await this.pagedItems.first(key);
+        //await this.PageItems.first(key);
     }
     renderRow = (item:any, index:number):JSX.Element => {
         return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
@@ -112,7 +112,7 @@ export abstract class VTuidDivListBase  extends VEntity<TuidDiv, TuidUI, CTuidDi
         return <Page header={header}>
             {ownerTop}
             <List
-                items={this.controller.pagedItems.items}
+                items={this.controller.PageItems.items}
                 item={{render: this.renderRow, onClick: this.clickRow}}
                 before={'搜索'+this.label+'资料'} />
         </Page>;

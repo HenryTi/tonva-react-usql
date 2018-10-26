@@ -213,7 +213,7 @@ export class Entity {
                 _tuid.useId(id, true);
                 //let val = _tuid.valueFromId(id);
                 //return val.obj || val;
-                return _tuid.createID(id);
+                return _tuid.boxId(id);
             /*
             if (tuidKey !== undefined) {
                 let tuid = f._tuid;

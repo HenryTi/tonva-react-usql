@@ -1,14 +1,14 @@
 /// <reference types="react" />
 import { Entity } from './entity';
 import { Entities } from './entities';
-export declare class IdBox {
+export declare class BoxId {
     id: number;
     obj?: any;
     content: (templet?: (values?: any, x?: any) => JSX.Element, x?: any) => JSX.Element;
-    valueFromFieldName: (fieldName: string) => IdBox;
+    valueFromFieldName: (fieldName: string) => BoxId | any;
 }
 export declare abstract class Tuid extends Entity {
-    private idCreater;
+    private idBoxer;
     readonly typeName: string;
     private queue;
     private waitingIds;
@@ -18,13 +18,13 @@ export declare abstract class Tuid extends Entity {
     unique: string[];
     constructor(entities: Entities, name: string, typeId: number);
     abstract readonly Main: any;
-    private buildIdCreater;
-    createID(id: number): IdBox;
+    private buildIdBoxer;
+    boxId(id: number): BoxId;
     getIdFromObj(item: any): number;
     setSchema(schema: any): void;
     private moveToHead;
     valueFromId(id: number): any;
-    valueFromFieldName(fieldName: string, obj: any): IdBox;
+    valueFromFieldName(fieldName: string, obj: any): BoxId | any;
     resetCache(id: number): void;
     useId(id: number, defer?: boolean): void;
     proxied(name: string, id: number): Promise<any>;

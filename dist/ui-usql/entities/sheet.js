@@ -1,11 +1,6 @@
-import { observable } from 'mobx';
 import { Entity } from './entity';
+import { PageItems } from 'tonva-tools';
 export class Sheet extends Entity {
-    constructor() {
-        super(...arguments);
-        this.statesCount = observable.array([], { deep: true });
-        this.stateSheets = observable.array([], { deep: true });
-    }
     get typeName() { return 'sheet'; }
     /*
     setStates(states: SheetState[]) {
@@ -50,59 +45,19 @@ export class Sheet extends Entity {
             s.actions.push(action);
         }
     }*/
-    async onMessage(msg) {
-        let { $type, id, state, preState } = msg;
-        if ($type !== 'sheetAct')
-            return;
-        this.changeStateCount(state, 1);
-        this.changeStateCount(preState, -1);
-        if (this.curState === state) {
-            if (this.stateSheets.findIndex(v => v.id === id) < 0) {
-                this.stateSheets.push(msg);
-            }
-        }
-        else if (this.curState === preState) {
-            let index = this.stateSheets.findIndex(v => v.id === id);
-            if (index >= 0)
-                this.stateSheets.splice(index, 1);
-        }
-    }
-    changeStateCount(state, delta) {
-        let index = this.statesCount.findIndex(v => v.state === state);
-        if (index < 0)
-            return;
-        let stateCount = this.statesCount[index];
-        stateCount.count += delta;
-        //this.statesCount.splice(index, 1, stateCount);
-    }
     async save(discription, data) {
         let { appId } = this.entities;
         let text = this.pack(data);
         let ret = await this.tvApi.sheetSave(this.name, { app: appId, discription: discription, data: text });
-        let { id, state } = ret;
-        if (id > 0)
-            this.changeStateCount(state, 1);
         return ret;
+        /*
+        let {id, state} = ret;
+        if (id > 0) this.changeStateCount(state, 1);
+        return ret;
+        */
     }
     async action(id, flow, state, action) {
         return await this.tvApi.sheetAction(this.name, { id: id, flow: flow, state: state, action: action });
-    }
-    async getStateSheets(state, pageStart, pageSize) {
-        this.curState = state;
-        this.stateSheets.clear();
-        let ret = await this.tvApi.stateSheets(this.name, { state: state, pageStart: pageStart, pageSize: pageSize });
-        this.stateSheets.spliceWithArray(0, 0, ret);
-    }
-    async getStateSheetCount() {
-        this.statesCount.clear();
-        let ret = await this.tvApi.stateSheetCount(this.name);
-        this.statesCount.spliceWithArray(0, 0, this.states.map(s => {
-            let n = s.name, count = 0;
-            let r = ret.find(v => v.state === n);
-            if (r !== undefined)
-                count = r.count;
-            return { state: n, count: count };
-        }));
     }
     async unpack(data) {
         //if (this.schema === undefined) await this.loadSchema();
@@ -129,6 +84,35 @@ export class Sheet extends Entity {
     async getArchives(pageStart, pageSize) {
         let ret = await this.tvApi.sheetArchives(this.name, { pageStart: pageStart, pageSize: pageSize });
         return ret;
+    }
+    async getStateSheets(state, pageStart, pageSize) {
+        let ret = await this.tvApi.stateSheets(this.name, { state: state, pageStart: pageStart, pageSize: pageSize });
+        return ret;
+    }
+    createPageStateItems() { return new PageStateItems(this); }
+    async stateSheetCount() {
+        let ret = await this.tvApi.stateSheetCount(this.name);
+        return this.states.map(s => {
+            let n = s.name, count = 0;
+            let r = ret.find(v => v.state === n);
+            if (r !== undefined)
+                count = r.count;
+            return { state: n, count: count };
+        });
+    }
+}
+export class PageStateItems extends PageItems {
+    constructor(sheet) {
+        super(true);
+        this.sheet = sheet;
+        this.pageSize = 10;
+    }
+    async load(param, pageStart, pageSize) {
+        let ret = await this.sheet.getStateSheets(param, pageStart, pageSize);
+        return ret;
+    }
+    setPageStart(item) {
+        this.pageStart = item === undefined ? 0 : item.id;
     }
 }
 //# sourceMappingURL=sheet.js.map

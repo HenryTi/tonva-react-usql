@@ -51,7 +51,7 @@ export class CApp extends Controller {
     }
 
     protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
-        let cUsq = new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);
+        let cUsq = new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);        
         Object.setPrototypeOf(cUsq.x, this.x);
         return cUsq;
     }

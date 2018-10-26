@@ -9,7 +9,7 @@ export class VTuidMainListBase extends VEntity {
         super(...arguments);
         this.onSearch = async (key) => {
             await this.controller.searchMain(key);
-            //await this.pagedItems.first(key);
+            //await this.PageItems.first(key);
         };
         this.renderRow = (item, index) => React.createElement(this.rowContent, Object.assign({}, item));
         this.clickRow = (item) => {
@@ -31,7 +31,7 @@ export class VTuidMainListBase extends VEntity {
             }
             return React.createElement(Page, { header: header },
                 ownerTop,
-                React.createElement(List, { items: this.controller.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow, key: this.rowKey }, before: '搜索' + this.label + '资料' }));
+                React.createElement(List, { items: this.controller.PageItems.items, item: { render: this.renderRow, onClick: this.clickRow, key: this.rowKey }, before: '搜索' + this.label + '资料' }));
         });
     }
     async showEntry(param) {
@@ -61,7 +61,7 @@ export class VTuidDivListBase extends VEntity {
         super(...arguments);
         this.onSearch = async (key) => {
             await this.controller.searchMain(key);
-            //await this.pagedItems.first(key);
+            //await this.PageItems.first(key);
         };
         this.renderRow = (item, index) => {
             return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
@@ -81,11 +81,11 @@ export class VTuidDivListBase extends VEntity {
             }
             return React.createElement(Page, { header: header },
                 ownerTop,
-                React.createElement(List, { items: this.controller.pagedItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
+                React.createElement(List, { items: this.controller.PageItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
         });
     }
     async showEntry(param) {
-        //this.pagedItems = new TuidPagedItems(this.entity);
+        //this.PageItems = new TuidPageItems(this.entity);
         if (this.entity.owner !== undefined)
             this.ownerId = Number(param);
         // 初始查询, key是空的

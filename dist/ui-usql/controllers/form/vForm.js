@@ -122,18 +122,18 @@ export class VForm {
         for (let f of this.fields) {
             let { name, _tuid } = f;
             let v = values[name];
-            ret[name] = _tuid === undefined || typeof v === 'object' ? v : _tuid.createID(v);
+            ret[name] = _tuid === undefined || typeof v === 'object' ? v : _tuid.boxId(v);
         }
-        if (this.arrs !== undefined) {
-            for (let arr of this.arrs) {
-                let { name, fields, id, order } = arr;
-                let list = ret[name] = this.vArrs[name].list.slice();
-                for (let row of list) {
-                    for (let f of fields) {
-                        let { name: fn, _tuid } = f;
-                        let v = row[fn];
-                        row[fn] = _tuid === undefined || typeof v === 'object' ? v : _tuid.createID(v);
-                    }
+        if (this.arrs === undefined)
+            return ret;
+        for (let arr of this.arrs) {
+            let { name, fields, id, order } = arr;
+            let list = ret[name] = this.vArrs[name].list.slice();
+            for (let row of list) {
+                for (let f of fields) {
+                    let { name: fn, _tuid } = f;
+                    let v = row[fn];
+                    row[fn] = _tuid === undefined || typeof v === 'object' ? v : _tuid.boxId(v);
                 }
             }
         }
@@ -197,7 +197,11 @@ export class VForm {
     setValue(fieldName, value) { this.values[fieldName] = value; }
     setError(fieldName, error) { this.errors[fieldName] = error; }
     buildFieldValues(fields) {
-        let v = {};
+        let v = {
+            valueFromFieldName: function (propName) {
+                return this[propName];
+            }
+        };
         for (let f of fields) {
             let fn = f.name;
             v[fn] = null;

@@ -10,6 +10,10 @@ export class VSheetList extends VEntity {
                 return;
             this.event('action', brief.id);
         };
+        this.onScrollBottom = () => {
+            console.log('onScrollBottom');
+            this.controller.pageStateItems.more();
+        };
         this.rowContent = (row) => {
             let { id, no, discription, date, processing } = row;
             let left = React.createElement(React.Fragment, null,
@@ -24,16 +28,18 @@ export class VSheetList extends VEntity {
         };
         this.renderRow = (row, index) => React.createElement(this.row, Object.assign({}, row));
         this.view = () => {
-            let sheets = this.entity.stateSheets;
-            return React.createElement(Page, { header: this.label + ' - ' + this.stateLabel },
-                React.createElement(List, { items: sheets, item: { render: this.renderRow, onClick: this.rowClick } }));
+            //let sheets = this.controller.stateSheets;
+            let { pageStateItems } = this.controller;
+            return React.createElement(Page, { header: this.label + ' - ' + this.stateLabel, onScrollBottom: this.onScrollBottom },
+                React.createElement(List, { items: pageStateItems, item: { render: this.renderRow, onClick: this.rowClick } }));
         };
     }
     async showEntry(item) {
         this.row = this.ui.listRow || this.rowContent;
         this.stateName = item.state;
         this.stateLabel = this.controller.getStateLabel(this.stateName);
-        await this.entity.getStateSheets(this.stateName, 0, 30);
+        //await this.controller.getStateSheets(this.stateName, 0, 10);
+        await this.controller.pageStateItems.first(this.stateName);
         this.openPage(this.view);
     }
 }

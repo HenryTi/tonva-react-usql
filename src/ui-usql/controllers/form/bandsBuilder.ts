@@ -1,7 +1,7 @@
 import { VBand, VFieldBand, VArrBand, VFieldsBand, VSubmitBand, FieldRes } from "./vBand";
 import { Field, ArrFields } from "../../entities";
 import { VForm, FormOptions } from "./vForm";
-import { FormItems, FieldEdit, FormItem } from "../formUI";
+import { FormItems, FieldUI, FormItem } from "../formUI";
 import { VSubmit } from "./vSubmit";
 import { VField, buildVField, VComputeField } from "./vField";
 import { VArr } from "./vArr";
@@ -136,10 +136,10 @@ export class BandsBuilder {
             vField = new VComputeField(this.vForm, field, fieldRes);
         }
         else {
-            vField = buildVField(this.vForm, field, formItem as FieldEdit, fieldRes);
+            vField = buildVField(this.vForm, field, formItem as FieldUI, fieldRes);
         }
         if (vField === undefined) {
-            vField = new VTuidField(this.vForm, field, formItem as FieldEdit, fieldRes);
+            vField = new VTuidField(this.vForm, field, formItem as FieldUI, fieldRes);
         }
         return new VFieldBand(label || name, vField);
     }

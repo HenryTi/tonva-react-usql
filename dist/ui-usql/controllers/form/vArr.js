@@ -16,6 +16,7 @@ export class VArr extends ViewModel {
         };
         this.onRowChanged = async (rowValues) => {
             if (this.rowValues === undefined) {
+                rowValues.$owner = this.ownerForm.values;
                 this.list.push(rowValues);
                 if (this.onEditRow === undefined)
                     this.vForm.reset();

@@ -223,7 +223,7 @@ export class CUsq extends Controller implements Usq {
         if (entity !== undefined) {
             res = entity[name];
         }
-        return {ui: ui || {}, res: res };
+        return {ui: ui || {}, res: res || {} };
     }
 
     link(cEntity:CEntity<Entity, EntityUI>) {

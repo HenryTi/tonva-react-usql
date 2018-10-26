@@ -180,7 +180,7 @@ export class CUsq extends Controller {
         if (entity !== undefined) {
             res = entity[name];
         }
-        return { ui: ui || {}, res: res };
+        return { ui: ui || {}, res: res || {} };
     }
     link(cEntity) {
         return new CLink(cEntity);

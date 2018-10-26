@@ -1,3 +1,4 @@
+import { observable } from "mobx";
 import { CEntity } from "../VM";
 import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
@@ -11,6 +12,7 @@ import { VSheetSaved } from "./vSaved";
 export class CSheet extends CEntity {
     constructor() {
         super(...arguments);
+        this.statesCount = observable.array([], { deep: true });
         this.onSave = async (values, valuesWithBox) => {
             //let values = this.vForm.getValues();
             //let ret = await this.controller.saveSheet(values, this.vForm.values);
@@ -19,13 +21,90 @@ export class CSheet extends CEntity {
             //this.openPage(this.finishedPage);
             await this.showSaved(ret);
         };
+        /*
+        async getStateSheets(state:string, pageStart:number, pageSize:number):Promise<void> {
+            this.curState = state;
+            //this.stateSheets.clear();
+            this.pageStateItems.items.clear();
+            let ret = await this.entity.getStateSheets(state, pageStart, pageSize);
+            //this.stateSheets.spliceWithArray(0, 0, ret);
+            this.pageStateItems.items.spliceWithArray(0, 0, ret);
+        }*/
     }
     async internalStart() {
+        this.pageStateItems = this.entity.createPageStateItems();
         await this.showVPage(this.VSheetMain);
     }
     async onMessage(msg) {
-        //这个必须接上，否则没有websocket push
-        this.entity.onMessage(msg);
+        let { type, body, from, to, push } = msg;
+        if (type === 'sheet')
+            this.onSheet(from, to, body);
+    }
+    onSheet(from, to, sheetData) {
+        /*
+        app:69
+        date:"2018-10-18T21:59:15.000Z"
+        discription:"订单 北京大学 金额99元"
+        flow:0
+        id:95
+        name:"order"
+        no:"181018000010"
+        processing:0
+        sheet:8
+        state:"$"
+        to:"[10]"
+        user:10
+        usq:58
+        version:5
+        */
+        let me = this.user.id;
+        let { id, preState, state } = sheetData;
+        console.log({ $: 'onSheet', from: from, to: to.join(','), id: id, preState: preState, state: state, me: me });
+        if (from === me) {
+            this.sheetActPreState(id, preState);
+        }
+        if (to.find(v => v === me) !== undefined) {
+            this.sheetActState(id, state, sheetData);
+        }
+    }
+    sheetActPreState(id, preState) {
+        this.changeStateCount(preState, -1);
+        if (this.curState === undefined || this.curState !== preState)
+            return;
+        /*
+        let index = this.stateSheets.findIndex(v => v.id === id);
+        if (index>=0) {
+            this.stateSheets.splice(index, 1);
+        }*/
+        let index = this.pageStateItems.items.findIndex(v => v.id === id);
+        if (index >= 0) {
+            this.pageStateItems.items.splice(index, 1);
+        }
+    }
+    sheetActState(id, state, msg) {
+        this.changeStateCount(state, 1);
+        if (this.curState === undefined || this.curState !== state)
+            return;
+        /*
+        if (this.stateSheets.findIndex(v => v.id === id) < 0) {
+            this.stateSheets.push(msg);
+        }
+        */
+        if (this.pageStateItems.items.findIndex(v => v.id === id) < 0) {
+            this.pageStateItems.items.push(msg);
+        }
+    }
+    changeStateCount(state, delta) {
+        if (state === undefined)
+            return;
+        let index = this.statesCount.findIndex(v => v.state === state);
+        console.log({ $: 'changeState', state: state, delta: delta, index: index });
+        if (index < 0)
+            return;
+        let stateCount = this.statesCount[index];
+        stateCount.count += delta;
+        if (stateCount.count < 0)
+            stateCount.count = 0;
     }
     get VSheetMain() { return (this.ui && this.ui.main) || VSheetMain; }
     get VSheetNew() { return this.ui.sheetNew || VSheetNew; }
@@ -50,6 +129,7 @@ export class CSheet extends CEntity {
                 c = this.VArchives;
                 break;
             case 'state':
+                this.curState = value.state;
                 c = this.VSheetList;
                 break;
             case 'archived':
@@ -106,7 +186,9 @@ export class CSheet extends CEntity {
         return (action && action.label) || actionName;
     }
     async getStateSheetCount() {
-        await this.entity.getStateSheetCount();
+        this.statesCount.clear();
+        let statesCount = await this.entity.stateSheetCount();
+        this.statesCount.splice(0, 0, ...statesCount);
     }
     async getSheetData(sheetId) {
         return await this.entity.getSheet(sheetId);
@@ -117,13 +199,13 @@ export class CSheet extends CEntity {
     async saveSheet(values, valuesWithBox) {
         let { sheetTitle } = this.ui;
         let disc = sheetTitle === undefined ? this.label : sheetTitle(valuesWithBox, this.x);
-        return await this.entity.save(disc, values);
+        let ret = await this.entity.save(disc, values);
+        //let {id, state} = ret;
+        //if (id > 0) this.changeStateCount(state, 1);
+        return ret;
     }
     async action(id, flow, state, actionName) {
         return await this.entity.action(id, flow, state, actionName);
-    }
-    get statesCount() {
-        return this.entity.statesCount;
     }
 }
 //# sourceMappingURL=cSheet.js.map

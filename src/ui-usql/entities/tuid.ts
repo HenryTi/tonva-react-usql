@@ -5,16 +5,16 @@ import { Entity } from './entity';
 import { Entities, Field, ArrFields } from './entities';
 import { isNumber } from 'util';
 
-export class IdBox {
+export class BoxId {
     id: number;
     obj?: any;
     content: (templet?:(values?:any, x?:any)=>JSX.Element, x?:any)=>JSX.Element;
-    valueFromFieldName: (fieldName:string)=>IdBox;
+    valueFromFieldName: (fieldName:string)=>BoxId|any;
 }
 
 const maxCacheSize = 1000;
 export abstract class Tuid extends Entity {
-    private idCreater: ()=>void;
+    private idBoxer: ()=>void;
     get typeName(): string { return 'tuid';}
     private queue: number[] = [];               // 每次使用，都排到队头
     private waitingIds: number[] = [];          // 等待loading的
@@ -25,14 +25,14 @@ export abstract class Tuid extends Entity {
 
     constructor(entities:Entities, name:string, typeId:number) {
         super(entities, name, typeId);
-        this.buildIdCreater();
+        this.buildIdBoxer();
     }
 
     abstract get Main();
 
-    private buildIdCreater() {
-        this.idCreater = function():void {};
-        let prototype = this.idCreater.prototype;
+    private buildIdBoxer() {
+        this.idBoxer = function():void {};
+        let prototype = this.idBoxer.prototype;
         Object.defineProperty(prototype, '_$tuid', {
             value: this,
             writable: false,
@@ -50,17 +50,18 @@ export abstract class Tuid extends Entity {
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function() {
+                if (this.id === undefined || this.id<=0) return undefined;
                 return this._$tuid.valueFromId(this.id);
             }
         });
-        prototype.valueFromFieldName = function(fieldName:string):IdBox {
+        prototype.valueFromFieldName = function(fieldName:string):BoxId|any {
             let t:Tuid = this._$tuid;
             return t.valueFromFieldName(fieldName, this.obj);
         };
         prototype.toJSON = function() {return this.id}
     }
-    createID(id:number):IdBox {
-        let ret:IdBox = new this.idCreater();
+    boxId(id:number):BoxId {
+        let ret:BoxId = new this.idBoxer();
         ret.id = id;
         return ret;
     }
@@ -85,11 +86,11 @@ export abstract class Tuid extends Entity {
     valueFromId(id:number):any {
         let v = this.cache.get(id);
         if (this.owner !== undefined && typeof v === 'object') {
-            v.$owner = this.owner.createID(v.owner); // this.owner.valueFromId(v.owner);
+            v.$owner = this.owner.boxId(v.owner); // this.owner.valueFromId(v.owner);
         }
         return v;
     }
-    valueFromFieldName(fieldName:string, obj:any):IdBox {
+    valueFromFieldName(fieldName:string, obj:any):BoxId|any {
         if (obj === undefined) return;
         let f = this.fields.find(v => v.name === fieldName);
         if (f === undefined) return;
@@ -214,7 +215,7 @@ export abstract class Tuid extends Entity {
                 let arrValues = values[name];
                 if (arrValues === undefined) continue;
                 for (let row of arrValues) {
-                    row.$owner = this.createID(row.owner); 
+                    row.$owner = this.boxId(row.owner); 
                     this.cacheFieldsInValue(row, fields);
                 }
             }
@@ -226,7 +227,7 @@ export abstract class Tuid extends Entity {
             if (_tuid === undefined) continue;
             let id = values[name];
             _tuid.useId(id);
-            values[name] = _tuid.createID(id);
+            values[name] = _tuid.boxId(id);
         }
     }
     async save(id:number, props:any) {
@@ -252,7 +253,7 @@ export abstract class Tuid extends Entity {
         let ret = await this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
         for (let row of ret) {
             this.cacheFieldsInValue(row, fields);
-            if (this.owner !== undefined) row.$owner = this.owner.createID(row.owner);
+            if (this.owner !== undefined) row.$owner = this.owner.boxId(row.owner);
         }
         return ret;
     }

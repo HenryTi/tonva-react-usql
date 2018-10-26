@@ -4,7 +4,7 @@ import { Entity, Field, TuidMain } from '../entities';
 import { CUsq } from './usq/cUsq';
 import { VForm, FieldInputs, FieldCall, FormOptions, FormMode } from './form';
 import { CQuerySelect } from './query';
-import { FormUI } from './formUI';
+import { FormUI, FieldTuidUI } from './formUI';
 import { entityIcons } from './icons';
 
 export abstract class ControllerUsq extends Controller{
@@ -70,12 +70,13 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         if (arrTitleNewButton === undefined)
         arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
         if (mode === undefined) mode = FormMode.new;
+        let formUI = this.ui.form;
         let ret:FormOptions = {
             fields: fields,
             arrs: arrFields,
-            ui: this.ui && this.ui.form,
+            ui: formUI,
             res: this.res || {},
-            inputs: this.buildInputs(),
+            inputs: this.buildInputs(formUI),
             none: none,
             submitCaption: submitCaption,
             arrNewCaption: arrNewCaption,
@@ -86,20 +87,21 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         return ret;
     }
 
-    private buildInputs():FieldInputs {
+    private buildInputs(formUI: FormUI):FieldInputs {
         let {fields, arrFields} = this.entity;
         let ret:FieldInputs = {};
-        this.buildFieldsInputs(ret, fields, undefined);
+        this.buildFieldsInputs(ret, fields, undefined, formUI);
         if (arrFields !== undefined) {
             for (let arr of arrFields) {
                 let {name, fields} = arr;
-                this.buildFieldsInputs(ret, fields, name);
+                let items = formUI && formUI.items;
+                this.buildFieldsInputs(ret, fields, name, items && items[name] as FormUI);
             }
         }
         return ret;
     }
 
-    private buildFieldsInputs(ret:FieldInputs, fields:Field[], arr:string) {
+    private buildFieldsInputs(ret:FieldInputs, fields:Field[], arr:string, formUI: FormUI) {
         if (arr !== undefined) {
             let arrFieldInputs = ret[arr];
             if (arrFieldInputs === undefined) {
@@ -110,21 +112,27 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         for (let field of fields) {
             let {name, _tuid} = field;
             if (_tuid === undefined) continue;
+            let fieldUI = formUI && formUI.items && formUI.items[name] as FieldTuidUI;
             ret[name] = {
-                select: this.buildSelect(field, arr),
+                select: this.buildSelect(field, arr, fieldUI),
                 content: this.buildContent(field, arr),
                 placeHolder: this.cUsq.getTuidPlaceHolder(_tuid),
             };
         }
     }
 
-    protected buildSelect(field:Field, arr:string):FieldCall {
+    protected buildSelect(field:Field, arr:string, fieldUI: FieldTuidUI):FieldCall {
         return async (form:VForm, field:Field, values:any):Promise<any> => {
             let {_tuid, _ownerField} = field;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
-            let ownerValue:any = undefined;
-            if (_ownerField !== undefined) ownerValue = form.getValue(_ownerField.name);
-            let ret = await cTuidSelect.call(ownerValue);
+            let param:any = undefined;
+            if (_ownerField !== undefined) param = form.getValue(_ownerField.name);
+            if (fieldUI && fieldUI.autoList === true) {
+                console.log('select search set param=empty string');
+                param = '';
+            }
+            let ret = await cTuidSelect.call(param);
+            cTuidSelect.removeCeased(); // 清除已经废弃的顶部页面
             if (ret === undefined) return undefined;
             let id = cTuidSelect.idFromItem(ret);
             _tuid.useId(id);

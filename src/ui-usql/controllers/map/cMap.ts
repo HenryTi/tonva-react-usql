@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { CEntity, EntityUI } from "../VM";
-import { Map, Tuid, IdBox, Field, TuidMain } from "../../entities";
+import { Map, Tuid, BoxId, Field, TuidMain } from "../../entities";
 import { VMapMain } from "./vMain";
 import { observable } from "mobx";
 import { PureJSONContent } from '../form/viewModel';
@@ -22,12 +22,12 @@ export interface MapUI extends EntityUI {
 export class MapItem {
     parent: MapItem;
     tuid: Tuid;
-    box: IdBox;
+    box: BoxId;
     isLeaf: boolean;
     keyIndex:number;
     children: MapItem[] = observable.array([], {deep: true});
     values: any;
-    constructor(parent:MapItem, tuid:Tuid, box:IdBox, keyIndex:number) {
+    constructor(parent:MapItem, tuid:Tuid, box:BoxId, keyIndex:number) {
         this.parent = parent;
         this.tuid = tuid;
         this.box = box;
@@ -37,16 +37,12 @@ export class MapItem {
 }
 
 export class CMap extends CEntity<Map, MapUI> {
-    vForm: VForm;
     items:MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
 
     protected async internalStart() {
-        let {keys, fields} = this.entity;
-        if (fields && fields.length > 0) {
-            this.vForm = this.createForm(this.onValuesSubmit);
-        }
+        let {keys} = this.entity;
         let q = this.entity.queries.all;
         let result = await q.query({});
         //let data = await this.entity.unpackReturns(res);
@@ -76,13 +72,7 @@ export class CMap extends CEntity<Map, MapUI> {
         await this.showVPage(this.VMapMain);
     }
 
-    private onValuesSubmit = async () => {
-        this.ceasePage();
-        let values = this.vForm.getValues();
-        this.return(values);
-    }
-
-    private createItem(parent:MapItem, tuid:Tuid, box:IdBox, keyIndex:number, values?:any) {
+    private createItem(parent:MapItem, tuid:Tuid, box:BoxId, keyIndex:number, values?:any) {
         let item = new MapItem(parent, tuid, box, keyIndex);
         if (keyIndex === this.keyFields.length - 1) {
             item.isLeaf = true;
@@ -99,7 +89,7 @@ export class CMap extends CEntity<Map, MapUI> {
             let key = this.keyFields[i];
             let {name} = key;
             let tuid = key._tuid;
-            let val:IdBox = row[name];
+            let val:BoxId = row[name];
             if (val === undefined) break;
             let {id} = val;
             if (i === 0) {
@@ -159,13 +149,13 @@ export class CMap extends CEntity<Map, MapUI> {
         let id = await this.searchOnKey(keyField, searchParam);
         if (id === undefined || id <= 0) return;
         tuid.useId(id);
-        let idBox = tuid.createID(id);
+        let idBox = tuid.boxId(id);
         let arr1 = {} as any;
         let values:any = {};
         if (keyIndex+1===keysLast) {
             tuid.useId(id);
             values[kn] = arr1['_' + kn] = idBox;
-            if (this.vForm !== undefined) {
+            if (this.entity.fields.length > 0) {
                 let ret = await this.vCall(VInputValues, data);
                 for (let i in ret) {
                     values[i] = arr1['_' + i] = ret[i];                    
@@ -198,6 +188,7 @@ export class CMap extends CEntity<Map, MapUI> {
                 children.splice(rowIndex, 0, row);
             }
         }
+        this.removeCeased();
     }
 
     removeClick = async(item:MapItem) => {

@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 import _ from 'lodash';
 import { Entity } from './entity';
 import { isNumber } from 'util';
-export class IdBox {
+export class BoxId {
 }
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
@@ -12,12 +12,12 @@ export class Tuid extends Entity {
         this.queue = []; // 每次使用，都排到队头
         this.waitingIds = []; // 等待loading的
         this.cache = observable.map({}, { deep: false }); // 已经缓冲的
-        this.buildIdCreater();
+        this.buildIdBoxer();
     }
     get typeName() { return 'tuid'; }
-    buildIdCreater() {
-        this.idCreater = function () { };
-        let prototype = this.idCreater.prototype;
+    buildIdBoxer() {
+        this.idBoxer = function () { };
+        let prototype = this.idBoxer.prototype;
         Object.defineProperty(prototype, '_$tuid', {
             value: this,
             writable: false,
@@ -37,6 +37,8 @@ export class Tuid extends Entity {
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function () {
+                if (this.id === undefined || this.id <= 0)
+                    return undefined;
                 return this._$tuid.valueFromId(this.id);
             }
         });
@@ -46,8 +48,8 @@ export class Tuid extends Entity {
         };
         prototype.toJSON = function () { return this.id; };
     }
-    createID(id) {
-        let ret = new this.idCreater();
+    boxId(id) {
+        let ret = new this.idBoxer();
         ret.id = id;
         return ret;
     }
@@ -68,7 +70,7 @@ export class Tuid extends Entity {
     valueFromId(id) {
         let v = this.cache.get(id);
         if (this.owner !== undefined && typeof v === 'object') {
-            v.$owner = this.owner.createID(v.owner); // this.owner.valueFromId(v.owner);
+            v.$owner = this.owner.boxId(v.owner); // this.owner.valueFromId(v.owner);
         }
         return v;
     }
@@ -208,7 +210,7 @@ export class Tuid extends Entity {
                 if (arrValues === undefined)
                     continue;
                 for (let row of arrValues) {
-                    row.$owner = this.createID(row.owner);
+                    row.$owner = this.boxId(row.owner);
                     this.cacheFieldsInValue(row, fields);
                 }
             }
@@ -221,7 +223,7 @@ export class Tuid extends Entity {
                 continue;
             let id = values[name];
             _tuid.useId(id);
-            values[name] = _tuid.createID(id);
+            values[name] = _tuid.boxId(id);
         }
     }
     async save(id, props) {
@@ -248,7 +250,7 @@ export class Tuid extends Entity {
         for (let row of ret) {
             this.cacheFieldsInValue(row, fields);
             if (this.owner !== undefined)
-                row.$owner = this.owner.createID(row.owner);
+                row.$owner = this.owner.boxId(row.owner);
         }
         return ret;
     }

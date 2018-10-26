@@ -4,14 +4,14 @@ import { VForm } from '../vForm';
 import { Rule } from '../rule';
 import { Field } from '../../../entities';
 import { FieldRes } from '../vBand';
-import { FieldEdit, FieldInput, FieldString, FieldNumber } from '../../formUI';
+import { FieldUI, FieldInputUI, FieldStringUI, FieldNumberUI } from '../../formUI';
 export declare abstract class VField extends ViewModel {
     protected form: VForm;
-    protected fieldUI: FieldEdit;
+    protected fieldUI: FieldUI;
     protected fieldRes: FieldRes;
     protected field: Field;
     protected rules: Rule[];
-    constructor(form: VForm, field: Field, fieldUI: FieldEdit, fieldRes: FieldRes);
+    constructor(form: VForm, field: Field, fieldUI: FieldUI, fieldRes: FieldRes);
     name: string;
     protected init(): void;
     protected buildRules(): void;
@@ -27,7 +27,7 @@ export declare class VUnknownField extends VField {
     protected view: () => JSX.Element;
 }
 export declare abstract class VInputControl extends VField {
-    protected fieldUI: FieldInput;
+    protected fieldUI: FieldInputUI;
     protected input: HTMLInputElement;
     protected inputType: string;
     protected readonly maxLength: number;
@@ -44,12 +44,12 @@ export declare abstract class VInputControl extends VField {
 }
 export declare const RedMark: () => JSX.Element;
 export declare class VStringField extends VInputControl {
-    protected fieldUI: FieldString;
+    protected fieldUI: FieldStringUI;
     protected inputType: string;
     protected readonly maxLength: number;
 }
 export declare abstract class VNumberControl extends VInputControl {
-    protected fieldUI: FieldNumber;
+    protected fieldUI: FieldNumberUI;
     protected extraChars: number[];
     protected init(): void;
     protected buildRules(): void;

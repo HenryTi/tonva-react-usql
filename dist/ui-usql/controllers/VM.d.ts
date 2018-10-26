@@ -4,7 +4,7 @@ import { Entity, Field } from '../entities';
 import { CUsq } from './usq/cUsq';
 import { VForm, FieldCall, FormMode } from './form';
 import { CQuerySelect } from './query';
-import { FormUI } from './formUI';
+import { FormUI, FieldTuidUI } from './formUI';
 export declare abstract class ControllerUsq extends Controller {
     constructor(cUsq: CUsq, res: any);
     cUsq: CUsq;
@@ -21,7 +21,7 @@ export declare abstract class CEntity<T extends Entity, UI extends EntityUI> ext
     private buildFormOptions;
     private buildInputs;
     private buildFieldsInputs;
-    protected buildSelect(field: Field, arr: string): FieldCall;
+    protected buildSelect(field: Field, arr: string, fieldUI: FieldTuidUI): FieldCall;
     protected buildContent(field: Field, arr: string): React.StatelessComponent<any>;
     cQuerySelect(queryName: string): CQuerySelect;
 }

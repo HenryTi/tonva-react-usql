@@ -43,7 +43,7 @@ export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
             onSearch={this.onSearchMain} placeholder={'搜索'+this.label} />;
         return <Page header={header} back="close">
             <List
-                items={this.controller.pagedItems.items}
+                items={this.controller.PageItems.items}
                 item={{render: this.renderMainRow, onClick: this.clickMainRow}}
                 before={'搜索'+this.label+'资料'} />
         </Page>;
@@ -51,7 +51,7 @@ export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
 
     onSearchMain = async (key:string) => {
         await this.controller.searchMain(key);
-        //await this.pagedItems.first(key);
+        //await this.PageItems.first(key);
     }
     renderMainRow = (item:any, index:number):JSX.Element => <this.mainRowContent {...item} />;
     clickMainRow = async (item:any) => {

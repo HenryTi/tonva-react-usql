@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { PagedItems } from 'tonva-tools';
+import { PageItems } from 'tonva-tools';
 import { CEntity, EntityUI } from "../VM";
 import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
@@ -24,8 +24,8 @@ export interface TuidUI extends EntityUI {
     };
 }
 export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
-    pagedItems: PagedItems<any>;
-    protected buildPagedItems(): PagedItems<any>;
+    PageItems: PageItems<any>;
+    protected buildPageItems(): PageItems<any>;
     searchMain(key: string): Promise<void>;
     getDivItems(ownerId: number): Promise<any[]>;
 }

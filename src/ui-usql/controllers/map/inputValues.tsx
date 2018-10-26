@@ -3,16 +3,25 @@ import { VEntity } from "../VM";
 import { MapUI, CMap } from "./cMap";
 import { Map } from "../../entities";
 import { Page } from "tonva-tools";
+import { VForm } from '../form';
 
 export class VInputValues extends VEntity<Map, MapUI, CMap> {
+    private vForm: VForm;
+
     async showEntry(param?:any) {
-        this.controller.vForm.reset();
+        this.vForm = this.createForm(this.onValuesSubmit);
         this.openPageElement(<this.view />);
+    }
+
+    private onValuesSubmit = async () => {
+        this.ceasePage();
+        let values = this.vForm.getValues();
+        this.return(values);
     }
 
     private view = () => {
         return <Page>
-            {this.controller.vForm.render()}
+            {this.vForm.render()}
         </Page>
     }
 }

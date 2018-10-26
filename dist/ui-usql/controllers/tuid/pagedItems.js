@@ -1,5 +1,5 @@
-import { PagedItems } from "tonva-tools";
-export class TuidPagedItems extends PagedItems {
+import { PageItems } from "tonva-tools";
+export class TuidPageItems extends PageItems {
     constructor(tuid) {
         super(true);
         this.tuid = tuid;

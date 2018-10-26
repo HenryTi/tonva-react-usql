@@ -2,10 +2,10 @@ import { VField, VIntField, VDecField, VStringField, VTextField, VDateTimeField 
 import { Field } from '../../../entities';
 import { FieldRes } from '../vBand';
 import { VForm } from '../vForm';
-import { FieldEdit } from '../../formUI';
+import { FieldUI } from '../../formUI';
 
-export function buildVField(form:VForm, field: Field, fieldUI: FieldEdit, fieldRes:FieldRes): VField {
-    let vField:new (form:VForm, field:Field, ui:FieldEdit, fieldRes:FieldRes) => VField;
+export function buildVField(form:VForm, field: Field, fieldUI: FieldUI, fieldRes:FieldRes): VField {
+    let vField:new (form:VForm, field:Field, ui:FieldUI, fieldRes:FieldRes) => VField;
     switch (field.type) {
         default: return;
         case 'tinyint':

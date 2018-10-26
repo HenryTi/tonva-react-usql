@@ -52,12 +52,13 @@ export class CEntity extends ControllerUsq {
             arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
         if (mode === undefined)
             mode = FormMode.new;
+        let formUI = this.ui.form;
         let ret = {
             fields: fields,
             arrs: arrFields,
-            ui: this.ui && this.ui.form,
+            ui: formUI,
             res: this.res || {},
-            inputs: this.buildInputs(),
+            inputs: this.buildInputs(formUI),
             none: none,
             submitCaption: submitCaption,
             arrNewCaption: arrNewCaption,
@@ -67,19 +68,20 @@ export class CEntity extends ControllerUsq {
         };
         return ret;
     }
-    buildInputs() {
+    buildInputs(formUI) {
         let { fields, arrFields } = this.entity;
         let ret = {};
-        this.buildFieldsInputs(ret, fields, undefined);
+        this.buildFieldsInputs(ret, fields, undefined, formUI);
         if (arrFields !== undefined) {
             for (let arr of arrFields) {
                 let { name, fields } = arr;
-                this.buildFieldsInputs(ret, fields, name);
+                let { items } = formUI;
+                this.buildFieldsInputs(ret, fields, name, items && items[name]);
             }
         }
         return ret;
     }
-    buildFieldsInputs(ret, fields, arr) {
+    buildFieldsInputs(ret, fields, arr, formUI) {
         if (arr !== undefined) {
             let arrFieldInputs = ret[arr];
             if (arrFieldInputs === undefined) {
@@ -91,21 +93,27 @@ export class CEntity extends ControllerUsq {
             let { name, _tuid } = field;
             if (_tuid === undefined)
                 continue;
+            let fieldUI = formUI && formUI.items && formUI.items[name];
             ret[name] = {
-                select: this.buildSelect(field, arr),
+                select: this.buildSelect(field, arr, fieldUI),
                 content: this.buildContent(field, arr),
                 placeHolder: this.cUsq.getTuidPlaceHolder(_tuid),
             };
         }
     }
-    buildSelect(field, arr) {
+    buildSelect(field, arr, fieldUI) {
         return async (form, field, values) => {
             let { _tuid, _ownerField } = field;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
-            let ownerValue = undefined;
+            let param = undefined;
             if (_ownerField !== undefined)
-                ownerValue = form.getValue(_ownerField.name);
-            let ret = await cTuidSelect.call(ownerValue);
+                param = form.getValue(_ownerField.name);
+            if (fieldUI && fieldUI.autoList === true) {
+                console.log('select search set param=empty string');
+                param = '';
+            }
+            let ret = await cTuidSelect.call(param);
+            cTuidSelect.removeCeased(); // 清除已经废弃的顶部页面
             if (ret === undefined)
                 return undefined;
             let id = cTuidSelect.idFromItem(ret);

@@ -57,7 +57,8 @@ export class VArr extends ViewModel {
                 arrEditCaption: undefined,
                 arrTitleNewButton: undefined,
                 mode: mode,
-            }, mode===FormMode.readonly? undefined: this.onSubmit);
+            }, 
+            mode===FormMode.readonly? undefined: this.onSubmit);
         }
         else {
             this.onEditRow = onEditRow;
@@ -86,6 +87,7 @@ export class VArr extends ViewModel {
 
     private onRowChanged = async (rowValues:any) => {
         if (this.rowValues === undefined) {
+            rowValues.$owner = this.ownerForm.values;
             this.list.push(rowValues);
             if (this.onEditRow === undefined)
                 this.vForm.reset();

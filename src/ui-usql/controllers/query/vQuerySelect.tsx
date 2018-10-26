@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FA, SearchBox, List } from 'tonva-react-form';
-import { Page, PagedItems } from 'tonva-tools';
+import { Page, PageItems } from 'tonva-tools';
 import { Query } from '../../entities';
 import { VEntity } from '../VM';
 import { QueryUI, CQuerySelect } from './cQuery';
@@ -9,19 +9,19 @@ import { DefaultRow } from './defaultRow';
 export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     private row: React.StatelessComponent;
 
-    pagedItems:QueryPagedItems;
+    PageItems:QueryPageItems;
     ownerId: number;
 
     async showEntry(param?:any) {
         let {row, selectRow} = this.ui;
         this.row = selectRow || row || DefaultRow;
         //this.entity = this.controller.entity;
-        this.pagedItems = new QueryPagedItems(this.entity);
+        this.PageItems = new QueryPageItems(this.entity);
         await this.onSearch(param);
         this.openPage(this.view);
     }
     onSearch = async (key:string) => {
-        await this.pagedItems.first(key);
+        await this.PageItems.first(key);
     }
 
     renderRow = (item:any, index:number) => <this.row {...item} />;
@@ -40,14 +40,14 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
             onSearch={this.onSearch} placeholder={'搜索'+this.label} />;
         return <Page header={header}>
             <List
-                items={this.pagedItems.items}
+                items={this.PageItems.items}
                 item={{render: this.renderRow, onClick: this.clickRow}}
                 before={'搜索'+this.label+'资料'} />
         </Page>;
     };
 }
 
-export class QueryPagedItems extends PagedItems<any> {
+export class QueryPageItems extends PageItems<any> {
     private query: Query;
     constructor(query: Query) {
         super();

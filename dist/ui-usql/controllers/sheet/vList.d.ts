@@ -8,6 +8,7 @@ export declare class VSheetList extends VEntity<Sheet, SheetUI, CSheet> {
     stateLabel: string;
     showEntry(item: any): Promise<void>;
     rowClick: (brief: any) => Promise<void>;
+    private onScrollBottom;
     protected rowContent: (row: any) => JSX.Element;
     private renderRow;
     protected view: () => JSX.Element;

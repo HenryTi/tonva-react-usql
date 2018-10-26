@@ -16,23 +16,26 @@ export interface FieldCompute {
     //type: 'compute';
     compute: ()=>number;
 };*/
-export interface FieldEdit {
+export interface FieldUI {
     //type: undefined;
     editable?: boolean;     // false则不可编辑修改，edit界面上，不可更改。readonly界面上，也不可更改。
     required?: boolean;
 }
-export interface FieldInput extends FieldEdit {
+export interface FieldInputUI extends FieldUI {
 }
-export interface FieldString extends FieldInput {
+export interface FieldStringUI extends FieldInputUI {
     length?: number;
 }
-export interface FieldNumber extends FieldInput {
+export interface FieldNumberUI extends FieldInputUI {
     min?: number;
     max?: number;
 }
+export interface FieldTuidUI extends FieldInputUI {
+    autoList?: boolean;      // 点击选择之后，自动显示待选内容
+}
 export interface FieldGroup /*extends FormItem*/ {
     //type: 'group';
-    edits: FieldEdit[];
+    edits: FieldUI[];
 }
 export interface FormArr extends /*FormItem,*/ FormUIBase {
     //type: 'arr';
@@ -41,7 +44,7 @@ export interface FormArr extends /*FormItem,*/ FormUIBase {
     rowContent?: React.StatelessComponent<any>;     // arr 行的显示方式
     //layout?: string[];          // band按name排序
 }
-export type FormItem = FieldEdit|FieldGroup|FormArr|((values:any)=>number);
+export type FormItem = FieldUI|FieldGroup|FormArr|((values:any)=>number);
 export type FormItems = {[name:string]: FormItem;}
 export interface FormUIBase {
     className?: string;

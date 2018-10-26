@@ -8,15 +8,15 @@ import { VForm, FormMode } from '../vForm';
 import { Rule, RuleRequired, RuleInt, RuleNum, RuleMin, RuleMax } from '../rule';
 import { Field } from '../../../entities';
 import { FieldRes } from '../vBand';
-import { FieldEdit, FieldInput, FieldString, FieldNumber } from '../../formUI';
+import { FieldUI, FieldInputUI, FieldStringUI, FieldNumberUI } from '../../formUI';
 
 export abstract class VField extends ViewModel {
     protected form: VForm;
-    protected fieldUI: FieldEdit;
+    protected fieldUI: FieldUI;
     protected fieldRes:FieldRes;
     protected field: Field;
     protected rules: Rule[];
-    constructor(form:VForm, field:Field, fieldUI: FieldEdit, fieldRes:FieldRes) {
+    constructor(form:VForm, field:Field, fieldUI: FieldUI, fieldRes:FieldRes) {
         super();
         this.form = form;
         this.field = field;
@@ -76,7 +76,7 @@ export class VUnknownField extends VField {
 }
 
 export abstract class VInputControl extends VField {
-    protected fieldUI: FieldInput;
+    protected fieldUI: FieldInputUI;
     protected input: HTMLInputElement;
 
     protected inputType:string;
@@ -183,7 +183,7 @@ export abstract class VInputControl extends VField {
 export const RedMark = () => <b style={{color:'red', position:'absolute', left:'0.1em', top:'0.5em'}}>*</b>;
 
 export class VStringField extends VInputControl {
-    protected fieldUI: FieldString;
+    protected fieldUI: FieldStringUI;
     protected inputType:string = 'text';
     protected get maxLength():number {return this.field.size}
 }
@@ -192,7 +192,7 @@ const KeyCode_Neg = 45;
 const KeyCode_Dot = 46;
 
 export abstract class VNumberControl extends VInputControl {
-    protected fieldUI: FieldNumber;
+    protected fieldUI: FieldNumberUI;
     protected extraChars: number[];
 
     protected init() {

@@ -4,12 +4,17 @@ import { Page } from "tonva-tools";
 export class VInputValues extends VEntity {
     constructor() {
         super(...arguments);
+        this.onValuesSubmit = async () => {
+            this.ceasePage();
+            let values = this.vForm.getValues();
+            this.return(values);
+        };
         this.view = () => {
-            return React.createElement(Page, null, this.controller.vForm.render());
+            return React.createElement(Page, null, this.vForm.render());
         };
     }
     async showEntry(param) {
-        this.controller.vForm.reset();
+        this.vForm = this.createForm(this.onValuesSubmit);
         this.openPageElement(React.createElement(this.view, null));
     }
 }

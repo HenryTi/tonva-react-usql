@@ -4,18 +4,18 @@ import { VTuidMain } from './vTuidMain';
 import { VTuidEdit } from './vTuidEdit';
 import { VTuidSelect } from './vTuidSelect';
 import { VTuidInfo } from "./vTuidInfo";
-import { TuidPagedItems } from "./pagedItems";
+import { TuidPageItems } from "./pageItems";
 import { VTuidMainList } from './vTuidList';
 export class CTuid extends CEntity {
-    buildPagedItems() {
-        return new TuidPagedItems(this.entity.owner || this.entity);
+    buildPageItems() {
+        return new TuidPageItems(this.entity.owner || this.entity);
     }
     async searchMain(key) {
-        if (this.pagedItems === undefined) {
-            this.pagedItems = this.buildPagedItems();
+        if (this.PageItems === undefined) {
+            this.PageItems = this.buildPageItems();
         }
         if (key !== undefined)
-            await this.pagedItems.first(key);
+            await this.PageItems.first(key);
     }
     async getDivItems(ownerId) {
         let ret = await this.entity.searchArr(ownerId, undefined, 0, 1000);
@@ -81,9 +81,9 @@ export class CTuidMain extends CTuid {
         await this.showVPage(v, ret);
     }
     itemChanged({ id, values }) {
-        if (this.pagedItems === undefined)
+        if (this.PageItems === undefined)
             return;
-        let items = this.pagedItems.items;
+        let items = this.PageItems.items;
         let item = items.find(v => v.id === id);
         if (item !== undefined) {
             _.merge(item, values);
@@ -101,8 +101,8 @@ export class CTuidSelect extends CTuid {
     }
     async beforeStart() {
         await super.beforeStart();
-        if (this.pagedItems !== undefined)
-            this.pagedItems.reset();
+        if (this.PageItems !== undefined)
+            this.PageItems.reset();
     }
     get VTuidSelect() { return VTuidSelect; }
     idFromItem(item) {

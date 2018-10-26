@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { TypeVPage, PagedItems } from 'tonva-tools';
+import { TypeVPage, PageItems } from 'tonva-tools';
 import { CEntity, EntityUI } from "../VM";
 import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
@@ -8,7 +8,7 @@ import { VTuidSelect } from './vTuidSelect';
 import { CUsq } from "../usq/cUsq";
 import { CLink } from "../link";
 import { VTuidInfo } from "./vTuidInfo";
-import { TuidPagedItems } from "./pagedItems";
+import { TuidPageItems } from "./pageItems";
 import { VTuidMainList } from './vTuidList';
 
 export interface TuidUI extends EntityUI {
@@ -32,17 +32,17 @@ export abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
         super(cUsq, entity, ui, res);
     }*/
 
-    pagedItems:PagedItems<any>;
+    PageItems:PageItems<any>;
 
-    protected buildPagedItems():PagedItems<any> {
-        return new TuidPagedItems(this.entity.owner || this.entity);
+    protected buildPageItems():PageItems<any> {
+        return new TuidPageItems(this.entity.owner || this.entity);
     }
 
     async searchMain(key:string) {
-        if (this.pagedItems === undefined) {
-            this.pagedItems = this.buildPagedItems();
+        if (this.PageItems === undefined) {
+            this.PageItems = this.buildPageItems();
         }
-        if (key !== undefined) await this.pagedItems.first(key);
+        if (key !== undefined) await this.PageItems.first(key);
     }
 
     async getDivItems(ownerId:number):Promise<any[]> {
@@ -109,8 +109,8 @@ export class CTuidMain extends CTuid<TuidMain> {
     }
 
     private itemChanged({id, values}:{id:number, values: any}) {
-        if (this.pagedItems === undefined) return;
-        let items = this.pagedItems.items;
+        if (this.PageItems === undefined) return;
+        let items = this.PageItems.items;
         let item = items.find(v => v.id === id);
         if (item !== undefined) {
             _.merge(item, values);
@@ -129,7 +129,7 @@ export class CTuidSelect extends CTuid<Tuid> {
     }
     protected async beforeStart() {
         await super.beforeStart();
-        if (this.pagedItems !== undefined) this.pagedItems.reset();
+        if (this.PageItems !== undefined) this.PageItems.reset();
     }
     protected get VTuidSelect():typeof VTuidSelect {return VTuidSelect}
     idFromItem(item:any) {

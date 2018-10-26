@@ -7,6 +7,7 @@ export * from './query';
 export * from './map';
 export * from './form/viewModel';
 export * from './form';
+export * from './formUI';
 export * from './VM';
 export * from './link';
 export * from './icons';

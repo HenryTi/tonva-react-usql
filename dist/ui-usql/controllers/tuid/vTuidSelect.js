@@ -10,11 +10,11 @@ export class VTuidSelect extends VEntity {
         this.mainView = observer(() => {
             let header = React.createElement(SearchBox, { className: "mx-1 w-100", initKey: '', onSearch: this.onSearchMain, placeholder: '搜索' + this.label });
             return React.createElement(Page, { header: header, back: "close" },
-                React.createElement(List, { items: this.controller.pagedItems.items, item: { render: this.renderMainRow, onClick: this.clickMainRow }, before: '搜索' + this.label + '资料' }));
+                React.createElement(List, { items: this.controller.PageItems.items, item: { render: this.renderMainRow, onClick: this.clickMainRow }, before: '搜索' + this.label + '资料' }));
         });
         this.onSearchMain = async (key) => {
             await this.controller.searchMain(key);
-            //await this.pagedItems.first(key);
+            //await this.PageItems.first(key);
         };
         this.renderMainRow = (item, index) => React.createElement(this.mainRowContent, Object.assign({}, item));
         this.clickMainRow = async (item) => {

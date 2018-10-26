@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { IObservableArray } from "mobx";
-import { TypeVPage } from 'tonva-tools';
+import { TypeVPage, PageItems } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
 import { CEntity, EntityUI } from "../VM";
 export interface SheetActionUI {
@@ -31,8 +31,15 @@ export interface SheetData {
     flows: any[];
 }
 export declare class CSheet extends CEntity<Sheet, SheetUI> {
+    statesCount: IObservableArray<StateCount>;
+    curState: string;
+    pageStateItems: PageItems<any>;
     protected internalStart(): Promise<void>;
     protected onMessage(msg: any): Promise<void>;
+    private onSheet;
+    private sheetActPreState;
+    private sheetActState;
+    private changeStateCount;
     protected readonly VSheetMain: TypeVPage<CSheet>;
     protected readonly VSheetNew: TypeVPage<CSheet>;
     protected readonly VSheetSaved: TypeVPage<CSheet>;
@@ -55,7 +62,6 @@ export declare class CSheet extends CEntity<Sheet, SheetUI> {
     getStateSheetCount(): Promise<void>;
     getSheetData(sheetId: number): Promise<SheetData>;
     getArchived(sheetId: number): Promise<SheetData>;
-    saveSheet(values: any, valuesWithBox: any): Promise<number>;
+    saveSheet(values: any, valuesWithBox: any): Promise<any>;
     action(id: number, flow: number, state: string, actionName: string): Promise<any>;
-    readonly statesCount: IObservableArray<StateCount>;
 }

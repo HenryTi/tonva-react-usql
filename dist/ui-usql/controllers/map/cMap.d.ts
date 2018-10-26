@@ -1,8 +1,7 @@
 /// <reference types="react" />
 import { CEntity, EntityUI } from "../VM";
-import { Map, Tuid, IdBox, Field } from "../../entities";
+import { Map, Tuid, BoxId, Field } from "../../entities";
 import { VMapMain } from "./vMain";
-import { VForm } from '../form';
 export interface MapKey {
     content: (values: any, x?: any) => JSX.Element;
     valuesContent?: (values: any, x?: any) => JSX.Element;
@@ -15,20 +14,18 @@ export interface MapUI extends EntityUI {
 export declare class MapItem {
     parent: MapItem;
     tuid: Tuid;
-    box: IdBox;
+    box: BoxId;
     isLeaf: boolean;
     keyIndex: number;
     children: MapItem[];
     values: any;
-    constructor(parent: MapItem, tuid: Tuid, box: IdBox, keyIndex: number);
+    constructor(parent: MapItem, tuid: Tuid, box: BoxId, keyIndex: number);
 }
 export declare class CMap extends CEntity<Map, MapUI> {
-    vForm: VForm;
     items: MapItem[];
     keyFields: Field[];
     keyUIs: MapKey[];
     protected internalStart(): Promise<void>;
-    private onValuesSubmit;
     private createItem;
     addItem(item: MapItem, row: any): MapItem;
     searchOnKey(keyField: Field, param: any): Promise<number>;
