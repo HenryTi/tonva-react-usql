@@ -7,6 +7,7 @@ import {Book} from './book';
 import {History} from './history';
 import { UsqApi } from 'tonva-tools';
 import { Map } from './map';
+import { Pending } from './pending';
 
 export interface Usq {
     getTuidContent(tuid:Tuid): React.StatelessComponent<any>;
@@ -41,6 +42,7 @@ export class Entities {
     private books: {[name:string]: Book} = {};
     private maps: {[name:string]: Map} = {};
     private histories: {[name:string]: History} = {};
+    private pendings: {[name:string]: Pending} = {};
     private cacheTimer: any;
     usq:Usq;
     usqApi: UsqApi;
@@ -60,6 +62,7 @@ export class Entities {
     book(name:string):Book {return this.books[name.toLowerCase()]}
     map(name:string):Map {return this.maps[name.toLowerCase()]}
     history(name:string):History {return this.histories[name.toLowerCase()]}
+    pending(name:string):Pending {return this.pendings[name.toLowerCase()]}
 
     sheetFromTypeId(typeId:number):Sheet {
         for (let i in this.sheets) {
@@ -75,6 +78,7 @@ export class Entities {
     bookArr: Book[] = [];
     mapArr: Map[] = [];
     historyArr: History[] = [];
+    pendingArr: Pending[] = [];
 
     async loadAccess() {
         let accesses = await this.usqApi.loadAccess();
@@ -199,6 +203,13 @@ export class Entities {
         this.historyArr.push(history);
         return history;
     }
+    newPending(name:string, id:number):Pending {
+        let pending = this.pendings[name];
+        if (pending !== undefined) return;
+        pending = this.pendings[name] = new Pending(this, name, id)
+        this.pendingArr.push(pending);
+        return pending;
+    }
     newSheet(name:string, id:number):Sheet {
         let sheet = this.sheets[name];
         if (sheet !== undefined) return sheet;
@@ -222,6 +233,7 @@ export class Entities {
             case 'map': this.newMap(name, id); break;
             case 'history': this.newHistory(name, id); break;
             case 'sheet':this.newSheet(name, id); break;
+            case 'pending': this.newPending(name, id); break;
         }
     }
     private fromObj(name:string, obj:any) {

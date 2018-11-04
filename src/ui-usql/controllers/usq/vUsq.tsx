@@ -13,16 +13,20 @@ export class VUsq extends View<CUsq> {
     protected actionLinks: CLink[];
     protected queryLinks: CLink[];
     protected bookLinks: CLink[];
+    protected historyLinks: CLink[];
+    protected pendingLinks: CLink[];
 
     constructor(cUsq: CUsq) {
         super(cUsq);
-        let {tuidArr, mapArr, sheetArr, actionArr, queryArr, bookArr} = cUsq.entities;
+        let {tuidArr, mapArr, sheetArr, actionArr, queryArr, bookArr, historyArr, pendingArr} = cUsq.entities;
         this.tuidLinks = tuidArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cTuidMain(v)));
         this.mapLinks = mapArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cMap(v)));
         this.sheetLinks = sheetArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cSheet(v)));
         this.actionLinks = actionArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cAction(v)));
         this.queryLinks = queryArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cQuery(v)));
         this.bookLinks = bookArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cBook(v)));
+        this.historyLinks = historyArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cHistory(v)));
+        this.pendingLinks = pendingArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cPending(v)));
     }
     protected isVisible(entity: Entity):boolean {
         return entity.sys !== true || this.isSysVisible;
@@ -67,6 +71,16 @@ export class VUsq extends View<CUsq> {
                 cn: 'mt-2 mb-4',
                 header: res.book || 'BOOK',
                 items: this.bookLinks
+            },
+            {
+                cn: 'mt-2 mb-4',
+                header: res.history || 'HISTORY',
+                items: this.historyLinks
+            },
+            {
+                cn: 'mt-2 mb-4',
+                header: res.pending || 'PENDING',
+                items: this.pendingLinks
             }
         ];
         return <>

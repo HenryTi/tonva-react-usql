@@ -1,7 +1,7 @@
 import * as React from 'react';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { UsqApi, Controller, UnitxApi, meInFrame, resLang, nav } from 'tonva-tools';
-import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
+import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq, History, Pending } from '../../entities';
 import { CLink } from '../link';
 import { CBook, BookUI } from '../book';
 import { CSheet, SheetUI } from '../sheet';
@@ -12,8 +12,10 @@ import { MapUI, CMap } from '../map';
 import { CEntity, EntityUI } from '../VM';
 import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
+import { CHistory, HistoryUI } from '../history';
+import { CPending, PendingUI } from '../pending';
 
-export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
+export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' | 'history' | 'pending';
 
 export interface UsqUI {
     CTuidMain?: typeof CTuidMain;
@@ -25,10 +27,16 @@ export interface UsqUI {
     CAction?: typeof CAction;
     CSheet?: typeof CSheet;
     CBook?: typeof CBook;
+    CHistory?: typeof CHistory;
+    CPending?: typeof CPending;
     tuid?: {[name:string]: TuidUI};
     sheet?: {[name:string]: SheetUI};
+    action?: {[name:string]: ActionUI};
     map?: {[name:string]: MapUI};
     query?: {[name:string]: QueryUI};
+    book?: {[name:string]: BookUI};    
+    history?: {[name:string]: HistoryUI};
+    pending?: {[name:string]: PendingUI};
     res?: any;
 }
 
@@ -48,6 +56,8 @@ export class CUsq extends Controller implements Usq {
     private CAction: typeof CAction;
     private CSheet: typeof CSheet;
     private CBook: typeof CBook;
+    private CHistory: typeof CHistory;
+    private CPending: typeof CPending;
 
     constructor(usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
         super(resLang(ui.res, nav.language, nav.culture));
@@ -58,6 +68,10 @@ export class CUsq extends Controller implements Usq {
         lowerPropertyName(ui.sheet);
         lowerPropertyName(ui.map);
         lowerPropertyName(ui.query);
+        lowerPropertyName(ui.action);
+        lowerPropertyName(ui.book);
+        lowerPropertyName(ui.history);
+        lowerPropertyName(ui.pending);
         this.ui = ui;
         this.CTuidMain = ui.CTuidMain || CTuidMain;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
@@ -68,6 +82,8 @@ export class CUsq extends Controller implements Usq {
         this.CAction = ui.CAction || CAction;
         this.CSheet = ui.CSheet || CSheet;
         this.CBook = ui.CBook || CBook;
+        this.CHistory = ui.CHistory || CHistory;
+        this.CPending = ui.CPending || CPending;
 
         let token = undefined;
         let usqOwner:string, usqName:string;
@@ -214,6 +230,14 @@ export class CUsq extends Controller implements Usq {
                 let map = this.entities.map(entityName);
                 if (map === undefined) return;
                 return this.cMap(map);
+            case 'history':
+                let history = this.entities.history(entityName);
+                if (history === undefined) return;
+                return this.cHistory(history);
+            case 'pending':
+                let pending = this.entities.pending(entityName);
+                if (pending === undefined) return;
+                return this.cPending(pending);
         }
     }
 
@@ -303,6 +327,26 @@ export class CUsq extends Controller implements Usq {
     get bookLinks() { 
         return this.entities.bookArr.filter(v => this.isVisible(v)).map(v => {
             return this.link(this.cBook(v))
+        });
+    }
+    
+    cHistory(history:History):CHistory {
+        let {ui, res} = this.getUI<History, HistoryUI>(history);
+        return new (ui && ui.CHistory || this.CHistory)(this, history, ui, res);
+    }
+    get historyLinks() { 
+        return this.entities.historyArr.filter(v => this.isVisible(v)).map(v => {
+            return this.link(this.cHistory(v))
+        });
+    }
+    
+    cPending(pending:Pending):CPending {
+        let {ui, res} = this.getUI<Pending, PendingUI>(pending);
+        return new (ui && ui.CPending || this.CPending)(this, pending, ui, res);
+    }
+    get pendingLinks() { 
+        return this.entities.pendingArr.filter(v => this.isVisible(v)).map(v => {
+            return this.link(this.cPending(v))
         });
     }
     
