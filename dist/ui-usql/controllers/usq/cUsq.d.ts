@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { Controller } from 'tonva-tools';
-import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq } from '../../entities';
+import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq, History, Pending } from '../../entities';
 import { CLink } from '../link';
-import { CBook } from '../book';
+import { CBook, BookUI } from '../book';
 import { CSheet, SheetUI } from '../sheet';
-import { CAction } from '../action';
+import { ActionUI, CAction } from '../action';
 import { QueryUI, CQuery, CQuerySelect } from '../query';
 import { CTuidMain, TuidUI, CTuidInfo, CTuidSelect } from '../tuid';
 import { MapUI, CMap } from '../map';
 import { CEntity, EntityUI } from '../VM';
 import { VUsq } from './vUsq';
-export declare type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map';
+import { CHistory, HistoryUI } from '../history';
+import { CPending, PendingUI } from '../pending';
+export declare type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' | 'history' | 'pending';
 export interface UsqUI {
     CTuidMain?: typeof CTuidMain;
     CTuidSelect?: typeof CTuidSelect;
@@ -21,17 +23,31 @@ export interface UsqUI {
     CAction?: typeof CAction;
     CSheet?: typeof CSheet;
     CBook?: typeof CBook;
+    CHistory?: typeof CHistory;
+    CPending?: typeof CPending;
     tuid?: {
         [name: string]: TuidUI;
     };
     sheet?: {
         [name: string]: SheetUI;
     };
+    action?: {
+        [name: string]: ActionUI;
+    };
     map?: {
         [name: string]: MapUI;
     };
     query?: {
         [name: string]: QueryUI;
+    };
+    book?: {
+        [name: string]: BookUI;
+    };
+    history?: {
+        [name: string]: HistoryUI;
+    };
+    pending?: {
+        [name: string]: PendingUI;
     };
     res?: any;
 }
@@ -46,6 +62,8 @@ export declare class CUsq extends Controller implements Usq {
     private CAction;
     private CSheet;
     private CBook;
+    private CHistory;
+    private CPending;
     constructor(usq: string, appId: number, usqId: number, access: string, ui: UsqUI);
     protected internalStart(): Promise<void>;
     usq: string;
@@ -78,6 +96,10 @@ export declare class CUsq extends Controller implements Usq {
     readonly queryLinks: CLink[];
     cBook(book: Book): CBook;
     readonly bookLinks: CLink[];
+    cHistory(history: History): CHistory;
+    readonly historyLinks: CLink[];
+    cPending(pending: Pending): CPending;
+    readonly pendingLinks: CLink[];
     cMap(map: Map): CMap;
     readonly mapLinks: CLink[];
     getTuidContent(tuid: Tuid): React.StatelessComponent<any>;

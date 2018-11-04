@@ -17,6 +17,8 @@ import { CTuidMain, CTuidInfo, CTuidSelect } from '../tuid';
 import { CMap } from '../map';
 import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
+import { CHistory } from '../history';
+import { CPending } from '../pending';
 function lowerPropertyName(entities) {
     if (entities === undefined)
         return;
@@ -34,6 +36,10 @@ export class CUsq extends Controller {
         lowerPropertyName(ui.sheet);
         lowerPropertyName(ui.map);
         lowerPropertyName(ui.query);
+        lowerPropertyName(ui.action);
+        lowerPropertyName(ui.book);
+        lowerPropertyName(ui.history);
+        lowerPropertyName(ui.pending);
         this.ui = ui;
         this.CTuidMain = ui.CTuidMain || CTuidMain;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
@@ -44,6 +50,8 @@ export class CUsq extends Controller {
         this.CAction = ui.CAction || CAction;
         this.CSheet = ui.CSheet || CSheet;
         this.CBook = ui.CBook || CBook;
+        this.CHistory = ui.CHistory || CHistory;
+        this.CPending = ui.CPending || CPending;
         let token = undefined;
         let usqOwner, usqName;
         let p = usq.split('/');
@@ -193,6 +201,16 @@ export class CUsq extends Controller {
                 if (map === undefined)
                     return;
                 return this.cMap(map);
+            case 'history':
+                let history = this.entities.history(entityName);
+                if (history === undefined)
+                    return;
+                return this.cHistory(history);
+            case 'pending':
+                let pending = this.entities.pending(entityName);
+                if (pending === undefined)
+                    return;
+                return this.cPending(pending);
         }
     }
     linkFromName(entityType, entityName) {
@@ -275,6 +293,24 @@ export class CUsq extends Controller {
     get bookLinks() {
         return this.entities.bookArr.filter(v => this.isVisible(v)).map(v => {
             return this.link(this.cBook(v));
+        });
+    }
+    cHistory(history) {
+        let { ui, res } = this.getUI(history);
+        return new (ui && ui.CHistory || this.CHistory)(this, history, ui, res);
+    }
+    get historyLinks() {
+        return this.entities.historyArr.filter(v => this.isVisible(v)).map(v => {
+            return this.link(this.cHistory(v));
+        });
+    }
+    cPending(pending) {
+        let { ui, res } = this.getUI(pending);
+        return new (ui && ui.CPending || this.CPending)(this, pending, ui, res);
+    }
+    get pendingLinks() {
+        return this.entities.pendingArr.filter(v => this.isVisible(v)).map(v => {
+            return this.link(this.cPending(v));
         });
     }
     cMap(map) {

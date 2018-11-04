@@ -7,6 +7,7 @@ import { Book } from './book';
 import { History } from './history';
 import { UsqApi } from 'tonva-tools';
 import { Map } from './map';
+import { Pending } from './pending';
 export interface Usq {
     getTuidContent(tuid: Tuid): React.StatelessComponent<any>;
     showTuid(tuid: Tuid, id: number): Promise<void>;
@@ -37,6 +38,7 @@ export declare class Entities {
     private books;
     private maps;
     private histories;
+    private pendings;
     private cacheTimer;
     usq: Usq;
     usqApi: UsqApi;
@@ -50,6 +52,7 @@ export declare class Entities {
     book(name: string): Book;
     map(name: string): Map;
     history(name: string): History;
+    pending(name: string): Pending;
     sheetFromTypeId(typeId: number): Sheet;
     tuidArr: TuidMain[];
     actionArr: Action[];
@@ -58,6 +61,7 @@ export declare class Entities {
     bookArr: Book[];
     mapArr: Map[];
     historyArr: History[];
+    pendingArr: Pending[];
     loadAccess(): Promise<void>;
     loadEntities(): Promise<void>;
     private buildEntities;
@@ -73,6 +77,7 @@ export declare class Entities {
     newBook(name: string, id: number): Book;
     newMap(name: string, id: number): Map;
     newHistory(name: string, id: number): History;
+    newPending(name: string, id: number): Pending;
     newSheet(name: string, id: number): Sheet;
     private fromType;
     private fromObj;

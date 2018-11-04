@@ -14,6 +14,7 @@ import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
 import { Map } from './map';
+import { Pending } from './pending';
 export class Entities {
     constructor(usq, usqApi, appId) {
         this.tuids = {};
@@ -23,6 +24,7 @@ export class Entities {
         this.books = {};
         this.maps = {};
         this.histories = {};
+        this.pendings = {};
         this.tuidArr = [];
         this.actionArr = [];
         this.sheetArr = [];
@@ -30,6 +32,7 @@ export class Entities {
         this.bookArr = [];
         this.mapArr = [];
         this.historyArr = [];
+        this.pendingArr = [];
         this.loadIds = () => {
             this.clearCacheTimer();
             for (let i in this.tuids) {
@@ -48,6 +51,7 @@ export class Entities {
     book(name) { return this.books[name.toLowerCase()]; }
     map(name) { return this.maps[name.toLowerCase()]; }
     history(name) { return this.histories[name.toLowerCase()]; }
+    pending(name) { return this.pendings[name.toLowerCase()]; }
     sheetFromTypeId(typeId) {
         for (let i in this.sheets) {
             let sheet = this.sheets[i];
@@ -182,6 +186,14 @@ export class Entities {
         this.historyArr.push(history);
         return history;
     }
+    newPending(name, id) {
+        let pending = this.pendings[name];
+        if (pending !== undefined)
+            return;
+        pending = this.pendings[name] = new Pending(this, name, id);
+        this.pendingArr.push(pending);
+        return pending;
+    }
     newSheet(name, id) {
         let sheet = this.sheets[name];
         if (sheet !== undefined)
@@ -219,6 +231,9 @@ export class Entities {
                 break;
             case 'sheet':
                 this.newSheet(name, id);
+                break;
+            case 'pending':
+                this.newPending(name, id);
                 break;
         }
     }

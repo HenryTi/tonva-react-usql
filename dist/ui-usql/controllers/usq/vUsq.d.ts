@@ -11,6 +11,8 @@ export declare class VUsq extends View<CUsq> {
     protected actionLinks: CLink[];
     protected queryLinks: CLink[];
     protected bookLinks: CLink[];
+    protected historyLinks: CLink[];
+    protected pendingLinks: CLink[];
     constructor(cUsq: CUsq);
     protected isVisible(entity: Entity): boolean;
     render(param?: any): JSX.Element;
