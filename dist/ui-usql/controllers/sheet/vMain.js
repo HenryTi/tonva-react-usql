@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { Badge } from 'reactstrap';
@@ -34,9 +42,11 @@ export class VSheetMain extends VEntity {
                         this.label), none: "[ \u65E0 ]", items: list, item: { render: this.renderState, onClick: this.sheetStateClick } }));
         });
     }
-    async showEntry() {
-        await this.controller.getStateSheetCount();
-        this.openPage(this.view);
+    showEntry() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.controller.getStateSheetCount();
+            this.openPage(this.view);
+        });
     }
 }
 //# sourceMappingURL=vMain.js.map

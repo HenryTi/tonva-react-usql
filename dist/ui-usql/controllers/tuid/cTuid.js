@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import _ from 'lodash';
 import { CEntity } from "../VM";
 import { VTuidMain } from './vTuidMain';
@@ -10,16 +18,20 @@ export class CTuid extends CEntity {
     buildPageItems() {
         return new TuidPageItems(this.entity.owner || this.entity);
     }
-    async searchMain(key) {
-        if (this.PageItems === undefined) {
-            this.PageItems = this.buildPageItems();
-        }
-        if (key !== undefined)
-            await this.PageItems.first(key);
+    searchMain(key) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.PageItems === undefined) {
+                this.PageItems = this.buildPageItems();
+            }
+            if (key !== undefined)
+                yield this.PageItems.first(key);
+        });
     }
-    async getDivItems(ownerId) {
-        let ret = await this.entity.searchArr(ownerId, undefined, 0, 1000);
-        return ret;
+    getDivItems(ownerId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.entity.searchArr(ownerId, undefined, 0, 1000);
+            return ret;
+        });
     }
 }
 export class CTuidMain extends CTuid {
@@ -53,32 +65,38 @@ export class CTuidMain extends CTuid {
     get VTuidMain() { return VTuidMain; }
     get VTuidEdit() { return VTuidEdit; }
     get VTuidList() { return VTuidMainList; }
-    async internalStart() {
-        await this.showVPage(this.VTuidMain);
+    internalStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.showVPage(this.VTuidMain);
+        });
     }
-    async onEvent(type, value) {
-        let v;
-        switch (type) {
-            default: return;
-            case 'new':
-                v = this.VTuidEdit;
-                break;
-            case 'list':
-                v = this.VTuidList;
-                break;
-            case 'edit':
-                await this.edit(value);
-                return;
-            case 'item-changed':
-                this.itemChanged(value);
-                return;
-        }
-        await this.showVPage(v, value);
+    onEvent(type, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let v;
+            switch (type) {
+                default: return;
+                case 'new':
+                    v = this.VTuidEdit;
+                    break;
+                case 'list':
+                    v = this.VTuidList;
+                    break;
+                case 'edit':
+                    yield this.edit(value);
+                    return;
+                case 'item-changed':
+                    this.itemChanged(value);
+                    return;
+            }
+            yield this.showVPage(v, value);
+        });
     }
-    async edit(id) {
-        let ret = await this.entity.load(id);
-        let v = this.VTuidEdit;
-        await this.showVPage(v, ret);
+    edit(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.entity.load(id);
+            let v = this.VTuidEdit;
+            yield this.showVPage(v, ret);
+        });
     }
     itemChanged({ id, values }) {
         if (this.PageItems === undefined)
@@ -91,18 +109,25 @@ export class CTuidMain extends CTuid {
     }
 }
 export class CTuidDiv extends CTuid {
-    async internalStart() {
-        alert('tuid div: ' + this.entity.name);
+    internalStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+            alert('tuid div: ' + this.entity.name);
+        });
     }
 }
 export class CTuidSelect extends CTuid {
-    async internalStart(param) {
-        await this.showVPage(this.VTuidSelect, param);
+    internalStart(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.showVPage(this.VTuidSelect, param);
+        });
     }
-    async beforeStart() {
-        await super.beforeStart();
-        if (this.PageItems !== undefined)
-            this.PageItems.reset();
+    beforeStart() {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("beforeStart").call(this);
+            if (this.PageItems !== undefined)
+                this.PageItems.reset();
+        });
     }
     get VTuidSelect() { return VTuidSelect; }
     idFromItem(item) {
@@ -110,9 +135,11 @@ export class CTuidSelect extends CTuid {
     }
 }
 export class CTuidInfo extends CTuid {
-    async internalStart(id) {
-        let data = await this.entity.load(id);
-        await this.showVPage(this.VTuidInfo, data);
+    internalStart(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let data = yield this.entity.load(id);
+            yield this.showVPage(this.VTuidInfo, data);
+        });
     }
     get VTuidInfo() { return VTuidInfo; }
 }

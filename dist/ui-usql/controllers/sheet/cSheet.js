@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { observable } from "mobx";
 import { CEntity } from "../VM";
 import { VSheetMain } from "./vMain";
@@ -13,14 +21,14 @@ export class CSheet extends CEntity {
     constructor() {
         super(...arguments);
         this.statesCount = observable.array([], { deep: true });
-        this.onSave = async (values, valuesWithBox) => {
+        this.onSave = (values, valuesWithBox) => __awaiter(this, void 0, void 0, function* () {
             //let values = this.vForm.getValues();
             //let ret = await this.controller.saveSheet(values, this.vForm.values);
-            let ret = await this.saveSheet(values, valuesWithBox);
+            let ret = yield this.saveSheet(values, valuesWithBox);
             this.ceasePage();
             //this.openPage(this.finishedPage);
-            await this.showSaved(ret);
-        };
+            yield this.showSaved(ret);
+        });
         /*
         async getStateSheets(state:string, pageStart:number, pageSize:number):Promise<void> {
             this.curState = state;
@@ -31,14 +39,18 @@ export class CSheet extends CEntity {
             this.pageStateItems.items.spliceWithArray(0, 0, ret);
         }*/
     }
-    async internalStart() {
-        this.pageStateItems = this.entity.createPageStateItems();
-        await this.showVPage(this.VSheetMain);
+    internalStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.pageStateItems = this.entity.createPageStateItems();
+            yield this.showVPage(this.VSheetMain);
+        });
     }
-    async onMessage(msg) {
-        let { type, body, from, to, push } = msg;
-        if (type === 'sheet')
-            this.onSheet(from, to, body);
+    onMessage(msg) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { type, body, from, to, push } = msg;
+            if (type === 'sheet')
+                this.onSheet(from, to, body);
+        });
     }
     onSheet(from, to, sheetData) {
         /*
@@ -115,51 +127,64 @@ export class CSheet extends CEntity {
     get VArchived() { return VArchived; }
     get VSheetList() { return VSheetList; }
     get VSheetAction() { return this.ui.sheetAction || VSheetAction; }
-    async onEvent(type, value) {
-        let c;
-        switch (type) {
-            default: return;
-            case 'new':
-                c = this.VSheetNew;
-                break;
-            case 'schema':
-                c = this.VSheetSchema;
-                break;
-            case 'archives':
-                c = this.VArchives;
-                break;
-            case 'state':
-                this.curState = value.state;
-                c = this.VSheetList;
-                break;
-            case 'archived':
-                await this.showArchived(value);
-                return;
-            case 'action':
-                await this.showAction(value);
-                return;
-        }
-        await this.showVPage(c, value);
+    onEvent(type, value) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let c;
+            switch (type) {
+                default: return;
+                case 'new':
+                    c = this.VSheetNew;
+                    break;
+                case 'schema':
+                    c = this.VSheetSchema;
+                    break;
+                case 'archives':
+                    c = this.VArchives;
+                    break;
+                case 'state':
+                    this.curState = value.state;
+                    c = this.VSheetList;
+                    break;
+                case 'archived':
+                    yield this.showArchived(value);
+                    return;
+                case 'action':
+                    yield this.showAction(value);
+                    return;
+            }
+            yield this.showVPage(c, value);
+        });
     }
-    async startSheet(sheetId) {
-        await super.beforeStart();
-        await this.onEvent('action', sheetId);
+    startSheet(sheetId) {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("beforeStart").call(this);
+            yield this.onEvent('action', sheetId);
+        });
     }
-    async showAction(sheetId) {
-        let sheetData = await this.getSheetData(sheetId);
-        await this.showVPage(this.VSheetAction, sheetData);
+    showAction(sheetId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sheetData = yield this.getSheetData(sheetId);
+            yield this.showVPage(this.VSheetAction, sheetData);
+        });
     }
-    async editSheet(sheetData) {
-        //alert('修改单据：程序正在设计中');
-        let values = await this.vCall(this.VSheetEdit, sheetData);
-        return values;
+    editSheet(sheetData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //alert('修改单据：程序正在设计中');
+            let values = yield this.vCall(this.VSheetEdit, sheetData);
+            return values;
+        });
     }
-    async showArchived(inBrief) {
-        let sheetData = await this.getArchived(inBrief.id);
-        await this.showVPage(this.VArchived, sheetData);
+    showArchived(inBrief) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sheetData = yield this.getArchived(inBrief.id);
+            yield this.showVPage(this.VArchived, sheetData);
+        });
     }
-    async showSaved(sheetData) {
-        await this.showVPage(this.VSheetSaved, sheetData);
+    showSaved(sheetData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.showVPage(this.VSheetSaved, sheetData);
+        });
     }
     getStateUI(stateName) {
         let { states } = this.res;
@@ -185,27 +210,37 @@ export class CSheet extends CEntity {
         let action = actions[actionName];
         return (action && action.label) || actionName;
     }
-    async getStateSheetCount() {
-        this.statesCount.clear();
-        let statesCount = await this.entity.stateSheetCount();
-        this.statesCount.splice(0, 0, ...statesCount);
+    getStateSheetCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.statesCount.clear();
+            let statesCount = yield this.entity.stateSheetCount();
+            this.statesCount.splice(0, 0, ...statesCount);
+        });
     }
-    async getSheetData(sheetId) {
-        return await this.entity.getSheet(sheetId);
+    getSheetData(sheetId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.entity.getSheet(sheetId);
+        });
     }
-    async getArchived(sheetId) {
-        return await this.entity.getArchive(sheetId);
+    getArchived(sheetId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.entity.getArchive(sheetId);
+        });
     }
-    async saveSheet(values, valuesWithBox) {
-        let { sheetTitle } = this.ui;
-        let disc = sheetTitle === undefined ? this.label : sheetTitle(valuesWithBox, this.x);
-        let ret = await this.entity.save(disc, values);
-        //let {id, state} = ret;
-        //if (id > 0) this.changeStateCount(state, 1);
-        return ret;
+    saveSheet(values, valuesWithBox) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { sheetTitle } = this.ui;
+            let disc = sheetTitle === undefined ? this.label : sheetTitle(valuesWithBox, this.x);
+            let ret = yield this.entity.save(disc, values);
+            //let {id, state} = ret;
+            //if (id > 0) this.changeStateCount(state, 1);
+            return ret;
+        });
     }
-    async action(id, flow, state, actionName) {
-        return await this.entity.action(id, flow, state, actionName);
+    action(id, flow, state, actionName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.entity.action(id, flow, state, actionName);
+        });
     }
 }
 //# sourceMappingURL=cSheet.js.map

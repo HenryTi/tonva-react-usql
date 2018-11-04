@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { FA } from 'tonva-react-form';
@@ -5,16 +13,16 @@ import { VSheet } from "./vSheet";
 export class VSheetSaved extends VSheet {
     constructor() {
         super(...arguments);
-        this.restart = async () => {
+        this.restart = () => __awaiter(this, void 0, void 0, function* () {
             this.ceasePage();
-            await this.event('new');
-        };
-        this.actionClick = async (action) => {
+            yield this.event('new');
+        });
+        this.actionClick = (action) => __awaiter(this, void 0, void 0, function* () {
             this.ceasePage();
             let { id, flow, state } = this.brief;
-            let res = await this.controller.action(id, flow, state, action.name);
+            let res = yield this.controller.action(id, flow, state, action.name);
             this.openPage(this.acted);
-        };
+        });
         this.buttons = React.createElement(React.Fragment, null,
             React.createElement("button", { className: "btn btn-outline-primary mr-3", onClick: this.restart }, "\u7EE7\u7EED\u5F00\u5355"),
             React.createElement("button", { className: "btn btn-outline-info", onClick: () => this.backPage() }, "\u8FD4\u56DE"));
@@ -41,9 +49,11 @@ export class VSheetSaved extends VSheet {
                     React.createElement("div", { className: "p-3" }, this.buttons)));
         };
     }
-    async showEntry(brief) {
-        this.brief = brief;
-        this.openPage(this.view);
+    showEntry(brief) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.brief = brief;
+            this.openPage(this.view);
+        });
     }
 }
 //# sourceMappingURL=vSaved.js.map

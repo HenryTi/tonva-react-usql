@@ -58,7 +58,9 @@ export declare class Entities {
     bookArr: Book[];
     mapArr: Map[];
     historyArr: History[];
-    load(): Promise<void>;
+    loadAccess(): Promise<void>;
+    loadEntities(): Promise<void>;
+    private buildEntities;
     getTuid(name: string, arr?: string, tuidUrl?: string): Tuid;
     cacheTuids(defer: number): void;
     private clearCacheTimer;

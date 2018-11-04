@@ -1,10 +1,17 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../VM';
-import { PureJSONContent } from '../form/viewModel';
 export class VMapMain extends VEntity {
     constructor() {
         super(...arguments);
@@ -36,7 +43,8 @@ export class VMapMain extends VEntity {
             if (isLeaf === true) {
                 content = undefined; //<div className="ml-5">leaf</div>;
                 if (values) {
-                    valuesView = (valuesContent || PureJSONContent)(values, this.x);
+                    valuesView = null; // 现在不显示values content了
+                    //valuesView = (valuesContent || PureJSONContent)(values, this.x);
                 }
             }
             else {
@@ -49,8 +57,10 @@ export class VMapMain extends VEntity {
                 content);
         });
     }
-    async showEntry(param) {
-        this.openPage(this.view);
+    showEntry(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.openPage(this.view);
+        });
     }
     get view() {
         return () => React.createElement(Page, { header: this.label },

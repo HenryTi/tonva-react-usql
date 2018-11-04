@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 //import {UsqlApi} from './usqlApi';
 import { TuidMain } from './tuid';
 import { Action } from './action';
@@ -6,9 +14,6 @@ import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
 import { Map } from './map';
-// api: apiOwner/apiName
-// access: acc1; acc2
-//const entitiesCollection: {[api:string]: Entities} = {};
 export class Entities {
     constructor(usq, usqApi, appId) {
         this.tuids = {};
@@ -50,9 +55,20 @@ export class Entities {
                 return sheet;
         }
     }
-    async load() {
-        let accesses = await this.usqApi.loadAccess();
-        let { access, tuids } = accesses;
+    loadAccess() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let accesses = yield this.usqApi.loadAccess();
+            this.buildEntities(accesses);
+        });
+    }
+    loadEntities() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let accesses = yield this.usqApi.loadEntities();
+            this.buildEntities(accesses);
+        });
+    }
+    buildEntities(entities) {
+        let { access, tuids } = entities;
         this.buildTuids(tuids);
         this.buildAccess(access);
     }

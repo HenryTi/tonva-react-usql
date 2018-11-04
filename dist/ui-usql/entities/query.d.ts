@@ -9,7 +9,6 @@ export declare class Query extends Entity {
     private params;
     private more;
     private startField;
-    protected queryApiName: string;
     list: IObservableArray;
     returns: ArrFields[];
     isPaged: boolean;

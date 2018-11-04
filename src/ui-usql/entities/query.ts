@@ -10,7 +10,6 @@ export class Query extends Entity {
     private params:any;
     private more: boolean;
     private startField: Field;
-    protected queryApiName = 'page';
     //@observable loaded: boolean;
     @observable list:IObservableArray; // = observable.array([], {deep: false});
     returns: ArrFields[];
@@ -45,7 +44,7 @@ export class Query extends Entity {
             }
         }
         await this.loadSchema();
-        let res = await this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize+1, this.params);
+        let res = await this.tvApi.page(this.name, pageStart, this.pageSize+1, this.params);
         let data = await this.unpackReturns(res);
         this.list = observable.array([], {deep: false});
         let page = data['$page'] as any[];
@@ -67,7 +66,7 @@ export class Query extends Entity {
 
     async page(params:any, pageStart:any, pageSize:number):Promise<any[]> {
         await this.loadSchema();
-        let res = await this.tvApi.queryPage(this.queryApiName, this.name, pageStart, pageSize+1, params);
+        let res = await this.tvApi.page(this.name, pageStart, pageSize+1, params);
         let data = await this.unpackReturns(res);
         return data.$page;// as any[];
     }

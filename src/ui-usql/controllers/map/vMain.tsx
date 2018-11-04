@@ -41,7 +41,8 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
         if (isLeaf === true) {
             content = undefined; //<div className="ml-5">leaf</div>;
             if (values) {
-                valuesView = (valuesContent || PureJSONContent)(values, this.x);
+                valuesView = null; // 现在不显示values content了
+                //valuesView = (valuesContent || PureJSONContent)(values, this.x);
             }
         }
         else {

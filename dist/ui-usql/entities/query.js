@@ -4,13 +4,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { observable } from 'mobx';
 import { Entity } from './entity';
 export class Query extends Entity {
-    constructor() {
-        super(...arguments);
-        this.queryApiName = 'page';
-    }
     get typeName() { return 'query'; }
     setSchema(schema) {
         super.setSchema(schema);
@@ -26,54 +30,60 @@ export class Query extends Entity {
         this.list = undefined;
     }
     get hasMore() { return this.more; }
-    async loadPage() {
-        if (this.pageSize === undefined) {
-            throw 'call resetPage(size:number, params:any) first';
-        }
-        let pageStart;
-        if (this.pageStart !== undefined) {
-            switch (this.startField.type) {
-                default:
-                    pageStart = this.pageStart;
-                    break;
-                case 'date':
-                case 'time':
-                case 'datetime':
-                    pageStart = this.pageStart.getTime();
-                    break;
+    loadPage() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.pageSize === undefined) {
+                throw 'call resetPage(size:number, params:any) first';
             }
-        }
-        await this.loadSchema();
-        let res = await this.tvApi.queryPage(this.queryApiName, this.name, pageStart, this.pageSize + 1, this.params);
-        let data = await this.unpackReturns(res);
-        this.list = observable.array([], { deep: false });
-        let page = data['$page'];
-        if (page !== undefined) {
-            if (page.length > this.pageSize) {
-                this.more = true;
-                page.pop();
-                let ret = this.returns.find(r => r.name === '$page');
-                this.startField = ret.fields[0];
-                this.pageStart = page[page.length - 1][this.startField.name];
+            let pageStart;
+            if (this.pageStart !== undefined) {
+                switch (this.startField.type) {
+                    default:
+                        pageStart = this.pageStart;
+                        break;
+                    case 'date':
+                    case 'time':
+                    case 'datetime':
+                        pageStart = this.pageStart.getTime();
+                        break;
+                }
             }
-            else {
-                this.more = false;
+            yield this.loadSchema();
+            let res = yield this.tvApi.page(this.name, pageStart, this.pageSize + 1, this.params);
+            let data = yield this.unpackReturns(res);
+            this.list = observable.array([], { deep: false });
+            let page = data['$page'];
+            if (page !== undefined) {
+                if (page.length > this.pageSize) {
+                    this.more = true;
+                    page.pop();
+                    let ret = this.returns.find(r => r.name === '$page');
+                    this.startField = ret.fields[0];
+                    this.pageStart = page[page.length - 1][this.startField.name];
+                }
+                else {
+                    this.more = false;
+                }
+                this.list.push(...page);
             }
-            this.list.push(...page);
-        }
-        //this.loaded = true;
+            //this.loaded = true;
+        });
     }
-    async page(params, pageStart, pageSize) {
-        await this.loadSchema();
-        let res = await this.tvApi.queryPage(this.queryApiName, this.name, pageStart, pageSize + 1, params);
-        let data = await this.unpackReturns(res);
-        return data.$page; // as any[];
+    page(params, pageStart, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            let res = yield this.tvApi.page(this.name, pageStart, pageSize + 1, params);
+            let data = yield this.unpackReturns(res);
+            return data.$page; // as any[];
+        });
     }
-    async query(params) {
-        await this.loadSchema();
-        let res = await this.tvApi.query(this.name, params);
-        let data = await this.unpackReturns(res);
-        return data;
+    query(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            let res = yield this.tvApi.query(this.name, params);
+            let data = yield this.unpackReturns(res);
+            return data;
+        });
     }
 }
 __decorate([

@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { List, FA } from 'tonva-react-form';
@@ -7,18 +15,18 @@ import { DefaultRow } from './defaultRow';
 export class VQueryMain extends VEntity {
     constructor() {
         super(...arguments);
-        this.onSubmit = async () => {
+        this.onSubmit = () => __awaiter(this, void 0, void 0, function* () {
             let params = this.vForm.getValues();
             if (this.entity.isPaged === true) {
-                await this.entity.resetPage(30, params);
-                await this.entity.loadPage();
+                yield this.entity.resetPage(30, params);
+                yield this.entity.loadPage();
                 this.replacePage(this.pageResult);
             }
             else {
-                let data = await this.entity.query(params);
+                let data = yield this.entity.query(params);
                 this.replacePage(this.queryResult, data);
             }
-        };
+        });
         this.again = () => {
             this.vForm.reset();
             this.replacePage(this.view);
@@ -43,11 +51,13 @@ export class VQueryMain extends VEntity {
                 React.createElement("pre", null, JSON.stringify(result, undefined, '\t')));
         });
     }
-    async showEntry(param) {
-        this.vForm = this.createForm(this.onSubmit, param);
-        let { row, queryRow } = this.ui;
-        this.row = queryRow || row || DefaultRow;
-        this.openPage(this.view);
+    showEntry(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.vForm = this.createForm(this.onSubmit, param);
+            let { row, queryRow } = this.ui;
+            this.row = queryRow || row || DefaultRow;
+            this.openPage(this.view);
+        });
     }
     renderExtra() {
         return;

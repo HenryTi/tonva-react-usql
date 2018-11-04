@@ -33,11 +33,6 @@ export interface ArrFields {
     order?: string;
 }
 
-// api: apiOwner/apiName
-// access: acc1; acc2
-
-//const entitiesCollection: {[api:string]: Entities} = {};
-
 export class Entities {
     private tuids: {[name:string]: TuidMain} = {};
     private actions: {[name:string]: Action} = {};
@@ -81,9 +76,18 @@ export class Entities {
     mapArr: Map[] = [];
     historyArr: History[] = [];
 
-    async load() {
+    async loadAccess() {
         let accesses = await this.usqApi.loadAccess();
-        let {access, tuids} = accesses;
+        this.buildEntities(accesses);
+    }
+
+    async loadEntities() {
+        let accesses = await this.usqApi.loadEntities();
+        this.buildEntities(accesses);
+    }
+
+    private buildEntities(entities:any) {
+        let {access, tuids} = entities;
         this.buildTuids(tuids);
         this.buildAccess(access);
     }
@@ -282,17 +286,4 @@ export class Entities {
             this.buildFieldTuid(fields, mainFields);
         }
     }
-    /*
-    schemaRefTuids(tuidSchemas:any[]) {
-        if (tuidSchemas === undefined) return;
-        for (let schema of tuidSchemas) {
-            let {tuids, name} = schema;
-            let tuid = this.tuids[name];
-            if (tuid === undefined) {
-                continue;
-            }
-            if (tuid.schema === undefined) tuid.schema = schema;
-            this.schemaRefTuids(tuids);
-        }
-    }*/
 }

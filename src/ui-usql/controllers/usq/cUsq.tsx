@@ -32,8 +32,12 @@ export interface UsqUI {
     res?: any;
 }
 
+function lowerPropertyName(entities: {[name:string]: EntityUI}) {
+    if (entities === undefined) return;
+    for (let i in entities) entities[i.toLowerCase()] = entities[i];
+}
+
 export class CUsq extends Controller implements Usq {
-    private access:string;
     private ui:any;
     private CTuidMain: typeof CTuidMain;
     private CTuidSelect: typeof CTuidSelect;
@@ -49,9 +53,12 @@ export class CUsq extends Controller implements Usq {
         super(resLang(ui.res, nav.language, nav.culture));
         this.usq = usq;
         this.id = usqId;
+        // 每一个ui都转换成小写的key的版本
+        lowerPropertyName(ui.tuid);
+        lowerPropertyName(ui.sheet);
+        lowerPropertyName(ui.map);
+        lowerPropertyName(ui.query);
         this.ui = ui;
-        this.access = access;
-
         this.CTuidMain = ui.CTuidMain || CTuidMain;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
         this.CTuidInfo = ui.CTuidInfo || CTuidInfo;
@@ -110,9 +117,13 @@ export class CUsq extends Controller implements Usq {
     res: any;
     entities:Entities;
 
+    protected async loadEntites() {
+        await this.entities.loadAccess();
+    }
+
     async loadSchema() {
         try {
-            await this.entities.load();
+            await this.loadEntites();
             if (this.id === undefined) this.id = this.entities.usqId;
 
             for (let i in this.ui) {
@@ -203,8 +214,8 @@ export class CUsq extends Controller implements Usq {
                 let map = this.entities.map(entityName);
                 if (map === undefined) return;
                 return this.cMap(map);
-            }
         }
+    }
 
     linkFromName(entityType:EntityType, entityName:string) {
         return this.link(this.cFromName(entityType, entityName));

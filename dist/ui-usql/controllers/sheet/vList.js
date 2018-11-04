@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR, EasyDate } from 'tonva-react-form';
@@ -5,11 +13,11 @@ import { VEntity } from '../VM';
 export class VSheetList extends VEntity {
     constructor() {
         super(...arguments);
-        this.rowClick = async (brief) => {
+        this.rowClick = (brief) => __awaiter(this, void 0, void 0, function* () {
             if (brief.processing === 1)
                 return;
             this.event('action', brief.id);
-        };
+        });
         this.onScrollBottom = () => {
             console.log('onScrollBottom');
             this.controller.pageStateItems.more();
@@ -34,13 +42,15 @@ export class VSheetList extends VEntity {
                 React.createElement(List, { items: pageStateItems, item: { render: this.renderRow, onClick: this.rowClick } }));
         };
     }
-    async showEntry(item) {
-        this.row = this.ui.listRow || this.rowContent;
-        this.stateName = item.state;
-        this.stateLabel = this.controller.getStateLabel(this.stateName);
-        //await this.controller.getStateSheets(this.stateName, 0, 10);
-        await this.controller.pageStateItems.first(this.stateName);
-        this.openPage(this.view);
+    showEntry(item) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.row = this.ui.listRow || this.rowContent;
+            this.stateName = item.state;
+            this.stateLabel = this.controller.getStateLabel(this.stateName);
+            //await this.controller.getStateSheets(this.stateName, 0, 10);
+            yield this.controller.pageStateItems.first(this.stateName);
+            this.openPage(this.view);
+        });
     }
 }
 //# sourceMappingURL=vList.js.map

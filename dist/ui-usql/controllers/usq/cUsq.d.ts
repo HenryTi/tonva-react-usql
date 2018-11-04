@@ -36,7 +36,6 @@ export interface UsqUI {
     res?: any;
 }
 export declare class CUsq extends Controller implements Usq {
-    private access;
     private ui;
     private CTuidMain;
     private CTuidSelect;
@@ -53,6 +52,7 @@ export declare class CUsq extends Controller implements Usq {
     id: number;
     res: any;
     entities: Entities;
+    protected loadEntites(): Promise<void>;
     loadSchema(): Promise<void>;
     getTuid(name: string): TuidMain;
     getQuerySearch(name: string): Promise<Query>;

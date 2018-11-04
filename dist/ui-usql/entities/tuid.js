@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as React from 'react';
 import { observable } from 'mobx';
 import _ from 'lodash';
@@ -133,12 +141,14 @@ export class Tuid extends Entity {
         this.queue.push(id);
         return;
     }
-    async proxied(name, id) {
-        let proxyTuid = this.entities.getTuid(name, undefined);
-        proxyTuid.useId(id);
-        let proxied = await this.tvApi.proxied(this.name, name, id);
-        this.cacheValue(proxied);
-        return proxied;
+    proxied(name, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let proxyTuid = this.entities.getTuid(name, undefined);
+            proxyTuid.useId(id);
+            let proxied = yield this.tvApi.proxied(this.name, name, id);
+            this.cacheValue(proxied);
+            return proxied;
+        });
     }
     cacheValue(val) {
         if (val === undefined)
@@ -173,32 +183,36 @@ export class Tuid extends Entity {
             _tuid.useId(tuidValue[f.name]);
         }
     }
-    async cacheIds() {
-        if (this.waitingIds.length === 0)
-            return;
-        let name, arr;
-        if (this.owner === undefined) {
-            name = this.name;
-        }
-        else {
-            name = this.owner.name;
-            arr = this.name;
-        }
-        let tuids = await this.tvApi.tuidIds(name, arr, this.waitingIds);
-        for (let tuidValue of tuids) {
-            if (this.cacheValue(tuidValue) === false)
-                continue;
-            this.cacheTuidFieldValues(tuidValue);
-            this.afterCacheId(tuidValue);
-        }
+    cacheIds() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.waitingIds.length === 0)
+                return;
+            let name, arr;
+            if (this.owner === undefined) {
+                name = this.name;
+            }
+            else {
+                name = this.owner.name;
+                arr = this.name;
+            }
+            let tuids = yield this.tvApi.tuidIds(name, arr, this.waitingIds);
+            for (let tuidValue of tuids) {
+                if (this.cacheValue(tuidValue) === false)
+                    continue;
+                this.cacheTuidFieldValues(tuidValue);
+                this.afterCacheId(tuidValue);
+            }
+        });
     }
-    async load(id) {
-        if (id === undefined || id === 0)
-            return;
-        let values = await this.tvApi.tuidGet(this.name, id);
-        this.cacheValue(values);
-        this.cacheTuidFieldValues(values);
-        return values;
+    load(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (id === undefined || id === 0)
+                return;
+            let values = yield this.tvApi.tuidGet(this.name, id);
+            this.cacheValue(values);
+            this.cacheTuidFieldValues(values);
+            return values;
+        });
     }
     cacheTuidFieldValues(values) {
         let { fields, arrs } = this.schema;
@@ -226,57 +240,71 @@ export class Tuid extends Entity {
             values[name] = _tuid.boxId(id);
         }
     }
-    async save(id, props) {
-        let params = _.clone(props);
-        params["$id"] = id;
-        return await this.tvApi.tuidSave(this.name, params);
+    save(id, props) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let params = _.clone(props);
+            params["$id"] = id;
+            return yield this.tvApi.tuidSave(this.name, params);
+        });
     }
-    async search(key, pageStart, pageSize) {
-        let ret = await this.searchArr(undefined, key, pageStart, pageSize);
-        return ret;
+    search(key, pageStart, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.searchArr(undefined, key, pageStart, pageSize);
+            return ret;
+        });
     }
-    async searchArr(owner, key, pageStart, pageSize) {
-        let { fields } = this.schema;
-        let name, arr;
-        if (this.owner !== undefined) {
-            name = this.owner.name;
-            arr = this.name;
-        }
-        else {
-            name = this.name;
-            arr = undefined;
-        }
-        let ret = await this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
-        for (let row of ret) {
-            this.cacheFieldsInValue(row, fields);
-            if (this.owner !== undefined)
-                row.$owner = this.owner.boxId(row.owner);
-        }
-        return ret;
+    searchArr(owner, key, pageStart, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { fields } = this.schema;
+            let name, arr;
+            if (this.owner !== undefined) {
+                name = this.owner.name;
+                arr = this.name;
+            }
+            else {
+                name = this.name;
+                arr = undefined;
+            }
+            let ret = yield this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
+            for (let row of ret) {
+                this.cacheFieldsInValue(row, fields);
+                if (this.owner !== undefined)
+                    row.$owner = this.owner.boxId(row.owner);
+            }
+            return ret;
+        });
     }
-    async loadArr(arr, owner, id) {
-        if (id === undefined || id === 0)
-            return;
-        return await this.tvApi.tuidArrGet(this.name, arr, owner, id);
+    loadArr(arr, owner, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (id === undefined || id === 0)
+                return;
+            return yield this.tvApi.tuidArrGet(this.name, arr, owner, id);
+        });
     }
     /*
     async loadArrAll(owner:number):Promise<any[]> {
         return this.all = await this.tvApi.tuidGetAll(this.name);
     }*/
-    async saveArr(arr, owner, id, props) {
-        let params = _.clone(props);
-        params["$id"] = id;
-        return await this.tvApi.tuidArrSave(this.name, arr, owner, params);
+    saveArr(arr, owner, id, props) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let params = _.clone(props);
+            params["$id"] = id;
+            return yield this.tvApi.tuidArrSave(this.name, arr, owner, params);
+        });
     }
-    async posArr(arr, owner, id, order) {
-        return await this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
+    posArr(arr, owner, id, order) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.tvApi.tuidArrPos(this.name, arr, owner, id, order);
+        });
     }
     // cache放到Tuid里面之后，这个函数不再需要公开调用了
     //private async ids(idArr:number[]) {
     //    return await this.tvApi.tuidIds(this.name, idArr);
     //}
-    async showInfo(id) {
-        await this.entities.usq.showTuid(this, id);
+    showInfo(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.entities.usq.showTuid(this, id);
+        });
     }
 }
 export class TuidMain extends Tuid {
@@ -295,13 +323,16 @@ export class TuidMain extends Tuid {
             }
         }
     }
-    async cacheIds() {
-        await super.cacheIds();
-        if (this.divs === undefined)
-            return;
-        for (let i in this.divs) {
-            await this.divs[i].cacheIds();
-        }
+    cacheIds() {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("cacheIds").call(this);
+            if (this.divs === undefined)
+                return;
+            for (let i in this.divs) {
+                yield this.divs[i].cacheIds();
+            }
+        });
     }
     /*
     buidProxies(parts:string[]) {

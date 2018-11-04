@@ -1,1 +1,1 @@
-{"version":3,"file":"vSheet.js","sourceRoot":"","sources":["../../../../src/ui-usql/controllers/sheet/vSheet.tsx"],"names":[],"mappings":"AAEA,OAAO,EAAE,OAAO,EAAE,MAAM,OAAO,CAAC;AAEhC,MAAM,OAAgB,MAAO,SAAQ,OAA+B;CACnE"}
+{"version":3,"file":"vSheet.js","sourceRoot":"","sources":["../../../../src/ui-usql/controllers/sheet/vSheet.tsx"],"names":[],"mappings":"AAEA,OAAO,EAAE,OAAO,EAAE,MAAM,OAAO,CAAC;AAEhC,MAAM,aAAuB,SAAQ,OAA+B;CACnE"}

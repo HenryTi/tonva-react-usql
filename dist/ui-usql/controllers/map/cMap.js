@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import _ from 'lodash';
 import { CEntity } from "../VM";
 import { VMapMain } from "./vMain";
@@ -17,7 +25,7 @@ export class MapItem {
 export class CMap extends CEntity {
     constructor() {
         super(...arguments);
-        this.addClick = async (item) => {
+        this.addClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let { keyIndex, children } = item;
             let keysLen = this.keyFields.length;
             let keysLast = keysLen - 1;
@@ -34,7 +42,7 @@ export class CMap extends CEntity {
                 let kn = this.keyFields[ki].name;
                 searchParam[kn] = data['_' + kn] = box.id;
             }
-            let id = await this.searchOnKey(keyField, searchParam);
+            let id = yield this.searchOnKey(keyField, searchParam);
             if (id === undefined || id <= 0)
                 return;
             tuid.useId(id);
@@ -45,7 +53,7 @@ export class CMap extends CEntity {
                 tuid.useId(id);
                 values[kn] = arr1['_' + kn] = idBox;
                 if (this.entity.fields.length > 0) {
-                    let ret = await this.vCall(VInputValues, data);
+                    let ret = yield this.vCall(VInputValues, data);
                     for (let i in ret) {
                         values[i] = arr1['_' + i] = ret[i];
                     }
@@ -58,7 +66,7 @@ export class CMap extends CEntity {
                 arr1['_' + this.keyFields[keysLast].name] = 0;
             }
             data.arr1 = [arr1];
-            await this.entity.actions.add.submit(data);
+            yield this.entity.actions.add.submit(data);
             let rowIndex = children.findIndex(v => v.box.id === id);
             if (rowIndex < 0) {
                 children.push(this.createItem(item, tuid, idBox, idx, values));
@@ -78,8 +86,8 @@ export class CMap extends CEntity {
                 }
             }
             this.removeCeased();
-        };
-        this.removeClick = async (item) => {
+        });
+        this.removeClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let keyField = this.keyFields[item.keyIndex];
             let tuid = keyField._tuid;
             let cTuidMain = this.cUsq.cTuidMain(tuid.Main);
@@ -102,45 +110,47 @@ export class CMap extends CEntity {
                 let k = this.keyFields[i];
                 v0['_' + k.name] = -1;
             }
-            await map.actions.del.submit(data);
+            yield map.actions.del.submit(data);
             let children = item.parent.children;
             let index = children.findIndex(v => v === item);
             if (index >= 0)
                 children.splice(index, 1);
-        };
+        });
         /*
         async submit(values:any) {
             return this.entity.submit(values);
         }*/
     }
-    async internalStart() {
-        let { keys } = this.entity;
-        let q = this.entity.queries.all;
-        let result = await q.query({});
-        //let data = await this.entity.unpackReturns(res);
-        let ret = result.ret;
-        let keysLen = keys.length;
-        this.keyUIs = _.clone(this.ui.keys || []);
-        this.keyFields = [];
-        let retFields = q.returns[0].fields;
-        for (let i = 0; i < keysLen; i++) {
-            this.keyFields.push(retFields[i]);
-            if (i >= this.keyUIs.length) {
-                this.keyUIs.push({
-                    content: PureJSONContent,
-                });
+    internalStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { keys } = this.entity;
+            let q = this.entity.queries.all;
+            let result = yield q.query({});
+            //let data = await this.entity.unpackReturns(res);
+            let ret = result.ret;
+            let keysLen = keys.length;
+            this.keyUIs = _.clone(this.ui.keys || []);
+            this.keyFields = [];
+            let retFields = q.returns[0].fields;
+            for (let i = 0; i < keysLen; i++) {
+                this.keyFields.push(retFields[i]);
+                if (i >= this.keyUIs.length) {
+                    this.keyUIs.push({
+                        content: PureJSONContent,
+                    });
+                }
             }
-        }
-        this.items = observable([]);
-        let item = undefined;
-        for (let r of ret) {
-            let newItem = this.addItem(item, r);
-            if (newItem !== undefined) {
-                this.items.push(newItem);
-                item = newItem;
+            this.items = observable([]);
+            let item = undefined;
+            for (let r of ret) {
+                let newItem = this.addItem(item, r);
+                if (newItem !== undefined) {
+                    this.items.push(newItem);
+                    item = newItem;
+                }
             }
-        }
-        await this.showVPage(this.VMapMain);
+            yield this.showVPage(this.VMapMain);
+        });
     }
     createItem(parent, tuid, box, keyIndex, values) {
         let item = new MapItem(parent, tuid, box, keyIndex);
@@ -185,18 +195,20 @@ export class CMap extends CEntity {
         }
         return ret;
     }
-    async searchOnKey(keyField, param) {
-        let { _tuid, _ownerField } = keyField;
-        let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
-        let callParam = param;
-        if (_ownerField !== undefined) {
-            callParam = param[_ownerField.name];
-            if (typeof callParam === 'object') {
-                callParam = callParam.id;
+    searchOnKey(keyField, param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { _tuid, _ownerField } = keyField;
+            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let callParam = param;
+            if (_ownerField !== undefined) {
+                callParam = param[_ownerField.name];
+                if (typeof callParam === 'object') {
+                    callParam = callParam.id;
+                }
             }
-        }
-        let ret = await cTuidSelect.call(callParam);
-        return _tuid.getIdFromObj(ret);
+            let ret = yield cTuidSelect.call(callParam);
+            return _tuid.getIdFromObj(ret);
+        });
     }
     get VMapMain() { return VMapMain; }
 }

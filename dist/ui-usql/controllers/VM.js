@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { Controller, VPage } from 'tonva-tools';
 import { VForm, FormMode } from './form';
 import { entityIcons } from './icons';
@@ -19,9 +27,12 @@ export class CEntity extends ControllerUsq {
         this.label = this.res.label || name;
         this.icon = entityIcons[typeName];
     }
-    async beforeStart() {
-        await super.beforeStart();
-        await this.entity.loadSchema();
+    beforeStart() {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("beforeStart").call(this);
+            yield this.entity.loadSchema();
+        });
     }
     createForm(onSubmit, values, mode) {
         let options = this.buildFormOptions(mode);
@@ -75,7 +86,7 @@ export class CEntity extends ControllerUsq {
         if (arrFields !== undefined) {
             for (let arr of arrFields) {
                 let { name, fields } = arr;
-                let { items } = formUI;
+                let items = formUI && formUI.items;
                 this.buildFieldsInputs(ret, fields, name, items && items[name]);
             }
         }
@@ -102,7 +113,7 @@ export class CEntity extends ControllerUsq {
         }
     }
     buildSelect(field, arr, fieldUI) {
-        return async (form, field, values) => {
+        return (form, field, values) => __awaiter(this, void 0, void 0, function* () {
             let { _tuid, _ownerField } = field;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
             let param = undefined;
@@ -112,14 +123,14 @@ export class CEntity extends ControllerUsq {
                 console.log('select search set param=empty string');
                 param = '';
             }
-            let ret = await cTuidSelect.call(param);
+            let ret = yield cTuidSelect.call(param);
             cTuidSelect.removeCeased(); // 清除已经废弃的顶部页面
             if (ret === undefined)
                 return undefined;
             let id = cTuidSelect.idFromItem(ret);
             _tuid.useId(id);
             return id;
-        };
+        });
     }
     buildContent(field, arr) {
         return;
