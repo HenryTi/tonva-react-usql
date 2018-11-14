@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { nav } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 
 export type TypeViewModel = typeof ViewModel;
 export type TypeView = React.StatelessComponent<{vm: ViewModel, className?:string|string[]}>;
@@ -14,8 +14,8 @@ export abstract class ViewModel {
     }
 }
 
-export const PureJSONContent = (values, x?:any) => <>content: {JSON.stringify(values)}</>;
+export const PureJSONContent = (values, x?:any) => <>content: {jsonStringify(values)}</>;
 export const JSONContent = observer(PureJSONContent);
 export const RowContent = 
-    (values) => <div className="px-3 py-2">{JSON.stringify(values)}</div>
+    (values) => <div className="px-3 py-2">{jsonStringify(values)}</div>
 ;

@@ -224,7 +224,7 @@ export abstract class Entity {
                 if (tuidKey !== undefined) {
                     let tuid = f._tuid;
                     if (tuid === undefined) {
-                        // 在JSON.stringify中间不会出现
+                        // 在jsonStringify中间不会出现
                         Object.defineProperty(f, '_tuid', {value:'_tuid', writable: true});
                         f._tuid = tuid = this.getTuid(tuidKey, tuidUrl);
                     }

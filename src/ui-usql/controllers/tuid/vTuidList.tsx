@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA, SearchBox, List } from 'tonva-react-form';
 import { Page, PageItems } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 import { TuidMain, Entity, Tuid, TuidDiv } from '../../entities';
 import { VEntity } from '../VM';
 import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';
@@ -49,7 +50,7 @@ export abstract class VTuidMainListBase  extends VEntity<TuidMain, TuidUI, CTuid
         let ownerTop;
         if (owner !== undefined) {
             let ownerObj = owner.valueFromId(this.ownerId);
-            ownerTop = <div>owner: {JSON.stringify(ownerObj)}</div>;
+            ownerTop = <div>owner: {jsonStringify(ownerObj)}</div>;
         }
         return <Page header={header}>
             {ownerTop}
@@ -84,7 +85,7 @@ export abstract class VTuidDivListBase  extends VEntity<TuidDiv, TuidUI, CTuidDi
         //await this.PageItems.first(key);
     }
     renderRow = (item:any, index:number):JSX.Element => {
-        return <div className="px-3 py-2">{JSON.stringify(item)}</div>;
+        return <div className="px-3 py-2">{jsonStringify(item)}</div>;
     }
 
     protected abstract onSelected(item:any): Promise<void>;
@@ -107,7 +108,7 @@ export abstract class VTuidDivListBase  extends VEntity<TuidDiv, TuidUI, CTuidDi
         let ownerTop;
         if (owner !== undefined) {
             let ownerObj = owner.valueFromId(this.ownerId);
-            ownerTop = <div>owner: {JSON.stringify(ownerObj)}</div>;
+            ownerTop = <div>owner: {jsonStringify(ownerObj)}</div>;
         }
         return <Page header={header}>
             {ownerTop}

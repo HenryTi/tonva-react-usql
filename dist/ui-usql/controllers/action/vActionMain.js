@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 import { VEntity } from '../VM';
 export class VActionMain extends VEntity {
     constructor() {
@@ -26,7 +27,7 @@ export class VActionMain extends VEntity {
             let { label } = this.controller;
             return React.createElement(Page, { header: label, back: "close" },
                 "\u5B8C\u6210\uFF01",
-                React.createElement("pre", null, JSON.stringify(this.returns, undefined, ' ')));
+                React.createElement("pre", null, jsonStringify(this.returns)));
         };
     }
     showEntry(param) {

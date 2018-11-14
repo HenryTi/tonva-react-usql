@@ -10,6 +10,7 @@ import * as React from 'react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 import { VEntity } from '../VM';
 export class VTuidView extends VEntity {
     constructor() {
@@ -25,7 +26,7 @@ export class VTuidView extends VEntity {
             let values = this.vForm.getValues();
             let ret = yield this.entity.save(this.id, values);
             if (ret) {
-                alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
+                alert('这里还要判断返回值，先不处理了 \n' + jsonStringify(ret));
             }
             this.openPage(() => React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },

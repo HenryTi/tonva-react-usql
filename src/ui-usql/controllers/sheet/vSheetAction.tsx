@@ -23,7 +23,7 @@ export class VSheetAction extends VSheetView {
         let res = await this.controller.action(id, flow, state, action.name);
         this.ceasePage();
         this.openPage(this.acted);
-        //alert(JSON.stringify(res));
+        //alert(jsonStringify(res));
         //await this.backPage();
     }
 

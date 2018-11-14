@@ -20,7 +20,7 @@ export class VSheetAction extends VSheetView {
             let res = yield this.controller.action(id, flow, state, action.name);
             this.ceasePage();
             this.openPage(this.acted);
-            //alert(JSON.stringify(res));
+            //alert(jsonStringify(res));
             //await this.backPage();
         });
         this.deleteClick = () => __awaiter(this, void 0, void 0, function* () {

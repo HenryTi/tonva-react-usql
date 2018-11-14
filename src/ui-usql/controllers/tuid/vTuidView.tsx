@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { TuidMain } from '../../entities';
@@ -49,7 +50,7 @@ export class VTuidView extends VEntity<TuidMain, TuidUI, CTuidMain> {
         let values = this.vForm.getValues();
         let ret = await this.entity.save(this.id, values);
         if (ret) {
-            alert('这里还要判断返回值，先不处理了 \n' + JSON.stringify(ret));
+            alert('这里还要判断返回值，先不处理了 \n' + jsonStringify(ret));
         }
         this.openPage(() => <Page header={this.label + '提交成功'} back="none">
             <div className='m-3'>

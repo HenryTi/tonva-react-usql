@@ -10,6 +10,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 import { VEntity } from '../VM';
 import { RowContent } from '../form/viewModel';
 export class VTuidMainListBase extends VEntity {
@@ -35,7 +36,7 @@ export class VTuidMainListBase extends VEntity {
                 let ownerObj = owner.valueFromId(this.ownerId);
                 ownerTop = React.createElement("div", null,
                     "owner: ",
-                    JSON.stringify(ownerObj));
+                    jsonStringify(ownerObj));
             }
             return React.createElement(Page, { header: header },
                 ownerTop,
@@ -76,7 +77,7 @@ export class VTuidDivListBase extends VEntity {
             //await this.PageItems.first(key);
         });
         this.renderRow = (item, index) => {
-            return React.createElement("div", { className: "px-3 py-2" }, JSON.stringify(item));
+            return React.createElement("div", { className: "px-3 py-2" }, jsonStringify(item));
         };
         this.clickRow = (item) => {
             this.callOnSelected(item);
@@ -89,7 +90,7 @@ export class VTuidDivListBase extends VEntity {
                 let ownerObj = owner.valueFromId(this.ownerId);
                 ownerTop = React.createElement("div", null,
                     "owner: ",
-                    JSON.stringify(ownerObj));
+                    jsonStringify(ownerObj));
             }
             return React.createElement(Page, { header: header },
                 ownerTop,

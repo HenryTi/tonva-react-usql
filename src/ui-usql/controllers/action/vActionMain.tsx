@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
+import { jsonStringify } from 'src/ui-usql/tools';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { CAction, ActionUI } from './cAction';
@@ -33,7 +34,7 @@ export class VActionMain extends VEntity<Action, ActionUI, CAction> {
         return <Page header={label} back="close">
             完成！
             <pre>
-                {JSON.stringify(this.returns, undefined, ' ')}
+                {jsonStringify(this.returns)}
             </pre>
         </Page>;
     }
