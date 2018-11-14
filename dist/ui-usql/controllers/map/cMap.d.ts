@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { CEntity, EntityUI } from "../VM";
 import { Map, Tuid, BoxId, Field } from "../../entities";
 import { VMapMain } from "./vMain";

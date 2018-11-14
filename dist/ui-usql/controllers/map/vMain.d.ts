@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Map } from '../../entities';
 import { VEntity } from '../VM';
 import { CMap, MapItem, MapUI } from './cMap';

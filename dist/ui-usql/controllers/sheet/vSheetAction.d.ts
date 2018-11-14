@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { VSheetView } from './vSheetView';
 import { SheetData } from './cSheet';
 export declare class VSheetAction extends VSheetView {

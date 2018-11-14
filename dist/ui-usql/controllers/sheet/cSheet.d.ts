@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { IObservableArray } from "mobx";
 import { TypeVPage, PageItems } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
@@ -49,9 +48,11 @@ export declare class CSheet extends CEntity<Sheet, SheetUI> {
     protected readonly VArchived: TypeVPage<CSheet>;
     protected readonly VSheetList: TypeVPage<CSheet>;
     protected readonly VSheetAction: TypeVPage<CSheet>;
+    protected readonly VSheetProcessing: TypeVPage<CSheet>;
     protected onEvent(type: string, value: any): Promise<void>;
     startSheet(sheetId: number): Promise<void>;
     showAction(sheetId: number): Promise<void>;
+    showProcessing(sheetId: number): Promise<void>;
     editSheet(sheetData: SheetData): Promise<any>;
     showArchived(inBrief: any): Promise<void>;
     onSave: (values: any, valuesWithBox: any) => Promise<void>;

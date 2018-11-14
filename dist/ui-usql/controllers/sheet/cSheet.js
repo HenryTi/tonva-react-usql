@@ -17,6 +17,7 @@ import { VArchives } from "./vArchives";
 import { VSheetList } from "./vList";
 import { VArchived } from "./vArchived";
 import { VSheetSaved } from "./vSaved";
+import { VSheetProcessing } from "./vSheetProcessing";
 export class CSheet extends CEntity {
     constructor() {
         super(...arguments);
@@ -127,6 +128,7 @@ export class CSheet extends CEntity {
     get VArchived() { return VArchived; }
     get VSheetList() { return VSheetList; }
     get VSheetAction() { return this.ui.sheetAction || VSheetAction; }
+    get VSheetProcessing() { return VSheetProcessing; }
     onEvent(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
             let c;
@@ -151,6 +153,9 @@ export class CSheet extends CEntity {
                 case 'action':
                     yield this.showAction(value);
                     return;
+                case 'processing':
+                    yield this.showProcessing(value);
+                    return;
             }
             yield this.showVPage(c, value);
         });
@@ -166,6 +171,12 @@ export class CSheet extends CEntity {
         return __awaiter(this, void 0, void 0, function* () {
             let sheetData = yield this.getSheetData(sheetId);
             yield this.showVPage(this.VSheetAction, sheetData);
+        });
+    }
+    showProcessing(sheetId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let sheetData = yield this.getSheetData(sheetId);
+            yield this.showVPage(this.VSheetProcessing, sheetData);
         });
     }
     editSheet(sheetData) {

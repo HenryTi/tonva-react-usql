@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { PageItems } from 'tonva-tools';
 import { Query } from '../../entities';
 import { VEntity } from '../VM';

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { VEntity } from '../VM';
 import { Sheet } from '../../entities';
 import { SheetUI, CSheet } from './cSheet';

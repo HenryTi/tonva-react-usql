@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { CLink } from "../link";
 import { CUsq } from "./cUsq";
 import { Entity } from "../../entities";

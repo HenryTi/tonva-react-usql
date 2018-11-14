@@ -32,7 +32,6 @@ export declare abstract class VInputControl extends VField {
     protected inputType: string;
     protected readonly maxLength: number;
     protected renderError: (className: string) => JSX.Element;
-    readonly value: any;
     setValue(v: any): void;
     protected ref: (input: HTMLInputElement) => void;
     protected setInputValue(): void;

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Book } from '../../entities';
 import { VEntity } from '../VM';
 import { CBook, BookUI } from './cBook';

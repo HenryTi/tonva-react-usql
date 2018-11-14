@@ -20,7 +20,10 @@ export class VSheetList extends VEntity<Sheet, SheetUI, CSheet> {
     }
 
     rowClick = async (brief:any) => {
-        if (brief.processing===1) return;
+        if (brief.processing===1) {
+            this.event('processing', brief.id);
+            return;
+        }
         this.event('action', brief.id);
     }
 

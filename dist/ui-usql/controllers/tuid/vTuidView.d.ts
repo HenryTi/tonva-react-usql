@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { TuidMain } from '../../entities';

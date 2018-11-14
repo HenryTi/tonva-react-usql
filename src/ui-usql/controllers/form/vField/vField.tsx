@@ -89,9 +89,10 @@ export abstract class VInputControl extends VField {
         return <div className={className}><FA name="exclamation-circle" /> {error}</div>
     }
 
+    /*
     get value() {
         return super.value;
-    }
+    }*/
     setValue(v:any) {
         super.setValue(v); this.setInputValue(); 
     }

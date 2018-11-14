@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Controller, TypeVPage } from 'tonva-tools';
 import { CUsq, UsqUI } from './usq';
 export interface AppUI {
@@ -28,6 +27,7 @@ export declare class CApp extends Controller {
     protected readonly VAppMain: TypeVPage<CApp>;
     internalStart(): Promise<void>;
     protected clearPrevPages(): void;
+    private showUnsupport;
     private showMainPage;
     private getCUsqFromId;
     private loadAppUnits;

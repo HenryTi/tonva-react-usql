@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { History } from '../../entities';
 import { VEntity } from '../VM';
 import { CHistory, HistoryUI } from './cHistory';

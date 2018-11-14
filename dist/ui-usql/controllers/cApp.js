@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { Page, loadAppUsqs, nav, meInFrame, Controller, VPage, resLang } from 'tonva-tools';
-import { List, LMR } from 'tonva-react-form';
+import { List, LMR, FA } from 'tonva-react-form';
 import { CUsq } from './usq';
 import { centerApi } from '../centerApi';
 export class CApp extends Controller {
@@ -96,14 +96,16 @@ export class CApp extends Controller {
                     yield this.loadAppUnits();
                     switch (this.appUnits.length) {
                         case 0:
-                            alert('当前登录的用户不支持当前的APP');
-                            yield nav.logout();
+                            //alert('当前登录的用户不支持当前的APP');
+                            //await nav.logout();
+                            this.showUnsupport();
                             return;
                         case 1:
                             unit = this.appUnits[0].id;
                             if (unit === undefined || unit < 0) {
-                                alert('当前unit不支持app操作，请重新登录');
-                                yield nav.logout();
+                                //alert('当前unit不支持app操作，请重新登录');
+                                //await nav.logout();
+                                this.showUnsupport();
                                 return;
                             }
                             meInFrame.unit = unit;
@@ -126,6 +128,21 @@ export class CApp extends Controller {
     // 如果非独立app，则不删
     clearPrevPages() {
         nav.clear();
+    }
+    showUnsupport() {
+        this.clearPrevPages();
+        this.openPage(React.createElement(Page, { header: "APP\u65E0\u6CD5\u8FD0\u884C", logout: true },
+            React.createElement("div", { className: "m-3 text-danger container" },
+                React.createElement("div", { className: "form-group row" },
+                    React.createElement("div", { className: "col-2" },
+                        React.createElement(FA, { name: "exclamation-triangle" })),
+                    React.createElement("div", { className: "col" }, "\u7528\u6237\u4E0D\u652F\u6301APP")),
+                React.createElement("div", { className: "form-group row" },
+                    React.createElement("div", { className: "col-2" }, "\u7528\u6237: "),
+                    React.createElement("div", { className: "col" }, `${nav.user.name}`)),
+                React.createElement("div", { className: "form-group row" },
+                    React.createElement("div", { className: "col-2" }, "App:"),
+                    React.createElement("div", { className: "col" }, `${this.appOwner}/${this.appName}`)))));
     }
     showMainPage() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -178,7 +195,16 @@ class VAppMain extends VPage {
         super(...arguments);
         this.appPage = () => {
             let { caption, cUsqArr } = this.controller;
-            return React.createElement(Page, { header: caption, logout: () => { meInFrame.unit = undefined; } }, cUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render())));
+            let content;
+            if (cUsqArr.length === 0) {
+                content = React.createElement("div", { className: "text-danger" },
+                    React.createElement(FA, { name: "" }),
+                    " \u6B64APP\u6CA1\u6709\u7ED1\u5B9A\u4EFB\u4F55\u7684USQ");
+            }
+            else {
+                content = cUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render()));
+            }
+            return React.createElement(Page, { header: caption, logout: () => { meInFrame.unit = undefined; } }, content);
         };
     }
     showEntry(param) {

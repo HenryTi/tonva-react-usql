@@ -141,9 +141,10 @@ export class VInputControl extends VField {
         });
     }
     get maxLength() { return; }
+    /*
     get value() {
         return super.value;
-    }
+    }*/
     setValue(v) {
         super.setValue(v);
         this.setInputValue();

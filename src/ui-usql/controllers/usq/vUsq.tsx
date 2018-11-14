@@ -37,7 +37,7 @@ export class VUsq extends View<CUsq> {
     }
 
     protected view = () => {
-        let {res, usq} = this.controller;
+        let {res, usq, error} = this.controller;
         let linkItem = {
             render: (cLink:CLink, index:number):JSX.Element => cLink.render(), 
             onClick: undefined, 
@@ -83,15 +83,22 @@ export class VUsq extends View<CUsq> {
                 items: this.pendingLinks
             }
         ];
-        return <>
-            <div className="px-3 py-1 small">{res.usq || usq}</div>
-            {lists.map(({cn, header, items},index) => items.length > 0 && <List
+        let content;
+        if (error !== undefined) {
+            content = <div className="p-3 text-danger">连接错误: {error}</div>;
+        }
+        else {
+            content = lists.map(({cn, header, items},index) => items.length > 0 && <List
                 key={index}
                 className={cn}
                 header={<div className="px-3 py-1 bg-light"><Muted>{header}</Muted></div>}
                 items={items}
                 item={linkItem} />
-            )}
+            );
+        }
+        return <>
+            <div className="px-3 py-1 small">{res.usq || usq}</div>
+            {content}
         </>;
     }
 }

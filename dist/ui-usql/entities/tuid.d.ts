@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Entity } from './entity';
 import { Entities } from './entities';
 export declare class BoxId {

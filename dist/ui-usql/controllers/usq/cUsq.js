@@ -119,7 +119,9 @@ export class CUsq extends Controller {
                 }
             }
             catch (err) {
-                debugger;
+                console.error(err);
+                this.error = err;
+                //debugger;
             }
         });
     }

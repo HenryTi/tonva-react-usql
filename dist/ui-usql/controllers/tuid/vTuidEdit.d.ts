@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { VEntity } from '../VM';
 import { CTuidMain, TuidUI } from './cTuid';
 import { Tuid } from '../../entities';

@@ -11,6 +11,7 @@ import { VArchives } from "./vArchives";
 import { VSheetList } from "./vList";
 import { VArchived } from "./vArchived";
 import { VSheetSaved } from "./vSaved";
+import { VSheetProcessing } from "./vSheetProcessing";
 
 export interface SheetActionUI {
     label: string;
@@ -127,6 +128,7 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     protected get VArchived(): TypeVPage<CSheet> {return VArchived}
     protected get VSheetList(): TypeVPage<CSheet> {return VSheetList}
     protected get VSheetAction(): TypeVPage<CSheet> {return this.ui.sheetAction || VSheetAction}
+    protected get VSheetProcessing(): TypeVPage<CSheet> {return VSheetProcessing}
     protected async onEvent(type:string, value:any) {
         let c: TypeVPage<CSheet>;
         switch (type) {
@@ -142,6 +144,8 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
                 await this.showArchived(value); return;
             case 'action':
                 await this.showAction(value); return;
+            case 'processing':
+                await this.showProcessing(value); return;
         }
         await this.showVPage(c, value);
     }
@@ -154,6 +158,11 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     async showAction(sheetId:number) {
         let sheetData:SheetData = await this.getSheetData(sheetId);
         await this.showVPage(this.VSheetAction, sheetData);
+    }
+
+    async showProcessing(sheetId:number) {
+        let sheetData:SheetData = await this.getSheetData(sheetId);
+        await this.showVPage(this.VSheetProcessing, sheetData);
     }
 
     async editSheet(sheetData:SheetData):Promise<any> {

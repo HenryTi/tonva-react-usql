@@ -86,14 +86,16 @@ export class CApp extends Controller {
                 await this.loadAppUnits();
                 switch (this.appUnits.length) {
                     case 0:
-                        alert('当前登录的用户不支持当前的APP');
-                        await nav.logout();
+                        //alert('当前登录的用户不支持当前的APP');
+                        //await nav.logout();
+                        this.showUnsupport();
                         return;
                     case 1:
                         unit = this.appUnits[0].id;
                         if (unit === undefined || unit < 0) {
-                            alert('当前unit不支持app操作，请重新登录');
-                            await nav.logout();
+                            //alert('当前unit不支持app操作，请重新登录');
+                            //await nav.logout();
+                            this.showUnsupport();
                             return;
                         }
                         meInFrame.unit = unit;
@@ -119,6 +121,30 @@ export class CApp extends Controller {
     // 如果非独立app，则不删
     protected clearPrevPages() {
         nav.clear();
+    }
+
+    private showUnsupport() {
+        this.clearPrevPages();
+        this.openPage(<Page header="APP无法运行" logout={true}>
+            <div className="m-3 text-danger container">
+                <div className="form-group row">
+                    <div className="col-2">
+                        <FA name="exclamation-triangle" />
+                    </div>
+                    <div className="col">
+                        用户不支持APP
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <div className="col-2">用户: </div>
+                    <div className="col">{`${nav.user.name}`}</div>
+                </div>
+                <div className="form-group row">
+                    <div className="col-2">App:</div>
+                    <div className="col">{`${this.appOwner}/${this.appName}`}</div>
+                </div>
+            </div>
+        </Page>)
     }
 
     private async showMainPage() {
@@ -201,8 +227,17 @@ class VAppMain extends VPage<CApp> {
 
     protected appPage = () => {
         let {caption, cUsqArr} = this.controller;
+        let content;
+        if (cUsqArr.length === 0) {
+            content = <div className="text-danger">
+                <FA name="" /> 此APP没有绑定任何的USQ
+            </div>;
+        }
+        else {
+            content = cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>);
+        }
         return <Page header={caption} logout={()=>{meInFrame.unit = undefined}}>
-            {cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
+            {content}
         </Page>;
     };
 }

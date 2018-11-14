@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Field, Tuid } from '../../../entities';
 import { VField } from "./vField";
 import { FieldUI } from '../../formUI';

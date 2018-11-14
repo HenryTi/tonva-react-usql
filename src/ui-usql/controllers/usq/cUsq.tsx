@@ -132,6 +132,7 @@ export class CUsq extends Controller implements Usq {
     id: number;
     res: any;
     entities:Entities;
+    error: string;
 
     protected async loadEntites() {
         await this.entities.loadAccess();
@@ -155,7 +156,9 @@ export class CUsq extends Controller implements Usq {
             }
         }
         catch(err) {
-            debugger;
+            console.error(err);
+            this.error = err;
+            //debugger;
         }
     }
 

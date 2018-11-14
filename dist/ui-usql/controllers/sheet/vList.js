@@ -14,8 +14,10 @@ export class VSheetList extends VEntity {
     constructor() {
         super(...arguments);
         this.rowClick = (brief) => __awaiter(this, void 0, void 0, function* () {
-            if (brief.processing === 1)
+            if (brief.processing === 1) {
+                this.event('processing', brief.id);
                 return;
+            }
             this.event('action', brief.id);
         });
         this.onScrollBottom = () => {

@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { VField } from './vField';
 import { VArr } from './vArr';
 import { VSubmit } from './vSubmit';

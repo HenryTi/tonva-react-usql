@@ -7,7 +7,7 @@ export class VUsq extends View {
         super(cUsq);
         this.isSysVisible = false;
         this.view = () => {
-            let { res, usq } = this.controller;
+            let { res, usq, error } = this.controller;
             let linkItem = {
                 render: (cLink, index) => cLink.render(),
                 onClick: undefined,
@@ -53,10 +53,19 @@ export class VUsq extends View {
                     items: this.pendingLinks
                 }
             ];
+            let content;
+            if (error !== undefined) {
+                content = React.createElement("div", { className: "p-3 text-danger" },
+                    "\u8FDE\u63A5\u9519\u8BEF: ",
+                    error);
+            }
+            else {
+                content = lists.map(({ cn, header, items }, index) => items.length > 0 && React.createElement(List, { key: index, className: cn, header: React.createElement("div", { className: "px-3 py-1 bg-light" },
+                        React.createElement(Muted, null, header)), items: items, item: linkItem }));
+            }
             return React.createElement(React.Fragment, null,
                 React.createElement("div", { className: "px-3 py-1 small" }, res.usq || usq),
-                lists.map(({ cn, header, items }, index) => items.length > 0 && React.createElement(List, { key: index, className: cn, header: React.createElement("div", { className: "px-3 py-1 bg-light" },
-                        React.createElement(Muted, null, header)), items: items, item: linkItem })));
+                content);
         };
         let { tuidArr, mapArr, sheetArr, actionArr, queryArr, bookArr, historyArr, pendingArr } = cUsq.entities;
         this.tuidLinks = tuidArr.filter(v => this.isVisible(v)).map(v => new CLink(this.controller.cTuidMain(v)));

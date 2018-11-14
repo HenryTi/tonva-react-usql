@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Sheet } from '../../entities';
 import { VForm } from '../form';
 import { VEntity } from '../VM';

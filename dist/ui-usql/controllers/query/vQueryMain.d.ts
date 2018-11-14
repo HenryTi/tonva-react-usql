@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Query } from '../../entities';
 import { VForm } from '../form';
 import { VEntity } from '../VM';

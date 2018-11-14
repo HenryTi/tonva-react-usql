@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Pending } from '../../entities';
 import { VEntity } from '../VM';
 import { CPending, PendingUI } from './cPending';
