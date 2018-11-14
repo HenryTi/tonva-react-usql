@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { jsonStringify } from 'src/ui-usql/tools';
+import { jsonStringify } from '../../tools';
 export class ViewModel {
     render(className) {
         if (this.view === undefined)

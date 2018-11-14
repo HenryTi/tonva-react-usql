@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
-import { jsonStringify } from 'src/ui-usql/tools';
+import { jsonStringify } from '../../tools';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { CAction, ActionUI } from './cAction';

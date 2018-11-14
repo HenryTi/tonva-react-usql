@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { FA, SearchBox, List } from 'tonva-react-form';
 import { Page, PageItems } from 'tonva-tools';
-import { jsonStringify } from 'src/ui-usql/tools';
+import { jsonStringify } from '../../tools';
 import { TuidMain, Entity, Tuid, TuidDiv } from '../../entities';
 import { VEntity } from '../VM';
 import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';

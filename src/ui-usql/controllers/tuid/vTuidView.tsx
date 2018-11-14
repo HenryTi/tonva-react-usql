@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { jsonStringify } from 'src/ui-usql/tools';
+import { jsonStringify } from '../../tools';
 import { VForm } from '../form';
 import { VEntity } from '../VM';
 import { TuidMain } from '../../entities';

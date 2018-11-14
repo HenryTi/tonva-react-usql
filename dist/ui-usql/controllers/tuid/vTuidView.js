@@ -10,7 +10,7 @@ import * as React from 'react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { jsonStringify } from 'src/ui-usql/tools';
+import { jsonStringify } from '../../tools';
 import { VEntity } from '../VM';
 export class VTuidView extends VEntity {
     constructor() {
