@@ -2,7 +2,7 @@ import * as React from 'react';
 import {List, Muted, LMR, EasyDate, FA} from 'tonva-react-form';
 import { Sheet } from '../../entities';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CSheet, SheetUI, SheetData } from './cSheet';
 
 const leftFlowStyle = {width: '8rem'};

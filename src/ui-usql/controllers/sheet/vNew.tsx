@@ -3,7 +3,7 @@ import { Page } from 'tonva-tools';
 import { FA } from 'tonva-react-form';
 import { Sheet } from '../../entities';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { SheetUI, CSheet } from './cSheet';
 
 export class VSheetNew extends VEntity<Sheet, SheetUI, CSheet> {

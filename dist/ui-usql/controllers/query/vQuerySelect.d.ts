@@ -1,6 +1,6 @@
 import { PageItems } from 'tonva-tools';
 import { Query } from '../../entities';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { QueryUI, CQuerySelect } from './cQuery';
 export declare class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
     private row;

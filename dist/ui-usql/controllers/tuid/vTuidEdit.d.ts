@@ -1,4 +1,4 @@
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CTuidMain, TuidUI } from './cTuid';
 import { Tuid } from '../../entities';
 export declare type TypeVTuidEdit = typeof VTuidEdit;

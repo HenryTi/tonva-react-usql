@@ -8,7 +8,7 @@ import { ActionUI, CAction } from '../action';
 import { QueryUI, CQuery, CQuerySelect } from '../query';
 import { CTuidMain, TuidUI, CTuidInfo, CTuidSelect } from '../tuid';
 import { MapUI, CMap } from '../map';
-import { CEntity, EntityUI } from '../VM';
+import { CEntity, EntityUI } from '../CVEntity';
 import { VUsq } from './vUsq';
 import { CHistory, HistoryUI } from '../history';
 import { CPending, PendingUI } from '../pending';

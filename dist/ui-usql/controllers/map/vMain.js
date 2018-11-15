@@ -11,7 +11,7 @@ import { observer } from 'mobx-react';
 import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 export class VMapMain extends VEntity {
     constructor() {
         super(...arguments);

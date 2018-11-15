@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TuidMain, Book, Entity } from '../../entities';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CBook, BookUI } from './cBook';
 
 export class VBookMain extends VEntity<Book, BookUI, CBook> {

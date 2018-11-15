@@ -10,7 +10,7 @@ import * as React from 'react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 export class VTuidEdit extends VEntity {
     constructor() {
         super(...arguments);

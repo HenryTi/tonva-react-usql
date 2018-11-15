@@ -1,4 +1,4 @@
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { Tuid } from '../../entities';
 import { CTuid, TuidUI } from './cTuid';
 export declare class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {

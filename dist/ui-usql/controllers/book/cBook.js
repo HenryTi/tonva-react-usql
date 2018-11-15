@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { CEntity } from "../VM";
+import { CEntity } from "../CVEntity";
 import { VBookMain } from "./vBookMain";
 export class CBook extends CEntity {
     internalStart() {

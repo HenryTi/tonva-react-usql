@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { observable } from "mobx";
-import { CEntity } from "../VM";
+import { CEntity } from "../CVEntity";
 import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
 import { VSheetEdit } from "./vEdit";

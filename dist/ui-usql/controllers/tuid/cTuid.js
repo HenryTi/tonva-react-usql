@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import _ from 'lodash';
-import { CEntity } from "../VM";
+import { CEntity } from "../CVEntity";
 import { VTuidMain } from './vTuidMain';
 import { VTuidEdit } from './vTuidEdit';
 import { VTuidSelect } from './vTuidSelect';

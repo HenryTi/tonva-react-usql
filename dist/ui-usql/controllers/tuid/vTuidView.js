@@ -11,7 +11,7 @@ import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { jsonStringify } from '../../tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 export class VTuidView extends VEntity {
     constructor() {
         super(...arguments);

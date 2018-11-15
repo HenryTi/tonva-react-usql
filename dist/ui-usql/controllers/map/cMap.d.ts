@@ -1,4 +1,4 @@
-import { CEntity, EntityUI } from "../VM";
+import { CEntity, EntityUI } from "../CVEntity";
 import { Map, Tuid, BoxId, Field } from "../../entities";
 import { VMapMain } from "./vMain";
 export interface MapKey {

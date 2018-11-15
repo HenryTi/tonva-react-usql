@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { PageItems } from 'tonva-tools';
-import { CEntity, EntityUI } from "../VM";
+import { CEntity, EntityUI } from "../CVEntity";
 import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
 import { VTuidEdit } from './vTuidEdit';

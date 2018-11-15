@@ -1,6 +1,6 @@
 import { Sheet } from '../../entities';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CSheet, SheetUI, SheetData } from './cSheet';
 export declare abstract class VSheetView extends VEntity<Sheet, SheetUI, CSheet> {
     protected vForm: VForm;

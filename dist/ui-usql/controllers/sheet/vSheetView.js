@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { List, Muted, LMR, EasyDate, FA } from 'tonva-react-form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 const leftFlowStyle = { width: '8rem' };
 export class VSheetView extends VEntity {
     constructor() {

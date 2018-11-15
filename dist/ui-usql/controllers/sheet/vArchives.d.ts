@@ -1,4 +1,4 @@
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { Sheet } from '../../entities';
 import { SheetUI, CSheet } from './cSheet';
 export declare class VArchives extends VEntity<Sheet, SheetUI, CSheet> {

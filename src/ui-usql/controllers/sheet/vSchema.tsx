@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { Sheet } from '../../entities';
 import { SheetUI, CSheet } from './cSheet';
 

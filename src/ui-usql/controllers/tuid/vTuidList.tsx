@@ -4,7 +4,7 @@ import { FA, SearchBox, List } from 'tonva-react-form';
 import { Page, PageItems } from 'tonva-tools';
 import { jsonStringify } from '../../tools';
 import { TuidMain, Entity, Tuid, TuidDiv } from '../../entities';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';
 import { JSONContent, RowContent } from '../form/viewModel';
 

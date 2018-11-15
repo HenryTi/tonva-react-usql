@@ -1,4 +1,4 @@
-import { CEntity, EntityUI } from "../VM";
+import { CEntity, EntityUI } from "../CVEntity";
 import { History } from "../../entities";
 import { VHistoryMain } from "./vHistoryMain";
 

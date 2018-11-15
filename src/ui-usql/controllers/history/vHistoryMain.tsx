@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TuidMain, History, Entity } from '../../entities';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CHistory, HistoryUI } from './cHistory';
 
 export class VHistoryMain extends VEntity<History, HistoryUI, CHistory> {

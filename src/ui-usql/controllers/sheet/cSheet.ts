@@ -1,7 +1,7 @@
 import { IObservableArray, observable } from "mobx";
 import { TypeVPage, VPage, PageItems } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
-import { CEntity, EntityUI, VEntity } from "../VM";
+import { CEntity, EntityUI, VEntity } from "../CVEntity";
 import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
 import { VSheetEdit } from "./vEdit";

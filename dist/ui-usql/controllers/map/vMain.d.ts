@@ -1,5 +1,5 @@
 import { Map } from '../../entities';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CMap, MapItem, MapUI } from './cMap';
 export declare class VMapMain extends VEntity<Map, MapUI, CMap> {
     showEntry(param?: any): Promise<void>;

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { Button, ButtonProps, Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
 import { eventNames } from 'cluster';

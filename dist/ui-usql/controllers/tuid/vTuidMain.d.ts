@@ -1,6 +1,6 @@
 import { TuidMain } from '../../entities';
 import { CLink } from '../link';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CTuidMain, TuidUI } from './cTuid';
 export declare class VTuidMain extends VEntity<TuidMain, TuidUI, CTuidMain> {
     protected controller: CTuidMain;

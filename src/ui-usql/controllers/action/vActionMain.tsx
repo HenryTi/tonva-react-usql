@@ -2,7 +2,7 @@ import * as React from 'react';
 import { VPage, Page } from 'tonva-tools';
 import { jsonStringify } from '../../tools';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CAction, ActionUI } from './cAction';
 import { Action } from '../../entities';
 

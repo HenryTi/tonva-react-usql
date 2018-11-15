@@ -4,7 +4,7 @@ import { TonvaForm, List, SubmitResult, FA } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
 import { TuidMain, Query, Entity } from '../../entities';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { QueryUI, CQuery } from './cQuery';
 import { DefaultRow } from './defaultRow';
 

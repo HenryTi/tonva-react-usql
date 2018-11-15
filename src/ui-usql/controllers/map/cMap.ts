@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { CEntity, EntityUI } from "../VM";
+import { CEntity, EntityUI } from "../CVEntity";
 import { Map, Tuid, BoxId, Field, TuidMain } from "../../entities";
 import { VMapMain } from "./vMain";
 import { observable } from "mobx";

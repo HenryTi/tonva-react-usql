@@ -1,31 +1,20 @@
-import * as React from 'react';
-import { Controller, VPage, View } from 'tonva-tools';
-import { Entity, Field, TuidMain } from '../entities';
-import { CUsq } from './usq/cUsq';
-import { VForm, FieldInputs, FieldCall, FormOptions, FormMode } from './form';
-import { CQuerySelect } from './query';
-import { FormUI, FieldTuidUI } from './formUI';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+import { VPage } from 'tonva-tools';
+import { VForm, FormMode } from './form';
 import { entityIcons } from './icons';
-
-export abstract class ControllerUsq extends Controller{
-    constructor(cUsq: CUsq, res:any) {
-        super(res);
-        this.cUsq = cUsq;
-    }
-    cUsq: CUsq;
-}
-
-export interface EntityUI {
-    form?: FormUI;
-    //label: string;
-    //res?: any;
-}
-
-export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui: UI, res: any) {
+import { ControllerUsq } from './ControllerUsq';
+export class CEntity extends ControllerUsq {
+    constructor(cUsq, entity, ui, res) {
         super(cUsq, res);
         Object.setPrototypeOf(this.x, cUsq.x);
-        let {name, typeName} = entity;
+        let { name, typeName } = entity;
         this.entity = entity;
         //let entityUI = cUsq.getUI<T, UI>(entity);
         //let {ui, res} = entityUI;
@@ -33,23 +22,21 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         this.label = this.res.label || name;
         this.icon = entityIcons[typeName];
     }
-    readonly entity: T;
-    readonly ui: UI;
-
-    protected async beforeStart() {
-        await super.beforeStart();
-        await this.entity.loadSchema();
+    beforeStart() {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            yield _super("beforeStart").call(this);
+            yield this.entity.loadSchema();
+        });
     }
-
-    createForm(onSubmit:()=>Promise<void>, values?:any, mode?:FormMode) {
+    createForm(onSubmit, values, mode) {
         let options = this.buildFormOptions(mode);
         let ret = new VForm(options, onSubmit);
         ret.setValues(values);
         return ret;
     }
-
-    private buildFormOptions(mode?:FormMode):FormOptions {
-        let {fields, arrFields} = this.entity;
+    buildFormOptions(mode) {
+        let { fields, arrFields } = this.entity;
         let none, submitCaption, arrNewCaption, arrEditCaption, arrTitleNewButton;
         if (this.res !== undefined) {
             none = this.res['none'];
@@ -68,10 +55,11 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         if (arrEditCaption === undefined)
             arrEditCaption = this.cUsq.res['arrEdit'] || 'Edit';
         if (arrTitleNewButton === undefined)
-        arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
-        if (mode === undefined) mode = FormMode.new;
+            arrTitleNewButton = this.cUsq.res['arrTitleNewButton'];
+        if (mode === undefined)
+            mode = FormMode.new;
         let formUI = this.ui.form;
-        let ret:FormOptions = {
+        let ret = {
             fields: fields,
             arrs: arrFields,
             ui: formUI,
@@ -83,25 +71,23 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             arrEditCaption: arrEditCaption,
             arrTitleNewButton: arrTitleNewButton,
             mode: mode,
-        }
+        };
         return ret;
     }
-
-    private buildInputs(formUI: FormUI):FieldInputs {
-        let {fields, arrFields} = this.entity;
-        let ret:FieldInputs = {};
+    buildInputs(formUI) {
+        let { fields, arrFields } = this.entity;
+        let ret = {};
         this.buildFieldsInputs(ret, fields, undefined, formUI);
         if (arrFields !== undefined) {
             for (let arr of arrFields) {
-                let {name, fields} = arr;
+                let { name, fields } = arr;
                 let items = formUI && formUI.items;
-                this.buildFieldsInputs(ret, fields, name, items && items[name] as FormUI);
+                this.buildFieldsInputs(ret, fields, name, items && items[name]);
             }
         }
         return ret;
     }
-
-    private buildFieldsInputs(ret:FieldInputs, fields:Field[], arr:string, formUI: FormUI) {
+    buildFieldsInputs(ret, fields, arr, formUI) {
         if (arr !== undefined) {
             let arrFieldInputs = ret[arr];
             if (arrFieldInputs === undefined) {
@@ -110,9 +96,10 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             }
         }
         for (let field of fields) {
-            let {name, _tuid} = field;
-            if (_tuid === undefined) continue;
-            let fieldUI = formUI && formUI.items && formUI.items[name] as FieldTuidUI;
+            let { name, _tuid } = field;
+            if (_tuid === undefined)
+                continue;
+            let fieldUI = formUI && formUI.items && formUI.items[name];
             ret[name] = {
                 select: this.buildSelect(field, arr, fieldUI),
                 content: this.buildContent(field, arr),
@@ -120,49 +107,44 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
             };
         }
     }
-
-    protected buildSelect(field:Field, arr:string, fieldUI: FieldTuidUI):FieldCall {
-        return async (form:VForm, field:Field, values:any):Promise<any> => {
-            let {_tuid, _ownerField} = field;
+    buildSelect(field, arr, fieldUI) {
+        return (form, field, values) => __awaiter(this, void 0, void 0, function* () {
+            let { _tuid, _ownerField } = field;
             let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
-            let param:any = undefined;
-            if (_ownerField !== undefined) param = form.getValue(_ownerField.name);
+            let param = undefined;
+            if (_ownerField !== undefined)
+                param = form.getValue(_ownerField.name);
             if (fieldUI && fieldUI.autoList === true) {
                 console.log('select search set param=empty string');
                 param = '';
             }
-            let ret = await cTuidSelect.call(param);
+            let ret = yield cTuidSelect.call(param);
             cTuidSelect.removeCeased(); // 清除已经废弃的顶部页面
-            if (ret === undefined) return undefined;
+            if (ret === undefined)
+                return undefined;
             let id = cTuidSelect.idFromItem(ret);
             _tuid.useId(id);
             return id;
-        };
+        });
     }
-
-    protected buildContent(field:Field, arr:string): React.StatelessComponent<any> {
+    buildContent(field, arr) {
         return;
     }
-
-    cQuerySelect(queryName:string):CQuerySelect {
+    cQuerySelect(queryName) {
         return this.cUsq.cQuerySelect(queryName);
     }
 }
-
-export abstract class VEntity<T extends Entity, UI extends EntityUI, C extends CEntity<T, UI>> extends VPage<C> {
-    protected readonly entity: T;
-    protected readonly ui: UI;
-    constructor(controller: C) {
+export class VEntity extends VPage {
+    constructor(controller) {
         super(controller);
         this.entity = controller.entity;
         this.ui = controller.ui;
     }
-
-    get label():string {return this.controller.label}
-
+    get label() { return this.controller.label; }
     //private _form_$: VForm;
-    protected createForm(onSubmit:()=>Promise<void>, values?:any, mode?:FormMode): VForm {
+    createForm(onSubmit, values, mode) {
         //if (this._form_$ !== undefined) return this._form_$;
         return this.controller.createForm(onSubmit, values, mode);
     }
 }
+//# sourceMappingURL=CVEntity.js.map

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import { List, LMR, EasyDate, Muted } from 'tonva-react-form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 export class VArchives extends VEntity {
     constructor() {
         super(...arguments);

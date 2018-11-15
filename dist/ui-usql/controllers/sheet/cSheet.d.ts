@@ -1,7 +1,7 @@
 import { IObservableArray } from "mobx";
 import { TypeVPage, PageItems } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
-import { CEntity, EntityUI } from "../VM";
+import { CEntity, EntityUI } from "../CVEntity";
 export interface SheetActionUI {
     label: string;
 }

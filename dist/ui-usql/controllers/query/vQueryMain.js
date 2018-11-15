@@ -10,7 +10,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { List, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { DefaultRow } from './defaultRow';
 export class VQueryMain extends VEntity {
     constructor() {

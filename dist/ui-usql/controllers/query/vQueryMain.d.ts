@@ -1,6 +1,6 @@
 import { Query } from '../../entities';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { QueryUI, CQuery } from './cQuery';
 export declare class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
     protected vForm: VForm;

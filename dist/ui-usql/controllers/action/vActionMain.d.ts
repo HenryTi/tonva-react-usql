@@ -1,5 +1,5 @@
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CAction, ActionUI } from './cAction';
 import { Action } from '../../entities';
 export declare class VActionMain extends VEntity<Action, ActionUI, CAction> {

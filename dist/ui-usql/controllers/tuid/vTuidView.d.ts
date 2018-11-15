@@ -1,5 +1,5 @@
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { TuidMain } from '../../entities';
 import { TuidUI, CTuidMain } from './cTuid';
 export declare type TypeVTuidView = typeof VTuidView;

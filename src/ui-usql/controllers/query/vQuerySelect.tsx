@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FA, SearchBox, List } from 'tonva-react-form';
 import { Page, PageItems } from 'tonva-tools';
 import { Query } from '../../entities';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { QueryUI, CQuerySelect } from './cQuery';
 import { DefaultRow } from './defaultRow';
 

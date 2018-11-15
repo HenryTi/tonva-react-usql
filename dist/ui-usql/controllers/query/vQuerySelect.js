@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as React from 'react';
 import { SearchBox, List } from 'tonva-react-form';
 import { Page, PageItems } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { DefaultRow } from './defaultRow';
 export class VQuerySelect extends VEntity {
     constructor() {

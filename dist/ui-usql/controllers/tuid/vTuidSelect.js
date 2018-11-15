@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { Page } from 'tonva-tools';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { SearchBox, List } from 'tonva-react-form';
 import React from 'react';
 import { RowContent } from '../form/viewModel';

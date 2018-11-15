@@ -9,7 +9,7 @@ import { ActionUI, CAction } from '../action';
 import { QueryUI, CQuery, CQuerySelect } from '../query';
 import { CTuidMain, TuidUI, CTuid, CTuidInfo, CTuidSelect } from '../tuid';
 import { MapUI, CMap } from '../map';
-import { CEntity, EntityUI } from '../VM';
+import { CEntity, EntityUI } from '../CVEntity';
 import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
 import { CHistory, HistoryUI } from '../history';

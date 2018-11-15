@@ -5,7 +5,7 @@ import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { jsonStringify } from '../../tools';
 import { VForm } from '../form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { TuidMain } from '../../entities';
 import { TuidUI, CTuidMain } from './cTuid';
 

@@ -1,5 +1,5 @@
 import { StatelessComponent } from "react";
-import { CEntity, EntityUI } from "../VM";
+import { CEntity, EntityUI } from "../CVEntity";
 import { Query } from "../../entities";
 import { VQueryMain } from "./vQueryMain";
 import { VQuerySelect } from "./vQuerySelect";

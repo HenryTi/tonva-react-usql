@@ -1,5 +1,5 @@
 import { TuidMain, TuidDiv } from '../../entities';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { TuidUI, CTuidMain, CTuidDiv } from './cTuid';
 export declare abstract class VTuidMainListBase extends VEntity<TuidMain, TuidUI, CTuidMain> {
     protected rowContent: (row: any) => JSX.Element;

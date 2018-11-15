@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Page } from 'tonva-tools';
 import {List, LMR, FA, EasyDate, Muted} from 'tonva-react-form';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { Sheet } from '../../entities';
 import { SheetUI, CSheet } from './cSheet';
 

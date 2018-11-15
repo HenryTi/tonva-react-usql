@@ -4,7 +4,7 @@ import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
 import { Map } from '../../entities';
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { CMap, MapItem, MapKey, MapUI } from './cMap';
 import { PureJSONContent } from '../form/viewModel';
 

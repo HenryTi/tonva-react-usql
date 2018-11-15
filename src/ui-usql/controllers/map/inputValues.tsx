@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { VEntity } from "../VM";
+import { VEntity } from "../CVEntity";
 import { MapUI, CMap } from "./cMap";
 import { Map } from "../../entities";
 import { Page } from "tonva-tools";

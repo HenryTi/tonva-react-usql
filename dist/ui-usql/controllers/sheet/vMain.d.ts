@@ -1,4 +1,4 @@
-import { VEntity } from '../VM';
+import { VEntity } from '../CVEntity';
 import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
 export declare class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
