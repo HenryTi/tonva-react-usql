@@ -9,6 +9,7 @@ export * from './history';
 export * from './pending';
 export * from './form/viewModel';
 export * from './form';
+export * from './ControllerUsq';
 export * from './CVEntity';
 export * from './link';
 export * from './icons';
