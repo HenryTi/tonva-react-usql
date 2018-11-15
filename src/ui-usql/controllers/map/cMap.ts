@@ -169,8 +169,10 @@ export class CMap extends CEntity<Map, MapUI> {
             arr1['_' + this.keyFields[keysLast].name] = 0;
             let {fields} = this.entity;
             for (let f of fields) {
-                let {name, type} = f;
-                arr1['_' + f.name] = fieldDefaultValue(type);
+                let {name, type, null:nullable} = f;
+                if (!(nullable === true)) {
+                    arr1['_' + f.name] = fieldDefaultValue(type);
+                }
             }
         }
         data.arr1 = [arr1];
