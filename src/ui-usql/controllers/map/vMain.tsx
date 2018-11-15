@@ -41,8 +41,8 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
         if (isLeaf === true) {
             content = undefined; //<div className="ml-5">leaf</div>;
             if (values) {
-                valuesView = null; // 现在不显示values content了
-                //valuesView = (valuesContent || PureJSONContent)(values, this.x);
+                //valuesView = null; // 现在不显示values content了
+                valuesView = (valuesContent || PureJSONContent)(values, this.x);
             }
         }
         else {
@@ -55,11 +55,11 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
                 none={none} />
         }
         return <div className="d-flex flex-column">
-            <LMR className={className('px-2', 'py-1', border)} 
-                left={<div className="py-1">{box.content(keyContent, this.x)}</div>}
+            <LMR className={className('px-3', 'py-2', border)} 
                 right={right}
             >
-                {valuesView}
+                <div className="py-1">{box.content(keyContent, this.x)}</div>
+                <div className="py-1 font-weight-bold">{valuesView}</div>
             </LMR>
             {content}
         </div>;

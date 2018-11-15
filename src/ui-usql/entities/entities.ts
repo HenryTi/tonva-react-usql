@@ -14,10 +14,31 @@ export interface Usq {
     showTuid(tuid:Tuid, id:number):Promise<void>;
 }
 
+export type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
+    | 'datetime' | 'date' | 'time';
+
+export function fieldDefaultValue(type:FieldType) {
+    switch (type) {
+        case 'tinyint':
+        case 'smallint':
+        case 'int':
+        case 'bigint':
+        case 'dec':
+            return 0;
+        case 'char':
+        case 'text': 
+            return '';
+        case 'datetime':
+        case 'date':
+            return '2000-1-1';
+        case 'time':
+            return '0:00';
+    }
+}
+
 export interface Field {
     name: string;
-    type: 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
-        | 'datetime' | 'date' | 'time';
+    type: FieldType;
     tuid?: string;
     arr?: string;
     url?: string;

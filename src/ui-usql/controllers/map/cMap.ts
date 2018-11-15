@@ -1,11 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import { CEntity, EntityUI } from "../CVEntity";
-import { Map, Tuid, BoxId, Field, TuidMain } from "../../entities";
+import { Map, Tuid, BoxId, Field, TuidMain, fieldDefaultValue } from "../../entities";
 import { VMapMain } from "./vMain";
 import { observable } from "mobx";
 import { PureJSONContent } from '../form/viewModel';
-import { VForm } from '../form';
 import { VInputValues } from './inputValues';
 
 export interface MapKey {
@@ -166,7 +165,13 @@ export class CMap extends CEntity<Map, MapUI> {
             values[kn] = data['_' + kn] = idBox;
             for (let i=idx+1;i<keysLast;i++)
                 data['_' + this.keyFields[i].name] = 0;
+            // 填map的key field 0 值
             arr1['_' + this.keyFields[keysLast].name] = 0;
+            let {fields} = this.entity;
+            for (let f of fields) {
+                let {name, type} = f;
+                arr1['_' + f.name] = fieldDefaultValue(type);
+            }
         }
         data.arr1 = [arr1];
         await this.entity.actions.add.submit(data);
@@ -221,8 +226,4 @@ export class CMap extends CEntity<Map, MapUI> {
     }
 
     protected get VMapMain():typeof VMapMain {return VMapMain}
-    /*
-    async submit(values:any) {
-        return this.entity.submit(values);
-    }*/
 }

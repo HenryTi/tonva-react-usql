@@ -74,7 +74,7 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
         */
         let me = this.user.id;
         let {id, preState, state} = sheetData;
-        console.log({$:'onSheet', from:from, to:to.join(','), id:id, preState:preState, state:state, me:me})
+        console.log({$:'onMessage sheet', from:from, to:to.join(','), id:id, preState:preState, state:state, me:me, sheetData:sheetData})
         if (from === me) {
             this.sheetActPreState(id, preState);
         }

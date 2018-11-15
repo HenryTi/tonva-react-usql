@@ -15,6 +15,24 @@ import { Book } from './book';
 import { History } from './history';
 import { Map } from './map';
 import { Pending } from './pending';
+export function fieldDefaultValue(type) {
+    switch (type) {
+        case 'tinyint':
+        case 'smallint':
+        case 'int':
+        case 'bigint':
+        case 'dec':
+            return 0;
+        case 'char':
+        case 'text':
+            return '';
+        case 'datetime':
+        case 'date':
+            return '2000-1-1';
+        case 'time':
+            return '0:00';
+    }
+}
 export class Entities {
     constructor(usq, usqApi, appId) {
         this.tuids = {};

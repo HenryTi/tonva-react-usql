@@ -12,9 +12,11 @@ export interface Usq {
     getTuidContent(tuid: Tuid): React.StatelessComponent<any>;
     showTuid(tuid: Tuid, id: number): Promise<void>;
 }
+export declare type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' | 'datetime' | 'date' | 'time';
+export declare function fieldDefaultValue(type: FieldType): 0 | "" | "2000-1-1" | "0:00";
 export interface Field {
     name: string;
-    type: 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' | 'datetime' | 'date' | 'time';
+    type: FieldType;
     tuid?: string;
     arr?: string;
     url?: string;

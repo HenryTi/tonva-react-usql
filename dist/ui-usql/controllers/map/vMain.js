@@ -12,6 +12,7 @@ import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../CVEntity';
+import { PureJSONContent } from '../form/viewModel';
 export class VMapMain extends VEntity {
     constructor() {
         super(...arguments);
@@ -43,8 +44,8 @@ export class VMapMain extends VEntity {
             if (isLeaf === true) {
                 content = undefined; //<div className="ml-5">leaf</div>;
                 if (values) {
-                    valuesView = null; // 现在不显示values content了
-                    //valuesView = (valuesContent || PureJSONContent)(values, this.x);
+                    //valuesView = null; // 现在不显示values content了
+                    valuesView = (valuesContent || PureJSONContent)(values, this.x);
                 }
             }
             else {
@@ -53,7 +54,9 @@ export class VMapMain extends VEntity {
                 content = React.createElement(List, { className: "ml-4", items: children, item: { onClick: undefined, render: this.itemRender }, none: none });
             }
             return React.createElement("div", { className: "d-flex flex-column" },
-                React.createElement(LMR, { className: className('px-2', 'py-1', border), left: React.createElement("div", { className: "py-1" }, box.content(keyContent, this.x)), right: right }, valuesView),
+                React.createElement(LMR, { className: className('px-3', 'py-2', border), right: right },
+                    React.createElement("div", { className: "py-1" }, box.content(keyContent, this.x)),
+                    React.createElement("div", { className: "py-1 font-weight-bold" }, valuesView)),
                 content);
         });
     }
