@@ -57,7 +57,7 @@ export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
     clickMainRow = async (item:any) => {
         this.ceasePage();
         if (this.controller.entity.owner === undefined) {
-            this.return(item);
+            this.returnCall(item);
             return;
         }
         await this.showDiv(this.entity.getIdFromObj(item));
@@ -73,6 +73,6 @@ export class VTuidSelect extends VEntity<Tuid, TuidUI, CTuid<Tuid>> {
     renderDivRow = (item:any, index:number):JSX.Element => <this.divRowContent {...item} />;
     clickDivRow = (item:any) => {
         this.ceasePage();
-        this.return(item);
+        this.returnCall(item);
     }
 }

@@ -36,7 +36,9 @@ export class CApp extends Controller {
     readonly caption: string; // = 'View Model 版的 Usql App';
 
     cUsqCollection: {[usq:string]: CUsq} = {};
-    protected async loadUsqs(): Promise<void> {
+    // return errors;
+    protected async loadUsqs(): Promise<string[]> {
+        let retErrors:string[] = [];
         let unit = meInFrame.unit;
         let app = await loadAppUsqs(this.appOwner, this.appName);
         let {id, usqs} = app;
@@ -46,9 +48,15 @@ export class CApp extends Controller {
             let usq = usqOwner + '/' + usqName;
             let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
             let cUsq = this.newCUsq(usq, usqId, access, ui || {});
-            await cUsq.loadSchema();
+            let retError = await cUsq.loadSchema();
+            if (retError !== undefined) {
+                retErrors.push(retError);
+                continue;
+            }
             this.cUsqCollection[usq] = cUsq;
         }
+        if (retErrors.length === 0) return;
+        return retErrors;
     }
 
     protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
@@ -149,7 +157,16 @@ export class CApp extends Controller {
     }
 
     private async showMainPage() {
-        await this.loadUsqs();
+        let retErrors = await this.loadUsqs();
+        if (retErrors !== undefined) {
+            this.openPage(<Page header="ERROR">
+                <div className="m-3">
+                    <div>Load Usqs 发生错误：</div>
+                    {retErrors.map((r, i) => <div key={i}>{r}</div>)}
+                </div>
+            </Page>);
+            return;
+        }
 
         // #tvRwPBwMef-23-sheet-api-108
         let parts = document.location.hash.split('-');

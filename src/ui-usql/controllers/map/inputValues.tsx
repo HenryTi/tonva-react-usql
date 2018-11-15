@@ -16,7 +16,7 @@ export class VInputValues extends VEntity<Map, MapUI, CMap> {
     private onValuesSubmit = async () => {
         this.ceasePage();
         let values = this.vForm.getValues();
-        this.return(values);
+        this.returnCall(values);
     }
 
     private view = () => {

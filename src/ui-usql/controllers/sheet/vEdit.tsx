@@ -16,7 +16,7 @@ export class VSheetEdit extends VSheetView { //VEntity<Sheet, SheetUI, CSheet> {
         let values = this.vForm.getValues();
         await this.controller.saveSheet(values, this.vForm.values);
         this.closePage();
-        this.return(this.vForm.values);
+        this.returnCall(this.vForm.values);
     }
 
     protected view = () => <Page header={this.label}>

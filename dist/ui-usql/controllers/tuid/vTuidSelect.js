@@ -28,7 +28,7 @@ export class VTuidSelect extends VEntity {
         this.clickMainRow = (item) => __awaiter(this, void 0, void 0, function* () {
             this.ceasePage();
             if (this.controller.entity.owner === undefined) {
-                this.return(item);
+                this.returnCall(item);
                 return;
             }
             yield this.showDiv(this.entity.getIdFromObj(item));
@@ -40,7 +40,7 @@ export class VTuidSelect extends VEntity {
         this.renderDivRow = (item, index) => React.createElement(this.divRowContent, Object.assign({}, item));
         this.clickDivRow = (item) => {
             this.ceasePage();
-            this.return(item);
+            this.returnCall(item);
         };
     }
     showEntry(param) {

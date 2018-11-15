@@ -47,8 +47,10 @@ export class CApp extends Controller {
         this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
+    // return errors;
     loadUsqs() {
         return __awaiter(this, void 0, void 0, function* () {
+            let retErrors = [];
             let unit = meInFrame.unit;
             let app = yield loadAppUsqs(this.appOwner, this.appName);
             let { id, usqs } = app;
@@ -58,9 +60,16 @@ export class CApp extends Controller {
                 let usq = usqOwner + '/' + usqName;
                 let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
                 let cUsq = this.newCUsq(usq, usqId, access, ui || {});
-                yield cUsq.loadSchema();
+                let retError = yield cUsq.loadSchema();
+                if (retError !== undefined) {
+                    retErrors.push(retError);
+                    continue;
+                }
                 this.cUsqCollection[usq] = cUsq;
             }
+            if (retErrors.length === 0)
+                return;
+            return retErrors;
         });
     }
     newCUsq(usq, usqId, access, ui) {
@@ -146,7 +155,14 @@ export class CApp extends Controller {
     }
     showMainPage() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.loadUsqs();
+            let retErrors = yield this.loadUsqs();
+            if (retErrors !== undefined) {
+                this.openPage(React.createElement(Page, { header: "ERROR" },
+                    React.createElement("div", { className: "m-3" },
+                        React.createElement("div", null, "Load Usqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
+                        retErrors.map((r, i) => React.createElement("div", { key: i }, r)))));
+                return;
+            }
             // #tvRwPBwMef-23-sheet-api-108
             let parts = document.location.hash.split('-');
             if (parts.length > 2) {

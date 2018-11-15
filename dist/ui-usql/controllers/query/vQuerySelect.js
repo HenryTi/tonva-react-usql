@@ -39,7 +39,7 @@ export class VQuerySelect extends VEntity {
     }
     callOnSelected(item) {
         this.closePage();
-        this.return(item);
+        this.returnCall(item);
     }
 }
 export class QueryPageItems extends PageItems {

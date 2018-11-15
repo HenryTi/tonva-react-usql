@@ -17,7 +17,7 @@ export class VSheetEdit extends VSheetView {
             let values = this.vForm.getValues();
             yield this.controller.saveSheet(values, this.vForm.values);
             this.closePage();
-            this.return(this.vForm.values);
+            this.returnCall(this.vForm.values);
         });
         this.view = () => React.createElement(Page, { header: this.label }, this.vForm.render());
     }

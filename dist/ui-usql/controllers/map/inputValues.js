@@ -15,7 +15,7 @@ export class VInputValues extends VEntity {
         this.onValuesSubmit = () => __awaiter(this, void 0, void 0, function* () {
             this.ceasePage();
             let values = this.vForm.getValues();
-            this.return(values);
+            this.returnCall(values);
         });
         this.view = () => {
             return React.createElement(Page, null, this.vForm.render());

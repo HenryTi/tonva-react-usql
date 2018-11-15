@@ -28,7 +28,7 @@ export class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> {
 
     private callOnSelected(item:any) {
        this.closePage();
-       this.return(item);
+       this.returnCall(item);
     }
     clickRow = (item:any) => {
         this.callOnSelected(item);

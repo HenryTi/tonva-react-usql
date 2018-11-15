@@ -72,7 +72,7 @@ export declare class CUsq extends Controller implements Usq {
     entities: Entities;
     error: string;
     protected loadEntites(): Promise<void>;
-    loadSchema(): Promise<void>;
+    loadSchema(): Promise<string>;
     getTuid(name: string): TuidMain;
     getQuerySearch(name: string): Promise<Query>;
     getTuidPlaceHolder(tuid: Tuid): any;
