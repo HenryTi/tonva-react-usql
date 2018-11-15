@@ -1,6 +1,7 @@
 import { Controller, TypeVPage } from 'tonva-tools';
 import { CUsq, UsqUI } from './usq';
 export interface AppUI {
+    CApp?: typeof CApp;
     CUsq?: typeof CUsq;
     main?: TypeVPage<CApp>;
     usqs: {

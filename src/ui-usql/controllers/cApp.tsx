@@ -6,6 +6,7 @@ import { CUsq, EntityType, UsqUI } from './usq';
 import { centerApi } from '../centerApi';
 
 export interface AppUI {
+    CApp?: typeof CApp;
     CUsq?: typeof CUsq;
     main?: TypeVPage<CApp>;
     usqs: {[usq:string]: UsqUI};
