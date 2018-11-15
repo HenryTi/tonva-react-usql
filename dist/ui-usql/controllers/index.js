@@ -1,4 +1,5 @@
 export * from './CApp';
+export * from './startApp';
 export * from './usq';
 export * from './action';
 export * from './tuid';
