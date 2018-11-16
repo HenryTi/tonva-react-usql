@@ -164,7 +164,6 @@ export class CUsq extends Controller implements Usq {
         }
     }
 
-    getTuid(name:string) {return this.entities.tuid(name)}
     async getQuerySearch(name:string):Promise<Query> {
         let query = this.entities.query(name);
         if (query === undefined) 
@@ -208,6 +207,15 @@ export class CUsq extends Controller implements Usq {
         let cSheet = this.cSheet(sheet);
         await cSheet.startSheet(sheetId);
     }
+
+    getSheet(entityName:string) {return this.entities.sheet(entityName);}
+    getAction(entityName:string) {return this.entities.action(entityName);}
+    getQuery(entityName:string) {return this.entities.query(entityName);}
+    getBook(entityName:string) {return this.entities.book(entityName);}
+    getMap(entityName:string) {return this.entities.map(entityName);}
+    getHistory(entityName:string) {return this.entities.history(entityName);}
+    getPending(entityName:string) {return this.entities.pending(entityName);}
+    getTuid(entityName:string) {return this.entities.tuid(entityName)}
 
     cFromName(entityType:EntityType, entityName:string): CEntity<Entity, EntityUI> {
         switch (entityType) {
