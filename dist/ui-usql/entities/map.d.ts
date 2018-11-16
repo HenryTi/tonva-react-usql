@@ -9,6 +9,7 @@ interface MapActions {
 interface MapQueries {
     all: Query;
     page: Query;
+    query: Query;
 }
 export declare class Map extends Entity {
     readonly typeName: string;

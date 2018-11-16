@@ -127,7 +127,6 @@ export class CUsq extends Controller {
             }
         });
     }
-    getTuid(name) { return this.entities.tuid(name); }
     getQuerySearch(name) {
         return __awaiter(this, void 0, void 0, function* () {
             let query = this.entities.query(name);
@@ -173,6 +172,14 @@ export class CUsq extends Controller {
             yield cSheet.startSheet(sheetId);
         });
     }
+    getSheet(entityName) { return this.entities.sheet(entityName); }
+    getAction(entityName) { return this.entities.action(entityName); }
+    getQuery(entityName) { return this.entities.query(entityName); }
+    getBook(entityName) { return this.entities.book(entityName); }
+    getMap(entityName) { return this.entities.map(entityName); }
+    getHistory(entityName) { return this.entities.history(entityName); }
+    getPending(entityName) { return this.entities.pending(entityName); }
+    getTuid(entityName) { return this.entities.tuid(entityName); }
     cFromName(entityType, entityName) {
         switch (entityType) {
             case 'sheet':

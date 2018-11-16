@@ -10,6 +10,7 @@ interface MapActions {
 interface MapQueries {
     all: Query;
     page: Query;
+    query: Query;
 }
 
 export class Map extends Entity {
