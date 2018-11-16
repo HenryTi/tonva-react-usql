@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { Entity } from './entity';
 export class Map extends Entity {
     constructor() {
@@ -25,6 +33,36 @@ export class Map extends Entity {
             query.setSchema(schema);
             this.queries[i] = query;
         }
+    }
+    add(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            return yield this.actions.add.submit(param);
+        });
+    }
+    del(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            return yield this.actions.del.submit(param);
+        });
+    }
+    all() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            return yield this.queries.all.query({});
+        });
+    }
+    page(param, pageStart, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            return yield this.queries.page.page(param, pageStart, pageSize);
+        });
+    }
+    query(param) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            return yield this.queries.query.query(param);
+        });
     }
 }
 //# sourceMappingURL=map.js.map

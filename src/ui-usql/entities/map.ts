@@ -39,4 +39,29 @@ export class Map extends Entity {
             this.queries[i] = query;
         }
     }
+
+    async add(param:any) {
+        await this.loadSchema();
+        return await this.actions.add.submit(param);
+    }
+
+    async del(param:any) {
+        await this.loadSchema();
+        return await this.actions.del.submit(param);
+    }
+
+    async all() {
+        await this.loadSchema();
+        return await this.queries.all.query({});
+    }
+
+    async page(param:any, pageStart:any, pageSize: number) {
+        await this.loadSchema();
+        return await this.queries.page.page(param, pageStart, pageSize);
+    }
+
+    async query(param:any) {
+        await this.loadSchema();
+        return await this.queries.query.query(param);
+    }
 }

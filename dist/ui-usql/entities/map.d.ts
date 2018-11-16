@@ -17,5 +17,10 @@ export declare class Map extends Entity {
     actions: MapActions;
     queries: MapQueries;
     setSchema(schema: any): void;
+    add(param: any): Promise<any>;
+    del(param: any): Promise<any>;
+    all(): Promise<any>;
+    page(param: any, pageStart: any, pageSize: number): Promise<any[]>;
+    query(param: any): Promise<any>;
 }
 export {};
