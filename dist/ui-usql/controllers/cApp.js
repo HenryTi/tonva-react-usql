@@ -88,6 +88,22 @@ export class CApp extends Controller {
         return this.cUsqCollection[apiName];
     }
     get VAppMain() { return (this.ui && this.ui.main) || VAppMain; }
+    beforeStart() {
+        const _super = name => super[name];
+        return __awaiter(this, void 0, void 0, function* () {
+            if ((yield _super("beforeStart").call(this)) === false)
+                return false;
+            let retErrors = yield this.loadUsqs();
+            if (retErrors !== undefined) {
+                this.openPage(React.createElement(Page, { header: "ERROR" },
+                    React.createElement("div", { className: "m-3" },
+                        React.createElement("div", null, "Load Usqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
+                        retErrors.map((r, i) => React.createElement("div", { key: i }, r)))));
+                return false;
+            }
+            return true;
+        });
+    }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -155,14 +171,6 @@ export class CApp extends Controller {
     }
     showMainPage() {
         return __awaiter(this, void 0, void 0, function* () {
-            let retErrors = yield this.loadUsqs();
-            if (retErrors !== undefined) {
-                this.openPage(React.createElement(Page, { header: "ERROR" },
-                    React.createElement("div", { className: "m-3" },
-                        React.createElement("div", null, "Load Usqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
-                        retErrors.map((r, i) => React.createElement("div", { key: i }, r)))));
-                return;
-            }
             // #tvRwPBwMef-23-sheet-api-108
             let parts = document.location.hash.split('-');
             if (parts.length > 2) {

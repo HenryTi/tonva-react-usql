@@ -49,7 +49,7 @@ export declare class CTuidDiv extends CTuid<TuidDiv> {
 }
 export declare class CTuidSelect extends CTuid<Tuid> {
     protected internalStart(param?: any): Promise<void>;
-    protected beforeStart(): Promise<void>;
+    protected beforeStart(): Promise<boolean>;
     protected readonly VTuidSelect: typeof VTuidSelect;
     idFromItem(item: any): any;
 }

@@ -25,8 +25,10 @@ export class CEntity extends ControllerUsq {
     beforeStart() {
         const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("beforeStart").call(this);
+            if ((yield _super("beforeStart").call(this)) === false)
+                return false;
             yield this.entity.loadSchema();
+            return true;
         });
     }
     createForm(onSubmit, values, mode) {

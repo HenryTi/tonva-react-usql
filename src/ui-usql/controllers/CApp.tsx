@@ -79,6 +79,21 @@ export class CApp extends Controller {
 
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
 
+    protected async beforeStart():Promise<boolean> {
+        if (await super.beforeStart() === false) return false;
+        let retErrors = await this.loadUsqs();
+        if (retErrors !== undefined) {
+            this.openPage(<Page header="ERROR">
+                <div className="m-3">
+                    <div>Load Usqs 发生错误：</div>
+                    {retErrors.map((r, i) => <div key={i}>{r}</div>)}
+                </div>
+            </Page>);
+            return false;
+        }
+        return true;
+    }
+
     protected async internalStart() {
         try {
             let hash = document.location.hash;
@@ -157,17 +172,6 @@ export class CApp extends Controller {
     }
 
     private async showMainPage() {
-        let retErrors = await this.loadUsqs();
-        if (retErrors !== undefined) {
-            this.openPage(<Page header="ERROR">
-                <div className="m-3">
-                    <div>Load Usqs 发生错误：</div>
-                    {retErrors.map((r, i) => <div key={i}>{r}</div>)}
-                </div>
-            </Page>);
-            return;
-        }
-
         // #tvRwPBwMef-23-sheet-api-108
         let parts = document.location.hash.split('-');
         if (parts.length > 2) {

@@ -29,9 +29,10 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     readonly entity: T;
     readonly ui: UI;
 
-    protected async beforeStart() {
-        await super.beforeStart();
+    protected async beforeStart():Promise<boolean> {
+        if (await super.beforeStart() === false) return false;
         await this.entity.loadSchema();
+        return true;
     }
 
     createForm(onSubmit:()=>Promise<void>, values?:any, mode?:FormMode) {

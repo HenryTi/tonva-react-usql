@@ -161,9 +161,7 @@ export class CSheet extends CEntity {
         });
     }
     startSheet(sheetId) {
-        const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("beforeStart").call(this);
             yield this.onEvent('action', sheetId);
         });
     }

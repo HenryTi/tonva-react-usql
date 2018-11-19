@@ -13,7 +13,7 @@ export declare abstract class CEntity<T extends Entity, UI extends EntityUI> ext
     constructor(cUsq: CUsq, entity: T, ui: UI, res: any);
     readonly entity: T;
     readonly ui: UI;
-    protected beforeStart(): Promise<void>;
+    protected beforeStart(): Promise<boolean>;
     createForm(onSubmit: () => Promise<void>, values?: any, mode?: FormMode): VForm;
     private buildFormOptions;
     private buildInputs;

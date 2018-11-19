@@ -127,9 +127,10 @@ export class CTuidSelect extends CTuid<Tuid> {
     protected async internalStart(param?: any):Promise<void> {
         await this.showVPage(this.VTuidSelect, param);
     }
-    protected async beforeStart() {
-        await super.beforeStart();
+    protected async beforeStart():Promise<boolean> {
+        if (await super.beforeStart() === false) return false;
         if (this.PageItems !== undefined) this.PageItems.reset();
+        return true;
     }
     protected get VTuidSelect():typeof VTuidSelect {return VTuidSelect}
     idFromItem(item:any) {
