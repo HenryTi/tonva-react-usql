@@ -79,7 +79,7 @@ export class CApp extends Controller {
 
     protected get VAppMain():TypeVPage<CApp> {return (this.ui&&this.ui.main) || VAppMain}
 
-    async internalStart() {
+    protected async internalStart() {
         try {
             let hash = document.location.hash;
             if (hash.startsWith('#tvdebug')) {
