@@ -83,8 +83,15 @@ export abstract class Tuid extends Entity {
         this.queue.push(id);
     }
 
-    valueFromId(id:number):any {
-        let v = this.cache.get(id);
+    valueFromId(id:number|BoxId):any {
+        let _id:number;
+        let tId = typeof id;
+        switch (typeof id) {
+            case 'object': _id = (id as BoxId).id; break;
+            case 'number': _id = id as number; break;
+            default: return;
+        }
+        let v = this.cache.get(_id);
         if (this.owner !== undefined && typeof v === 'object') {
             v.$owner = this.owner.boxId(v.owner); // this.owner.valueFromId(v.owner);
         }
@@ -97,8 +104,7 @@ export abstract class Tuid extends Entity {
         let v = obj[fieldName];
         let {_tuid} = f;
         if (_tuid === undefined) return v;
-        let id = typeof v === 'object'? v.id : v;
-        return _tuid.valueFromId(id);
+        return _tuid.valueFromId(v);
     }
     resetCache(id:number) {
         this.cache.delete(id);

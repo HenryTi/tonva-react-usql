@@ -208,14 +208,57 @@ export class CUsq extends Controller implements Usq {
         await cSheet.startSheet(sheetId);
     }
 
-    getSheet(entityName:string) {return this.entities.sheet(entityName);}
-    getAction(entityName:string) {return this.entities.action(entityName);}
-    getQuery(entityName:string) {return this.entities.query(entityName);}
-    getBook(entityName:string) {return this.entities.book(entityName);}
-    getMap(entityName:string) {return this.entities.map(entityName);}
-    getHistory(entityName:string) {return this.entities.history(entityName);}
-    getPending(entityName:string) {return this.entities.pending(entityName);}
-    getTuid(entityName:string) {return this.entities.tuid(entityName)}
+    sheet(entityName:string) {return this.entities.sheet(entityName);}
+    action(entityName:string) {return this.entities.action(entityName);}
+    query(entityName:string) {return this.entities.query(entityName);}
+    book(entityName:string) {return this.entities.book(entityName);}
+    map(entityName:string) {return this.entities.map(entityName);}
+    history(entityName:string) {return this.entities.history(entityName);}
+    pending(entityName:string) {return this.entities.pending(entityName);}
+    tuid(entityName:string) {return this.entities.tuid(entityName)}
+
+    cSheetFromName(entityName:string):CSheet {
+        let entity = this.entities.sheet(entityName);
+        if (entity !== undefined) return this.cSheet(entity);
+    }
+    cActionFromName(entityName:string) {
+        let entity = this.entities.action(entityName);
+        if (entity !== undefined) return this.cAction(entity);
+    }
+    cQueryFromName(entityName:string) {
+        let entity = this.entities.query(entityName);
+        if (entity !== undefined) return this.cQuery(entity);
+    }
+    cBookFromName(entityName:string) {
+        let entity = this.entities.book(entityName);
+        if (entity !== undefined) return this.cBook(entity);
+    }
+    cMapFromName(entityName:string) {
+        let entity = this.entities.map(entityName);
+        if (entity !== undefined) return this.cMap(entity);
+    }
+    cHistoryFromName(entityName:string) {
+        let entity = this.entities.history(entityName);
+        if (entity !== undefined) return this.cHistory(entity);
+    }
+    cPendingFromName(entityName:string) {
+        let entity = this.entities.pending(entityName);
+        if (entity !== undefined) return this.cPending(entity);
+    }
+    cTuidMainFromName(entityName:string) {
+        let entity = this.entities.tuid(entityName);
+        if (entity !== undefined) return this.cTuidMain(entity);
+    }
+
+    cTuidInfoFromName(entityName:string) {
+        let entity = this.entities.tuid(entityName);
+        if (entity !== undefined) return this.cTuidInfo(entity);
+    }
+
+    cTuidSelectFromName(entityName:string) {
+        let entity = this.entities.tuid(entityName);
+        if (entity !== undefined) return this.cTuidSelect(entity);
+    }
 
     cFromName(entityType:EntityType, entityName:string): CEntity<Entity, EntityUI> {
         switch (entityType) {

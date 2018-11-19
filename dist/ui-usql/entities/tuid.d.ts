@@ -22,7 +22,7 @@ export declare abstract class Tuid extends Entity {
     getIdFromObj(item: any): number;
     setSchema(schema: any): void;
     private moveToHead;
-    valueFromId(id: number): any;
+    valueFromId(id: number | BoxId): any;
     valueFromFieldName(fieldName: string, obj: any): BoxId | any;
     resetCache(id: number): void;
     useId(id: number, defer?: boolean): void;
