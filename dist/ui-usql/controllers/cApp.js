@@ -93,32 +93,78 @@ export class CApp extends Controller {
         return __awaiter(this, void 0, void 0, function* () {
             if ((yield _super("beforeStart").call(this)) === false)
                 return false;
-            let retErrors = yield this.loadUsqs();
-            if (retErrors !== undefined) {
-                this.openPage(React.createElement(Page, { header: "ERROR" },
-                    React.createElement("div", { className: "m-3" },
-                        React.createElement("div", null, "Load Usqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
-                        retErrors.map((r, i) => React.createElement("div", { key: i }, r)))));
-                return false;
-            }
-            return true;
-        });
-    }
-    internalStart() {
-        return __awaiter(this, void 0, void 0, function* () {
             try {
                 let hash = document.location.hash;
                 if (hash.startsWith('#tvdebug')) {
-                    yield this.showMainPage();
-                    return;
+                    this.isProduction = false;
+                    //await this.showMainPage();
+                    //return;
                 }
-                this.isProduction = hash.startsWith('#tv');
+                else {
+                    this.isProduction = hash.startsWith('#tv');
+                }
                 let { unit } = meInFrame;
                 if (this.isProduction === false && (unit === undefined || unit <= 0)) {
                     let app = yield loadAppUsqs(this.appOwner, this.appName);
                     let { id } = app;
                     this.id = id;
                     yield this.loadAppUnits();
+                    switch (this.appUnits.length) {
+                        case 0:
+                            //alert('当前登录的用户不支持当前的APP');
+                            //await nav.logout();
+                            this.showUnsupport();
+                            return false;
+                        case 1:
+                            unit = this.appUnits[0].id;
+                            if (unit === undefined || unit < 0) {
+                                //alert('当前unit不支持app操作，请重新登录');
+                                //await nav.logout();
+                                this.showUnsupport();
+                                return false;
+                            }
+                            meInFrame.unit = unit;
+                            break;
+                        default:
+                            nav.clear();
+                            nav.push(React.createElement(this.selectUnitPage, null));
+                            return false;
+                    }
+                }
+                let retErrors = yield this.loadUsqs();
+                if (retErrors !== undefined) {
+                    this.openPage(React.createElement(Page, { header: "ERROR" },
+                        React.createElement("div", { className: "m-3" },
+                            React.createElement("div", null, "Load Usqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
+                            retErrors.map((r, i) => React.createElement("div", { key: i }, r)))));
+                    return false;
+                }
+                return true;
+            }
+            catch (err) {
+                nav.push(React.createElement(Page, { header: "App start error!" },
+                    React.createElement("pre", null, typeof err === 'string' ? err : err.message)));
+                return false;
+            }
+        });
+    }
+    internalStart() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.showMainPage();
+            /*
+            try {
+                let hash = document.location.hash;
+                if (hash.startsWith('#tvdebug')) {
+                    await this.showMainPage();
+                    return;
+                }
+                this.isProduction = hash.startsWith('#tv');
+                let {unit} = meInFrame;
+                if (this.isProduction === false && (unit===undefined || unit<=0)) {
+                    let app = await loadAppUsqs(this.appOwner, this.appName);
+                    let {id} = app;
+                    this.id = id;
+                    await this.loadAppUnits();
                     switch (this.appUnits.length) {
                         case 0:
                             //alert('当前登录的用户不支持当前的APP');
@@ -137,16 +183,20 @@ export class CApp extends Controller {
                             break;
                         default:
                             nav.clear();
-                            nav.push(React.createElement(this.selectUnitPage, null));
+                            nav.push(<this.selectUnitPage />)
                             return;
                     }
                 }
-                yield this.showMainPage();
+                await this.showMainPage();
             }
-            catch (err) {
-                nav.push(React.createElement(Page, { header: "App start error!" },
-                    React.createElement("pre", null, typeof err === 'string' ? err : err.message)));
+            catch(err) {
+                nav.push(<Page header="App start error!">
+                    <pre>
+                        {typeof err === 'string'? err : err.message}
+                    </pre>
+                </Page>);
             }
+            */
         });
     }
     // 如果是独立app，删去显示app之前的页面。
