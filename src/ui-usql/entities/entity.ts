@@ -1,3 +1,4 @@
+import { UsqApi } from 'tonva-tools';
 import { Entities, Field, ArrFields } from './entities';
 import { TuidMain, Tuid } from './tuid';
 
@@ -26,7 +27,7 @@ export abstract class Entity {
 
     public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
-    protected get tvApi() {return this.entities.usqApi;}
+    protected get tvApi():UsqApi {return this.entities.usqApi;}
 
     public async loadSchema():Promise<void> {
         if (this.schema !== undefined) return;
