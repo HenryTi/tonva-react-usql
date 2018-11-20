@@ -10,6 +10,6 @@ export declare class CLink extends Link {
     protected label: string | JSX.Element;
     constructor(controller: Controller);
     onClick: () => Promise<void>;
-    render(className?: string): React.SFCElement<string>;
+    render(className?: string): React.FunctionComponentElement<string>;
     protected view: (className?: string) => JSX.Element;
 }

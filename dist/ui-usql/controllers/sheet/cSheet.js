@@ -162,6 +162,8 @@ export class CSheet extends CEntity {
     }
     startSheet(sheetId) {
         return __awaiter(this, void 0, void 0, function* () {
+            if ((yield this.beforeStart()) === false)
+                return;
             yield this.onEvent('action', sheetId);
         });
     }

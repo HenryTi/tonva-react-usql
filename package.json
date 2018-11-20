@@ -17,10 +17,8 @@
     "lodash": "^4.17.4",
     "mobx": "^5.5.2",
     "mobx-react": "^5.3.6",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-popper": "^0.7.4",
-    "react-transition-group": "^2.2.1",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "reactstrap": "^5.0.0"
   },
   "peerDependencies": {
@@ -31,9 +29,9 @@
     "@types/classnames": "^2.2.3",
     "@types/lodash": "^4.14.85",
     "@types/node": "^8.10.30",
-    "@types/react": "^16.4.16",
+    "@types/react": "^16.7.6",
     "@types/react-dom": "^16.0.9",
-    "@types/reactstrap": "^5.0.6",
+    "@types/reactstrap": "^5.0.27",
     "typescript": "^3.1.3"
   }
 }

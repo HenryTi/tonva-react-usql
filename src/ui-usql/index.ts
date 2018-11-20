@@ -3,6 +3,7 @@ import { CApp, AppUI } from './controllers';
 export * from './entities';
 export * from './controllers';
 export * from './centerApi';
+export * from './tools';
 
 function convertUIKeyToLowercase(obj: any) {
     for (let i in obj) {
