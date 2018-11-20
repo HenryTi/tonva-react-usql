@@ -55,14 +55,14 @@ export abstract class Entity {
         }, 4);
     }
 
-    getTuid(field:Field):Tuid {
+    tuidFromField(field:Field):Tuid {
         let {_tuid, tuid} = field;
         if (tuid === undefined) return;
         if (_tuid !== undefined) return _tuid;
         return field._tuid = this.entities.getTuid(tuid, undefined);
     }
 
-    getTuidFromName(fieldName:string, arrName?:string):Tuid {
+    tuidFromName(fieldName:string, arrName?:string):Tuid {
         if (this.schema === undefined) return;
         let {fields, arrs} = this.schema;
         let entities = this.entities;
