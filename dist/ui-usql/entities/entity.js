@@ -48,7 +48,7 @@ export class Entity {
             return value;
         }, 4);
     }
-    getTuid(field) {
+    tuidFromField(field) {
         let { _tuid, tuid } = field;
         if (tuid === undefined)
             return;
@@ -56,7 +56,7 @@ export class Entity {
             return _tuid;
         return field._tuid = this.entities.getTuid(tuid, undefined);
     }
-    getTuidFromName(fieldName, arrName) {
+    tuidFromName(fieldName, arrName) {
         if (this.schema === undefined)
             return;
         let { fields, arrs } = this.schema;

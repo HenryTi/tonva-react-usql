@@ -18,8 +18,8 @@ export declare abstract class Entity {
     loadSchema(): Promise<void>;
     setSchema(schema: any): void;
     schemaStringify(): string;
-    getTuid(field: Field): Tuid;
-    getTuidFromName(fieldName: string, arrName?: string): Tuid;
+    tuidFromField(field: Field): Tuid;
+    tuidFromName(fieldName: string, arrName?: string): Tuid;
     pack(data: any): string;
     private escape;
     private packRow;
