@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { BoxId, Tuid } from "../entities";
 import { observer } from 'mobx-react';
+import { BoxId, Tuid } from "../entities";
+import { PureJSONContent } from '../controllers';
 
 interface Props {
     tuidValue: number|BoxId, 
@@ -12,6 +13,10 @@ interface Props {
 function boxIdContent(bi: any, templet, x) {
     let {id, _$tuid, _$com} = bi;
     let t:Tuid = _$tuid;
+    if (t === undefined) {
+        if (templet !== undefined) return templet(bi, x);
+        return PureJSONContent(bi, x);
+    }
     let com = templet || _$com;
     if (com === undefined) {
         com = bi._$com = t.getTuidContent();

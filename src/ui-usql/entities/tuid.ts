@@ -216,10 +216,12 @@ export abstract class Tuid extends Entity {
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
         let values = await this.tvApi.tuidGet(this.name, id);
+        values._$tuid = this;
         this.cacheValue(values);
         this.cacheTuidFieldValues(values);
         return values;
     }
+    protected getDiv(divName:string):TuidDiv {return;}
     private cacheTuidFieldValues(values:any) {
         let {fields, arrs} = this.schema;
         this.cacheFieldsInValue(values, fields);
@@ -228,7 +230,9 @@ export abstract class Tuid extends Entity {
                 let {name, fields} = arr;
                 let arrValues = values[name];
                 if (arrValues === undefined) continue;
+                let tuidDiv = this.getDiv(name);
                 for (let row of arrValues) {
+                    row._$tuid = tuidDiv;
                     row.$owner = this.boxId(row.owner); 
                     this.cacheFieldsInValue(row, fields);
                 }
@@ -317,7 +321,7 @@ export class TuidMain extends Tuid {
             }
         }
     }
-
+    protected getDiv(divName:string):TuidDiv {return this.divs[divName];}
     async cacheIds():Promise<void> {
         await super.cacheIds();
         if (this.divs === undefined) return;

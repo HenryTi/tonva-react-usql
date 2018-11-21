@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
-import { tv } from 'tonva-react-usql';
+import { tv } from '../../tools';
 import { Map } from '../../entities';
 import { VEntity } from '../CVEntity';
 import { CMap, MapItem, MapKey, MapUI } from './cMap';
