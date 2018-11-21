@@ -33,7 +33,10 @@ export class Tuid extends Entity {
         });
         prototype.content = function (templet, x) {
             let t = this._$tuid;
-            let com = templet || t.entities.usq.getTuidContent(t);
+            let com = templet || this._$com;
+            if (com === undefined) {
+                com = this._$com = t.entities.usq.getTuidContent(t);
+            }
             let val = t.valueFromId(this.id);
             if (typeof val === 'number')
                 val = { id: val };
@@ -57,6 +60,7 @@ export class Tuid extends Entity {
         prototype.toJSON = function () { return this.id; };
     }
     boxId(id) {
+        this.useId(id);
         let ret = new this.idBoxer();
         ret.id = id;
         return ret;
@@ -246,7 +250,7 @@ export class Tuid extends Entity {
             if (_tuid === undefined)
                 continue;
             let id = values[name];
-            _tuid.useId(id);
+            //_tuid.useId(id);
             values[name] = _tuid.boxId(id);
         }
     }

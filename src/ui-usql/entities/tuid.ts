@@ -40,7 +40,10 @@ export abstract class Tuid extends Entity {
         });
         prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
             let t:Tuid = this._$tuid;
-            let com = templet || t.entities.usq.getTuidContent(t);
+            let com = templet || this._$com;
+            if (com === undefined) {
+                com = this._$com = t.entities.usq.getTuidContent(t);
+            }
             let val = t.valueFromId(this.id);
             if (typeof val === 'number') val = {id: val};
             if (templet !== undefined) return templet(val, x);
@@ -61,6 +64,7 @@ export abstract class Tuid extends Entity {
         prototype.toJSON = function() {return this.id}
     }
     boxId(id:number):BoxId {
+        this.useId(id);
         let ret:BoxId = new this.idBoxer();
         ret.id = id;
         return ret;
@@ -232,7 +236,7 @@ export abstract class Tuid extends Entity {
             let {name, _tuid} = f;
             if (_tuid === undefined) continue;
             let id = values[name];
-            _tuid.useId(id);
+            //_tuid.useId(id);
             values[name] = _tuid.boxId(id);
         }
     }
