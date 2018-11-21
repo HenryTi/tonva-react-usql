@@ -1,6 +1,10 @@
 function replacer(key:string, value:any) {
-    if (key.startsWith('$')) return undefined;
-    return value;
+    let first = key.substr(0, 1);
+    switch (first) {
+        default: return value;
+        case '$':
+        case '_': return;
+    }
 }
 
 export function jsonStringify(value:any) {
