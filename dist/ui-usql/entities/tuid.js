@@ -6,7 +6,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as React from 'react';
 import { observable } from 'mobx';
 import _ from 'lodash';
 import { Entity } from './entity';
@@ -31,20 +30,20 @@ export class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
-        prototype.content = function (templet, x) {
-            let t = this._$tuid;
+        /*
+        prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
+            let t:Tuid = this._$tuid;
             let com = templet || this._$com;
             if (com === undefined) {
                 com = this._$com = t.entities.usq.getTuidContent(t);
             }
             let val = t.valueFromId(this.id);
-            if (typeof val === 'number')
-                val = { id: val };
-            if (templet !== undefined)
-                return templet(val, x);
+            if (typeof val === 'number') val = {id: val};
+            if (templet !== undefined) return templet(val, x);
             //return com(val, x);
             return React.createElement(com, val);
-        };
+        }
+        */
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function () {
@@ -64,6 +63,9 @@ export class Tuid extends Entity {
         let ret = new this.idBoxer();
         ret.id = id;
         return ret;
+    }
+    getTuidContent() {
+        return this.entities.usq.getTuidContent(this);
     }
     getIdFromObj(item) {
         return item[this.idName];
@@ -223,11 +225,13 @@ export class Tuid extends Entity {
             if (id === undefined || id === 0)
                 return;
             let values = yield this.tvApi.tuidGet(this.name, id);
+            values._$tuid = this;
             this.cacheValue(values);
             this.cacheTuidFieldValues(values);
             return values;
         });
     }
+    getDiv(divName) { return; }
     cacheTuidFieldValues(values) {
         let { fields, arrs } = this.schema;
         this.cacheFieldsInValue(values, fields);
@@ -237,7 +241,9 @@ export class Tuid extends Entity {
                 let arrValues = values[name];
                 if (arrValues === undefined)
                     continue;
+                let tuidDiv = this.getDiv(name);
                 for (let row of arrValues) {
+                    row._$tuid = tuidDiv;
                     row.$owner = this.boxId(row.owner);
                     this.cacheFieldsInValue(row, fields);
                 }
@@ -337,6 +343,7 @@ export class TuidMain extends Tuid {
             }
         }
     }
+    getDiv(divName) { return this.divs[divName]; }
     cacheIds() {
         const _super = name => super[name];
         return __awaiter(this, void 0, void 0, function* () {

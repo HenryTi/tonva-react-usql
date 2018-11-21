@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Entity } from './entity';
 import { Entities } from './entities';
 export declare class BoxId {
@@ -19,6 +20,7 @@ export declare abstract class Tuid extends Entity {
     abstract readonly Main: any;
     private buildIdBoxer;
     boxId(id: number): BoxId;
+    getTuidContent(): React.FunctionComponent<any>;
     getIdFromObj(item: any): number;
     setSchema(schema: any): void;
     private moveToHead;
@@ -31,6 +33,7 @@ export declare abstract class Tuid extends Entity {
     protected afterCacheId(tuidValue: any): void;
     cacheIds(): Promise<void>;
     load(id: number): Promise<any>;
+    protected getDiv(divName: string): TuidDiv;
     private cacheTuidFieldValues;
     private cacheFieldsInValue;
     save(id: number, props: any): Promise<any>;
@@ -50,6 +53,7 @@ export declare class TuidMain extends Tuid {
         [name: string]: TuidMain;
     };
     setSchema(schema: any): void;
+    protected getDiv(divName: string): TuidDiv;
     cacheIds(): Promise<void>;
     protected afterCacheId(tuidValue: any): void;
 }

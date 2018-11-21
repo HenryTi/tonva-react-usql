@@ -18,4 +18,7 @@ export declare class Query extends Entity {
     loadPage(): Promise<void>;
     page(params: any, pageStart: any, pageSize: number): Promise<any[]>;
     query(params: any): Promise<any>;
+    table(params: any): Promise<any[]>;
+    obj(params: any): Promise<any>;
+    scalar(params: any): Promise<any>;
 }

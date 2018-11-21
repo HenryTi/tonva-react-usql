@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { observer } from 'mobx-react';
+import { tv } from '../../../tools';
 import { VField, RedMark } from "./vField";
 const buttonStyle = {
     textAlign: 'left',
@@ -47,11 +48,11 @@ export class VTuidField extends VField {
             if (this.value === null)
                 content = React.createElement(React.Fragment, null, placeHolder || this.input.placeHolder);
             else if (typeof this.value === 'object') {
-                content = this.value.content();
+                content = tv(this.value); // this.value.content();
             }
             else {
                 let idBox = this.tuid.boxId(this.value);
-                content = idBox.content();
+                content = tv(idBox); // idBox.content();
             }
             if (this.readonly === true) {
                 return React.createElement("div", { className: "form-control form-control-plaintext border border-info rounded bg-light cursor-pointer", onClick: this.onClick }, content);

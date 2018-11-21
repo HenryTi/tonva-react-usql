@@ -11,6 +11,7 @@ import { observer } from 'mobx-react';
 import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
+import { tv } from '../../tools';
 import { VEntity } from '../CVEntity';
 import { PureJSONContent } from '../form/viewModel';
 export class VMapMain extends VEntity {
@@ -55,7 +56,7 @@ export class VMapMain extends VEntity {
             }
             return React.createElement("div", { className: "d-flex flex-column" },
                 React.createElement(LMR, { className: className('px-3', 'py-2', border), right: right },
-                    React.createElement("div", { className: "py-1" }, box.content(keyContent, this.x)),
+                    React.createElement("div", { className: "py-1" }, tv(box, keyContent, this.x)),
                     React.createElement("div", { className: "py-1 font-weight-bold" }, valuesView)),
                 content);
         });
