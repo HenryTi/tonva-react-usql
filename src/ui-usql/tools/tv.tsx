@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BoxId } from "../entities";
+import { BoxId, Tuid } from "../entities";
 import { observer } from 'mobx-react';
 
 interface Props {
@@ -7,6 +7,19 @@ interface Props {
     ui?: (values?:any, x?:any)=>JSX.Element,
     x?: any,
     nullUI?: ()=>JSX.Element
+}
+
+function boxIdContent(bi: any, templet, x) {
+    let {id, _$tuid, _$com} = bi;
+    let t:Tuid = _$tuid;
+    let com = templet || _$com;
+    if (com === undefined) {
+        com = bi._$com = t.getTuidContent();
+    }
+    let val = t.valueFromId(id);
+    if (typeof val === 'number') val = {id: val};
+    if (templet !== undefined) return templet(val, x);
+    return React.createElement(com, val);
 }
 
 const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
@@ -25,7 +38,7 @@ const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
                 if (nullUI === undefined) return <>null</>;
                 return nullUI();
             }
-            return (tuidValue as BoxId).content(ui, x);
+            return boxIdContent(tuidValue, ui, x);
         case 'number':
             return <>id...{tuidValue}</>;
     }

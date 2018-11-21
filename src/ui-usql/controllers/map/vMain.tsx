@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import className from 'classnames';
 import { List, LMR, FA } from 'tonva-react-form';
 import { Page, nav } from 'tonva-tools';
+import { tv } from 'tonva-react-usql';
 import { Map } from '../../entities';
 import { VEntity } from '../CVEntity';
 import { CMap, MapItem, MapKey, MapUI } from './cMap';
@@ -58,7 +59,7 @@ export class VMapMain extends VEntity<Map, MapUI, CMap> {
             <LMR className={className('px-3', 'py-2', border)} 
                 right={right}
             >
-                <div className="py-1">{box.content(keyContent, this.x)}</div>
+                <div className="py-1">{tv(box, keyContent, this.x)}</div>
                 <div className="py-1 font-weight-bold">{valuesView}</div>
             </LMR>
             {content}

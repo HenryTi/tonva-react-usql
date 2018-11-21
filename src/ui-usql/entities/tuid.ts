@@ -38,6 +38,7 @@ export abstract class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
+        /*
         prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
             let t:Tuid = this._$tuid;
             let com = templet || this._$com;
@@ -50,6 +51,7 @@ export abstract class Tuid extends Entity {
             //return com(val, x);
             return React.createElement(com, val);
         }
+        */
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function() {
@@ -69,7 +71,9 @@ export abstract class Tuid extends Entity {
         ret.id = id;
         return ret;
     }
-
+    getTuidContent() {
+        return this.entities.usq.getTuidContent(this);
+    }
     getIdFromObj(item:any):number {
         return item[this.idName];
     }

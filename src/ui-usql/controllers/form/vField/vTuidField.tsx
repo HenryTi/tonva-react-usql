@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
+import { tv } from 'tonva-react-usql';
 import { Field, Tuid } from '../../../entities';
 import { VField, RedMark } from "./vField";
 import { FieldUI } from '../../formUI';
@@ -53,11 +54,11 @@ export class VTuidField extends VField {
         if (this.value === null)
             content = <>{placeHolder || this.input.placeHolder}</>;
         else if (typeof this.value === 'object') {
-            content = this.value.content();
+            content = tv(this.value); // this.value.content();
         }
         else {
             let idBox = this.tuid.boxId(this.value);
-            content = idBox.content();
+            content = tv(idBox); // idBox.content();
         }
         if (this.readonly === true)
         {
