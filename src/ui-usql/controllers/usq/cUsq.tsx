@@ -216,6 +216,13 @@ export class CUsq extends Controller implements Usq {
     history(entityName:string) {return this.entities.history(entityName);}
     pending(entityName:string) {return this.entities.pending(entityName);}
     tuid(entityName:string) {return this.entities.tuid(entityName)}
+    tuidDiv(entityName:string, divName:string) {
+        let tuid = this.entities.tuid(entityName);
+        if (tuid === undefined) return;
+        let {divs} = tuid;
+        if (divs === undefined) return;
+        return divs[divName];
+    }
 
     cSheetFromName(entityName:string):CSheet {
         let entity = this.entities.sheet(entityName);

@@ -1,4 +1,4 @@
-import { Entities, Field, ArrFields } from './entities';
+import { Entities, Field, ArrFields, FieldMap } from './entities';
 import { Tuid } from './tuid';
 export declare abstract class Entity {
     protected entities: Entities;
@@ -15,6 +15,8 @@ export declare abstract class Entity {
     constructor(entities: Entities, name: string, typeId: number);
     face: any;
     protected readonly tvApi: import("../../../../../../../../Users/Henry/Tonva/tonva-ui/tonva-react-usql/node_modules/tonva-tools/dist/net/usqApi").UsqApi;
+    private fieldMaps;
+    fieldMap(arr?: string): FieldMap;
     loadSchema(): Promise<void>;
     setSchema(schema: any): void;
     schemaStringify(): string;

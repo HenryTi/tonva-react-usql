@@ -94,13 +94,13 @@ export class Entities {
         this.buildTuids(tuids);
         this.buildAccess(access);
     }
-    getTuid(name, arr, tuidUrl) {
+    getTuid(name, div, tuidUrl) {
         let tuid = this.tuids[name];
         if (tuid === undefined)
             return;
-        if (arr === undefined)
+        if (div === undefined)
             return tuid;
-        return tuid.divs[arr];
+        return tuid.divs[div];
     }
     cacheTuids(defer) {
         this.clearCacheTimer();

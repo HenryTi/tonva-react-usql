@@ -180,6 +180,15 @@ export class CUsq extends Controller {
     history(entityName) { return this.entities.history(entityName); }
     pending(entityName) { return this.entities.pending(entityName); }
     tuid(entityName) { return this.entities.tuid(entityName); }
+    tuidDiv(entityName, divName) {
+        let tuid = this.entities.tuid(entityName);
+        if (tuid === undefined)
+            return;
+        let { divs } = tuid;
+        if (divs === undefined)
+            return;
+        return divs[divName];
+    }
     cSheetFromName(entityName) {
         let entity = this.entities.sheet(entityName);
         if (entity !== undefined)

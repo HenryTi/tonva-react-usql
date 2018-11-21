@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { observable } from "mobx";
+import { postWsToTop } from 'tonva-tools';
 import { CEntity } from "../CVEntity";
 import { VSheetMain } from "./vMain";
 import { VSheetNew } from "./vNew";
@@ -170,6 +171,17 @@ export class CSheet extends CEntity {
     showAction(sheetId) {
         return __awaiter(this, void 0, void 0, function* () {
             let sheetData = yield this.getSheetData(sheetId);
+            postWsToTop({
+                body: {
+                    $type: 'msg',
+                    action: '$sheet',
+                    msg: {
+                        id: sheetId,
+                        usq: this.cUsq.id,
+                        state: sheetData.brief.state
+                    }
+                }
+            });
             yield this.showVPage(this.VSheetAction, sheetData);
         });
     }

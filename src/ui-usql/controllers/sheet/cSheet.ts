@@ -1,5 +1,5 @@
 import { IObservableArray, observable } from "mobx";
-import { TypeVPage, VPage, PageItems } from 'tonva-tools';
+import { TypeVPage, VPage, PageItems, postWsToTop } from 'tonva-tools';
 import { Sheet, StateCount } from "../../entities";
 import { CEntity, EntityUI, VEntity } from "../CVEntity";
 import { VSheetMain } from "./vMain";
@@ -157,6 +157,17 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
 
     async showAction(sheetId:number) {
         let sheetData:SheetData = await this.getSheetData(sheetId);
+        postWsToTop({
+            body: {
+                $type: 'msg',
+                action: '$sheet',
+                msg: {
+                    id: sheetId,
+                    usq: this.cUsq.id,
+                    state: sheetData.brief.state
+                }
+            }
+        });
         await this.showVPage(this.VSheetAction, sheetData);
     }
 

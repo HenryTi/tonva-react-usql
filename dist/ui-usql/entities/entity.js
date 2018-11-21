@@ -9,14 +9,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const tab = '\t';
 const ln = '\n';
 export class Entity {
-    get sName() { return this.jName || this.name; }
     constructor(entities, name, typeId) {
+        this.fieldMaps = {};
         this.entities = entities;
         this.name = name;
         this.typeId = typeId;
         this.sys = this.name.indexOf('$') >= 0;
     }
+    get sName() { return this.jName || this.name; }
     get tvApi() { return this.entities.usqApi; }
+    fieldMap(arr) {
+        if (arr === undefined)
+            arr = '$';
+        let ret = this.fieldMaps[arr];
+        if (ret === undefined) {
+            let fields;
+            if (arr === '$')
+                fields = this.fields;
+            else if (this.arrFields !== undefined) {
+                let arrFields = this.arrFields.find(v => v.name === arr);
+                if (arrFields !== undefined)
+                    fields = arrFields.fields;
+            }
+            else if (this.returns !== undefined) {
+                let arrFields = this.returns.find(v => v.name === arr);
+                if (arrFields !== undefined)
+                    fields = arrFields.fields;
+            }
+            if (fields === undefined)
+                return {};
+            ret = {};
+            for (let f of fields)
+                ret[f.name] = f;
+            this.fieldMaps[arr] = ret;
+        }
+        return ret;
+    }
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.schema !== undefined)

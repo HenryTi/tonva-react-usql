@@ -1,4 +1,4 @@
-import { Entities, Field, ArrFields } from './entities';
+import { Entities, Field, ArrFields, FieldMap } from './entities';
 import { TuidMain, Tuid } from './tuid';
 
 const tab = '\t';
@@ -27,6 +27,29 @@ export abstract class Entity {
     public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
     protected get tvApi() {return this.entities.usqApi;}
+
+    private fieldMaps: {[arr:string]: FieldMap} = {};
+    fieldMap(arr?:string): FieldMap {
+        if (arr === undefined) arr = '$';
+        let ret = this.fieldMaps[arr];
+        if (ret === undefined) {
+            let fields:Field[];
+            if (arr === '$') fields = this.fields;
+            else if (this.arrFields !== undefined) {
+                let arrFields = this.arrFields.find(v => v.name === arr);
+                if (arrFields !== undefined) fields = arrFields.fields;
+            }
+            else if (this.returns !== undefined) {
+                let arrFields = this.returns.find(v => v.name === arr);
+                if (arrFields !== undefined) fields = arrFields.fields;
+            }
+            if (fields === undefined) return {};
+            ret = {};
+            for (let f of fields) ret[f.name] = f;
+            this.fieldMaps[arr] = ret;
+        }
+        return ret;
+    }
 
     public async loadSchema():Promise<void> {
         if (this.schema !== undefined) return;

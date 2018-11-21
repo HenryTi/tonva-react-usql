@@ -54,6 +54,9 @@ export interface ArrFields {
     id?: string;
     order?: string;
 }
+export interface FieldMap {
+    [name:string]: Field;
+}
 
 export class Entities {
     private tuids: {[name:string]: TuidMain} = {};
@@ -117,11 +120,11 @@ export class Entities {
         this.buildAccess(access);
     }
 
-    getTuid(name:string, arr?:string, tuidUrl?:string): Tuid {
+    getTuid(name:string, div?:string, tuidUrl?:string): Tuid {
         let tuid = this.tuids[name];
         if (tuid === undefined) return;
-        if (arr === undefined) return tuid;
-        return tuid.divs[arr];
+        if (div === undefined) return tuid;
+        return tuid.divs[div];
     }
 
     cacheTuids(defer:number) {

@@ -32,6 +32,9 @@ export interface ArrFields {
     id?: string;
     order?: string;
 }
+export interface FieldMap {
+    [name: string]: Field;
+}
 export declare class Entities {
     private tuids;
     private actions;
@@ -67,7 +70,7 @@ export declare class Entities {
     loadAccess(): Promise<void>;
     loadEntities(): Promise<void>;
     private buildEntities;
-    getTuid(name: string, arr?: string, tuidUrl?: string): Tuid;
+    getTuid(name: string, div?: string, tuidUrl?: string): Tuid;
     cacheTuids(defer: number): void;
     private clearCacheTimer;
     private loadIds;
