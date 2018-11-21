@@ -1,5 +1,6 @@
 import * as React from 'react';
-export const tv = (tuidValue, ui, x, nullUI) => {
+import { observer } from 'mobx-react';
+const Tv = observer(({ tuidValue, ui, x, nullUI }) => {
     let ttv = typeof tuidValue;
     switch (ttv) {
         default:
@@ -26,5 +27,8 @@ export const tv = (tuidValue, ui, x, nullUI) => {
                 "id...",
                 tuidValue);
     }
+});
+export const tv = (tuidValue, ui, x, nullUI) => {
+    return React.createElement(Tv, { tuidValue: tuidValue, ui: ui, x: x, nullUI: nullUI });
 };
 //# sourceMappingURL=tv.js.map

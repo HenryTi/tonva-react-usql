@@ -1,7 +1,15 @@
 import * as React from 'react';
 import { BoxId } from "../entities";
+import { observer } from 'mobx-react';
 
-export const tv = (tuidValue:number|BoxId, ui?:(values?:any, x?:any)=>JSX.Element, x?:any, nullUI?:()=>JSX.Element):JSX.Element => {
+interface Props {
+    tuidValue: number|BoxId, 
+    ui?: (values?:any, x?:any)=>JSX.Element,
+    x?: any,
+    nullUI?: ()=>JSX.Element
+}
+
+const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
     let ttv = typeof tuidValue;
     switch (ttv) {
         default:
@@ -21,4 +29,8 @@ export const tv = (tuidValue:number|BoxId, ui?:(values?:any, x?:any)=>JSX.Elemen
         case 'number':
             return <>id...{tuidValue}</>;
     }
+});
+
+export const tv = (tuidValue:number|BoxId, ui?:(values?:any, x?:any)=>JSX.Element, x?:any, nullUI?:()=>JSX.Element):JSX.Element => {
+    return <Tv tuidValue={tuidValue} ui={ui} x={x} nullUI={nullUI} />;
 };
