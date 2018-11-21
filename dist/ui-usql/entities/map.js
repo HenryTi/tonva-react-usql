@@ -64,5 +64,27 @@ export class Map extends Entity {
             return yield this.queries.query.query(param);
         });
     }
+    table(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.query(params);
+            for (let i in ret) {
+                return ret[i];
+            }
+        });
+    }
+    obj(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.table(params);
+            if (ret.length > 0)
+                return ret[0];
+        });
+    }
+    scalar(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.obj(params);
+            for (let i in ret)
+                return ret[i];
+        });
+    }
 }
 //# sourceMappingURL=map.js.map

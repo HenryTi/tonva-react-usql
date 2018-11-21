@@ -64,4 +64,18 @@ export class Map extends Entity {
         await this.loadSchema();
         return await this.queries.query.query(param);
     }
+    async table(params:any): Promise<any[]> {
+        let ret = await this.query(params);
+        for (let i in ret) {
+            return ret[i];
+        }
+    }
+    async obj(params:any):Promise<any> {
+        let ret = await this.table(params);
+        if (ret.length > 0) return ret[0];
+    }
+    async scalar(params:any):Promise<any> {
+        let ret = await this.obj(params);
+        for (let i in ret) return ret[i];
+    }
 }

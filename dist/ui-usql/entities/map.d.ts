@@ -22,5 +22,8 @@ export declare class Map extends Entity {
     all(): Promise<any>;
     page(param: any, pageStart: any, pageSize: number): Promise<any[]>;
     query(param: any): Promise<any>;
+    table(params: any): Promise<any[]>;
+    obj(params: any): Promise<any>;
+    scalar(params: any): Promise<any>;
 }
 export {};
