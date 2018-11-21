@@ -76,14 +76,18 @@ export class Query extends Entity {
         let data = await this.unpackReturns(res);
         return data;
     }
-    async array(params:any): Promise<any[]> {
+    async table(params:any): Promise<any[]> {
         let ret = await this.query(params);
         for (let i in ret) {
             return ret[i];
         }
     }
-    async scalar(params:any):Promise<any> {
-        let ret = await this.array(params);
+    async obj(params:any):Promise<any> {
+        let ret = await this.table(params);
         if (ret.length > 0) return ret[0];
+    }
+    async scalar(params:any):Promise<any> {
+        let ret = await this.obj(params);
+        for (let i in ret) return ret[i];
     }
 }
