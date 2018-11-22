@@ -337,11 +337,11 @@ export class CUsq extends Controller implements Usq {
         let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
         return new (ui && ui.CTuidMain || this.CTuidMain)(this, tuid, ui, res);
     }
-    cTuidEdit(tuid:TuidMain):CTuidMain {
+    cTuidEdit(tuid:TuidMain):CTuidEdit {
         let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
         return new (ui && ui.CTuidEdit || this.CTuidEdit)(this, tuid, ui, res);
     }
-    cTuidList(tuid:TuidMain):CTuidMain {
+    cTuidList(tuid:TuidMain):CTuidList {
         let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
         return new (ui && ui.CTuidList || this.CTuidList)(this, tuid, ui, res);
     }
