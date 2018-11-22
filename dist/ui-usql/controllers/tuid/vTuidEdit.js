@@ -35,6 +35,11 @@ export class VTuidEdit extends VEntity {
                 }
                 return;
             }
+            if (this.controller.isCalling) {
+                this.returnCall(id);
+                this.finish();
+                return;
+            }
             this.openPageElement(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
                 React.createElement("div", { className: 'm-3' },
                     React.createElement("span", { className: "text-success" },
