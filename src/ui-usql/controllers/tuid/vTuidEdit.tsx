@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
 import { FA } from 'tonva-react-form';
 import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';

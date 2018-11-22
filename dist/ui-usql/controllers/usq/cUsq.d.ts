@@ -15,6 +15,8 @@ import { CPending, PendingUI } from '../pending';
 export declare type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' | 'history' | 'pending';
 export interface UsqUI {
     CTuidMain?: typeof CTuidMain;
+    CTuidEdit?: typeof CTuidEdit;
+    CTuidList?: typeof CTuidList;
     CTuidSelect?: typeof CTuidSelect;
     CTuidInfo?: typeof CTuidInfo;
     CQuery?: typeof CQuery;

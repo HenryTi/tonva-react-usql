@@ -19,6 +19,8 @@ export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' 
 
 export interface UsqUI {
     CTuidMain?: typeof CTuidMain;
+    CTuidEdit?: typeof CTuidEdit;
+    CTuidList?: typeof CTuidList;
     CTuidSelect?: typeof CTuidSelect;
     CTuidInfo?: typeof CTuidInfo;
     CQuery?: typeof CQuery;
@@ -76,6 +78,8 @@ export class CUsq extends Controller implements Usq {
         lowerPropertyName(ui.pending);
         this.ui = ui;
         this.CTuidMain = ui.CTuidMain || CTuidMain;
+        this.CTuidEdit = ui.CTuidEdit || CTuidEdit;
+        this.CTuidList = ui.CTuidList || CTuidList;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
         this.CTuidInfo = ui.CTuidInfo || CTuidInfo;
         this.CQuery = ui.CQuery || CQuery;

@@ -13,7 +13,7 @@ import { CBook } from '../book';
 import { CSheet } from '../sheet';
 import { CAction } from '../action';
 import { CQuery, CQuerySelect } from '../query';
-import { CTuidMain, CTuidInfo, CTuidSelect } from '../tuid';
+import { CTuidMain, CTuidInfo, CTuidSelect, CTuidEdit, CTuidList } from '../tuid';
 import { CMap } from '../map';
 import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
@@ -42,6 +42,8 @@ export class CUsq extends Controller {
         lowerPropertyName(ui.pending);
         this.ui = ui;
         this.CTuidMain = ui.CTuidMain || CTuidMain;
+        this.CTuidEdit = ui.CTuidEdit || CTuidEdit;
+        this.CTuidList = ui.CTuidList || CTuidList;
         this.CTuidSelect = ui.CTuidSelect || CTuidSelect;
         this.CTuidInfo = ui.CTuidInfo || CTuidInfo;
         this.CQuery = ui.CQuery || CQuery;
