@@ -54,6 +54,8 @@ export interface UsqUI {
 export declare class CUsq extends Controller implements Usq {
     private ui;
     private CTuidMain;
+    private CTuidEdit;
+    private CTuidList;
     private CTuidSelect;
     private CTuidInfo;
     private CQuery;
@@ -104,6 +106,8 @@ export declare class CUsq extends Controller implements Usq {
     link(cEntity: CEntity<Entity, EntityUI>): CLink;
     readonly tuidLinks: CLink[];
     cTuidMain(tuid: TuidMain): CTuidMain;
+    cTuidEdit(tuid: TuidMain): CTuidMain;
+    cTuidList(tuid: TuidMain): CTuidMain;
     cTuidSelect(tuid: Tuid): CTuidSelect;
     cTuidInfo(tuid: TuidMain): CTuidInfo;
     cSheet(sheet: Sheet): CSheet;

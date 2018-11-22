@@ -65,7 +65,7 @@ export class CTuidMain extends CTuid {
     get VTuidMain() { return VTuidMain; }
     get VTuidEdit() { return VTuidEdit; }
     get VTuidList() { return VTuidMainList; }
-    internalStart() {
+    internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.showVPage(this.VTuidMain);
         });
@@ -106,6 +106,20 @@ export class CTuidMain extends CTuid {
         if (item !== undefined) {
             _.merge(item, values);
         }
+    }
+}
+export class CTuidEdit extends CTuidMain {
+    internalStart(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.edit(id);
+        });
+    }
+}
+export class CTuidList extends CTuidMain {
+    internalStart(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.showVPage(this.VTuidList);
+        });
     }
 }
 export class CTuidDiv extends CTuid {

@@ -11,6 +11,8 @@ import { VTuidInfo } from "./vTuidInfo";
 import { VTuidMainList } from './vTuidList';
 export interface TuidUI extends EntityUI {
     CTuidMain?: typeof CTuidMain;
+    CTuidEdit?: typeof CTuidEdit;
+    CTuidList?: typeof CTuidList;
     CTuidSelect?: typeof CTuidSelect;
     CTuidInfo?: typeof CTuidInfo;
     inputContent?: React.StatelessComponent<any>;
@@ -39,10 +41,16 @@ export declare class CTuidMain extends CTuid<TuidMain> {
     protected readonly VTuidMain: typeof VTuidMain;
     protected readonly VTuidEdit: typeof VTuidEdit;
     protected readonly VTuidList: typeof VTuidMainList;
-    protected internalStart(): Promise<void>;
+    protected internalStart(param?: any): Promise<void>;
     protected onEvent(type: string, value: any): Promise<void>;
     protected edit(id: number): Promise<void>;
     private itemChanged;
+}
+export declare class CTuidEdit extends CTuidMain {
+    protected internalStart(id: number): Promise<void>;
+}
+export declare class CTuidList extends CTuidMain {
+    protected internalStart(id: number): Promise<void>;
 }
 export declare class CTuidDiv extends CTuid<TuidDiv> {
     protected internalStart(): Promise<void>;

@@ -311,6 +311,14 @@ export class CUsq extends Controller {
         let { ui, res } = this.getUI(tuid);
         return new (ui && ui.CTuidMain || this.CTuidMain)(this, tuid, ui, res);
     }
+    cTuidEdit(tuid) {
+        let { ui, res } = this.getUI(tuid);
+        return new (ui && ui.CTuidEdit || this.CTuidEdit)(this, tuid, ui, res);
+    }
+    cTuidList(tuid) {
+        let { ui, res } = this.getUI(tuid);
+        return new (ui && ui.CTuidList || this.CTuidList)(this, tuid, ui, res);
+    }
     cTuidSelect(tuid) {
         let { ui, res } = this.getUI(tuid.owner || tuid);
         return new (ui && ui.CTuidSelect || this.CTuidSelect)(this, tuid, ui, res);
