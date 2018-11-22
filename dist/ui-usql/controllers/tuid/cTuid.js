@@ -94,7 +94,7 @@ export class CTuidMain extends CTuid {
     edit(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let values = undefined;
-            if (id === undefined) {
+            if (id !== undefined) {
                 values = yield this.entity.load(id);
             }
             let v = this.VTuidEdit;
