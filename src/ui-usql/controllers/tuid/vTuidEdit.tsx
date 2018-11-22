@@ -55,6 +55,11 @@ export class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
             }
             return;
         }
+        if (this.controller.isCalling) {
+            this.returnCall(id);
+            this.finish();
+            return;
+        }
         this.openPageElement(<Page header={this.label + '提交成功'} back="none">
             <div className='m-3'>
                 <span className="text-success">
