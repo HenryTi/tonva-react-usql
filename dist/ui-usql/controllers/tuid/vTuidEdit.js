@@ -37,7 +37,7 @@ export class VTuidEdit extends VEntity {
             }
             if (this.controller.isCalling) {
                 this.returnCall(id);
-                this.finish();
+                this.closePage();
                 return;
             }
             this.openPageElement(React.createElement(Page, { header: this.label + '提交成功', back: "none" },
