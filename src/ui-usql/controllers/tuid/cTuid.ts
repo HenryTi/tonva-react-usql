@@ -106,9 +106,12 @@ export class CTuidMain extends CTuid<TuidMain> {
     }
 
     protected async edit(id:number) {
-        let ret = await this.entity.load(id);
+        let values:any = undefined;
+        if (id === undefined) {
+            values = await this.entity.load(id);
+        }
         let v = this.VTuidEdit;
-        await this.showVPage(v, ret);
+        await this.showVPage(v, values);
     }
 
     private itemChanged({id, values}:{id:number, values: any}) {

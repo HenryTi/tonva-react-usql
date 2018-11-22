@@ -93,9 +93,12 @@ export class CTuidMain extends CTuid {
     }
     edit(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.load(id);
+            let values = undefined;
+            if (id === undefined) {
+                values = yield this.entity.load(id);
+            }
             let v = this.VTuidEdit;
-            yield this.showVPage(v, ret);
+            yield this.showVPage(v, values);
         });
     }
     itemChanged({ id, values }) {
