@@ -23,8 +23,8 @@ export class Tuid extends Entity {
     }
     get typeName() { return 'tuid'; }
     buildIdBoxer() {
-        this.idBoxer = function () { };
-        let prototype = this.idBoxer.prototype;
+        this.BoxId = function () { };
+        let prototype = this.BoxId.prototype;
         Object.defineProperty(prototype, '_$tuid', {
             value: this,
             writable: false,
@@ -60,7 +60,7 @@ export class Tuid extends Entity {
     }
     boxId(id) {
         this.useId(id);
-        let ret = new this.idBoxer();
+        let ret = new this.BoxId();
         ret.id = id;
         return ret;
     }

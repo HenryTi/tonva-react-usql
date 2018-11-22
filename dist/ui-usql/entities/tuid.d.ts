@@ -8,7 +8,7 @@ export declare class BoxId {
     valueFromFieldName: (fieldName: string) => BoxId | any;
 }
 export declare abstract class Tuid extends Entity {
-    private idBoxer;
+    private BoxId;
     readonly typeName: string;
     private queue;
     private waitingIds;

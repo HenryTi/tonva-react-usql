@@ -122,10 +122,15 @@ export class Entity {
         }
         return ret.join('');
     }
-    escape(d) {
+    escape(row, field) {
+        let d = row[field.name];
         switch (typeof d) {
             default: return d;
-            case 'object': return d.id;
+            case 'object':
+                let tuid = field._tuid;
+                if (tuid === undefined)
+                    return d.id;
+                return tuid.getIdFromObj(d);
             case 'string':
                 let len = d.length;
                 let r = '', p = 0;
@@ -151,10 +156,10 @@ export class Entity {
         if (len === 0)
             return;
         let ret = '';
-        ret += this.escape(data[fields[0].name]);
+        ret += this.escape(data, fields[0]);
         for (let i = 1; i < len; i++) {
             let f = fields[i];
-            ret += tab + this.escape(data[f.name]);
+            ret += tab + this.escape(data, f);
         }
         result.push(ret + ln);
     }

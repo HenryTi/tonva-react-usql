@@ -14,7 +14,7 @@ export class BoxId {
 
 const maxCacheSize = 1000;
 export abstract class Tuid extends Entity {
-    private idBoxer: ()=>void;
+    private BoxId: ()=>void;
     get typeName(): string { return 'tuid';}
     private queue: number[] = [];               // 每次使用，都排到队头
     private waitingIds: number[] = [];          // 等待loading的
@@ -31,8 +31,8 @@ export abstract class Tuid extends Entity {
     abstract get Main();
 
     private buildIdBoxer() {
-        this.idBoxer = function():void {};
-        let prototype = this.idBoxer.prototype;
+        this.BoxId = function():void {};
+        let prototype = this.BoxId.prototype;
         Object.defineProperty(prototype, '_$tuid', {
             value: this,
             writable: false,
@@ -67,7 +67,7 @@ export abstract class Tuid extends Entity {
     }
     boxId(id:number):BoxId {
         this.useId(id);
-        let ret:BoxId = new this.idBoxer();
+        let ret:BoxId = new this.BoxId();
         ret.id = id;
         return ret;
     }

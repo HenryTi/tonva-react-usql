@@ -7,7 +7,7 @@ import { CBook, BookUI } from '../book';
 import { CSheet, SheetUI } from '../sheet';
 import { ActionUI, CAction } from '../action';
 import { QueryUI, CQuery, CQuerySelect } from '../query';
-import { CTuidMain, TuidUI, CTuid, CTuidInfo, CTuidSelect } from '../tuid';
+import { CTuidMain, TuidUI, CTuid, CTuidInfo, CTuidSelect, CTuidEdit, CTuidList } from '../tuid';
 import { MapUI, CMap } from '../map';
 import { CEntity, EntityUI } from '../CVEntity';
 import { PureJSONContent } from '../form/viewModel';
@@ -48,6 +48,8 @@ function lowerPropertyName(entities: {[name:string]: EntityUI}) {
 export class CUsq extends Controller implements Usq {
     private ui:any;
     private CTuidMain: typeof CTuidMain;
+    private CTuidEdit: typeof CTuidEdit;
+    private CTuidList: typeof CTuidList;
     private CTuidSelect: typeof CTuidSelect;
     private CTuidInfo: typeof CTuidInfo;
     private CQuery: typeof CQuery;
@@ -334,6 +336,14 @@ export class CUsq extends Controller implements Usq {
     cTuidMain(tuid:TuidMain):CTuidMain {
         let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
         return new (ui && ui.CTuidMain || this.CTuidMain)(this, tuid, ui, res);
+    }
+    cTuidEdit(tuid:TuidMain):CTuidMain {
+        let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
+        return new (ui && ui.CTuidEdit || this.CTuidEdit)(this, tuid, ui, res);
+    }
+    cTuidList(tuid:TuidMain):CTuidMain {
+        let {ui, res} = this.getUI<TuidMain, TuidUI>(tuid);
+        return new (ui && ui.CTuidList || this.CTuidList)(this, tuid, ui, res);
     }
     cTuidSelect(tuid:Tuid):CTuidSelect {
         let {ui, res} = this.getUI<Tuid, TuidUI>(tuid.owner || tuid);
