@@ -252,8 +252,12 @@ export abstract class Tuid extends Entity {
         let params = _.clone(props);
         params["$id"] = id;
         let ret = await this.tvApi.tuidSave(this.name, params);
-        let retId = ret.id;
-        if (retId > 0) {
+        let {id:retId, inId} = ret;
+        if (retId === undefined) {
+            params.id = id;
+            this.cacheValue(params);
+        }
+        else if (retId > 0) {
             params.id = retId;
             this.cacheValue(params);
         }
