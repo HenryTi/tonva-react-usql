@@ -264,7 +264,13 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             let params = _.clone(props);
             params["$id"] = id;
-            return yield this.tvApi.tuidSave(this.name, params);
+            let ret = yield this.tvApi.tuidSave(this.name, params);
+            let retId = ret.id;
+            if (retId > 0) {
+                params.id = retId;
+                this.cacheValue(params);
+            }
+            return ret;
         });
     }
     search(key, pageStart, pageSize) {

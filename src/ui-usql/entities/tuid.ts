@@ -251,7 +251,13 @@ export abstract class Tuid extends Entity {
     async save(id:number, props:any) {
         let params = _.clone(props);
         params["$id"] = id;
-        return await this.tvApi.tuidSave(this.name, params);
+        let ret = await this.tvApi.tuidSave(this.name, params);
+        let retId = ret.id;
+        if (retId > 0) {
+            params.id = retId;
+            this.cacheValue(params);
+        }
+        return ret;
     }
     async search(key:string, pageStart:string|number, pageSize:number):Promise<any> {
         let ret:any[] = await this.searchArr(undefined, key, pageStart, pageSize);
