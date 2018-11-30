@@ -375,20 +375,23 @@ export class TuidMain extends Tuid {
             if (this.schemaFrom === undefined)
                 return this.entities.cUsq;
             let { owner, usq } = this.schemaFrom;
-            //let usqName = owner+'/'+usq;
-            let cUsq = yield this.entities.cUsq.cApp.getImportUsq(owner, usq);
-            if (cUsq === undefined) {
+            let cUsq = yield this.entities.cUsq;
+            let cApp = cUsq.cApp;
+            if (cApp === undefined)
+                return cUsq;
+            let cUsqFrm = yield cApp.getImportUsq(owner, usq);
+            if (cUsqFrm === undefined) {
                 console.error(`${owner}/${usq} 不存在`);
                 debugger;
-                return this.entities.cUsq;
+                return cUsq;
             }
-            let retErrors = yield cUsq.loadSchema();
+            let retErrors = yield cUsqFrm.loadSchema();
             if (retErrors !== undefined) {
                 console.error('cUsq.loadSchema: ' + retErrors);
                 debugger;
-                return this.entities.cUsq;
+                return cUsq;
             }
-            return cUsq;
+            return cUsqFrm;
         });
     }
     getApiFrom() {

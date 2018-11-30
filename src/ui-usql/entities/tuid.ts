@@ -350,20 +350,22 @@ export class TuidMain extends Tuid {
     async cUsqFrom(): Promise<CUsq> {
         if (this.schemaFrom === undefined) return this.entities.cUsq;
         let {owner, usq} = this.schemaFrom;
-        //let usqName = owner+'/'+usq;
-        let cUsq = await this.entities.cUsq.cApp.getImportUsq(owner, usq);
-        if (cUsq === undefined) {
+        let cUsq = await this.entities.cUsq
+        let cApp = cUsq.cApp;
+        if (cApp === undefined) return cUsq;
+        let cUsqFrm = await cApp.getImportUsq(owner, usq);
+        if (cUsqFrm === undefined) {
             console.error(`${owner}/${usq} 不存在`);
             debugger;
-            return this.entities.cUsq;
+            return cUsq;
         }
-        let retErrors = await cUsq.loadSchema();
+        let retErrors = await cUsqFrm.loadSchema();
         if (retErrors !== undefined) {
             console.error('cUsq.loadSchema: ' + retErrors);
             debugger;
-            return this.entities.cUsq;
+            return cUsq;
         }
-        return cUsq;
+        return cUsqFrm;
     }
 
     protected async getApiFrom() {
