@@ -14,6 +14,7 @@ import { centerApi } from '../centerApi';
 export class CApp extends Controller {
     constructor(tonvaApp, ui) {
         super(resLang(ui.res, nav.language, nav.culture));
+        this.cImportUsqs = {};
         this.cUsqCollection = {};
         this.renderRow = (item, index) => {
             let { id, nick, name } = item;
@@ -47,7 +48,6 @@ export class CApp extends Controller {
         this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
-    // return errors;
     loadUsqs() {
         return __awaiter(this, void 0, void 0, function* () {
             let retErrors = [];
@@ -72,8 +72,26 @@ export class CApp extends Controller {
             return retErrors;
         });
     }
+    getImportUsq(usqOwner, usqName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let usq = usqOwner + '/' + usqName;
+            let cUsq = this.cImportUsqs[usq];
+            if (cUsq !== undefined)
+                return cUsq;
+            let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
+            let usqId = -1; // unknown
+            this.cImportUsqs[usq] = cUsq = this.newCUsq(usq, usqId, undefined, ui || {});
+            let retError = yield cUsq.loadSchema();
+            if (retError !== undefined) {
+                console.error(retError);
+                debugger;
+                return;
+            }
+            return cUsq;
+        });
+    }
     newCUsq(usq, usqId, access, ui) {
-        let cUsq = new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);
+        let cUsq = new (this.ui.CUsq || CUsq)(this, usq, this.id, usqId, access, ui);
         Object.setPrototypeOf(cUsq.x, this.x);
         return cUsq;
     }

@@ -8,11 +8,14 @@ import {History} from './history';
 import { UsqApi } from 'tonva-tools';
 import { Map } from './map';
 import { Pending } from './pending';
+import { CUsq } from '../controllers';
 
+/*
 export interface Usq {
     getTuidContent(tuid:Tuid): React.StatelessComponent<any>;
     showTuid(tuid:Tuid, id:number):Promise<void>;
 }
+*/
 
 export type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' 
     | 'datetime' | 'date' | 'time';
@@ -68,13 +71,13 @@ export class Entities {
     private histories: {[name:string]: History} = {};
     private pendings: {[name:string]: Pending} = {};
     private cacheTimer: any;
-    usq:Usq;
+    cUsq: CUsq;
     usqApi: UsqApi;
     appId: number;
     usqId: number;
 
-    constructor(usq:Usq, usqApi:UsqApi, appId: number) {
-        this.usq = usq;
+    constructor(cUsq: CUsq, usqApi:UsqApi, appId: number) {
+        this.cUsq = cUsq;
         this.usqApi = usqApi;
         this.appId = appId;
     }

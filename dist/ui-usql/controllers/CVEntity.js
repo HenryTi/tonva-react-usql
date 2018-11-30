@@ -16,8 +16,6 @@ export class CEntity extends ControllerUsq {
         Object.setPrototypeOf(this.x, cUsq.x);
         let { name, typeName } = entity;
         this.entity = entity;
-        //let entityUI = cUsq.getUI<T, UI>(entity);
-        //let {ui, res} = entityUI;
         this.ui = ui; // || entityUI.ui;
         this.label = this.res.label || name;
         this.icon = entityIcons[typeName];
@@ -112,7 +110,7 @@ export class CEntity extends ControllerUsq {
     buildSelect(field, arr, fieldUI) {
         return (form, field, values) => __awaiter(this, void 0, void 0, function* () {
             let { _tuid, _ownerField } = field;
-            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let cTuidSelect = yield _tuid.cSelectFrom(); // this.cUsq.cTuidSelect(_tuid);
             let param = undefined;
             if (_ownerField !== undefined)
                 param = form.getValue(_ownerField.name);

@@ -18,9 +18,11 @@ export class Map extends Entity {
     keys: Field[];
     actions: MapActions = {} as any;
     queries: MapQueries = {} as any;
+    schemaFrom: {owner:string; usq:string};
 
     setSchema(schema:any) {
         super.setSchema(schema);
+        this.schemaFrom = this.schema.from;
         let {actions, queries, keys} = schema;
         this.entities.buildFieldTuid(this.keys = keys);
         //let t = this.schemaStringify();

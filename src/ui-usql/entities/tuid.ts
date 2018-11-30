@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { Entity } from './entity';
 import { Entities, Field, ArrFields } from './entities';
 import { isNumber } from 'util';
+import { CUsq, CTuidMain, CTuidEdit, CTuidInfo, CTuidSelect } from '../controllers';
 
 export class BoxId {
     id: number;
@@ -22,6 +23,7 @@ export abstract class Tuid extends Entity {
     idName: string;
     owner: TuidMain;                    // 用这个值来区分是不是TuidArr
     unique: string[];
+    schemaFrom: {owner:string; usq:string};
 
     constructor(entities:Entities, name:string, typeId:number) {
         super(entities, name, typeId);
@@ -72,7 +74,7 @@ export abstract class Tuid extends Entity {
         return ret;
     }
     getTuidContent() {
-        return this.entities.usq.getTuidContent(this);
+        return this.entities.cUsq.getTuidContent(this);
     }
     getIdFromObj(item:any):number {
         return item[this.idName];
@@ -83,6 +85,7 @@ export abstract class Tuid extends Entity {
         let {id, unique} = schema;
         this.idName = id;
         this.unique = unique;
+        this.schemaFrom = this.schema.from;
     }
 
     private moveToHead(id:number) {
@@ -206,7 +209,8 @@ export abstract class Tuid extends Entity {
             name = this.owner.name;
             arr = this.name;
         }
-        let tuids = await this.tvApi.tuidIds(name, arr, this.waitingIds);
+        let api = await this.getApiFrom();
+        let tuids = await api.tuidIds(name, arr, this.waitingIds);
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
@@ -215,7 +219,8 @@ export abstract class Tuid extends Entity {
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
-        let values = await this.tvApi.tuidGet(this.name, id);
+        let api = await this.getApiFrom();
+        let values = await api.tuidGet(this.name, id);
         values._$tuid = this;
         this.cacheValue(values);
         this.cacheTuidFieldValues(values);
@@ -278,7 +283,8 @@ export abstract class Tuid extends Entity {
             name = this.name;
             arr = undefined;
         }
-        let ret = await this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
+        let api = await this.getApiFrom();
+        let ret = await api.tuidSearch(name, arr, owner, key, pageStart, pageSize);
         for (let row of ret) {
             this.cacheFieldsInValue(row, fields);
             if (this.owner !== undefined) row.$owner = this.owner.boxId(row.owner);
@@ -287,7 +293,8 @@ export abstract class Tuid extends Entity {
     }
     async loadArr(arr:string, owner:number, id:number):Promise<any> {
         if (id === undefined || id === 0) return;
-        return await this.tvApi.tuidArrGet(this.name, arr, owner, id);
+        let api = await this.getApiFrom();
+        return await api.tuidArrGet(this.name, arr, owner, id);
     }
     /*
     async loadArrAll(owner:number):Promise<any[]> {
@@ -307,7 +314,7 @@ export abstract class Tuid extends Entity {
     //    return await this.tvApi.tuidIds(this.name, idArr);
     //}
     async showInfo(id:number) {
-        await this.entities.usq.showTuid(this, id);
+        await this.entities.cUsq.showTuid(this, id);
     }
 }
 
@@ -340,18 +347,57 @@ export class TuidMain extends Tuid {
         }
     }
 
-    /*
-    buidProxies(parts:string[]) {
-        let len = parts.length;
-        if (len <= 2) return;
-        this.proxies = {};
-        for (let i=2;i<len;i++) this.proxies[parts[i]] = null;
+    async cUsqFrom(): Promise<CUsq> {
+        if (this.schemaFrom === undefined) return this.entities.cUsq;
+        let {owner, usq} = this.schemaFrom;
+        //let usqName = owner+'/'+usq;
+        let cUsq = await this.entities.cUsq.cApp.getImportUsq(owner, usq);
+        if (cUsq === undefined) {
+            console.error(`${owner}/${usq} 不存在`);
+            debugger;
+            return this.entities.cUsq;
+        }
+        let retErrors = await cUsq.loadSchema();
+        if (retErrors !== undefined) {
+            console.error('cUsq.loadSchema: ' + retErrors);
+            debugger;
+            return this.entities.cUsq;
+        }
+        return cUsq;
     }
-    setProxies(entities:Entities) {
-        if (this.proxies === undefined) return;
-        for (let i in this.proxies) this.proxies[i] = entities.getTuid(i) as Tuid;
+
+    protected async getApiFrom() {
+        let from = await this.from();
+        if (from !== undefined) return from.entities.usqApi;
+        return this.entities.usqApi;
     }
-    */
+
+    async from(): Promise<TuidMain> {
+        let cUsq = await this.cUsqFrom();
+        return cUsq.tuid(this.name);
+    }
+
+    async cFrom(): Promise<CTuidMain> {
+        let cUsq = await this.cUsqFrom();
+        return cUsq.cTuidMainFromName(this.name);
+    }
+
+    async cEditFrom(): Promise<CTuidEdit> {
+        let cUsq = await this.cUsqFrom();
+        return cUsq.cTuidEditFromName(this.name);
+    }
+
+    async cInfoFrom(): Promise<CTuidInfo> {
+        let cUsq = await this.cUsqFrom();
+        return cUsq.cTuidInfoFromName(this.name);
+    }
+
+    async cSelectFrom(): Promise<CTuidSelect> {
+        let cUsq = await this.cUsqFrom();
+        if (cUsq === undefined) return;
+        return cUsq.cTuidSelectFromName(this.name);
+    }
+
     protected afterCacheId(tuidValue:any) {
         super.afterCacheId(tuidValue);
         if (this.proxies === undefined) return;

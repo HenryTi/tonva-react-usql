@@ -18,6 +18,9 @@ export class Entity {
     }
     get sName() { return this.jName || this.name; }
     get tvApi() { return this.entities.usqApi; }
+    getApiFrom() {
+        return __awaiter(this, void 0, void 0, function* () { return this.entities.usqApi; });
+    }
     fieldMap(arr) {
         if (arr === undefined)
             arr = '$';

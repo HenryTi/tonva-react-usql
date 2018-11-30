@@ -64,7 +64,10 @@ export abstract class VTuidMainListBase  extends VEntity<TuidMain, TuidUI, CTuid
 
 export class VTuidMainList extends VTuidMainListBase {
     protected async onSelected(item:any) {
-        this.event('edit', item.id);
+        if (this.controller.isFrom === false)
+            this.event('edit', item.id);
+        else
+            this.event('info', item.id);
     }
 }
 

@@ -60,7 +60,7 @@ export declare class CSheet extends CEntity<Sheet, SheetUI> {
     private getStateUI;
     getStateLabel(stateName: string): any;
     getActionLabel(stateName: string, actionName: string): any;
-    getStateSheetCount(): Promise<void>;
+    private loadStateSheetCount;
     getSheetData(sheetId: number): Promise<SheetData>;
     getArchived(sheetId: number): Promise<SheetData>;
     saveSheet(values: any, valuesWithBox: any): Promise<any>;

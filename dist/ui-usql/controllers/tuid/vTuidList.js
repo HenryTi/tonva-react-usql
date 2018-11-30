@@ -65,7 +65,10 @@ export class VTuidMainListBase extends VEntity {
 export class VTuidMainList extends VTuidMainListBase {
     onSelected(item) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.event('edit', item.id);
+            if (this.controller.isFrom === false)
+                this.event('edit', item.id);
+            else
+                this.event('info', item.id);
         });
     }
 }

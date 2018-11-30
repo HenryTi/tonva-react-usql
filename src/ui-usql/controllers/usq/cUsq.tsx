@@ -1,7 +1,7 @@
 import * as React from 'react';
 import _ from 'lodash';
 import { UsqApi, Controller, UnitxApi, meInFrame, resLang, nav } from 'tonva-tools';
-import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq, History, Pending } from '../../entities';
+import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, /*Usq, */History, Pending } from '../../entities';
 import { CLink } from '../link';
 import { CBook, BookUI } from '../book';
 import { CSheet, SheetUI } from '../sheet';
@@ -14,6 +14,7 @@ import { PureJSONContent } from '../form/viewModel';
 import { VUsq } from './vUsq';
 import { CHistory, HistoryUI } from '../history';
 import { CPending, PendingUI } from '../pending';
+import { CApp } from '../CApp';
 
 export type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' | 'history' | 'pending';
 
@@ -47,7 +48,7 @@ function lowerPropertyName(entities: {[name:string]: EntityUI}) {
     for (let i in entities) entities[i.toLowerCase()] = entities[i];
 }
 
-export class CUsq extends Controller implements Usq {
+export class CUsq extends Controller /* implements Usq*/ {
     private ui:any;
     private CTuidMain: typeof CTuidMain;
     private CTuidEdit: typeof CTuidEdit;
@@ -63,8 +64,9 @@ export class CUsq extends Controller implements Usq {
     private CHistory: typeof CHistory;
     private CPending: typeof CPending;
 
-    constructor(usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
+    constructor(cApp:CApp, usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
         super(resLang(ui.res, nav.language, nav.culture));
+        this.cApp = cApp;
         this.usq = usq;
         this.id = usqId;
         // 每一个ui都转换成小写的key的版本
@@ -134,6 +136,7 @@ export class CUsq extends Controller implements Usq {
     protected async internalStart() {
     }
 
+    cApp:CApp;
     usq: string;
     id: number;
     res: any;
@@ -262,7 +265,10 @@ export class CUsq extends Controller implements Usq {
         let entity = this.entities.tuid(entityName);
         if (entity !== undefined) return this.cTuidMain(entity);
     }
-
+    cTuidEditFromName(entityName:string) {
+        let entity = this.entities.tuid(entityName);
+        if (entity !== undefined) return this.cTuidEdit(entity);
+    }
     cTuidInfoFromName(entityName:string) {
         let entity = this.entities.tuid(entityName);
         if (entity !== undefined) return this.cTuidInfo(entity);

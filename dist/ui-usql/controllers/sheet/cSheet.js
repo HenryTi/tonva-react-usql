@@ -31,18 +31,10 @@ export class CSheet extends CEntity {
             //this.openPage(this.finishedPage);
             yield this.showSaved(ret);
         });
-        /*
-        async getStateSheets(state:string, pageStart:number, pageSize:number):Promise<void> {
-            this.curState = state;
-            //this.stateSheets.clear();
-            this.pageStateItems.items.clear();
-            let ret = await this.entity.getStateSheets(state, pageStart, pageSize);
-            //this.stateSheets.spliceWithArray(0, 0, ret);
-            this.pageStateItems.items.spliceWithArray(0, 0, ret);
-        }*/
     }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadStateSheetCount();
             this.pageStateItems = this.entity.createPageStateItems();
             yield this.showVPage(this.VSheetMain);
         });
@@ -55,22 +47,6 @@ export class CSheet extends CEntity {
         });
     }
     onSheet(from, to, sheetData) {
-        /*
-        app:69
-        date:"2018-10-18T21:59:15.000Z"
-        discription:"订单 北京大学 金额99元"
-        flow:0
-        id:95
-        name:"order"
-        no:"181018000010"
-        processing:0
-        sheet:8
-        state:"$"
-        to:"[10]"
-        user:10
-        usq:58
-        version:5
-        */
         let me = this.user.id;
         let { id, preState, state } = sheetData;
         console.log({ $: 'onMessage sheet', from: from, to: to.join(','), id: id, preState: preState, state: state, me: me, sheetData: sheetData });
@@ -233,7 +209,7 @@ export class CSheet extends CEntity {
         let action = actions[actionName];
         return (action && action.label) || actionName;
     }
-    getStateSheetCount() {
+    loadStateSheetCount() {
         return __awaiter(this, void 0, void 0, function* () {
             this.statesCount.clear();
             let statesCount = yield this.entity.stateSheetCount();

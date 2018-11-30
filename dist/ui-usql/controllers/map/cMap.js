@@ -41,7 +41,8 @@ export class CMap extends CEntity {
             for (let p = item; p !== undefined; p = p.parent) {
                 let { keyIndex: ki, box } = p;
                 let kn = this.keyFields[ki].name;
-                searchParam[kn] = data['_' + kn] = box.id;
+                //searchParam[kn] = data['_' + kn] = box.id;
+                searchParam[kn] = data[kn] = box.id;
             }
             let id = yield this.searchOnKey(keyField, searchParam);
             if (id === undefined || id <= 0)
@@ -52,25 +53,32 @@ export class CMap extends CEntity {
             let values = {};
             if (keyIndex + 1 === keysLast) {
                 tuid.useId(id);
-                values[kn] = arr1['_' + kn] = idBox;
+                //values[kn] = arr1['_' + kn] = idBox;
+                values[kn] = arr1[kn] = idBox;
                 if (this.entity.fields.length > 0) {
                     let ret = yield this.vCall(VInputValues, data);
                     for (let i in ret) {
-                        values[i] = arr1['_' + i] = ret[i];
+                        //values[i] = arr1['_' + i] = ret[i];
+                        values[i] = arr1[i] = ret[i];
                     }
                 }
             }
             else {
-                values[kn] = data['_' + kn] = idBox;
-                for (let i = idx + 1; i < keysLast; i++)
-                    data['_' + this.keyFields[i].name] = 0;
+                //values[kn] = data['_' + kn] = idBox;
+                values[kn] = data[kn] = idBox;
+                for (let i = idx + 1; i < keysLast; i++) {
+                    //data['_' + this.keyFields[i].name] = 0;
+                    data[this.keyFields[i].name] = 0;
+                }
                 // 填map的key field 0 值
-                arr1['_' + this.keyFields[keysLast].name] = 0;
+                //arr1['_' + this.keyFields[keysLast].name] = 0;
+                arr1[this.keyFields[keysLast].name] = 0;
                 let { fields } = this.entity;
                 for (let f of fields) {
                     let { name, type, null: nullable } = f;
                     if (!(nullable === true)) {
-                        arr1['_' + f.name] = fieldDefaultValue(type);
+                        //arr1['_' + f.name] = fieldDefaultValue(type);
+                        arr1[f.name] = fieldDefaultValue(type);
                     }
                 }
             }
@@ -112,12 +120,14 @@ export class CMap extends CEntity {
             arr1.push(v0);
             for (let p = item; p !== undefined; p = p.parent) {
                 let ki = p.keyIndex;
-                v0['_' + this.keyFields[ki].name] = p.box.id;
+                //v0['_'+this.keyFields[ki].name] = p.box.id;
+                v0[this.keyFields[ki].name] = p.box.id;
             }
             let len = this.keyFields.length;
             for (let i = item.keyIndex + 1; i < len; i++) {
                 let k = this.keyFields[i];
-                v0['_' + k.name] = -1;
+                //v0['_'+k.name] = -1;
+                v0[k.name] = -1;
             }
             yield map.actions.del.submit(data);
             let children = item.parent.children;
@@ -128,7 +138,8 @@ export class CMap extends CEntity {
     }
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            let { keys } = this.entity;
+            let { keys, schemaFrom } = this.entity;
+            this.isFrom = schemaFrom !== undefined;
             let q = this.entity.queries.all;
             let result = yield q.query({});
             //let data = await this.entity.unpackReturns(res);

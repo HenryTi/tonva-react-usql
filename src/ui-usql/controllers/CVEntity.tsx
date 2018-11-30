@@ -10,8 +10,6 @@ import { ControllerUsq } from './ControllerUsq';
 
 export interface EntityUI {
     form?: FormUI;
-    //label: string;
-    //res?: any;
 }
 
 export abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
@@ -20,8 +18,6 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
         Object.setPrototypeOf(this.x, cUsq.x);
         let {name, typeName} = entity;
         this.entity = entity;
-        //let entityUI = cUsq.getUI<T, UI>(entity);
-        //let {ui, res} = entityUI;
         this.ui = ui; // || entityUI.ui;
         this.label = this.res.label || name;
         this.icon = entityIcons[typeName];
@@ -118,7 +114,7 @@ export abstract class CEntity<T extends Entity, UI extends EntityUI> extends Con
     protected buildSelect(field:Field, arr:string, fieldUI: FieldTuidUI):FieldCall {
         return async (form:VForm, field:Field, values:any):Promise<any> => {
             let {_tuid, _ownerField} = field;
-            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let cTuidSelect = await (_tuid as TuidMain).cSelectFrom(); // this.cUsq.cTuidSelect(_tuid);
             let param:any = undefined;
             if (_ownerField !== undefined) param = form.getValue(_ownerField.name);
             if (fieldUI && fieldUI.autoList === true) {

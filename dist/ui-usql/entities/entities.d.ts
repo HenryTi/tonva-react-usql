@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { TuidMain, Tuid } from './tuid';
 import { Action } from './action';
 import { Sheet } from './sheet';
@@ -8,10 +7,7 @@ import { History } from './history';
 import { UsqApi } from 'tonva-tools';
 import { Map } from './map';
 import { Pending } from './pending';
-export interface Usq {
-    getTuidContent(tuid: Tuid): React.StatelessComponent<any>;
-    showTuid(tuid: Tuid, id: number): Promise<void>;
-}
+import { CUsq } from '../controllers';
 export declare type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' | 'datetime' | 'date' | 'time';
 export declare function fieldDefaultValue(type: FieldType): 0 | "" | "2000-1-1" | "0:00";
 export interface Field {
@@ -45,11 +41,11 @@ export declare class Entities {
     private histories;
     private pendings;
     private cacheTimer;
-    usq: Usq;
+    cUsq: CUsq;
     usqApi: UsqApi;
     appId: number;
     usqId: number;
-    constructor(usq: Usq, usqApi: UsqApi, appId: number);
+    constructor(cUsq: CUsq, usqApi: UsqApi, appId: number);
     tuid(name: string): TuidMain;
     action(name: string): Action;
     sheet(name: string): Sheet;

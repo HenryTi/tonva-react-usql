@@ -65,7 +65,7 @@ export class Tuid extends Entity {
         return ret;
     }
     getTuidContent() {
-        return this.entities.usq.getTuidContent(this);
+        return this.entities.cUsq.getTuidContent(this);
     }
     getIdFromObj(item) {
         return item[this.idName];
@@ -75,6 +75,7 @@ export class Tuid extends Entity {
         let { id, unique } = schema;
         this.idName = id;
         this.unique = unique;
+        this.schemaFrom = this.schema.from;
     }
     moveToHead(id) {
         let index = this.queue.findIndex(v => v === id);
@@ -211,7 +212,8 @@ export class Tuid extends Entity {
                 name = this.owner.name;
                 arr = this.name;
             }
-            let tuids = yield this.tvApi.tuidIds(name, arr, this.waitingIds);
+            let api = yield this.getApiFrom();
+            let tuids = yield api.tuidIds(name, arr, this.waitingIds);
             for (let tuidValue of tuids) {
                 if (this.cacheValue(tuidValue) === false)
                     continue;
@@ -224,7 +226,8 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === undefined || id === 0)
                 return;
-            let values = yield this.tvApi.tuidGet(this.name, id);
+            let api = yield this.getApiFrom();
+            let values = yield api.tuidGet(this.name, id);
             values._$tuid = this;
             this.cacheValue(values);
             this.cacheTuidFieldValues(values);
@@ -295,7 +298,8 @@ export class Tuid extends Entity {
                 name = this.name;
                 arr = undefined;
             }
-            let ret = yield this.tvApi.tuidSearch(name, arr, owner, key, pageStart, pageSize);
+            let api = yield this.getApiFrom();
+            let ret = yield api.tuidSearch(name, arr, owner, key, pageStart, pageSize);
             for (let row of ret) {
                 this.cacheFieldsInValue(row, fields);
                 if (this.owner !== undefined)
@@ -308,7 +312,8 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === undefined || id === 0)
                 return;
-            return yield this.tvApi.tuidArrGet(this.name, arr, owner, id);
+            let api = yield this.getApiFrom();
+            return yield api.tuidArrGet(this.name, arr, owner, id);
         });
     }
     /*
@@ -333,7 +338,7 @@ export class Tuid extends Entity {
     //}
     showInfo(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.usq.showTuid(this, id);
+            yield this.entities.cUsq.showTuid(this, id);
         });
     }
 }
@@ -365,18 +370,67 @@ export class TuidMain extends Tuid {
             }
         });
     }
-    /*
-    buidProxies(parts:string[]) {
-        let len = parts.length;
-        if (len <= 2) return;
-        this.proxies = {};
-        for (let i=2;i<len;i++) this.proxies[parts[i]] = null;
+    cUsqFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.schemaFrom === undefined)
+                return this.entities.cUsq;
+            let { owner, usq } = this.schemaFrom;
+            //let usqName = owner+'/'+usq;
+            let cUsq = yield this.entities.cUsq.cApp.getImportUsq(owner, usq);
+            if (cUsq === undefined) {
+                console.error(`${owner}/${usq} 不存在`);
+                debugger;
+                return this.entities.cUsq;
+            }
+            let retErrors = yield cUsq.loadSchema();
+            if (retErrors !== undefined) {
+                console.error('cUsq.loadSchema: ' + retErrors);
+                debugger;
+                return this.entities.cUsq;
+            }
+            return cUsq;
+        });
     }
-    setProxies(entities:Entities) {
-        if (this.proxies === undefined) return;
-        for (let i in this.proxies) this.proxies[i] = entities.getTuid(i) as Tuid;
+    getApiFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let from = yield this.from();
+            if (from !== undefined)
+                return from.entities.usqApi;
+            return this.entities.usqApi;
+        });
     }
-    */
+    from() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.cUsqFrom();
+            return cUsq.tuid(this.name);
+        });
+    }
+    cFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.cUsqFrom();
+            return cUsq.cTuidMainFromName(this.name);
+        });
+    }
+    cEditFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.cUsqFrom();
+            return cUsq.cTuidEditFromName(this.name);
+        });
+    }
+    cInfoFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.cUsqFrom();
+            return cUsq.cTuidInfoFromName(this.name);
+        });
+    }
+    cSelectFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.cUsqFrom();
+            if (cUsq === undefined)
+                return;
+            return cUsq.cTuidSelectFromName(this.name);
+        });
+    }
     afterCacheId(tuidValue) {
         super.afterCacheId(tuidValue);
         if (this.proxies === undefined)

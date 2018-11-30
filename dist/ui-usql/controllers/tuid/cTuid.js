@@ -47,6 +47,37 @@ export class CTuidMain extends CTuid {
             }
         }
     }
+    from() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let ret = yield this.entity.cFrom();
+            if (ret === undefined)
+                return this;
+            return ret;
+        });
+    }
+    cUsqFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.entity.cUsqFrom();
+        });
+    }
+    cEditFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.entity.cUsqFrom();
+            return yield cUsq.cTuidEditFromName(this.entity.name);
+        });
+    }
+    cInfoFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.entity.cUsqFrom();
+            return yield cUsq.cTuidInfoFromName(this.entity.name);
+        });
+    }
+    cSelectFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cUsq = yield this.entity.cUsqFrom();
+            return yield cUsq.cTuidSelectFromName(this.entity.name);
+        });
+    }
     getLable(tuid) {
         if (tuid === this.entity)
             return this.label;
@@ -67,6 +98,7 @@ export class CTuidMain extends CTuid {
     get VTuidList() { return VTuidMainList; }
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.isFrom = this.entity.schemaFrom !== undefined;
             yield this.showVPage(this.VTuidMain);
         });
     }
@@ -86,6 +118,10 @@ export class CTuidMain extends CTuid {
                     return;
                 case 'item-changed':
                     this.itemChanged(value);
+                    return;
+                case 'info':
+                    let cTuidInfo = new CTuidInfo(this.cUsq, this.entity, this.ui, this.res);
+                    yield cTuidInfo.start(value);
                     return;
             }
             yield this.showVPage(v, value);

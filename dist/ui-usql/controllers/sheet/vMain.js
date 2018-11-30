@@ -44,7 +44,6 @@ export class VSheetMain extends VEntity {
     }
     showEntry() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.controller.getStateSheetCount();
             this.openPage(this.view);
         });
     }

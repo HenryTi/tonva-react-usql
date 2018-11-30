@@ -17,6 +17,7 @@ export class CApp extends Controller {
     private appOwner:string;
     private appName:string;
     private isProduction:boolean;
+    private cImportUsqs: {[usq:string]: CUsq} = {};
     protected ui:AppUI;
     id: number;
     appUnits:any[];
@@ -32,11 +33,10 @@ export class CApp extends Controller {
         this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
-
-    readonly caption: string; // = 'View Model 版的 Usql App';
-
+    
+    readonly caption: string; // = 'View Model 版的 Usql App';    
     cUsqCollection: {[usq:string]: CUsq} = {};
-    // return errors;
+
     protected async loadUsqs(): Promise<string[]> {
         let retErrors:string[] = [];
         let unit = meInFrame.unit;
@@ -59,8 +59,24 @@ export class CApp extends Controller {
         return retErrors;
     }
 
+    async getImportUsq(usqOwner:string, usqName:string):Promise<CUsq> {
+        let usq = usqOwner + '/' + usqName;
+        let cUsq = this.cImportUsqs[usq];
+        if (cUsq !== undefined) return cUsq;
+        let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
+        let usqId = -1; // unknown
+        this.cImportUsqs[usq] = cUsq = this.newCUsq(usq, usqId, undefined, ui || {});
+        let retError = await cUsq.loadSchema();
+        if (retError !== undefined) {
+            console.error(retError);
+            debugger;
+            return;
+        }
+        return cUsq;
+    }
+
     protected newCUsq(usq:string, usqId:number, access:string, ui:any) {
-        let cUsq = new (this.ui.CUsq || CUsq)(usq, this.id, usqId, access, ui);        
+        let cUsq = new (this.ui.CUsq || CUsq)(this, usq, this.id, usqId, access, ui);        
         Object.setPrototypeOf(cUsq.x, this.x);
         return cUsq;
     }

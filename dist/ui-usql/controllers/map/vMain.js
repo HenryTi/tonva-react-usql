@@ -24,10 +24,13 @@ export class VMapMain extends VEntity {
             let { tuid, box, children, isLeaf, keyIndex, values } = item;
             let keyUI = this.controller.keyUIs[keyIndex];
             let { content: keyContent, valuesContent, none: keyNone } = keyUI;
-            let add = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.addClick(item) },
-                React.createElement(FA, { name: "plus" }));
-            let remove = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.removeClick(item) },
-                React.createElement(FA, { className: "text-info", name: "trash" }));
+            let add, remove;
+            if (this.isFrom === false) {
+                add = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.addClick(item) },
+                    React.createElement(FA, { name: "plus" }));
+                remove = React.createElement("button", { className: "btn btn-link btn-sm", onClick: () => this.controller.removeClick(item) },
+                    React.createElement(FA, { className: "text-info", name: "trash" }));
+            }
             let right;
             if (isLeaf === false) {
                 if (keyIndex === 0)
@@ -63,6 +66,7 @@ export class VMapMain extends VEntity {
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.isFrom = this.controller.isFrom;
             this.openPage(this.view);
         });
     }

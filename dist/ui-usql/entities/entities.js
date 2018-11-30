@@ -34,7 +34,7 @@ export function fieldDefaultValue(type) {
     }
 }
 export class Entities {
-    constructor(usq, usqApi, appId) {
+    constructor(cUsq, usqApi, appId) {
         this.tuids = {};
         this.actions = {};
         this.sheets = {};
@@ -58,7 +58,7 @@ export class Entities {
                 tuid.cacheIds();
             }
         };
-        this.usq = usq;
+        this.cUsq = cUsq;
         this.usqApi = usqApi;
         this.appId = appId;
     }

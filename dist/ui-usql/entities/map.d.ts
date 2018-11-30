@@ -16,6 +16,10 @@ export declare class Map extends Entity {
     keys: Field[];
     actions: MapActions;
     queries: MapQueries;
+    schemaFrom: {
+        owner: string;
+        usq: string;
+    };
     setSchema(schema: any): void;
     add(param: any): Promise<any>;
     del(param: any): Promise<any>;

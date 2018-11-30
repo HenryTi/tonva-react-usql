@@ -26,13 +26,15 @@ export class VTuidMain extends VEntity<TuidMain, TuidUI, CTuidMain> {
     }
 
     protected get view() {
-        let {label, proxyLinks} = this.controller;
+        let {label, proxyLinks, isFrom} = this.controller;
+        let newButton;
+        if (isFrom === false) newButton = <Button className="ml-3" color="primary" onClick={this.onNew}>新增</Button>;
         return () => <Page header={label}>
             {proxyLinks === undefined ?
             <>
                 <SearchBox className="w-100" onSearch={this.onSearch} placeholder={'搜索'+label} />
                 <div className='my-3'>
-                    <Button className="ml-3" color="primary" onClick={this.onNew}>新增</Button>
+                    {newButton}
                     <Button className="ml-3" color="primary" onClick={this.onList}>列表</Button>
                 </div>
             </> :

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Controller } from 'tonva-tools';
-import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, Usq, History, Pending } from '../../entities';
+import { Entities, TuidMain, Action, Sheet, Query, Book, Map, Entity, Tuid, /*Usq, */ History, Pending } from '../../entities';
 import { CLink } from '../link';
 import { CBook, BookUI } from '../book';
 import { CSheet, SheetUI } from '../sheet';
@@ -12,6 +12,7 @@ import { CEntity, EntityUI } from '../CVEntity';
 import { VUsq } from './vUsq';
 import { CHistory, HistoryUI } from '../history';
 import { CPending, PendingUI } from '../pending';
+import { CApp } from '../CApp';
 export declare type EntityType = 'sheet' | 'action' | 'tuid' | 'query' | 'book' | 'map' | 'history' | 'pending';
 export interface UsqUI {
     CTuidMain?: typeof CTuidMain;
@@ -53,7 +54,7 @@ export interface UsqUI {
     };
     res?: any;
 }
-export declare class CUsq extends Controller implements Usq {
+export declare class CUsq extends Controller {
     private ui;
     private CTuidMain;
     private CTuidEdit;
@@ -68,8 +69,9 @@ export declare class CUsq extends Controller implements Usq {
     private CBook;
     private CHistory;
     private CPending;
-    constructor(usq: string, appId: number, usqId: number, access: string, ui: UsqUI);
+    constructor(cApp: CApp, usq: string, appId: number, usqId: number, access: string, ui: UsqUI);
     protected internalStart(): Promise<void>;
+    cApp: CApp;
     usq: string;
     id: number;
     res: any;
@@ -100,6 +102,7 @@ export declare class CUsq extends Controller implements Usq {
     cHistoryFromName(entityName: string): CHistory;
     cPendingFromName(entityName: string): CPending;
     cTuidMainFromName(entityName: string): CTuidMain;
+    cTuidEditFromName(entityName: string): CTuidEdit;
     cTuidInfoFromName(entityName: string): CTuidInfo;
     cTuidSelectFromName(entityName: string): CTuidSelect;
     cFromName(entityType: EntityType, entityName: string): CEntity<Entity, EntityUI>;

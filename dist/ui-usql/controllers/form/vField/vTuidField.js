@@ -48,7 +48,7 @@ export class VTuidField extends VField {
             if (this.value === null)
                 content = React.createElement(React.Fragment, null, placeHolder || this.input.placeHolder);
             else if (typeof this.value === 'object') {
-                content = tv(this.value); // this.value.content();
+                content = tv(this.value);
             }
             else {
                 let idBox = this.tuid.boxId(this.value);

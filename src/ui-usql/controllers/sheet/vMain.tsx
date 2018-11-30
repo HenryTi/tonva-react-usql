@@ -6,11 +6,9 @@ import { List, Muted, LMR } from 'tonva-react-form';
 import { VEntity } from '../CVEntity';
 import { Sheet } from '../../entities';
 import { CSheet, SheetUI } from './cSheet';
-import { eventNames } from 'cluster';
 
 export class VSheetMain extends VEntity<Sheet, SheetUI, CSheet> {
     async showEntry() {
-        await this.controller.getStateSheetCount();
         this.openPage(this.view);
     }
 

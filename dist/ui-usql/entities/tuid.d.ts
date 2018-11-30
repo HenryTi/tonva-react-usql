@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Entity } from './entity';
 import { Entities } from './entities';
+import { CUsq, CTuidMain, CTuidEdit, CTuidInfo, CTuidSelect } from '../controllers';
 export declare class BoxId {
     id: number;
     obj?: any;
@@ -16,6 +17,10 @@ export declare abstract class Tuid extends Entity {
     idName: string;
     owner: TuidMain;
     unique: string[];
+    schemaFrom: {
+        owner: string;
+        usq: string;
+    };
     constructor(entities: Entities, name: string, typeId: number);
     abstract readonly Main: any;
     private buildIdBoxer;
@@ -55,6 +60,13 @@ export declare class TuidMain extends Tuid {
     setSchema(schema: any): void;
     protected getDiv(divName: string): TuidDiv;
     cacheIds(): Promise<void>;
+    cUsqFrom(): Promise<CUsq>;
+    protected getApiFrom(): Promise<import("../../../../../../../../Users/Henry/Tonva/tonva-ui/tonva-react-usql/node_modules/tonva-tools/dist/net/usqApi").UsqApi>;
+    from(): Promise<TuidMain>;
+    cFrom(): Promise<CTuidMain>;
+    cEditFrom(): Promise<CTuidEdit>;
+    cInfoFrom(): Promise<CTuidInfo>;
+    cSelectFrom(): Promise<CTuidSelect>;
     protected afterCacheId(tuidValue: any): void;
 }
 export declare class TuidDiv extends Tuid {

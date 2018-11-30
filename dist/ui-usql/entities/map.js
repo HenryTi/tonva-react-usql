@@ -16,6 +16,7 @@ export class Map extends Entity {
     get typeName() { return 'map'; }
     setSchema(schema) {
         super.setSchema(schema);
+        this.schemaFrom = this.schema.from;
         let { actions, queries, keys } = schema;
         this.entities.buildFieldTuid(this.keys = keys);
         //let t = this.schemaStringify();

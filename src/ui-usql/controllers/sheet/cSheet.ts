@@ -43,10 +43,10 @@ export interface SheetData {
 export class CSheet extends CEntity<Sheet, SheetUI> {
     statesCount:IObservableArray<StateCount> = observable.array<StateCount>([], {deep:true});
     curState:string;
-    //stateSheets:IObservableArray = observable.array<{id:number}>([], {deep:true});
     pageStateItems: PageItems<any>;
 
     protected async internalStart() {
+        await this.loadStateSheetCount();
         this.pageStateItems = this.entity.createPageStateItems();
         await this.showVPage(this.VSheetMain);
     }
@@ -56,22 +56,6 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
         if (type === 'sheet') this.onSheet(from, to, body);
     }
     private onSheet(from:number, to:number[], sheetData:any) {
-        /*
-        app:69
-        date:"2018-10-18T21:59:15.000Z"
-        discription:"订单 北京大学 金额99元"
-        flow:0
-        id:95
-        name:"order"
-        no:"181018000010"
-        processing:0
-        sheet:8
-        state:"$"
-        to:"[10]"
-        user:10
-        usq:58
-        version:5
-        */
         let me = this.user.id;
         let {id, preState, state} = sheetData;
         console.log({$:'onMessage sheet', from:from, to:to.join(','), id:id, preState:preState, state:state, me:me, sheetData:sheetData})
@@ -222,7 +206,7 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
         return (action && action.label) || actionName;
     }
 
-    async getStateSheetCount():Promise<void> {
+    private async loadStateSheetCount():Promise<void> {
         this.statesCount.clear();
         let statesCount = await this.entity.stateSheetCount();
         this.statesCount.splice(0, 0, ...statesCount);
@@ -248,14 +232,4 @@ export class CSheet extends CEntity<Sheet, SheetUI> {
     async action(id:number, flow:number, state:string, actionName:string):Promise<any> {
         return await this.entity.action(id, flow, state, actionName);
     }
-
-    /*
-    async getStateSheets(state:string, pageStart:number, pageSize:number):Promise<void> {
-        this.curState = state;
-        //this.stateSheets.clear();
-        this.pageStateItems.items.clear();
-        let ret = await this.entity.getStateSheets(state, pageStart, pageSize);
-        //this.stateSheets.spliceWithArray(0, 0, ret);
-        this.pageStateItems.items.spliceWithArray(0, 0, ret);
-    }*/
 }

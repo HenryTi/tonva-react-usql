@@ -25,10 +25,11 @@ function lowerPropertyName(entities) {
     for (let i in entities)
         entities[i.toLowerCase()] = entities[i];
 }
-export class CUsq extends Controller {
-    constructor(usq, appId, usqId, access, ui) {
+export class CUsq extends Controller /* implements Usq*/ {
+    constructor(cApp, usq, appId, usqId, access, ui) {
         super(resLang(ui.res, nav.language, nav.culture));
         this.isSysVisible = false;
+        this.cApp = cApp;
         this.usq = usq;
         this.id = usqId;
         // 每一个ui都转换成小写的key的版本
@@ -230,6 +231,11 @@ export class CUsq extends Controller {
         let entity = this.entities.tuid(entityName);
         if (entity !== undefined)
             return this.cTuidMain(entity);
+    }
+    cTuidEditFromName(entityName) {
+        let entity = this.entities.tuid(entityName);
+        if (entity !== undefined)
+            return this.cTuidEdit(entity);
     }
     cTuidInfoFromName(entityName) {
         let entity = this.entities.tuid(entityName);

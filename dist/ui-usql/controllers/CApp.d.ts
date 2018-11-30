@@ -13,6 +13,7 @@ export declare class CApp extends Controller {
     private appOwner;
     private appName;
     private isProduction;
+    private cImportUsqs;
     protected ui: AppUI;
     id: number;
     appUnits: any[];
@@ -22,6 +23,7 @@ export declare class CApp extends Controller {
         [usq: string]: CUsq;
     };
     protected loadUsqs(): Promise<string[]>;
+    getImportUsq(usqOwner: string, usqName: string): Promise<CUsq>;
     protected newCUsq(usq: string, usqId: number, access: string, ui: any): CUsq;
     readonly cUsqArr: CUsq[];
     getCUsq(apiName: string): CUsq;

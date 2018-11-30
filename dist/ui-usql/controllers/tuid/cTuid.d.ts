@@ -33,11 +33,17 @@ export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 }
 export declare class CTuidMain extends CTuid<TuidMain> {
     constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res: any);
+    from(): Promise<CTuidMain>;
+    cUsqFrom(): Promise<CUsq>;
+    cEditFrom(): Promise<CTuidEdit>;
+    cInfoFrom(): Promise<CTuidInfo>;
+    cSelectFrom(): Promise<CTuidSelect>;
     getLable(tuid: Tuid): string;
     proxies: {
         [name: string]: TuidMain;
     };
     proxyLinks: CLink[];
+    isFrom: boolean;
     protected readonly VTuidMain: typeof VTuidMain;
     protected readonly VTuidEdit: typeof VTuidEdit;
     protected readonly VTuidList: typeof VTuidMainList;
