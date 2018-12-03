@@ -75,7 +75,7 @@ export class CUsq extends Controller /* implements Usq*/ {
         let baseUrl = hash === undefined || hash === '' ?
             'debug/' : 'tv/';
         let acc;
-        if (access === undefined || access === '*') {
+        if (access === null || access === undefined || access === '*') {
             acc = [];
         }
         else {

@@ -115,7 +115,7 @@ export class CUsq extends Controller /* implements Usq*/ {
             'debug/':'tv/';
 
         let acc: string[];
-        if (access === undefined || access === '*') {
+        if (access === null || access === undefined || access === '*') {
             acc = [];
         }
         else {

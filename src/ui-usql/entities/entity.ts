@@ -201,11 +201,13 @@ export abstract class Entity {
             if (ch === 9) {
                 let f = fields[i];
                 if (ch0 !== 8) {
-                    let v = data.substring(c, p);
-                    ret[f.name] = this.to(ret, v, f);
+                    if (p>c) {
+                        let v = data.substring(c, p);
+                        ret[f.name] = this.to(ret, v, f);
+                    }
                 }
                 else {
-                    let s = null;
+                    ret[f.name] = null;
                 }
                 c = p+1;
                 ++i;
@@ -214,11 +216,13 @@ export abstract class Entity {
             else if (ch === 10) {
                 let f = fields[i];
                 if (ch0 !== 8) {
-                    let v = data.substring(c, p);
-                    ret[f.name] = this.to(ret, v, f);
+                    if (p>c) {
+                        let v = data.substring(c, p);
+                        ret[f.name] = this.to(ret, v, f);
+                    }
                 }
                 else {
-                    let s = null;
+                    ret[f.name] = null;
                 }
                 ++p;
                 ++i;
