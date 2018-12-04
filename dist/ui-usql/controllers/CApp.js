@@ -48,6 +48,14 @@ export class CApp extends Controller {
         this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
+    startDebug() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let appName = this.appOwner + '/' + this.appName;
+            let cApp = new CApp(appName, { usqs: {} });
+            let keepNavBackButton = true;
+            yield cApp.start(keepNavBackButton);
+        });
+    }
     loadUsqs() {
         return __awaiter(this, void 0, void 0, function* () {
             let retErrors = [];

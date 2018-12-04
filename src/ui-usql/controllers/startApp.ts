@@ -23,9 +23,3 @@ export async function startApp(appName:string, ui: AppUI) {
     let cApp = new (ui && ui.CApp || CApp)(appName, ui || {usqs:{}} );
     await cApp.start();
 }
-
-export async function debugApp(appName:string) {
-    let cApp = new CApp(appName, {usqs:{}} );
-    let keepNavBackButton = true;
-    await cApp.start(keepNavBackButton);
-}

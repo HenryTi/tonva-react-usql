@@ -22,6 +22,7 @@ export declare class CApp extends Controller {
     cUsqCollection: {
         [usq: string]: CUsq;
     };
+    startDebug(): Promise<void>;
     protected loadUsqs(): Promise<string[]>;
     getImportUsq(usqOwner: string, usqName: string): Promise<CUsq>;
     protected newCUsq(usq: string, usqId: number, access: string, ui: any): CUsq;

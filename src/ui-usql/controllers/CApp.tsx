@@ -37,6 +37,13 @@ export class CApp extends Controller {
     readonly caption: string; // = 'View Model 版的 Usql App';    
     cUsqCollection: {[usq:string]: CUsq} = {};
 
+    async startDebug() {
+        let appName = this.appOwner + '/' + this.appName;
+        let cApp = new CApp(appName, {usqs:{}} );
+        let keepNavBackButton = true;
+        await cApp.start(keepNavBackButton);    
+    }
+
     protected async loadUsqs(): Promise<string[]> {
         let retErrors:string[] = [];
         let unit = meInFrame.unit;
