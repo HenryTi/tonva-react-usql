@@ -1,9 +1,9 @@
 import React from "react";
+import { View } from "tonva-tools";
 import { List, Muted } from "tonva-react-form";
+import { Entity } from "../../entities";
 import { CLink } from "../link";
 import { CUsq } from "./cUsq";
-import { Entity } from "../../entities";
-import { View } from "tonva-tools";
 
 export class VUsq extends View<CUsq> {
     protected isSysVisible = false;

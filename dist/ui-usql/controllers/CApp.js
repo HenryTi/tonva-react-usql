@@ -162,8 +162,11 @@ export class CApp extends Controller {
             }
         });
     }
-    internalStart() {
+    internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (param !== true) {
+                this.clearPrevPages();
+            }
             yield this.showMainPage();
         });
     }
@@ -208,7 +211,6 @@ export class CApp extends Controller {
                     return;
                 }
             }
-            this.clearPrevPages();
             this.showVPage(this.VAppMain);
         });
     }

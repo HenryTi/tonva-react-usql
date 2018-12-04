@@ -1,7 +1,7 @@
 import React from "react";
+import { View } from "tonva-tools";
 import { List, Muted } from "tonva-react-form";
 import { CLink } from "../link";
-import { View } from "tonva-tools";
 export class VUsq extends View {
     constructor(cUsq) {
         super(cUsq);

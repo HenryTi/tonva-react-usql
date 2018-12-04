@@ -29,7 +29,7 @@ export declare class CApp extends Controller {
     getCUsq(apiName: string): CUsq;
     protected readonly VAppMain: TypeVPage<CApp>;
     protected beforeStart(): Promise<boolean>;
-    protected internalStart(): Promise<void>;
+    protected internalStart(param: any): Promise<void>;
     protected clearPrevPages(): void;
     private showUnsupport;
     private showMainPage;

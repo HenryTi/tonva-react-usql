@@ -33,4 +33,11 @@ export function startApp(appName, ui) {
         yield cApp.start();
     });
 }
+export function debugApp(appName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let cApp = new CApp(appName, { usqs: {} });
+        let keepNavBackButton = true;
+        yield cApp.start(keepNavBackButton);
+    });
+}
 //# sourceMappingURL=startApp.js.map

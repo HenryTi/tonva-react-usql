@@ -155,7 +155,10 @@ export class CApp extends Controller {
         }
     }
 
-    protected async internalStart() {
+    protected async internalStart(param:any) {
+        if (param !== true) {
+            this.clearPrevPages();
+        }
         await this.showMainPage();
     }
 
@@ -209,7 +212,6 @@ export class CApp extends Controller {
                 return;
             }
         }
-        this.clearPrevPages();
         this.showVPage(this.VAppMain);
     }
 

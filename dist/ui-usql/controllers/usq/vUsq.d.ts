@@ -1,7 +1,7 @@
+import { View } from "tonva-tools";
+import { Entity } from "../../entities";
 import { CLink } from "../link";
 import { CUsq } from "./cUsq";
-import { Entity } from "../../entities";
-import { View } from "tonva-tools";
 export declare class VUsq extends View<CUsq> {
     protected isSysVisible: boolean;
     protected tuidLinks: CLink[];
