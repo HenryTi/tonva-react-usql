@@ -175,9 +175,11 @@ export class CTuidSelect extends CTuid {
         });
     }
     beforeStart() {
-        const _super = name => super[name];
+        const _super = Object.create(null, {
+            beforeStart: { get: () => super.beforeStart }
+        });
         return __awaiter(this, void 0, void 0, function* () {
-            if ((yield _super("beforeStart").call(this)) === false)
+            if ((yield _super.beforeStart.call(this)) === false)
                 return false;
             if (this.PageItems !== undefined)
                 this.PageItems.reset();

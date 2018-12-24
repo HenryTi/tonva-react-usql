@@ -65,7 +65,7 @@ export class CUsq extends Controller /* implements Usq*/ {
     private CPending: typeof CPending;
 
     constructor(cApp:CApp, usq:string, appId:number, usqId:number, access:string, ui:UsqUI) {
-        super(resLang(ui.res, nav.language, nav.culture));
+        super(resLang(ui.res));
         this.cApp = cApp;
         this.usq = usq;
         this.id = usqId;

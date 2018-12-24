@@ -93,7 +93,7 @@ export declare class CUsq extends Controller {
     history(entityName: string): History;
     pending(entityName: string): Pending;
     tuid(entityName: string): TuidMain;
-    tuidDiv(entityName: string, divName: string): import("src/ui-usql/entities/tuid").TuidDiv;
+    tuidDiv(entityName: string, divName: string): import("../../entities").TuidDiv;
     cSheetFromName(entityName: string): CSheet;
     cActionFromName(entityName: string): CAction;
     cQueryFromName(entityName: string): CQuery;

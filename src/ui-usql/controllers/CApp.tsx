@@ -23,7 +23,7 @@ export class CApp extends Controller {
     appUnits:any[];
 
     constructor(tonvaApp:string, ui:AppUI) {
-        super(resLang(ui.res, nav.language, nav.culture));
+        super(resLang(ui.res));
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';

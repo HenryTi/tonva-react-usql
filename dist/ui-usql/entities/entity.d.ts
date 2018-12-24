@@ -14,8 +14,8 @@ export declare abstract class Entity {
     returns: ArrFields[];
     constructor(entities: Entities, name: string, typeId: number);
     face: any;
-    protected readonly tvApi: import("../../../../../../../../Users/Henry/Tonva/tonva-ui/tonva-react-usql/node_modules/tonva-tools/dist/net/usqApi").UsqApi;
-    protected getApiFrom(): Promise<import("../../../../../../../../Users/Henry/Tonva/tonva-ui/tonva-react-usql/node_modules/tonva-tools/dist/net/usqApi").UsqApi>;
+    protected readonly tvApi: import("tonva-tools").UsqApi;
+    protected getApiFrom(): Promise<import("tonva-tools").UsqApi>;
     private fieldMaps;
     fieldMap(arr?: string): FieldMap;
     loadSchema(): Promise<void>;

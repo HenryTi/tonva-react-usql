@@ -61,7 +61,7 @@ export declare class TuidMain extends Tuid {
     protected getDiv(divName: string): TuidDiv;
     cacheIds(): Promise<void>;
     cUsqFrom(): Promise<CUsq>;
-    protected getApiFrom(): Promise<import("../../../../../../../../Users/Henry/Tonva/tonva-ui/tonva-react-usql/node_modules/tonva-tools/dist/net/usqApi").UsqApi>;
+    protected getApiFrom(): Promise<import("tonva-tools").UsqApi>;
     from(): Promise<TuidMain>;
     cFrom(): Promise<CTuidMain>;
     cEditFrom(): Promise<CTuidEdit>;

@@ -13,7 +13,7 @@ import { CUsq } from './usq';
 import { centerApi } from '../centerApi';
 export class CApp extends Controller {
     constructor(tonvaApp, ui) {
-        super(resLang(ui.res, nav.language, nav.culture));
+        super(resLang(ui.res));
         this.cImportUsqs = {};
         this.cUsqCollection = {};
         this.renderRow = (item, index) => {
@@ -115,9 +115,11 @@ export class CApp extends Controller {
     }
     get VAppMain() { return (this.ui && this.ui.main) || VAppMain; }
     beforeStart() {
-        const _super = name => super[name];
+        const _super = Object.create(null, {
+            beforeStart: { get: () => super.beforeStart }
+        });
         return __awaiter(this, void 0, void 0, function* () {
-            if ((yield _super("beforeStart").call(this)) === false)
+            if ((yield _super.beforeStart.call(this)) === false)
                 return false;
             try {
                 let hash = document.location.hash;

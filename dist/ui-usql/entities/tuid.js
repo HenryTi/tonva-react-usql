@@ -360,9 +360,11 @@ export class TuidMain extends Tuid {
     }
     getDiv(divName) { return this.divs[divName]; }
     cacheIds() {
-        const _super = name => super[name];
+        const _super = Object.create(null, {
+            cacheIds: { get: () => super.cacheIds }
+        });
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super("cacheIds").call(this);
+            yield _super.cacheIds.call(this);
             if (this.divs === undefined)
                 return;
             for (let i in this.divs) {

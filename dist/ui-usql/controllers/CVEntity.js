@@ -21,9 +21,11 @@ export class CEntity extends ControllerUsq {
         this.icon = entityIcons[typeName];
     }
     beforeStart() {
-        const _super = name => super[name];
+        const _super = Object.create(null, {
+            beforeStart: { get: () => super.beforeStart }
+        });
         return __awaiter(this, void 0, void 0, function* () {
-            if ((yield _super("beforeStart").call(this)) === false)
+            if ((yield _super.beforeStart.call(this)) === false)
                 return false;
             yield this.entity.loadSchema();
             return true;

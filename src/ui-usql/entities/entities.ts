@@ -52,7 +52,7 @@ export interface Field {
     _tuid: Tuid;
 }
 export interface ArrFields {
-    name:string;
+    name: string;
     fields: Field[];
     id?: string;
     order?: string;
