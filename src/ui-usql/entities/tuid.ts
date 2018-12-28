@@ -221,6 +221,7 @@ export abstract class Tuid extends Entity {
         if (id === undefined || id === 0) return;
         let api = await this.getApiFrom();
         let values = await api.tuidGet(this.name, id);
+        if (values === undefined) return;
         values._$tuid = this;
         this.cacheValue(values);
         this.cacheTuidFieldValues(values);

@@ -77,6 +77,7 @@ export declare class CUsq extends Controller {
     res: any;
     entities: Entities;
     error: string;
+    private schemaLoaded;
     protected loadEntites(): Promise<void>;
     loadSchema(): Promise<string>;
     getQuerySearch(name: string): Promise<Query>;

@@ -272,9 +272,20 @@ class VAppMain extends VPage<CApp> {
         this.openPage(this.appPage);
     }
 
-    protected appPage = () => {
-        let {caption, cUsqArr} = this.controller;
-        let content;
+    render(param?:any) {
+        return this.appContent();
+    }
+
+    protected appPage() {
+        let {caption} = this.controller;
+        return <Page header={caption} logout={()=>{meInFrame.unit = undefined}}>
+            {this.appContent()}
+        </Page>;
+    }
+
+    protected appContent = () => {
+        let {cUsqArr} = this.controller;
+        let content:any;
         if (cUsqArr.length === 0) {
             content = <div className="text-danger">
                 <FA name="" /> 此APP没有绑定任何的USQ
@@ -283,8 +294,6 @@ class VAppMain extends VPage<CApp> {
         else {
             content = cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>);
         }
-        return <Page header={caption} logout={()=>{meInFrame.unit = undefined}}>
-            {content}
-        </Page>;
+        return <>{content}</>;
     };
 }

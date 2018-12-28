@@ -245,8 +245,8 @@ export class CApp extends Controller {
 class VAppMain extends VPage {
     constructor() {
         super(...arguments);
-        this.appPage = () => {
-            let { caption, cUsqArr } = this.controller;
+        this.appContent = () => {
+            let { cUsqArr } = this.controller;
             let content;
             if (cUsqArr.length === 0) {
                 content = React.createElement("div", { className: "text-danger" },
@@ -256,13 +256,20 @@ class VAppMain extends VPage {
             else {
                 content = cUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render()));
             }
-            return React.createElement(Page, { header: caption, logout: () => { meInFrame.unit = undefined; } }, content);
+            return React.createElement(React.Fragment, null, content);
         };
     }
     showEntry(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.openPage(this.appPage);
         });
+    }
+    render(param) {
+        return this.appContent();
+    }
+    appPage() {
+        let { caption } = this.controller;
+        return React.createElement(Page, { header: caption, logout: () => { meInFrame.unit = undefined; } }, this.appContent());
     }
 }
 //# sourceMappingURL=CApp.js.map

@@ -142,6 +142,7 @@ export class CUsq extends Controller /* implements Usq*/ {
     res: any;
     entities:Entities;
     error: string;
+    private schemaLoaded:boolean = false;
 
     protected async loadEntites() {
         await this.entities.loadAccess();
@@ -149,6 +150,7 @@ export class CUsq extends Controller /* implements Usq*/ {
 
     async loadSchema():Promise<string> {
         try {
+            if (this.schemaLoaded === true) return;
             await this.loadEntites();
             if (this.id === undefined) this.id = this.entities.usqId;
 
@@ -163,6 +165,7 @@ export class CUsq extends Controller /* implements Usq*/ {
                     }
                 }
             }
+            this.schemaLoaded = true;
             return;
         }
         catch(err) {

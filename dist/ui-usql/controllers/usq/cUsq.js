@@ -28,6 +28,7 @@ function lowerPropertyName(entities) {
 export class CUsq extends Controller /* implements Usq*/ {
     constructor(cApp, usq, appId, usqId, access, ui) {
         super(resLang(ui.res));
+        this.schemaLoaded = false;
         this.isSysVisible = false;
         this.cApp = cApp;
         this.usq = usq;
@@ -104,6 +105,8 @@ export class CUsq extends Controller /* implements Usq*/ {
     loadSchema() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                if (this.schemaLoaded === true)
+                    return;
                 yield this.loadEntites();
                 if (this.id === undefined)
                     this.id = this.entities.usqId;
@@ -120,6 +123,7 @@ export class CUsq extends Controller /* implements Usq*/ {
                         }
                     }
                 }
+                this.schemaLoaded = true;
                 return;
             }
             catch (err) {
