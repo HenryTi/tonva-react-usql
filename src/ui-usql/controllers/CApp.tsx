@@ -22,8 +22,8 @@ export class CApp extends Controller {
     id: number;
     appUnits:any[];
 
-    constructor(tonvaApp:string, ui:AppUI) {
-        super(resLang(ui.res));
+    constructor(tonvaApp:string, ui?:AppUI) {
+        super(resLang(ui && ui.res));
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
@@ -134,7 +134,7 @@ export class CApp extends Controller {
                         meInFrame.unit = unit;
                         break;
                     default: 
-                        nav.clear();
+                        //nav.clear();
                         nav.push(<this.selectUnitPage />)
                         return false;
                 }

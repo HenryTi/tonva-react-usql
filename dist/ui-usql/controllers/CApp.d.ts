@@ -17,7 +17,7 @@ export declare class CApp extends Controller {
     protected ui: AppUI;
     id: number;
     appUnits: any[];
-    constructor(tonvaApp: string, ui: AppUI);
+    constructor(tonvaApp: string, ui?: AppUI);
     readonly caption: string;
     cUsqCollection: {
         [usq: string]: CUsq;

@@ -13,7 +13,7 @@ import { CUsq } from './usq';
 import { centerApi } from '../centerApi';
 export class CApp extends Controller {
     constructor(tonvaApp, ui) {
-        super(resLang(ui.res));
+        super(resLang(ui && ui.res));
         this.cImportUsqs = {};
         this.cUsqCollection = {};
         this.renderRow = (item, index) => {
@@ -150,7 +150,7 @@ export class CApp extends Controller {
                             meInFrame.unit = unit;
                             break;
                         default:
-                            nav.clear();
+                            //nav.clear();
                             nav.push(React.createElement(this.selectUnitPage, null));
                             return false;
                     }
