@@ -31,6 +31,8 @@ export declare class CApp extends Controller {
     protected readonly VAppMain: TypeVPage<CApp>;
     protected beforeStart(): Promise<boolean>;
     protected internalStart(param: any): Promise<void>;
+    load(): Promise<void>;
+    render(): JSX.Element;
     protected clearPrevPages(): void;
     private showUnsupport;
     private showMainPage;

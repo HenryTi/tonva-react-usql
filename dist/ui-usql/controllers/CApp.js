@@ -45,7 +45,7 @@ export class CApp extends Controller {
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
-        this.ui = ui;
+        this.ui = ui || { usqs: {} };
         this.caption = this.res.caption || 'Tonva';
     }
     startDebug() {
@@ -179,6 +179,14 @@ export class CApp extends Controller {
             }
             yield this.showMainPage();
         });
+    }
+    load() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.beforeStart();
+        });
+    }
+    render() {
+        return this.renderView(this.VAppMain);
     }
     // 如果是独立app，删去显示app之前的页面。
     // 如果非独立app，则不删
