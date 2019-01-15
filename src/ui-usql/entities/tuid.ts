@@ -126,6 +126,7 @@ export abstract class Tuid extends Entity {
     useId(id:number, defer?:boolean) {
         if (id === undefined || id === 0) return;
         if (isNumber(id) === false) return;
+        console.log('if (this.cache.has(id) === true) {');
         if (this.cache.has(id) === true) {
             this.moveToHead(id);
             return;
@@ -138,6 +139,7 @@ export abstract class Tuid extends Entity {
             return;
         }
 
+        console.log('// 如果没有缓冲, 或者没有waiting');
         // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
@@ -159,6 +161,7 @@ export abstract class Tuid extends Entity {
                 this.waitingIds.splice(index, 1);
             }
         }
+        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;
@@ -211,6 +214,7 @@ export abstract class Tuid extends Entity {
         }
         let api = await this.getApiFrom();
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
+        console.log('tuidIds', name, this.waitingIds.join(','), tuids);
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
@@ -321,6 +325,7 @@ export abstract class Tuid extends Entity {
 
 export class TuidMain extends Tuid {
     get Main() {return this}
+    get usqApi() {return this.entities.usqApi};
 
     divs: {[name:string]: TuidDiv};
     proxies: {[name:string]: TuidMain};
@@ -369,9 +374,11 @@ export class TuidMain extends Tuid {
         return cUsqFrm;
     }
 
-    protected async getApiFrom() {
+    async getApiFrom() {
         let from = await this.from();
-        if (from !== undefined) return from.entities.usqApi;
+        if (from !== undefined) {
+            return from.entities.usqApi;
+        }
         return this.entities.usqApi;
     }
 
@@ -412,4 +419,8 @@ export class TuidMain extends Tuid {
 
 export class TuidDiv extends Tuid {
     get Main() {return this.owner}
+
+    async getApiFrom() {
+        return await this.owner.getApiFrom();
+    }
 }

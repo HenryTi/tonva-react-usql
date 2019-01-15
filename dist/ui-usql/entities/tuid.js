@@ -123,6 +123,7 @@ export class Tuid extends Entity {
             return;
         if (isNumber(id) === false)
             return;
+        console.log('if (this.cache.has(id) === true) {');
         if (this.cache.has(id) === true) {
             this.moveToHead(id);
             return;
@@ -134,6 +135,7 @@ export class Tuid extends Entity {
             this.moveToHead(id);
             return;
         }
+        console.log('// 如果没有缓冲, 或者没有waiting');
         // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
@@ -154,6 +156,7 @@ export class Tuid extends Entity {
                 this.waitingIds.splice(index, 1);
             }
         }
+        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;
@@ -214,6 +217,7 @@ export class Tuid extends Entity {
             }
             let api = yield this.getApiFrom();
             let tuids = yield api.tuidIds(name, arr, this.waitingIds);
+            console.log('tuidIds', name, this.waitingIds.join(','), tuids);
             for (let tuidValue of tuids) {
                 if (this.cacheValue(tuidValue) === false)
                     continue;
@@ -346,6 +350,8 @@ export class Tuid extends Entity {
 }
 export class TuidMain extends Tuid {
     get Main() { return this; }
+    get usqApi() { return this.entities.usqApi; }
+    ;
     setSchema(schema) {
         super.setSchema(schema);
         let { arrs } = schema;
@@ -401,8 +407,9 @@ export class TuidMain extends Tuid {
     getApiFrom() {
         return __awaiter(this, void 0, void 0, function* () {
             let from = yield this.from();
-            if (from !== undefined)
+            if (from !== undefined) {
                 return from.entities.usqApi;
+            }
             return this.entities.usqApi;
         });
     }
@@ -449,5 +456,10 @@ export class TuidMain extends Tuid {
 }
 export class TuidDiv extends Tuid {
     get Main() { return this.owner; }
+    getApiFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.owner.getApiFrom();
+        });
+    }
 }
 //# sourceMappingURL=tuid.js.map

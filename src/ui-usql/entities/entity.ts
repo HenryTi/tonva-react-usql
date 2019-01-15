@@ -27,7 +27,7 @@ export abstract class Entity {
     public face: any;           // 对应字段的label, placeHolder等等的中文，或者语言的翻译
 
     protected get tvApi() {return this.entities.usqApi;}
-    protected async getApiFrom() {return this.entities.usqApi;}
+    async getApiFrom() {return this.entities.usqApi;}
 
     private fieldMaps: {[arr:string]: FieldMap} = {};
     fieldMap(arr?:string): FieldMap {
@@ -248,6 +248,7 @@ export abstract class Entity {
                 let id = Number(v);
                 let {_tuid} = f;
                 if (_tuid === undefined) return id;
+                console.log(this.name, 'bigint', v, 'tuid', _tuid.name);
                 _tuid.useId(id, true);
                 //let val = _tuid.valueFromId(id);
                 //return val.obj || val;
