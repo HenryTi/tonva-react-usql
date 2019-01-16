@@ -11,6 +11,8 @@ export class BoxId {
     obj?: any;
     content: (templet?:(values?:any, x?:any)=>JSX.Element, x?:any)=>JSX.Element;
     valueFromFieldName: (fieldName:string)=>BoxId|any;
+    _$com?: any;
+    _$tuid?: Tuid;
 }
 
 const maxCacheSize = 1000;
@@ -40,20 +42,6 @@ export abstract class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
-        /*
-        prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
-            let t:Tuid = this._$tuid;
-            let com = templet || this._$com;
-            if (com === undefined) {
-                com = this._$com = t.entities.usq.getTuidContent(t);
-            }
-            let val = t.valueFromId(this.id);
-            if (typeof val === 'number') val = {id: val};
-            if (templet !== undefined) return templet(val, x);
-            //return com(val, x);
-            return React.createElement(com, val);
-        }
-        */
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function() {
@@ -126,7 +114,6 @@ export abstract class Tuid extends Entity {
     useId(id:number, defer?:boolean) {
         if (id === undefined || id === 0) return;
         if (isNumber(id) === false) return;
-        console.log('if (this.cache.has(id) === true) {');
         if (this.cache.has(id) === true) {
             this.moveToHead(id);
             return;
@@ -214,7 +201,6 @@ export abstract class Tuid extends Entity {
         }
         let api = await this.getApiFrom();
         let tuids = await api.tuidIds(name, arr, this.waitingIds);
-        console.log('tuidIds', name, this.waitingIds.join(','), tuids);
         for (let tuidValue of tuids) {
             if (this.cacheValue(tuidValue) === false) continue;
             this.cacheTuidFieldValues(tuidValue);
