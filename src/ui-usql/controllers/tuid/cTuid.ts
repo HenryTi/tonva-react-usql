@@ -18,12 +18,12 @@ export interface TuidUI extends EntityUI {
 
     CTuidSelect?: typeof CTuidSelect;
     CTuidInfo?: typeof CTuidInfo;
-    content?: React.StatelessComponent<any>;
+    inputContent?: React.StatelessComponent<any>;
     rowContent?: React.StatelessComponent<any>;
     divs?: {
         [div:string]: {
             CTuidSelect?: typeof CTuidSelect;
-            content?: React.StatelessComponent<any>;
+            inputContent?: React.StatelessComponent<any>;
             rowContent?: React.StatelessComponent<any>;
         }
     }

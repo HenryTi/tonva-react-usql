@@ -16,8 +16,12 @@ function boxIdContent(bi, templet, x) {
     let val = t.valueFromId(id);
     if (typeof val === 'number')
         val = { id: val };
-    if (templet !== undefined)
-        return templet(val, x);
+    if (templet !== undefined) {
+        let ret = templet(val, x);
+        if (ret !== undefined)
+            return ret;
+        return React.createElement(React.Fragment, null, id);
+    }
     return React.createElement(com, val);
 }
 const Tv = observer(({ tuidValue, ui, x, nullUI }) => {

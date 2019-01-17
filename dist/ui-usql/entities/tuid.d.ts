@@ -51,7 +51,6 @@ export declare abstract class Tuid extends Entity {
 }
 export declare class TuidMain extends Tuid {
     readonly Main: this;
-    readonly usqApi: import("tonva-tools").UsqApi;
     divs: {
         [name: string]: TuidDiv;
     };
@@ -62,7 +61,7 @@ export declare class TuidMain extends Tuid {
     protected getDiv(divName: string): TuidDiv;
     cacheIds(): Promise<void>;
     cUsqFrom(): Promise<CUsq>;
-    getApiFrom(): Promise<import("tonva-tools").UsqApi>;
+    protected getApiFrom(): Promise<import("tonva-tools").UsqApi>;
     from(): Promise<TuidMain>;
     cFrom(): Promise<CTuidMain>;
     cEditFrom(): Promise<CTuidEdit>;
@@ -72,5 +71,4 @@ export declare class TuidMain extends Tuid {
 }
 export declare class TuidDiv extends Tuid {
     readonly Main: TuidMain;
-    getApiFrom(): Promise<import("tonva-tools").UsqApi>;
 }

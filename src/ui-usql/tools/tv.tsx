@@ -10,11 +10,8 @@ interface Props {
     nullUI?: ()=>JSX.Element
 }
 
-type TvTemplet = (values?:any, x?:any) => JSX.Element;
-
-function boxIdContent(bi: number|BoxId, templet:TvTemplet, x:any) {
-    if (typeof bi === 'number') return <>{bi}</>;
-    let {id, _$tuid, _$com} = bi as BoxId;
+function boxIdContent(bi: any, templet, x) {
+    let {id, _$tuid, _$com} = bi;
     let t:Tuid = _$tuid;
     if (t === undefined) {
         if (templet !== undefined) return templet(bi, x);
@@ -26,7 +23,11 @@ function boxIdContent(bi: number|BoxId, templet:TvTemplet, x:any) {
     }
     let val = t.valueFromId(id);
     if (typeof val === 'number') val = {id: val};
-    if (templet !== undefined) return templet(val, x);
+    if (templet !== undefined) {
+        let ret = templet(val, x);
+        if (ret !== undefined) return ret;
+        return <>{id}</>;
+    }
     return React.createElement(com, val);
 }
 
@@ -52,6 +53,6 @@ const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
     }
 });
 
-export const tv = (tuidValue:number|BoxId, ui?:TvTemplet, x?:any, nullUI?:()=>JSX.Element):JSX.Element => {
+export const tv = (tuidValue:number|BoxId, ui?:(values?:any, x?:any)=>JSX.Element, x?:any, nullUI?:()=>JSX.Element):JSX.Element => {
     return <Tv tuidValue={tuidValue} ui={ui} x={x} nullUI={nullUI} />;
 };
