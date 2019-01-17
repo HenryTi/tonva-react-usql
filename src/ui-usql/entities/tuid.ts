@@ -11,6 +11,8 @@ export class BoxId {
     obj?: any;
     content: (templet?:(values?:any, x?:any)=>JSX.Element, x?:any)=>JSX.Element;
     valueFromFieldName: (fieldName:string)=>BoxId|any;
+    _$com?: any;
+    _$tuid?: Tuid;
 }
 
 const maxCacheSize = 1000;
