@@ -260,6 +260,7 @@ export class Entity {
                 let { _tuid } = f;
                 if (_tuid === undefined)
                     return id;
+                console.log(this.name, 'bigint', v, 'tuid', _tuid.name);
                 _tuid.useId(id, true);
                 //let val = _tuid.valueFromId(id);
                 //return val.obj || val;

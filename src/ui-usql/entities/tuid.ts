@@ -42,20 +42,6 @@ export abstract class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
-        /*
-        prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
-            let t:Tuid = this._$tuid;
-            let com = templet || this._$com;
-            if (com === undefined) {
-                com = this._$com = t.entities.usq.getTuidContent(t);
-            }
-            let val = t.valueFromId(this.id);
-            if (typeof val === 'number') val = {id: val};
-            if (templet !== undefined) return templet(val, x);
-            //return com(val, x);
-            return React.createElement(com, val);
-        }
-        */
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function() {
@@ -140,6 +126,7 @@ export abstract class Tuid extends Entity {
             return;
         }
 
+        console.log('// 如果没有缓冲, 或者没有waiting');
         // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
@@ -161,6 +148,7 @@ export abstract class Tuid extends Entity {
                 this.waitingIds.splice(index, 1);
             }
         }
+        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;
@@ -218,6 +206,9 @@ export abstract class Tuid extends Entity {
             this.cacheTuidFieldValues(tuidValue);
             this.afterCacheId(tuidValue);
         }
+        await this.cacheDivIds();
+    }
+    protected async cacheDivIds():Promise<void> {
     }
     async load(id:number):Promise<any> {
         if (id === undefined || id === 0) return;
@@ -323,6 +314,7 @@ export abstract class Tuid extends Entity {
 
 export class TuidMain extends Tuid {
     get Main() {return this}
+    get usqApi() {return this.entities.usqApi};
 
     divs: {[name:string]: TuidDiv};
     proxies: {[name:string]: TuidMain};
@@ -342,8 +334,16 @@ export class TuidMain extends Tuid {
         }
     }
     protected getDiv(divName:string):TuidDiv {return this.divs[divName];}
+    /* 努力回避async里面的super调用，edge不兼容
     async cacheIds():Promise<void> {
         await super.cacheIds();
+        if (this.divs === undefined) return;
+        for (let i in this.divs) {
+            await this.divs[i].cacheIds();
+        }
+    }
+    */
+    protected async cacheDivIds():Promise<void> {
         if (this.divs === undefined) return;
         for (let i in this.divs) {
             await this.divs[i].cacheIds();
@@ -371,9 +371,11 @@ export class TuidMain extends Tuid {
         return cUsqFrm;
     }
 
-    protected async getApiFrom() {
+    async getApiFrom() {
         let from = await this.from();
-        if (from !== undefined) return from.entities.usqApi;
+        if (from !== undefined) {
+            return from.entities.usqApi;
+        }
         return this.entities.usqApi;
     }
 
@@ -414,4 +416,8 @@ export class TuidMain extends Tuid {
 
 export class TuidDiv extends Tuid {
     get Main() {return this.owner}
+
+    async getApiFrom() {
+        return await this.owner.getApiFrom();
+    }
 }

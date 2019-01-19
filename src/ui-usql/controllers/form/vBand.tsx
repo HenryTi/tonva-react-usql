@@ -2,6 +2,7 @@ import * as React from 'react';
 import { VField } from './vField';
 import { VArr } from './vArr';
 import { VSubmit } from './vSubmit';
+import { uid } from 'tonva-react-form';
 
 export abstract class VBand {
     protected label: string;

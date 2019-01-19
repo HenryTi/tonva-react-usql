@@ -416,11 +416,11 @@ export class CUsq extends Controller /* implements Usq*/ {
         let { owner } = tuid;
         if (owner === undefined) {
             let { ui } = this.getUI(tuid);
-            return (ui && ui.inputContent) || PureJSONContent;
+            return (ui && ui.content) || PureJSONContent;
         }
         else {
             let { ui } = this.getUI(owner);
-            return (ui && ui.divs && ui.divs[tuid.name].inputContent) || PureJSONContent;
+            return (ui && ui.divs && ui.divs[tuid.name].content) || PureJSONContent;
         }
     }
     showTuid(tuid, id) {

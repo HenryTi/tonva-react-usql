@@ -7,6 +7,8 @@ export declare class BoxId {
     obj?: any;
     content: (templet?: (values?: any, x?: any) => JSX.Element, x?: any) => JSX.Element;
     valueFromFieldName: (fieldName: string) => BoxId | any;
+    _$com?: any;
+    _$tuid?: Tuid;
 }
 export declare abstract class Tuid extends Entity {
     private BoxId;
@@ -37,6 +39,7 @@ export declare abstract class Tuid extends Entity {
     cacheValue(val: any): boolean;
     protected afterCacheId(tuidValue: any): void;
     cacheIds(): Promise<void>;
+    protected cacheDivIds(): Promise<void>;
     load(id: number): Promise<any>;
     protected getDiv(divName: string): TuidDiv;
     private cacheTuidFieldValues;
@@ -51,6 +54,7 @@ export declare abstract class Tuid extends Entity {
 }
 export declare class TuidMain extends Tuid {
     readonly Main: this;
+    readonly usqApi: import("tonva-tools").UsqApi;
     divs: {
         [name: string]: TuidDiv;
     };
@@ -59,9 +63,9 @@ export declare class TuidMain extends Tuid {
     };
     setSchema(schema: any): void;
     protected getDiv(divName: string): TuidDiv;
-    cacheIds(): Promise<void>;
+    protected cacheDivIds(): Promise<void>;
     cUsqFrom(): Promise<CUsq>;
-    protected getApiFrom(): Promise<import("tonva-tools").UsqApi>;
+    getApiFrom(): Promise<import("tonva-tools").UsqApi>;
     from(): Promise<TuidMain>;
     cFrom(): Promise<CTuidMain>;
     cEditFrom(): Promise<CTuidEdit>;
@@ -71,4 +75,5 @@ export declare class TuidMain extends Tuid {
 }
 export declare class TuidDiv extends Tuid {
     readonly Main: TuidMain;
+    getApiFrom(): Promise<import("tonva-tools").UsqApi>;
 }

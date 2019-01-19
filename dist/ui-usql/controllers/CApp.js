@@ -64,6 +64,7 @@ export class CApp extends Controller {
             let { id, usqs } = app;
             this.id = id;
             let promises = [];
+            let promiseChecks = [];
             for (let appUsq of usqs) {
                 let { id: usqId, usqOwner, usqName, url, urlDebug, ws, access, token } = appUsq;
                 let usq = usqOwner + '/' + usqName;
@@ -71,8 +72,17 @@ export class CApp extends Controller {
                 let cUsq = this.newCUsq(usq, usqId, access, ui || {});
                 this.cUsqCollection[usq] = cUsq;
                 promises.push(cUsq.loadSchema());
+                promiseChecks.push(cUsq.entities.usqApi.checkAccess());
             }
             let results = yield Promise.all(promises);
+            Promise.all(promiseChecks).then((checks) => {
+                for (let c of checks) {
+                    if (c === false) {
+                        nav.start();
+                        return;
+                    }
+                }
+            });
             for (let result of results) {
                 let retError = result; // await cUsq.loadSchema();
                 if (retError !== undefined) {
@@ -120,12 +130,8 @@ export class CApp extends Controller {
     }
     get VAppMain() { return (this.ui && this.ui.main) || VAppMain; }
     beforeStart() {
-        const _super = Object.create(null, {
-            beforeStart: { get: () => super.beforeStart }
-        });
         return __awaiter(this, void 0, void 0, function* () {
-            if ((yield _super.beforeStart.call(this)) === false)
-                return false;
+            //if (await super.beforeStart() === false) return false;
             try {
                 let hash = document.location.hash;
                 if (hash.startsWith('#tvdebug')) {

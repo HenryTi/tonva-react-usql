@@ -30,20 +30,6 @@ export class Tuid extends Entity {
             writable: false,
             enumerable: false,
         });
-        /*
-        prototype.content = function(templet?:(values?:any, x?:any)=>JSX.Element, x?:any) {
-            let t:Tuid = this._$tuid;
-            let com = templet || this._$com;
-            if (com === undefined) {
-                com = this._$com = t.entities.usq.getTuidContent(t);
-            }
-            let val = t.valueFromId(this.id);
-            if (typeof val === 'number') val = {id: val};
-            if (templet !== undefined) return templet(val, x);
-            //return com(val, x);
-            return React.createElement(com, val);
-        }
-        */
         Object.defineProperty(prototype, 'obj', {
             enumerable: false,
             get: function () {
@@ -134,6 +120,7 @@ export class Tuid extends Entity {
             this.moveToHead(id);
             return;
         }
+        console.log('// 如果没有缓冲, 或者没有waiting');
         // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
@@ -154,6 +141,7 @@ export class Tuid extends Entity {
                 this.waitingIds.splice(index, 1);
             }
         }
+        console.log('this.waitingIds.push(id)', id);
         this.waitingIds.push(id);
         this.queue.push(id);
         return;
@@ -220,6 +208,11 @@ export class Tuid extends Entity {
                 this.cacheTuidFieldValues(tuidValue);
                 this.afterCacheId(tuidValue);
             }
+            yield this.cacheDivIds();
+        });
+    }
+    cacheDivIds() {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
     load(id) {
@@ -346,6 +339,8 @@ export class Tuid extends Entity {
 }
 export class TuidMain extends Tuid {
     get Main() { return this; }
+    get usqApi() { return this.entities.usqApi; }
+    ;
     setSchema(schema) {
         super.setSchema(schema);
         let { arrs } = schema;
@@ -361,12 +356,17 @@ export class TuidMain extends Tuid {
         }
     }
     getDiv(divName) { return this.divs[divName]; }
-    cacheIds() {
-        const _super = Object.create(null, {
-            cacheIds: { get: () => super.cacheIds }
-        });
+    /* 努力回避async里面的super调用，edge不兼容
+    async cacheIds():Promise<void> {
+        await super.cacheIds();
+        if (this.divs === undefined) return;
+        for (let i in this.divs) {
+            await this.divs[i].cacheIds();
+        }
+    }
+    */
+    cacheDivIds() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield _super.cacheIds.call(this);
             if (this.divs === undefined)
                 return;
             for (let i in this.divs) {
@@ -401,8 +401,9 @@ export class TuidMain extends Tuid {
     getApiFrom() {
         return __awaiter(this, void 0, void 0, function* () {
             let from = yield this.from();
-            if (from !== undefined)
+            if (from !== undefined) {
                 return from.entities.usqApi;
+            }
             return this.entities.usqApi;
         });
     }
@@ -449,5 +450,10 @@ export class TuidMain extends Tuid {
 }
 export class TuidDiv extends Tuid {
     get Main() { return this.owner; }
+    getApiFrom() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.owner.getApiFrom();
+        });
+    }
 }
 //# sourceMappingURL=tuid.js.map

@@ -1,23 +1,25 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { PureJSONContent } from '../controllers';
-function boxIdContent(bi, templet, x) {
+function boxIdContent(bi, ui, x) {
+    if (typeof bi === 'number')
+        return React.createElement(React.Fragment, null, bi);
     let { id, _$tuid, _$com } = bi;
     let t = _$tuid;
     if (t === undefined) {
-        if (templet !== undefined)
-            return templet(bi, x);
+        if (ui !== undefined)
+            return ui(bi, x);
         return PureJSONContent(bi, x);
     }
-    let com = templet || _$com;
+    let com = ui || _$com;
     if (com === undefined) {
         com = bi._$com = t.getTuidContent();
     }
     let val = t.valueFromId(id);
     if (typeof val === 'number')
         val = { id: val };
-    if (templet !== undefined) {
-        let ret = templet(val, x);
+    if (ui !== undefined) {
+        let ret = ui(val, x);
         if (ret !== undefined)
             return ret;
         return React.createElement(React.Fragment, null, id);
@@ -33,24 +35,26 @@ const Tv = observer(({ tuidValue, ui, x, nullUI }) => {
                     ttv,
                     "-",
                     tuidValue);
-            else
-                return ui(tuidValue, x);
-        case 'undefined':
-            if (nullUI === undefined)
-                return React.createElement(React.Fragment, null, "null");
-            return nullUI();
-        case 'object':
-            if (tuidValue === null) {
-                if (nullUI === undefined)
-                    return React.createElement(React.Fragment, null, "null");
-                return nullUI();
+            else {
+                let ret = ui(tuidValue, x);
+                if (ret !== undefined)
+                    return ret;
+                return React.createElement(React.Fragment, null, tuidValue);
             }
-            return boxIdContent(tuidValue, ui, x);
+        case 'undefined':
+            break;
+        case 'object':
+            if (tuidValue !== null)
+                return boxIdContent(tuidValue, ui, x);
+            break;
         case 'number':
             return React.createElement(React.Fragment, null,
                 "id...",
                 tuidValue);
     }
+    if (nullUI === undefined)
+        return React.createElement(React.Fragment, null, "null");
+    return nullUI();
 });
 export const tv = (tuidValue, ui, x, nullUI) => {
     return React.createElement(Tv, { tuidValue: tuidValue, ui: ui, x: x, nullUI: nullUI });

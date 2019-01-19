@@ -18,12 +18,12 @@ export interface TuidUI extends EntityUI {
 
     CTuidSelect?: typeof CTuidSelect;
     CTuidInfo?: typeof CTuidInfo;
-    inputContent?: React.StatelessComponent<any>;
+    content?: React.StatelessComponent<any>;
     rowContent?: React.StatelessComponent<any>;
     divs?: {
         [div:string]: {
             CTuidSelect?: typeof CTuidSelect;
-            inputContent?: React.StatelessComponent<any>;
+            content?: React.StatelessComponent<any>;
             rowContent?: React.StatelessComponent<any>;
         }
     }
@@ -175,7 +175,8 @@ export class CTuidSelect extends CTuid<Tuid> {
         await this.showVPage(this.VTuidSelect, param);
     }
     protected async beforeStart():Promise<boolean> {
-        if (await super.beforeStart() === false) return false;
+        //if (await super.beforeStart() === false) return false;
+        await this.entity.loadSchema();
         if (this.PageItems !== undefined) this.PageItems.reset();
         return true;
     }
