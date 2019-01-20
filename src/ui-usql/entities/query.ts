@@ -10,7 +10,6 @@ export class Query extends Entity {
     private params:any;
     private more: boolean;
     private startField: Field;
-    //@observable loaded: boolean;
     @observable list:IObservableArray; // = observable.array([], {deep: false});
     returns: ArrFields[];
     isPaged: boolean;
@@ -43,11 +42,14 @@ export class Query extends Entity {
                 case 'datetime': pageStart = (this.pageStart as Date).getTime(); break;
             }
         }
+        let page = await this.page(this.params, pageStart, this.pageSize+1);
+        /*
         await this.loadSchema();
         let res = await this.tvApi.page(this.name, pageStart, this.pageSize+1, this.params);
         let data = await this.unpackReturns(res);
-        this.list = observable.array([], {deep: false});
         let page = data['$page'] as any[];
+        */
+        this.list = observable.array([], {deep: false});
         if (page !== undefined) {
             if (page.length > this.pageSize) {
                 this.more = true;
@@ -66,13 +68,13 @@ export class Query extends Entity {
 
     async page(params:any, pageStart:any, pageSize:number):Promise<any[]> {
         await this.loadSchema();
-        let res = await this.tvApi.page(this.name, pageStart, pageSize+1, params);
+        let res = await this.tvApi.page(this.name, pageStart, pageSize+1, this.buildParams(params));
         let data = await this.unpackReturns(res);
         return data.$page;// as any[];
     }
     async query(params:any):Promise<any> {
         await this.loadSchema();
-        let res = await this.tvApi.query(this.name, params);
+        let res = await this.tvApi.query(this.name, this.buildParams(params));
         let data = await this.unpackReturns(res);
         return data;
     }

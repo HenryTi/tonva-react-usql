@@ -111,9 +111,51 @@ export class Entity {
             return;
         return getTuid(fn, arr.fields);
     }
+    buildParams(params) {
+        let result = {};
+        let fields = this.fields;
+        if (fields !== undefined)
+            this.buildFieldsParams(result, fields, params);
+        let arrs = this.arrFields;
+        if (arrs !== undefined) {
+            for (let arr of arrs) {
+                let { name, fields } = arr;
+                let paramsArr = params[name];
+                if (paramsArr === undefined)
+                    continue;
+                let arrResult = [];
+                result[name] = arrResult;
+                for (let pa of params) {
+                    let rowResult = {};
+                    this.buildFieldsParams(rowResult, fields, pa);
+                    arrResult.push(rowResult);
+                }
+            }
+        }
+        return result;
+    }
+    buildFieldsParams(result, fields, params) {
+        for (let field of fields) {
+            let { name } = field;
+            let d = params[name];
+            let val;
+            switch (typeof d) {
+                default:
+                    val = d;
+                    break;
+                case 'object':
+                    let tuid = field._tuid;
+                    if (tuid === undefined)
+                        val = d.id;
+                    else
+                        val = tuid.getIdFromObj(d);
+                    break;
+            }
+            result[name] = val;
+        }
+    }
     pack(data) {
         let ret = [];
-        //if (schema === undefined || data === undefined) return;
         let fields = this.fields;
         if (fields !== undefined)
             this.packRow(ret, fields, data);

@@ -104,9 +104,48 @@ export abstract class Entity {
         if (arr === undefined) return;
         return getTuid(fn, arr.fields);
     }
+
+    protected buildParams(params:any):any {
+        let result = {};
+        let fields = this.fields;
+        if (fields !== undefined) this.buildFieldsParams(result, fields, params);
+        let arrs = this.arrFields; 
+        if (arrs !== undefined) {
+            for (let arr of arrs) {
+                let {name, fields} = arr;
+                let paramsArr:any[] = params[name];
+                if (paramsArr === undefined) continue;
+                let arrResult = [];
+                result[name] = arrResult;
+                for (let pa of params) {
+                    let rowResult = {};
+                    this.buildFieldsParams(rowResult, fields, pa);
+                    arrResult.push(rowResult);
+                }
+            }
+        }
+        return result;
+    }
+
+    private buildFieldsParams(result:any, fields:Field[], params:any) {
+        for (let field of fields) {
+            let {name} = field;
+            let d = params[name];
+            let val:any;
+            switch (typeof d) {
+                default: val = d; break;
+                case 'object':
+                    let tuid = field._tuid;
+                    if (tuid === undefined) val = d.id;
+                    else val = tuid.getIdFromObj(d);
+                    break;
+            }
+            result[name] = val;
+        }
+    }
+
     pack(data:any):string {
         let ret:string[] = [];
-        //if (schema === undefined || data === undefined) return;
         let fields = this.fields;
         if (fields !== undefined) this.packRow(ret, fields, data);
         let arrs = this.arrFields; //schema['arrs'];

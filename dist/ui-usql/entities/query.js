@@ -48,11 +48,14 @@ export class Query extends Entity {
                         break;
                 }
             }
-            yield this.loadSchema();
-            let res = yield this.tvApi.page(this.name, pageStart, this.pageSize + 1, this.params);
-            let data = yield this.unpackReturns(res);
+            let page = yield this.page(this.params, pageStart, this.pageSize + 1);
+            /*
+            await this.loadSchema();
+            let res = await this.tvApi.page(this.name, pageStart, this.pageSize+1, this.params);
+            let data = await this.unpackReturns(res);
+            let page = data['$page'] as any[];
+            */
             this.list = observable.array([], { deep: false });
-            let page = data['$page'];
             if (page !== undefined) {
                 if (page.length > this.pageSize) {
                     this.more = true;
@@ -72,7 +75,7 @@ export class Query extends Entity {
     page(params, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.loadSchema();
-            let res = yield this.tvApi.page(this.name, pageStart, pageSize + 1, params);
+            let res = yield this.tvApi.page(this.name, pageStart, pageSize + 1, this.buildParams(params));
             let data = yield this.unpackReturns(res);
             return data.$page; // as any[];
         });
@@ -80,7 +83,7 @@ export class Query extends Entity {
     query(params) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.loadSchema();
-            let res = yield this.tvApi.query(this.name, params);
+            let res = yield this.tvApi.query(this.name, this.buildParams(params));
             let data = yield this.unpackReturns(res);
             return data;
         });

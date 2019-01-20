@@ -23,6 +23,8 @@ export declare abstract class Entity {
     schemaStringify(): string;
     tuidFromField(field: Field): Tuid;
     tuidFromName(fieldName: string, arrName?: string): Tuid;
+    protected buildParams(params: any): any;
+    private buildFieldsParams;
     pack(data: any): string;
     private escape;
     private packRow;
