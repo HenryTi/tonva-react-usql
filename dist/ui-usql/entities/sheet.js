@@ -55,6 +55,7 @@ export class Sheet extends Entity {
     }*/
     save(discription, data) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             let { appId } = this.entities;
             let text = this.pack(data);
             let ret = yield this.tvApi.sheetSave(this.name, { app: appId, discription: discription, data: text });
@@ -68,6 +69,7 @@ export class Sheet extends Entity {
     }
     action(id, flow, state, action) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             return yield this.tvApi.sheetAction(this.name, { id: id, flow: flow, state: state, action: action });
         });
     }
@@ -87,6 +89,7 @@ export class Sheet extends Entity {
     }
     getSheet(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             let ret = yield this.tvApi.getSheet(this.name, id);
             if (ret[0].length === 0)
                 return yield this.getArchive(id);
@@ -95,18 +98,21 @@ export class Sheet extends Entity {
     }
     getArchive(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             let ret = yield this.tvApi.sheetArchive(this.name, id);
             return yield this.unpack(ret);
         });
     }
     getArchives(pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             let ret = yield this.tvApi.sheetArchives(this.name, { pageStart: pageStart, pageSize: pageSize });
             return ret;
         });
     }
     getStateSheets(state, pageStart, pageSize) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             let ret = yield this.tvApi.stateSheets(this.name, { state: state, pageStart: pageStart, pageSize: pageSize });
             return ret;
         });
@@ -114,6 +120,7 @@ export class Sheet extends Entity {
     createPageStateItems() { return new PageStateItems(this); }
     stateSheetCount() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
             let ret = yield this.tvApi.stateSheetCount(this.name);
             return this.states.map(s => {
                 let n = s.name, count = 0;
