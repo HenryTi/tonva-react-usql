@@ -23,8 +23,8 @@ export class CLink extends Link {
         await this.controller.start();
     }
 
-    render(className?:string):JSX.Element {
-        return this.view(className);
+    render(className?:string) {
+        return React.createElement(this.view, className);
     }
 
     protected view = (className?:string) => {
