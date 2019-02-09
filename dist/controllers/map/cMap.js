@@ -107,7 +107,7 @@ export class CMap extends CEntity {
         this.removeClick = (item) => __awaiter(this, void 0, void 0, function* () {
             let keyField = this.keyFields[item.keyIndex];
             let tuid = keyField._tuid;
-            let cTuidMain = this.cUsq.cTuidMain(tuid.Main);
+            let cTuidMain = this.cUq.cTuidMain(tuid.Main);
             let label = cTuidMain.getLable(tuid);
             let confirmDelete = this.res.confirmDelete
                 || _.template('do you really want to remove ${label}?');
@@ -214,7 +214,7 @@ export class CMap extends CEntity {
     searchOnKey(keyField, param) {
         return __awaiter(this, void 0, void 0, function* () {
             let { _tuid, _ownerField } = keyField;
-            let cTuidSelect = this.cUsq.cTuidSelect(_tuid);
+            let cTuidSelect = this.cUq.cTuidSelect(_tuid);
             let callParam = param;
             if (_ownerField !== undefined) {
                 callParam = param[_ownerField.name];

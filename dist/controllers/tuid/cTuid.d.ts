@@ -4,7 +4,7 @@ import { TuidMain, Tuid, TuidDiv } from "../../entities";
 import { VTuidMain } from './vTuidMain';
 import { VTuidEdit } from './vTuidEdit';
 import { VTuidSelect } from './vTuidSelect';
-import { CUsq } from "../usq/cUsq";
+import { CUq } from "../uq/cUq";
 import { CLink } from "../link";
 import { VTuidInfo } from "./vTuidInfo";
 import { VTuidMainList } from './vTuidList';
@@ -31,9 +31,9 @@ export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
     getDivItems(ownerId: number): Promise<any[]>;
 }
 export declare class CTuidMain extends CTuid<TuidMain> {
-    constructor(cUsq: CUsq, entity: TuidMain, ui: TuidUI, res: any);
+    constructor(cUq: CUq, entity: TuidMain, ui: TuidUI, res: any);
     from(): Promise<CTuidMain>;
-    cUsqFrom(): Promise<CUsq>;
+    cUqFrom(): Promise<CUq>;
     cEditFrom(): Promise<CTuidEdit>;
     cInfoFrom(): Promise<CTuidInfo>;
     cSelectFrom(): Promise<CTuidSelect>;

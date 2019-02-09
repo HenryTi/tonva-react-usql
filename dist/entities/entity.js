@@ -17,9 +17,9 @@ export class Entity {
         this.sys = this.name.indexOf('$') >= 0;
     }
     get sName() { return this.jName || this.name; }
-    get tvApi() { return this.entities.usqApi; }
+    get tvApi() { return this.entities.uqApi; }
     getApiFrom() {
-        return __awaiter(this, void 0, void 0, function* () { return this.entities.usqApi; });
+        return __awaiter(this, void 0, void 0, function* () { return this.entities.uqApi; });
     }
     fieldMap(arr) {
         if (arr === undefined)
@@ -52,7 +52,7 @@ export class Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.schema !== undefined)
                 return;
-            let schema = yield this.entities.usqApi.schema(this.name);
+            let schema = yield this.entities.uqApi.schema(this.name);
             this.setSchema(schema);
         });
     }
@@ -303,20 +303,7 @@ export class Entity {
                 if (_tuid === undefined)
                     return id;
                 _tuid.useId(id, true);
-                //let val = _tuid.valueFromId(id);
-                //return val.obj || val;
                 return _tuid.boxId(id);
-            /*
-            if (tuidKey !== undefined) {
-                let tuid = f._tuid;
-                if (tuid === undefined) {
-                    // 在jsonStringify中间不会出现
-                    Object.defineProperty(f, '_tuid', {value:'_tuid', writable: true});
-                    f._tuid = tuid = this.getTuid(tuidKey, tuidUrl);
-                }
-                tuid.useId(Number(v), true);
-            }*/
-            //return Number(v);
         }
     }
     unpackArr(ret, arr, data, p) {

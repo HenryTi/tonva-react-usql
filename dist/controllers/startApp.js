@@ -29,7 +29,7 @@ function convertUIKeyToLowercase(obj) {
 export function startApp(appName, ui) {
     return __awaiter(this, void 0, void 0, function* () {
         convertUIKeyToLowercase(ui);
-        let cApp = new (ui && ui.CApp || CApp)(appName, ui || { usqs: {} });
+        let cApp = new (ui && ui.CApp || CApp)(appName, ui || { uqs: {} });
         yield cApp.start();
     });
 }

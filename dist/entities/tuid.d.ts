@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Entity } from './entity';
 import { Entities } from './entities';
-import { CUsq, CTuidMain, CTuidEdit, CTuidInfo, CTuidSelect } from '../controllers';
+import { CUq, CTuidMain, CTuidEdit, CTuidInfo, CTuidSelect } from '../controllers';
 export declare class BoxId {
     id: number;
     obj?: any;
@@ -21,7 +21,7 @@ export declare abstract class Tuid extends Entity {
     unique: string[];
     schemaFrom: {
         owner: string;
-        usq: string;
+        uq: string;
     };
     constructor(entities: Entities, name: string, typeId: number);
     abstract readonly Main: any;
@@ -54,7 +54,7 @@ export declare abstract class Tuid extends Entity {
 }
 export declare class TuidMain extends Tuid {
     readonly Main: this;
-    readonly usqApi: import("tonva-tools").UsqApi;
+    readonly uqApi: import("tonva-tools").UqApi;
     divs: {
         [name: string]: TuidDiv;
     };
@@ -64,8 +64,8 @@ export declare class TuidMain extends Tuid {
     setSchema(schema: any): void;
     protected getDiv(divName: string): TuidDiv;
     protected cacheDivIds(): Promise<void>;
-    cUsqFrom(): Promise<CUsq>;
-    getApiFrom(): Promise<import("tonva-tools").UsqApi>;
+    cUqFrom(): Promise<CUq>;
+    getApiFrom(): Promise<import("tonva-tools").UqApi>;
     from(): Promise<TuidMain>;
     cFrom(): Promise<CTuidMain>;
     cEditFrom(): Promise<CTuidEdit>;
@@ -75,5 +75,5 @@ export declare class TuidMain extends Tuid {
 }
 export declare class TuidDiv extends Tuid {
     readonly Main: TuidMain;
-    getApiFrom(): Promise<import("tonva-tools").UsqApi>;
+    getApiFrom(): Promise<import("tonva-tools").UqApi>;
 }

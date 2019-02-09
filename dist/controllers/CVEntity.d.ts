@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { VPage } from 'tonva-tools';
 import { Entity, Field } from '../entities';
-import { CUsq } from './usq/cUsq';
+import { CUq } from './uq/cUq';
 import { VForm, FieldCall, FormMode } from './form';
 import { CQuerySelect } from './query';
 import { FormUI, FieldTuidUI } from './formUI';
-import { ControllerUsq } from './ControllerUsq';
+import { ControllerUq } from './ControllerUq';
 export interface EntityUI {
     form?: FormUI;
 }
-export declare abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUsq {
-    constructor(cUsq: CUsq, entity: T, ui: UI, res: any);
+export declare abstract class CEntity<T extends Entity, UI extends EntityUI> extends ControllerUq {
+    constructor(cUq: CUq, entity: T, ui: UI, res: any);
     readonly entity: T;
     readonly ui: UI;
     protected beforeStart(): Promise<boolean>;

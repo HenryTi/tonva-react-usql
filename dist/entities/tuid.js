@@ -51,7 +51,7 @@ export class Tuid extends Entity {
         return ret;
     }
     getTuidContent() {
-        return this.entities.cUsq.getTuidContent(this);
+        return this.entities.cUq.getTuidContent(this);
     }
     getIdFromObj(item) {
         return item[this.idName];
@@ -120,7 +120,6 @@ export class Tuid extends Entity {
             this.moveToHead(id);
             return;
         }
-        // 如果没有缓冲, 或者没有waiting
         if (this.queue.length >= maxCacheSize) {
             // 缓冲已满，先去掉最不常用的
             let r = this.queue.shift();
@@ -332,13 +331,13 @@ export class Tuid extends Entity {
     //}
     showInfo(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.entities.cUsq.showTuid(this, id);
+            yield this.entities.cUq.showTuid(this, id);
         });
     }
 }
 export class TuidMain extends Tuid {
     get Main() { return this; }
-    get usqApi() { return this.entities.usqApi; }
+    get uqApi() { return this.entities.uqApi; }
     ;
     setSchema(schema) {
         super.setSchema(schema);
@@ -373,69 +372,69 @@ export class TuidMain extends Tuid {
             }
         });
     }
-    cUsqFrom() {
+    cUqFrom() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.schemaFrom === undefined)
-                return this.entities.cUsq;
-            let { owner, usq } = this.schemaFrom;
-            let cUsq = yield this.entities.cUsq;
-            let cApp = cUsq.cApp;
+                return this.entities.cUq;
+            let { owner, uq: uq } = this.schemaFrom;
+            let cUq = yield this.entities.cUq;
+            let cApp = cUq.cApp;
             if (cApp === undefined)
-                return cUsq;
-            let cUsqFrm = yield cApp.getImportUsq(owner, usq);
-            if (cUsqFrm === undefined) {
-                console.error(`${owner}/${usq} 不存在`);
+                return cUq;
+            let cUqFrm = yield cApp.getImportUq(owner, uq);
+            if (cUqFrm === undefined) {
+                console.error(`${owner}/${uq} 不存在`);
                 debugger;
-                return cUsq;
+                return cUq;
             }
-            let retErrors = yield cUsqFrm.loadSchema();
+            let retErrors = yield cUqFrm.loadSchema();
             if (retErrors !== undefined) {
-                console.error('cUsq.loadSchema: ' + retErrors);
+                console.error('cUq.loadSchema: ' + retErrors);
                 debugger;
-                return cUsq;
+                return cUq;
             }
-            return cUsqFrm;
+            return cUqFrm;
         });
     }
     getApiFrom() {
         return __awaiter(this, void 0, void 0, function* () {
             let from = yield this.from();
             if (from !== undefined) {
-                return from.entities.usqApi;
+                return from.entities.uqApi;
             }
-            return this.entities.usqApi;
+            return this.entities.uqApi;
         });
     }
     from() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.cUsqFrom();
-            return cUsq.tuid(this.name);
+            let cUq = yield this.cUqFrom();
+            return cUq.tuid(this.name);
         });
     }
     cFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.cUsqFrom();
-            return cUsq.cTuidMainFromName(this.name);
+            let cUq = yield this.cUqFrom();
+            return cUq.cTuidMainFromName(this.name);
         });
     }
     cEditFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.cUsqFrom();
-            return cUsq.cTuidEditFromName(this.name);
+            let cUq = yield this.cUqFrom();
+            return cUq.cTuidEditFromName(this.name);
         });
     }
     cInfoFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.cUsqFrom();
-            return cUsq.cTuidInfoFromName(this.name);
+            let cUq = yield this.cUqFrom();
+            return cUq.cTuidInfoFromName(this.name);
         });
     }
     cSelectFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.cUsqFrom();
-            if (cUsq === undefined)
+            let cUq = yield this.cUqFrom();
+            if (cUq === undefined)
                 return;
-            return cUsq.cTuidSelectFromName(this.name);
+            return cUq.cTuidSelectFromName(this.name);
         });
     }
     afterCacheId(tuidValue) {

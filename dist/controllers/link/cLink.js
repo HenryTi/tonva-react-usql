@@ -27,7 +27,11 @@ export class CLink extends Link {
         this.label = controller.label;
     }
     render(className) {
-        return this.view(className);
+        return React.createElement("div", { className: classNames('px-3', 'py-2', 'align-items-center', 'cursor-pointer', className), onClick: this.onClick },
+            this.icon,
+            " \u00A0 ",
+            this.label);
+        //return React.createElement(this.view, className);
     }
 }
 //# sourceMappingURL=cLink.js.map

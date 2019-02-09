@@ -7,15 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { Page, loadAppUsqs, nav, meInFrame, Controller, VPage, resLang } from 'tonva-tools';
+import { Page, loadAppUqs, nav, meInFrame, Controller, VPage, resLang } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
-import { CUsq } from './usq';
+import { CUq } from './uq';
 import { centerApi } from '../centerApi';
 export class CApp extends Controller {
     constructor(tonvaApp, ui) {
         super(resLang(ui && ui.res));
-        this.cImportUsqs = {};
-        this.cUsqCollection = {};
+        this.cImportUqs = {};
+        this.cUqCollection = {};
         this.renderRow = (item, index) => {
             let { id, nick, name } = item;
             return React.createElement(LMR, { className: "px-3 py-2", right: 'id: ' + id },
@@ -25,16 +25,6 @@ export class CApp extends Controller {
             meInFrame.unit = item.id; // 25;
             yield this.start();
         });
-        /*
-        protected appPage = () => {
-            return <Page header={this.caption} logout={()=>{meInFrame.unit = undefined}}>
-                {this.cUsqArr.map((v,i) => <div key={i}>{v.render()}</div>)}
-            </Page>;
-        };
-        */
-        //<LMR className="px-3 py-2 my-2 bg-light"
-        //left={<FA name='cog' fixWidth={true} className="text-info mr-2 pt-1" />}
-        //onClick={this.opClick}>设置操作权限</LMR>
         this.selectUnitPage = () => {
             return React.createElement(Page, { header: "\u9009\u62E9\u5C0F\u53F7", logout: true },
                 React.createElement(List, { items: this.appUnits, item: { render: this.renderRow, onClick: this.onRowClick } }));
@@ -45,34 +35,34 @@ export class CApp extends Controller {
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
-        this.ui = ui || { usqs: {} };
+        this.ui = ui || { uqs: {} };
         this.caption = this.res.caption || 'Tonva';
     }
     startDebug() {
         return __awaiter(this, void 0, void 0, function* () {
             let appName = this.appOwner + '/' + this.appName;
-            let cApp = new CApp(appName, { usqs: {} });
+            let cApp = new CApp(appName, { uqs: {} });
             let keepNavBackButton = true;
             yield cApp.start(keepNavBackButton);
         });
     }
-    loadUsqs() {
+    loadUqs() {
         return __awaiter(this, void 0, void 0, function* () {
             let retErrors = [];
             let unit = meInFrame.unit;
-            let app = yield loadAppUsqs(this.appOwner, this.appName);
-            let { id, usqs } = app;
+            let app = yield loadAppUqs(this.appOwner, this.appName);
+            let { id, uqs } = app;
             this.id = id;
             let promises = [];
             let promiseChecks = [];
-            for (let appUsq of usqs) {
-                let { id: usqId, usqOwner, usqName, url, urlDebug, ws, access, token } = appUsq;
-                let usq = usqOwner + '/' + usqName;
-                let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-                let cUsq = this.newCUsq(usq, usqId, access, ui || {});
-                this.cUsqCollection[usq] = cUsq;
-                promises.push(cUsq.loadSchema());
-                promiseChecks.push(cUsq.entities.usqApi.checkAccess());
+            for (let appUq of uqs) {
+                let { id: uqId, uqOwner, uqName, url, urlDebug, ws, access, token } = appUq;
+                let uq = uqOwner + '/' + uqName;
+                let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
+                let cUq = this.newCUq(uq, uqId, access, ui || {});
+                this.cUqCollection[uq] = cUq;
+                promises.push(cUq.loadSchema());
+                promiseChecks.push(cUq.entities.uqApi.checkAccess());
             }
             let results = yield Promise.all(promises);
             Promise.all(promiseChecks).then((checks) => {
@@ -84,7 +74,7 @@ export class CApp extends Controller {
                 }
             });
             for (let result of results) {
-                let retError = result; // await cUsq.loadSchema();
+                let retError = result; // await cUq.loadSchema();
                 if (retError !== undefined) {
                     retErrors.push(retError);
                     continue;
@@ -95,38 +85,38 @@ export class CApp extends Controller {
             return retErrors;
         });
     }
-    getImportUsq(usqOwner, usqName) {
+    getImportUq(uqOwner, uqName) {
         return __awaiter(this, void 0, void 0, function* () {
-            let usq = usqOwner + '/' + usqName;
-            let cUsq = this.cImportUsqs[usq];
-            if (cUsq !== undefined)
-                return cUsq;
-            let ui = this.ui && this.ui.usqs && this.ui.usqs[usq];
-            let usqId = -1; // unknown
-            this.cImportUsqs[usq] = cUsq = this.newCUsq(usq, usqId, undefined, ui || {});
-            let retError = yield cUsq.loadSchema();
+            let uq = uqOwner + '/' + uqName;
+            let cUq = this.cImportUqs[uq];
+            if (cUq !== undefined)
+                return cUq;
+            let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
+            let uqId = -1; // unknown
+            this.cImportUqs[uq] = cUq = this.newCUq(uq, uqId, undefined, ui || {});
+            let retError = yield cUq.loadSchema();
             if (retError !== undefined) {
                 console.error(retError);
                 debugger;
                 return;
             }
-            return cUsq;
+            return cUq;
         });
     }
-    newCUsq(usq, usqId, access, ui) {
-        let cUsq = new (this.ui.CUsq || CUsq)(this, usq, this.id, usqId, access, ui);
-        Object.setPrototypeOf(cUsq.x, this.x);
-        return cUsq;
+    newCUq(uq, uqId, access, ui) {
+        let cUq = new (this.ui.CUq || CUq)(this, uq, this.id, uqId, access, ui);
+        Object.setPrototypeOf(cUq.x, this.x);
+        return cUq;
     }
-    get cUsqArr() {
+    get cUqArr() {
         let ret = [];
-        for (let i in this.cUsqCollection) {
-            ret.push(this.cUsqCollection[i]);
+        for (let i in this.cUqCollection) {
+            ret.push(this.cUqCollection[i]);
         }
         return ret;
     }
-    getCUsq(apiName) {
-        return this.cUsqCollection[apiName];
+    getCUq(apiName) {
+        return this.cUqCollection[apiName];
     }
     get VAppMain() { return (this.ui && this.ui.main) || VAppMain; }
     beforeStart() {
@@ -144,7 +134,7 @@ export class CApp extends Controller {
                 }
                 let { unit } = meInFrame;
                 if (this.isProduction === false && (unit === undefined || unit <= 0)) {
-                    let app = yield loadAppUsqs(this.appOwner, this.appName);
+                    let app = yield loadAppUqs(this.appOwner, this.appName);
                     let { id } = app;
                     this.id = id;
                     yield this.loadAppUnits();
@@ -166,11 +156,11 @@ export class CApp extends Controller {
                             return false;
                     }
                 }
-                let retErrors = yield this.loadUsqs();
+                let retErrors = yield this.loadUqs();
                 if (retErrors !== undefined) {
                     this.openPage(React.createElement(Page, { header: "ERROR" },
                         React.createElement("div", { className: "m-3" },
-                            React.createElement("div", null, "Load Usqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
+                            React.createElement("div", null, "Load Uqs \u53D1\u751F\u9519\u8BEF\uFF1A"),
                             retErrors.map((r, i) => React.createElement("div", { key: i }, r)))));
                     return false;
                 }
@@ -227,27 +217,27 @@ export class CApp extends Controller {
                 let action = parts[2];
                 // sheet_debug 表示centerUrl是debug方式的
                 if (action === 'sheet' || action === 'sheet_debug') {
-                    let usqId = Number(parts[3]);
+                    let uqId = Number(parts[3]);
                     let sheetTypeId = Number(parts[4]);
                     let sheetId = Number(parts[5]);
-                    let cUsq = this.getCUsqFromId(usqId);
-                    if (cUsq === undefined) {
-                        alert('unknown usqId: ' + usqId);
+                    let cUq = this.getCUqFromId(uqId);
+                    if (cUq === undefined) {
+                        alert('unknown uqId: ' + uqId);
                         return;
                     }
                     this.clearPrevPages();
-                    yield cUsq.navSheet(sheetTypeId, sheetId);
+                    yield cUq.navSheet(sheetTypeId, sheetId);
                     return;
                 }
             }
             this.showVPage(this.VAppMain);
         });
     }
-    getCUsqFromId(usqId) {
-        for (let i in this.cUsqCollection) {
-            let cUsq = this.cUsqCollection[i];
-            if (cUsq.id === usqId)
-                return cUsq;
+    getCUqFromId(uqId) {
+        for (let i in this.cUqCollection) {
+            let cUq = this.cUqCollection[i];
+            if (cUq.id === uqId)
+                return cUq;
         }
         return;
     }
@@ -265,15 +255,15 @@ class VAppMain extends VPage {
     constructor() {
         super(...arguments);
         this.appContent = () => {
-            let { cUsqArr } = this.controller;
+            let { cUqArr } = this.controller;
             let content;
-            if (cUsqArr.length === 0) {
+            if (cUqArr.length === 0) {
                 content = React.createElement("div", { className: "text-danger" },
                     React.createElement(FA, { name: "" }),
-                    " \u6B64APP\u6CA1\u6709\u7ED1\u5B9A\u4EFB\u4F55\u7684USQ");
+                    " \u6B64APP\u6CA1\u6709\u7ED1\u5B9A\u4EFB\u4F55\u7684UQ");
             }
             else {
-                content = cUsqArr.map((v, i) => React.createElement("div", { key: i }, v.render()));
+                content = cUqArr.map((v, i) => React.createElement("div", { key: i }, v.render()));
             }
             return React.createElement(React.Fragment, null, content);
         };

@@ -1,11 +1,11 @@
 import { Controller, TypeVPage } from 'tonva-tools';
-import { CUsq, UsqUI } from './usq';
+import { CUq, UqUI } from './uq';
 export interface AppUI {
     CApp?: typeof CApp;
-    CUsq?: typeof CUsq;
+    CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
-    usqs: {
-        [usq: string]: UsqUI;
+    uqs: {
+        [uq: string]: UqUI;
     };
     res?: any;
 }
@@ -13,21 +13,21 @@ export declare class CApp extends Controller {
     private appOwner;
     private appName;
     private isProduction;
-    private cImportUsqs;
+    private cImportUqs;
     protected ui: AppUI;
     id: number;
     appUnits: any[];
     constructor(tonvaApp: string, ui?: AppUI);
     readonly caption: string;
-    cUsqCollection: {
-        [usq: string]: CUsq;
+    cUqCollection: {
+        [uq: string]: CUq;
     };
     startDebug(): Promise<void>;
-    protected loadUsqs(): Promise<string[]>;
-    getImportUsq(usqOwner: string, usqName: string): Promise<CUsq>;
-    protected newCUsq(usq: string, usqId: number, access: string, ui: any): CUsq;
-    readonly cUsqArr: CUsq[];
-    getCUsq(apiName: string): CUsq;
+    protected loadUqs(): Promise<string[]>;
+    getImportUq(uqOwner: string, uqName: string): Promise<CUq>;
+    protected newCUq(uq: string, uqId: number, access: string, ui: any): CUq;
+    readonly cUqArr: CUq[];
+    getCUq(apiName: string): CUq;
     protected readonly VAppMain: TypeVPage<CApp>;
     protected beforeStart(): Promise<boolean>;
     protected internalStart(param: any): Promise<void>;
@@ -36,7 +36,7 @@ export declare class CApp extends Controller {
     protected clearPrevPages(): void;
     private showUnsupport;
     private showMainPage;
-    private getCUsqFromId;
+    private getCUqFromId;
     private loadAppUnits;
     renderRow: (item: any, index: number) => JSX.Element;
     onRowClick: (item: any) => Promise<void>;

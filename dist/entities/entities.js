@@ -6,7 +6,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-//import {UsqlApi} from './usqlApi';
 import { TuidMain } from './tuid';
 import { Action } from './action';
 import { Sheet } from './sheet';
@@ -34,7 +33,7 @@ export function fieldDefaultValue(type) {
     }
 }
 export class Entities {
-    constructor(cUsq, usqApi, appId) {
+    constructor(cUq, uqApi, appId) {
         this.tuids = {};
         this.actions = {};
         this.sheets = {};
@@ -58,8 +57,8 @@ export class Entities {
                 tuid.cacheIds();
             }
         };
-        this.cUsq = cUsq;
-        this.usqApi = usqApi;
+        this.cUq = cUq;
+        this.uqApi = uqApi;
         this.appId = appId;
     }
     tuid(name) { return this.tuids[name.toLowerCase()]; }
@@ -79,21 +78,15 @@ export class Entities {
     }
     loadAccess() {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let accesses = yield this.usqApi.loadAccess();
-                if (accesses === undefined)
-                    return;
-                this.buildEntities(accesses);
-            }
-            catch (err) {
-                let { usqOwner, usqName } = this.usqApi;
-                console.log(usqOwner + '/' + usqName + ' loadAccess error: ' + err.message);
-            }
+            let accesses = yield this.uqApi.loadAccess();
+            if (accesses === undefined)
+                return;
+            this.buildEntities(accesses);
         });
     }
     loadEntities() {
         return __awaiter(this, void 0, void 0, function* () {
-            let accesses = yield this.usqApi.loadEntities();
+            let accesses = yield this.uqApi.loadEntities();
             this.buildEntities(accesses);
         });
     }
@@ -236,8 +229,8 @@ export class Entities {
         type = parts[0];
         let id = Number(parts[1]);
         switch (type) {
-            case 'usq':
-                this.usqId = id;
+            case 'uq':
+                this.uqId = id;
                 break;
             case 'tuid':
                 let tuid = this.newTuid(name, id);

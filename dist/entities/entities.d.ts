@@ -4,10 +4,10 @@ import { Sheet } from './sheet';
 import { Query } from './query';
 import { Book } from './book';
 import { History } from './history';
-import { UsqApi } from 'tonva-tools';
+import { UqApi } from 'tonva-tools';
 import { Map } from './map';
 import { Pending } from './pending';
-import { CUsq } from '../controllers';
+import { CUq } from '../controllers';
 export declare type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' | 'datetime' | 'date' | 'time';
 export declare function fieldDefaultValue(type: FieldType): 0 | "" | "2000-1-1" | "0:00";
 export interface Field {
@@ -41,11 +41,11 @@ export declare class Entities {
     private histories;
     private pendings;
     private cacheTimer;
-    cUsq: CUsq;
-    usqApi: UsqApi;
+    cUq: CUq;
+    uqApi: UqApi;
     appId: number;
-    usqId: number;
-    constructor(cUsq: CUsq, usqApi: UsqApi, appId: number);
+    uqId: number;
+    constructor(cUq: CUq, uqApi: UqApi, appId: number);
     tuid(name: string): TuidMain;
     action(name: string): Action;
     sheet(name: string): Sheet;

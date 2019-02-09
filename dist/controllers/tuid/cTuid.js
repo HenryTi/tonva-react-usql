@@ -35,14 +35,14 @@ export class CTuid extends CEntity {
     }
 }
 export class CTuidMain extends CTuid {
-    constructor(cUsq, entity, ui, res) {
-        super(cUsq, entity, ui, res);
+    constructor(cUq, entity, ui, res) {
+        super(cUq, entity, ui, res);
         let tuid = this.entity;
         this.proxies = tuid.proxies;
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
-                let link = this.cUsq.linkFromName('tuid', i);
+                let link = this.cUq.linkFromName('tuid', i);
                 this.proxyLinks.push(link);
             }
         }
@@ -55,27 +55,27 @@ export class CTuidMain extends CTuid {
             return ret;
         });
     }
-    cUsqFrom() {
+    cUqFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.entity.cUsqFrom();
+            return yield this.entity.cUqFrom();
         });
     }
     cEditFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.entity.cUsqFrom();
-            return yield cUsq.cTuidEditFromName(this.entity.name);
+            let cUq = yield this.entity.cUqFrom();
+            return yield cUq.cTuidEditFromName(this.entity.name);
         });
     }
     cInfoFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.entity.cUsqFrom();
-            return yield cUsq.cTuidInfoFromName(this.entity.name);
+            let cUq = yield this.entity.cUqFrom();
+            return yield cUq.cTuidInfoFromName(this.entity.name);
         });
     }
     cSelectFrom() {
         return __awaiter(this, void 0, void 0, function* () {
-            let cUsq = yield this.entity.cUsqFrom();
-            return yield cUsq.cTuidSelectFromName(this.entity.name);
+            let cUq = yield this.entity.cUqFrom();
+            return yield cUq.cTuidSelectFromName(this.entity.name);
         });
     }
     getLable(tuid) {
@@ -120,7 +120,7 @@ export class CTuidMain extends CTuid {
                     this.itemChanged(value);
                     return;
                 case 'info':
-                    let cTuidInfo = new CTuidInfo(this.cUsq, this.entity, this.ui, this.res);
+                    let cTuidInfo = new CTuidInfo(this.cUq, this.entity, this.ui, this.res);
                     yield cTuidInfo.start(value);
                     return;
             }

@@ -1,7 +1,7 @@
 {
-  "name": "tonva-react-usql",
+  "name": "tonva-react-uq",
   "version": "1.0.0",
-  "description": "react usql ui from Tonva",
+  "description": "react uq ui from Tonva",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,7 @@
   "dependencies": {
     "bootstrap": "^4.1.3",
     "font-awesome": "^4.7.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.11",
     "mobx": "^5.5.2",
     "mobx-react": "^5.3.6",
     "react": "^16.6.3",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.3",
-    "@types/lodash": "^4.14.85",
+    "@types/lodash": "^4.14.120",
     "@types/node": "^8.10.30",
     "@types/react": "^16.7.6",
     "@types/react-dom": "^16.0.9",

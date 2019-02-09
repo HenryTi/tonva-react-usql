@@ -18,7 +18,7 @@ export declare class Map extends Entity {
     queries: MapQueries;
     schemaFrom: {
         owner: string;
-        usq: string;
+        uq: string;
     };
     setSchema(schema: any): void;
     add(param: any): Promise<any>;
