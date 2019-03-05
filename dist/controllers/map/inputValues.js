@@ -21,7 +21,7 @@ export class VInputValues extends VEntity {
             return React.createElement(Page, null, this.vForm.render());
         };
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vForm = this.createForm(this.onValuesSubmit);
             this.openPageElement(React.createElement(this.view, null));

@@ -11,7 +11,7 @@ import { VPendingMain } from "./vPendingMain";
 export class CPending extends CEntity {
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VPendingMain);
+            yield this.openVPage(this.VPendingMain);
         });
     }
     get VPendingMain() { return VPendingMain; }

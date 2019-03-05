@@ -42,6 +42,11 @@ export class Tuid extends Entity {
             let t = this._$tuid;
             return t.valueFromFieldName(fieldName, this.obj);
         };
+        prototype.getObj = function () {
+            if (this._$tuid !== undefined) {
+                return this._$tuid.getCacheValue(this.id);
+            }
+        };
         prototype.toJSON = function () { return this.id; };
     }
     boxId(id) {
@@ -80,7 +85,10 @@ export class Tuid extends Entity {
                 break;
             default: return;
         }
-        let v = this.cache.get(_id);
+        return this.getCacheValue(_id);
+    }
+    getCacheValue(id) {
+        let v = this.cache.get(id);
         if (this.owner !== undefined && typeof v === 'object') {
             v.$owner = this.owner.boxId(v.owner); // this.owner.valueFromId(v.owner);
         }

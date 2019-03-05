@@ -99,7 +99,7 @@ export class CTuidMain extends CTuid {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.isFrom = this.entity.schemaFrom !== undefined;
-            yield this.showVPage(this.VTuidMain);
+            yield this.openVPage(this.VTuidMain);
         });
     }
     onEvent(type, value) {
@@ -124,7 +124,7 @@ export class CTuidMain extends CTuid {
                     yield cTuidInfo.start(value);
                     return;
             }
-            yield this.showVPage(v, value);
+            yield this.openVPage(v, value);
         });
     }
     edit(id) {
@@ -134,7 +134,7 @@ export class CTuidMain extends CTuid {
                 values = yield this.entity.load(id);
             }
             let v = this.VTuidEdit;
-            yield this.showVPage(v, values);
+            yield this.openVPage(v, values);
         });
     }
     itemChanged({ id, values }) {
@@ -157,7 +157,7 @@ export class CTuidEdit extends CTuidMain {
 export class CTuidList extends CTuidMain {
     internalStart(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VTuidList);
+            yield this.openVPage(this.VTuidList);
         });
     }
 }
@@ -171,7 +171,7 @@ export class CTuidDiv extends CTuid {
 export class CTuidSelect extends CTuid {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VTuidSelect, param);
+            yield this.openVPage(this.VTuidSelect, param);
         });
     }
     beforeStart() {
@@ -192,7 +192,7 @@ export class CTuidInfo extends CTuid {
     internalStart(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = yield this.entity.load(id);
-            yield this.showVPage(this.VTuidInfo, data);
+            yield this.openVPage(this.VTuidInfo, data);
         });
     }
     get VTuidInfo() { return VTuidInfo; }

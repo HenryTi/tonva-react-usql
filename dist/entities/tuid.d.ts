@@ -9,6 +9,7 @@ export declare class BoxId {
     valueFromFieldName: (fieldName: string) => BoxId | any;
     _$com?: any;
     _$tuid?: Tuid;
+    getObj: () => any;
 }
 export declare abstract class Tuid extends Entity {
     private BoxId;
@@ -32,6 +33,7 @@ export declare abstract class Tuid extends Entity {
     setSchema(schema: any): void;
     private moveToHead;
     valueFromId(id: number | BoxId): any;
+    getCacheValue(id: number): any;
     valueFromFieldName(fieldName: string, obj: any): BoxId | any;
     resetCache(id: number): void;
     useId(id: number, defer?: boolean): void;

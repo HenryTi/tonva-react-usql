@@ -36,7 +36,7 @@ export class CSheet extends CEntity {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.loadStateSheetCount();
             this.pageStateItems = this.entity.createPageStateItems();
-            yield this.showVPage(this.VSheetMain);
+            yield this.openVPage(this.VSheetMain);
         });
     }
     onMessage(msg) {
@@ -134,7 +134,7 @@ export class CSheet extends CEntity {
                     yield this.showProcessing(value);
                     return;
             }
-            yield this.showVPage(c, value);
+            yield this.openVPage(c, value);
         });
     }
     startSheet(sheetId) {
@@ -158,13 +158,13 @@ export class CSheet extends CEntity {
                     }
                 }
             });
-            yield this.showVPage(this.VSheetAction, sheetData);
+            yield this.openVPage(this.VSheetAction, sheetData);
         });
     }
     showProcessing(sheetId) {
         return __awaiter(this, void 0, void 0, function* () {
             let sheetData = yield this.getSheetData(sheetId);
-            yield this.showVPage(this.VSheetProcessing, sheetData);
+            yield this.openVPage(this.VSheetProcessing, sheetData);
         });
     }
     editSheet(sheetData) {
@@ -177,12 +177,12 @@ export class CSheet extends CEntity {
     showArchived(inBrief) {
         return __awaiter(this, void 0, void 0, function* () {
             let sheetData = yield this.getArchived(inBrief.id);
-            yield this.showVPage(this.VArchived, sheetData);
+            yield this.openVPage(this.VArchived, sheetData);
         });
     }
     showSaved(sheetData) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VSheetSaved, sheetData);
+            yield this.openVPage(this.VSheetSaved, sheetData);
         });
     }
     getStateUI(stateName) {

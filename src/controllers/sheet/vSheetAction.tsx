@@ -1,13 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Button } from 'reactstrap';
 import { nav, Page } from 'tonva-tools';
+import { FA } from 'tonva-react-form';
 import { VSheetView } from './vSheetView';
 import { SheetData } from './cSheet';
-import { FA } from 'tonva-react-form';
 
 export class VSheetAction extends VSheetView { 
-    async showEntry(sheetData:SheetData) {
+    async open(sheetData:SheetData) {
         this.sheetData = sheetData;
         //let {brief, data, flows} = await this.controller.getSheetData(sheetId);
         //this.brief = brief;
@@ -64,19 +63,18 @@ export class VSheetAction extends VSheetView {
         }
         else {
             actionButtons = <div className="flex-grow-1">{s.actions.map((v,index) => 
-                <Button
+                <button
                     key={index}
-                    className="mr-2"
-                    color="primary"
+                    className="btn btn-primary mr-2"
                     onClick={()=>this.actionClick(v)}
                 >
                     {this.controller.getActionLabel(state, v.name)}
-                </Button>)}
+                </button>)}
             </div>;
             if (state === '$') {
                 startButtons = <div>
-                    <Button outline={true} className="ml-2" color="info" onClick={this.editClick}>修改</Button>
-                    <Button outline={true} className="ml-2" color="danger" onClick={this.deleteClick}>作废</Button>
+                    <button className="btn btn-outline-info ml-2" onClick={this.editClick}>修改</button>
+                    <button className="btn btn-outline-danger ml-2" onClick={this.deleteClick}>作废</button>
                 </div>
             }
         };

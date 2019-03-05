@@ -165,7 +165,7 @@ export class CMap extends CEntity {
                     item = newItem;
                 }
             }
-            yield this.showVPage(this.VMapMain);
+            yield this.openVPage(this.VMapMain);
         });
     }
     createItem(parent, tuid, box, keyIndex, values) {

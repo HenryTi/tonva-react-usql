@@ -15,7 +15,7 @@ export class VSheetSchema extends VEntity {
         this.view = () => React.createElement(Page, { header: this.label + "模板" },
             React.createElement("pre", { className: "mx-3 my-2" }, this.entity.schemaStringify()));
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.openPage(this.view);
         });

@@ -21,7 +21,7 @@ export class VSheetEdit extends VSheetView {
         });
         this.view = () => React.createElement(Page, { header: this.label }, this.vForm.render());
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.sheetData = param;
             this.vForm = this.createForm(this.onSubmit, param.data, FormMode.edit);

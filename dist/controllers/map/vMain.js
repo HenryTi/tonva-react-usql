@@ -64,7 +64,7 @@ export class VMapMain extends VEntity {
                 content);
         });
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.isFrom = this.controller.isFrom;
             this.openPage(this.view);

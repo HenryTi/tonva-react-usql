@@ -5,7 +5,7 @@ import { QueryUI, CQuery } from './cQuery';
 export declare class VQueryMain extends VEntity<Query, QueryUI, CQuery> {
     protected vForm: VForm;
     private row;
-    showEntry(param?: any): Promise<void>;
+    open(param?: any): Promise<void>;
     onSubmit: () => Promise<void>;
     again: () => void;
     renderExtra(): void;

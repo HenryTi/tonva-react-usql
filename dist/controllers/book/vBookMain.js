@@ -14,7 +14,7 @@ export class VBookMain extends VEntity {
         super(...arguments);
         this.view = () => React.createElement(Page, { header: this.label }, "Book");
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.openPage(this.view);
         });

@@ -27,7 +27,7 @@ export class VQuerySelect extends VEntity {
                 React.createElement(List, { items: this.PageItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
         };
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             let { row, selectRow } = this.ui;
             this.row = selectRow || row || DefaultRow;

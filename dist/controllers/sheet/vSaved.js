@@ -49,7 +49,7 @@ export class VSheetSaved extends VSheet {
                     React.createElement("div", { className: "p-3" }, this.buttons)));
         };
     }
-    showEntry(brief) {
+    open(brief) {
         return __awaiter(this, void 0, void 0, function* () {
             this.brief = brief;
             this.openPage(this.view);

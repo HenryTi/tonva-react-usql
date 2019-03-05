@@ -51,7 +51,7 @@ export class VQueryMain extends VEntity {
                 React.createElement("pre", null, JSON.stringify(result, undefined, '\t')));
         });
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vForm = this.createForm(this.onSubmit, param);
             let { row, queryRow } = this.ui;

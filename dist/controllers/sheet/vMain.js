@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Badge } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { List, Muted, LMR } from 'tonva-react-form';
 import { VEntity } from '../CVEntity';
@@ -23,7 +22,7 @@ export class VSheetMain extends VEntity {
             let { state, count } = item;
             if (count === 0)
                 return null;
-            let badge = React.createElement(Badge, { className: "ml-5 align-self-end", color: "success" }, count);
+            let badge = React.createElement("span", { className: "badge badge-success ml-5 align-self-end" }, count);
             return React.createElement(LMR, { className: "px-3 py-2", left: this.controller.getStateLabel(state), right: badge });
         };
         this.view = observer(() => {
@@ -42,7 +41,7 @@ export class VSheetMain extends VEntity {
                         this.label), none: "[ \u65E0 ]", items: list, item: { render: this.renderState, onClick: this.sheetStateClick } }));
         });
     }
-    showEntry() {
+    open() {
         return __awaiter(this, void 0, void 0, function* () {
             this.openPage(this.view);
         });

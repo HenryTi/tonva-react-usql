@@ -43,7 +43,7 @@ export class VTuidMainListBase extends VEntity {
                 React.createElement(List, { items: this.controller.PageItems.items, item: { render: this.renderRow, onClick: this.clickRow, key: this.rowKey }, before: '搜索' + this.label + '资料' }));
         });
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.rowContent = this.ui.rowContent || RowContent;
             if (this.entity.owner !== undefined)
@@ -100,7 +100,7 @@ export class VTuidDivListBase extends VEntity {
                 React.createElement(List, { items: this.controller.PageItems.items, item: { render: this.renderRow, onClick: this.clickRow }, before: '搜索' + this.label + '资料' }));
         });
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             //this.PageItems = new TuidPageItems(this.entity);
             if (this.entity.owner !== undefined)

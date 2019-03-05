@@ -7,7 +7,7 @@ export declare class VTuidMain extends VEntity<TuidMain, TuidUI, CTuidMain> {
     onNew: () => Promise<void>;
     onList: () => Promise<void>;
     onSearch: (key: string) => Promise<void>;
-    showEntry(param?: any): Promise<void>;
+    open(param?: any): Promise<void>;
     protected entityRender(link: CLink, index: number): JSX.Element;
     protected entityClick(link: CLink): Promise<void>;
     protected readonly view: () => JSX.Element;

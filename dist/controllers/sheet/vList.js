@@ -44,7 +44,7 @@ export class VSheetList extends VEntity {
                 React.createElement(List, { items: pageStateItems, item: { render: this.renderRow, onClick: this.rowClick } }));
         };
     }
-    showEntry(item) {
+    open(item) {
         return __awaiter(this, void 0, void 0, function* () {
             this.row = this.ui.listRow || this.rowContent;
             this.stateName = item.state;

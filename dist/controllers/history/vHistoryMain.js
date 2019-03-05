@@ -14,7 +14,7 @@ export class VHistoryMain extends VEntity {
         super(...arguments);
         this.view = () => React.createElement(Page, { header: this.label }, "History");
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.openPage(this.view);
         });

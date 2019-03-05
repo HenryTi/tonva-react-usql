@@ -5,7 +5,7 @@ export declare type TypeVTuidEdit = typeof VTuidEdit;
 export declare class VTuidEdit extends VEntity<Tuid, TuidUI, CTuidMain> {
     private vForm;
     private id;
-    showEntry(param?: any): Promise<void>;
+    open(param?: any): Promise<void>;
     protected readonly editView: () => JSX.Element;
     protected next: () => Promise<void>;
     protected finish: () => void;

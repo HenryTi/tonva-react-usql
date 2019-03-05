@@ -8,10 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import React from 'react';
 import classNames from 'classnames';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
-import { VSheetView } from './vSheetView';
 import { FA } from 'tonva-react-form';
+import { VSheetView } from './vSheetView';
 export class VSheetAction extends VSheetView {
     constructor() {
         super(...arguments);
@@ -60,11 +59,11 @@ export class VSheetAction extends VSheetView {
                     "]");
             }
             else {
-                actionButtons = React.createElement("div", { className: "flex-grow-1" }, s.actions.map((v, index) => React.createElement(Button, { key: index, className: "mr-2", color: "primary", onClick: () => this.actionClick(v) }, this.controller.getActionLabel(state, v.name))));
+                actionButtons = React.createElement("div", { className: "flex-grow-1" }, s.actions.map((v, index) => React.createElement("button", { key: index, className: "btn btn-primary mr-2", onClick: () => this.actionClick(v) }, this.controller.getActionLabel(state, v.name))));
                 if (state === '$') {
                     startButtons = React.createElement("div", null,
-                        React.createElement(Button, { outline: true, className: "ml-2", color: "info", onClick: this.editClick }, "\u4FEE\u6539"),
-                        React.createElement(Button, { outline: true, className: "ml-2", color: "danger", onClick: this.deleteClick }, "\u4F5C\u5E9F"));
+                        React.createElement("button", { className: "btn btn-outline-info ml-2", onClick: this.editClick }, "\u4FEE\u6539"),
+                        React.createElement("button", { className: "btn btn-outline-danger ml-2", onClick: this.deleteClick }, "\u4F5C\u5E9F"));
                 }
             }
             ;
@@ -87,7 +86,7 @@ export class VSheetAction extends VSheetView {
                         React.createElement("button", { className: "btn btn-outline-info", onClick: () => this.backPage() }, "\u8FD4\u56DE"))));
         };
     }
-    showEntry(sheetData) {
+    open(sheetData) {
         return __awaiter(this, void 0, void 0, function* () {
             this.sheetData = sheetData;
             //let {brief, data, flows} = await this.controller.getSheetData(sheetId);

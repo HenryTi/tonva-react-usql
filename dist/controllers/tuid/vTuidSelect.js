@@ -43,7 +43,7 @@ export class VTuidSelect extends VEntity {
             this.returnCall(item);
         };
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             if (param === undefined)
                 yield this.showMain(param);
