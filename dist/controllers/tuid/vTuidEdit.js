@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import { FA } from 'tonva-react-form';
-import { Button } from 'reactstrap';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../CVEntity';
 export class VTuidEdit extends VEntity {
@@ -46,14 +45,14 @@ export class VTuidEdit extends VEntity {
                         React.createElement(FA, { name: 'check-circle', size: 'lg' }),
                         " \u6210\u529F\u63D0\u4EA4\uFF01"),
                     React.createElement("div", { className: 'mt-5' },
-                        React.createElement(Button, { className: "mr-3", color: "primary", onClick: this.next }, "\u7EE7\u7EED\u5F55\u5165"),
-                        React.createElement(Button, { color: "primary", outline: true, onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
+                        React.createElement("button", { className: "btn btn-primary mr-3", onClick: this.next }, "\u7EE7\u7EED\u5F55\u5165"),
+                        React.createElement("button", { className: "btn btn-outline-primary", onClick: this.finish }, "\u4E0D\u7EE7\u7EED")))));
             this.event('item-changed', { id: this.id, values: values });
             return;
         });
         //protected view = TuidNewPage;
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vForm = this.createForm(this.onSubmit, param);
             if (param !== undefined) {

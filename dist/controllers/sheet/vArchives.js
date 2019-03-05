@@ -34,7 +34,7 @@ export class VArchives extends VEntity {
                 React.createElement(List, { items: this.list, item: { render: this.archiveRow, onClick: this.archiveClick } }));
         };
     }
-    showEntry() {
+    open() {
         return __awaiter(this, void 0, void 0, function* () {
             this.list = yield this.entity.getArchives(undefined, 10);
             this.openPage(this.view);

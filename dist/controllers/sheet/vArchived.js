@@ -20,7 +20,7 @@ export class VArchived extends VSheetView {
                 React.createElement(this.sheetView, null));
         };
     }
-    showEntry(sheetData) {
+    open(sheetData) {
         return __awaiter(this, void 0, void 0, function* () {
             this.sheetData = sheetData;
             /*

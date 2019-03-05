@@ -5,6 +5,6 @@ export interface State {
     data: any;
 }
 export declare class VArchived extends VSheetView {
-    showEntry(sheetData: SheetData): Promise<void>;
+    open(sheetData: SheetData): Promise<void>;
     protected view: () => JSX.Element;
 }

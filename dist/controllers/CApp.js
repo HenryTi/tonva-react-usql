@@ -196,6 +196,8 @@ export class CApp extends Controller {
     }
     showUnsupport() {
         this.clearPrevPages();
+        let { user } = nav;
+        let userName = user ? user.name : '[未登录]';
         this.openPage(React.createElement(Page, { header: "APP\u65E0\u6CD5\u8FD0\u884C", logout: true },
             React.createElement("div", { className: "m-3 text-danger container" },
                 React.createElement("div", { className: "form-group row" },
@@ -204,7 +206,7 @@ export class CApp extends Controller {
                     React.createElement("div", { className: "col" }, "\u7528\u6237\u4E0D\u652F\u6301APP")),
                 React.createElement("div", { className: "form-group row" },
                     React.createElement("div", { className: "col-2" }, "\u7528\u6237: "),
-                    React.createElement("div", { className: "col" }, `${nav.user.name}`)),
+                    React.createElement("div", { className: "col" }, userName)),
                 React.createElement("div", { className: "form-group row" },
                     React.createElement("div", { className: "col-2" }, "App:"),
                     React.createElement("div", { className: "col" }, `${this.appOwner}/${this.appName}`)))));
@@ -230,7 +232,7 @@ export class CApp extends Controller {
                     return;
                 }
             }
-            this.showVPage(this.VAppMain);
+            this.openVPage(this.VAppMain);
         });
     }
     getCUqFromId(uqId) {
@@ -268,7 +270,7 @@ class VAppMain extends VPage {
             return React.createElement(React.Fragment, null, content);
         };
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.openPage(this.appPage);
         });

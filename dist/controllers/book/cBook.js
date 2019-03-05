@@ -11,7 +11,7 @@ import { VBookMain } from "./vBookMain";
 export class CBook extends CEntity {
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VBookMain);
+            yield this.openVPage(this.VBookMain);
         });
     }
     get VBookMain() { return VBookMain; }

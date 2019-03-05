@@ -10,5 +10,4 @@ export declare class CLink extends Link {
     constructor(controller: Controller);
     onClick: () => Promise<void>;
     render(className?: string): JSX.Element;
-    protected view: (className?: string) => JSX.Element;
 }

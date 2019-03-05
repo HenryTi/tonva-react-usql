@@ -11,7 +11,7 @@ import { VHistoryMain } from "./vHistoryMain";
 export class CHistory extends CEntity {
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VHistoryMain);
+            yield this.openVPage(this.VHistoryMain);
         });
     }
     get VHistoryMain() { return VHistoryMain; }

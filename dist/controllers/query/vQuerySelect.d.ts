@@ -6,7 +6,7 @@ export declare class VQuerySelect extends VEntity<Query, QueryUI, CQuerySelect> 
     private row;
     PageItems: QueryPageItems;
     ownerId: number;
-    showEntry(param?: any): Promise<void>;
+    open(param?: any): Promise<void>;
     onSearch: (key: string) => Promise<void>;
     renderRow: (item: any, index: number) => JSX.Element;
     private callOnSelected;

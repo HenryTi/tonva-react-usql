@@ -14,7 +14,7 @@ export class CQueryBase extends CEntity {
 export class CQuery extends CQueryBase {
     internalStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VQueryMain);
+            yield this.openVPage(this.VQueryMain);
         });
     }
     get VQueryMain() { return this.ui && this.ui.main || VQueryMain; }
@@ -22,7 +22,7 @@ export class CQuery extends CQueryBase {
 export class CQuerySelect extends CQueryBase {
     internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.showVPage(this.VQuerySelect, param);
+            yield this.openVPage(this.VQuerySelect, param);
         });
     }
     get VQuerySelect() { return VQuerySelect; }

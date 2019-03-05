@@ -30,7 +30,7 @@ export class VActionMain extends VEntity {
                 React.createElement("pre", null, jsonStringify(this.returns)));
         };
     }
-    showEntry(param) {
+    open(param) {
         return __awaiter(this, void 0, void 0, function* () {
             this.vForm = this.createForm(this.onSubmit, param);
             this.openPage(this.mainPage);
