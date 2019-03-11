@@ -1,6 +1,6 @@
 import { Controller, TypeVPage } from 'tonva-tools';
 import { CUq, UqUI } from './uq';
-export interface AppUI {
+export interface RoleAppUI {
     CApp?: typeof CApp;
     CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
@@ -9,10 +9,14 @@ export interface AppUI {
     };
     res?: any;
 }
+export interface AppUI extends RoleAppUI {
+    roles?: {
+        [role: string]: RoleAppUI;
+    };
+}
 export declare class CApp extends Controller {
     private appOwner;
     private appName;
-    private isProduction;
     private cImportUqs;
     protected ui: AppUI;
     id: number;
@@ -24,6 +28,7 @@ export declare class CApp extends Controller {
     };
     startDebug(): Promise<void>;
     protected loadUqs(): Promise<string[]>;
+    private buildRoleAppUI;
     getImportUq(uqOwner: string, uqName: string): Promise<CUq>;
     protected newCUq(uq: string, uqId: number, access: string, ui: any): CUq;
     readonly cUqArr: CUq[];

@@ -7,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { Page, loadAppUqs, nav, meInFrame, Controller, VPage, resLang } from 'tonva-tools';
+import _ from 'lodash';
+import { Page, loadAppUqs, nav, meInFrame, Controller, VPage, resLang, getExHash, isDevelopment } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq } from './uq';
 import { centerApi } from '../centerApi';
@@ -55,11 +56,12 @@ export class CApp extends Controller {
             this.id = id;
             let promises = [];
             let promiseChecks = [];
+            let roleAppUI = this.buildRoleAppUI();
             for (let appUq of uqs) {
-                let { id: uqId, uqOwner, uqName, url, urlDebug, ws, access, token } = appUq;
+                let { id: uqId, uqOwner, uqName, access } = appUq;
                 let uq = uqOwner + '/' + uqName;
-                let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
-                let cUq = this.newCUq(uq, uqId, access, ui || {});
+                let uqUI = roleAppUI && roleAppUI.uqs && roleAppUI.uqs[uq];
+                let cUq = this.newCUq(uq, uqId, access, uqUI || {});
                 this.cUqCollection[uq] = cUq;
                 promises.push(cUq.loadSchema());
                 promiseChecks.push(cUq.entities.uqApi.checkAccess());
@@ -68,8 +70,9 @@ export class CApp extends Controller {
             Promise.all(promiseChecks).then((checks) => {
                 for (let c of checks) {
                     if (c === false) {
-                        nav.start();
-                        return;
+                        //debugger;
+                        //nav.start();
+                        //return;
                     }
                 }
             });
@@ -84,6 +87,22 @@ export class CApp extends Controller {
                 return;
             return retErrors;
         });
+    }
+    buildRoleAppUI() {
+        if (!this.ui)
+            return undefined;
+        let { hashParam } = nav;
+        if (!hashParam)
+            return this.ui;
+        let { roles } = this.ui;
+        let ret = {};
+        for (let i in this.ui) {
+            if (i === 'roles')
+                continue;
+            ret[i] = _.cloneDeep(this.ui[i]);
+        }
+        _.merge(ret, roles && roles[hashParam]);
+        return ret;
     }
     getImportUq(uqOwner, uqName) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -121,39 +140,36 @@ export class CApp extends Controller {
     get VAppMain() { return (this.ui && this.ui.main) || VAppMain; }
     beforeStart() {
         return __awaiter(this, void 0, void 0, function* () {
-            //if (await super.beforeStart() === false) return false;
             try {
-                let hash = document.location.hash;
-                if (hash.startsWith('#tvdebug')) {
-                    this.isProduction = false;
-                    //await this.showMainPage();
-                    //return;
-                }
-                else {
-                    this.isProduction = hash.startsWith('#tv');
-                }
                 let { unit } = meInFrame;
-                if (this.isProduction === false && (unit === undefined || unit <= 0)) {
+                if (isDevelopment === true) {
                     let app = yield loadAppUqs(this.appOwner, this.appName);
                     let { id } = app;
                     this.id = id;
-                    yield this.loadAppUnits();
-                    switch (this.appUnits.length) {
-                        case 0:
-                            this.showUnsupport();
-                            return false;
-                        case 1:
-                            unit = this.appUnits[0].id;
-                            if (unit === undefined || unit < 0) {
-                                this.showUnsupport();
+                    let { user } = nav;
+                    if (user !== undefined && user.id > 0) {
+                        yield this.loadAppUnits();
+                        switch (this.appUnits.length) {
+                            case 0:
+                                this.showUnsupport(unit);
                                 return false;
-                            }
-                            meInFrame.unit = unit;
-                            break;
-                        default:
-                            //nav.clear();
-                            nav.push(React.createElement(this.selectUnitPage, null));
-                            return false;
+                            case 1:
+                                let appUnit = this.appUnits[0].id;
+                                if (appUnit === undefined || appUnit < 0 ||
+                                    unit !== undefined && appUnit != unit) {
+                                    this.showUnsupport(unit);
+                                    return false;
+                                }
+                                meInFrame.unit = appUnit;
+                                break;
+                            default:
+                                if (unit > 0 && this.appUnits.find(v => v.id === unit) !== undefined) {
+                                    meInFrame.unit = unit;
+                                    break;
+                                }
+                                nav.push(React.createElement(this.selectUnitPage, null));
+                                return false;
+                        }
                     }
                 }
                 let retErrors = yield this.loadUqs();
@@ -194,7 +210,7 @@ export class CApp extends Controller {
     clearPrevPages() {
         nav.clear();
     }
-    showUnsupport() {
+    showUnsupport(unit) {
         this.clearPrevPages();
         let { user } = nav;
         let userName = user ? user.name : '[未登录]';
@@ -203,7 +219,9 @@ export class CApp extends Controller {
                 React.createElement("div", { className: "form-group row" },
                     React.createElement("div", { className: "col-2" },
                         React.createElement(FA, { name: "exclamation-triangle" })),
-                    React.createElement("div", { className: "col" }, "\u7528\u6237\u4E0D\u652F\u6301APP")),
+                    React.createElement("div", { className: "col" },
+                        "\u7528\u6237\u4E0D\u652F\u6301APP, unit=",
+                        unit)),
                 React.createElement("div", { className: "form-group row" },
                     React.createElement("div", { className: "col-2" }, "\u7528\u6237: "),
                     React.createElement("div", { className: "col" }, userName)),
@@ -213,23 +231,26 @@ export class CApp extends Controller {
     }
     showMainPage() {
         return __awaiter(this, void 0, void 0, function* () {
-            // #tvRwPBwMef-23-sheet-api-108
-            let parts = document.location.hash.split('-');
-            if (parts.length > 2) {
-                let action = parts[2];
-                // sheet_debug 表示centerUrl是debug方式的
-                if (action === 'sheet' || action === 'sheet_debug') {
-                    let uqId = Number(parts[3]);
-                    let sheetTypeId = Number(parts[4]);
-                    let sheetId = Number(parts[5]);
-                    let cUq = this.getCUqFromId(uqId);
-                    if (cUq === undefined) {
-                        alert('unknown uqId: ' + uqId);
+            // #tv-RwPBwMef-23-sheet-api-108
+            let exHash = getExHash();
+            if (exHash !== undefined) {
+                let parts = exHash.split('-');
+                if (parts.length > 3) {
+                    let action = parts[3];
+                    // sheet_debug 表示centerUrl是debug方式的
+                    if (action === 'sheet' || action === 'sheet_debug') {
+                        let uqId = Number(parts[4]);
+                        let sheetTypeId = Number(parts[5]);
+                        let sheetId = Number(parts[6]);
+                        let cUq = this.getCUqFromId(uqId);
+                        if (cUq === undefined) {
+                            alert('unknown uqId: ' + uqId);
+                            return;
+                        }
+                        this.clearPrevPages();
+                        yield cUq.navSheet(sheetTypeId, sheetId);
                         return;
                     }
-                    this.clearPrevPages();
-                    yield cUq.navSheet(sheetTypeId, sheetId);
-                    return;
                 }
             }
             this.openVPage(this.VAppMain);
@@ -247,9 +268,10 @@ export class CApp extends Controller {
         return __awaiter(this, void 0, void 0, function* () {
             let ret = yield centerApi.userAppUnits(this.id);
             this.appUnits = ret;
+            /*
             if (ret.length === 1) {
                 meInFrame.unit = ret[0].id;
-            }
+            }*/
         });
     }
 }
@@ -280,7 +302,7 @@ class VAppMain extends VPage {
     }
     appPage() {
         let { caption } = this.controller;
-        return React.createElement(Page, { header: caption, logout: () => { meInFrame.unit = undefined; } }, this.appContent());
+        return React.createElement(Page, { header: caption, logout: () => __awaiter(this, void 0, void 0, function* () { meInFrame.unit = undefined; }) }, this.appContent());
     }
 }
 //# sourceMappingURL=CApp.js.map

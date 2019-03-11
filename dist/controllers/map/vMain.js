@@ -57,10 +57,10 @@ export class VMapMain extends VEntity {
                 let none = keyNone && keyNone(this.x);
                 content = React.createElement(List, { className: "ml-4", items: children, item: { onClick: undefined, render: this.itemRender }, none: none });
             }
+            let left = React.createElement("div", { className: "py-1 pr-3" }, tv(box, keyContent, this.x));
             return React.createElement("div", { className: "d-flex flex-column" },
-                React.createElement(LMR, { className: className('px-3', 'py-2', border), right: right },
-                    React.createElement("div", { className: "py-1" }, tv(box, keyContent, this.x)),
-                    React.createElement("div", { className: "py-1 font-weight-bold" }, valuesView)),
+                React.createElement(LMR, { className: className('px-3', 'py-2', border), left: left, right: right },
+                    React.createElement("div", { className: "py-1" }, valuesView)),
                 content);
         });
     }

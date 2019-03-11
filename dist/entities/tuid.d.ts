@@ -25,7 +25,7 @@ export declare abstract class Tuid extends Entity {
         uq: string;
     };
     constructor(entities: Entities, name: string, typeId: number);
-    abstract readonly Main: any;
+    abstract readonly Main: Tuid;
     private buildIdBoxer;
     boxId(id: number): BoxId;
     getTuidContent(): React.FunctionComponent<any>;

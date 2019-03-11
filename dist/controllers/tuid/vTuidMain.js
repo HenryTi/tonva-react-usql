@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as React from 'react';
-import { SearchBox, List, Muted } from 'tonva-react-form';
+import { SearchBox, List, Muted, LMR } from 'tonva-react-form';
 import { Page } from 'tonva-tools';
 import { VEntity } from '../CVEntity';
 export class VTuidMain extends VEntity {
@@ -34,16 +34,21 @@ export class VTuidMain extends VEntity {
         let { label, proxyLinks, isFrom } = this.controller;
         let newButton;
         if (isFrom === false)
-            newButton = React.createElement("button", { className: "btn btn-primary ml-3", onClick: this.onNew }, "\u65B0\u589E");
-        return () => React.createElement(Page, { header: label }, proxyLinks === undefined ?
-            React.createElement(React.Fragment, null,
-                React.createElement(SearchBox, { className: "w-100", onSearch: this.onSearch, placeholder: '搜索' + label }),
-                React.createElement("div", { className: 'my-3' },
-                    newButton,
-                    React.createElement("button", { className: "btn btn-primary ml-3", onClick: this.onList }, "\u5217\u8868"))) :
-            React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
+            newButton = React.createElement("button", { className: "btn btn-outline-success ml-2", onClick: this.onNew }, "\u65B0\u589E");
+        let content;
+        if (proxyLinks === undefined) {
+            let right = React.createElement(React.Fragment, null,
+                newButton,
+                React.createElement("button", { className: "btn btn-outline-info ml-2", onClick: this.onList }, "\u5168\u90E8"));
+            content = React.createElement(LMR, { className: 'm-3', right: right },
+                React.createElement(SearchBox, { className: "w-100", size: "md", onSearch: this.onSearch, placeholder: '搜索' + label }));
+        }
+        else {
+            content = React.createElement(List, { className: "my-2", header: React.createElement(Muted, null,
                     label,
-                    " \u4EE3\u7406\u4E0B\u5217Tuid"), items: proxyLinks, item: { render: this.entityRender, onClick: this.entityClick } }));
+                    " \u4EE3\u7406\u4E0B\u5217Tuid"), items: proxyLinks, item: { render: this.entityRender, onClick: this.entityClick } });
+        }
+        return () => React.createElement(Page, { header: label }, content);
     }
 }
 //# sourceMappingURL=vTuidMain.js.map
