@@ -9,12 +9,13 @@ export interface RoleAppUI {
     CApp?: typeof CApp;
     CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
-    uqs: {[uq:string]: UqUI};
+    uqs: {[uq:string]: UqUI | (()=>Promise<UqUI>)};
     res?: any;
 }
 
 export interface AppUI extends RoleAppUI {
-    roles?: {[role:string]: RoleAppUI};
+    appName: string; // 格式: owner/appName
+    roles?: {[role:string]: RoleAppUI | (()=>Promise<RoleAppUI>)};
 }
 
 export class CApp extends Controller {
@@ -25,15 +26,20 @@ export class CApp extends Controller {
     id: number;
     appUnits:any[];
 
-    constructor(tonvaApp:string, ui?:AppUI) {
+    constructor(ui:AppUI) {
         super(resLang(ui && ui.res));
+        let tonvaApp = ui.appName;
+        if (tonvaApp === undefined) {
+            throw 'appName like "owner/app" must be defined in UI';
+        }
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
-        this.ui = ui || {uqs:{}};
+        if (ui.uqs === undefined) ui.uqs = {};
+        this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
     
@@ -42,7 +48,7 @@ export class CApp extends Controller {
 
     async startDebug() {
         let appName = this.appOwner + '/' + this.appName;
-        let cApp = new CApp(appName, {uqs:{}} );
+        let cApp = new CApp({appName: appName, uqs:{}} );
         let keepNavBackButton = true;
         await cApp.start(keepNavBackButton);    
     }
@@ -56,7 +62,7 @@ export class CApp extends Controller {
 
         let promises: PromiseLike<string>[] = [];
         let promiseChecks: PromiseLike<boolean>[] = [];
-        let roleAppUI = this.buildRoleAppUI();
+        let roleAppUI = await this.buildRoleAppUI();
         for (let appUq of uqs) {
             let {id:uqId, uqOwner, uqName, access} = appUq;
             let uq = uqOwner + '/' + uqName;
@@ -88,7 +94,7 @@ export class CApp extends Controller {
         return retErrors;
     }
 
-    private buildRoleAppUI():RoleAppUI {
+    private async buildRoleAppUI():Promise<RoleAppUI> {
         if (!this.ui) return undefined;
         let {hashParam} = nav;
         if (!hashParam) return this.ui;
@@ -98,7 +104,9 @@ export class CApp extends Controller {
             if (i === 'roles') continue;
             ret[i] = _.cloneDeep(this.ui[i]);
         }
-        _.merge(ret, roles && roles[hashParam]);
+        let roleAppUI = roles && roles[hashParam];
+        if (typeof roleAppUI === 'function') roleAppUI = await roleAppUI();
+        _.merge(ret, roleAppUI);
         return ret;
     }
 
@@ -221,20 +229,29 @@ export class CApp extends Controller {
         this.openPage(<Page header="APP无法运行" logout={true}>
             <div className="m-3 text-danger container">
                 <div className="form-group row">
-                    <div className="col-2">
-                        <FA name="exclamation-triangle" />
-                    </div>
-                    <div className="col">
-                        用户不支持APP, unit={unit}
-                    </div>
-                </div>
-                <div className="form-group row">
-                    <div className="col-2">用户: </div>
+                    <div className="col-2">登录用户: </div>
                     <div className="col">{userName}</div>
                 </div>
                 <div className="form-group row">
                     <div className="col-2">App:</div>
                     <div className="col">{`${this.appOwner}/${this.appName}`}</div>
+                </div>
+                <div className="form-group row">
+                    <div className="col-2">小号:</div>
+                    <div className="col">{unit || <small className="text-muted">[无小号]</small>}</div>
+                </div>
+                <div className="form-group row">
+                    <div className="col-2">
+                        <FA name="exclamation-triangle" />
+                    </div>
+                    <div className="col">
+                        <div className="text-muted">无法运行可能原因：</div>
+                        <ul className="p-0">
+                            <li>没有小号运行 {this.ui.appName}</li>
+                            <li>用户 <b>{userName}</b> 没有加入任何一个运行{this.ui.appName}的小号</li>
+                            <li>用户 <b>{userName}</b> 没有加入小号 unit={unit}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </Page>)

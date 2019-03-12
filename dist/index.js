@@ -29,11 +29,10 @@ function convertUIKeyToLowercase(obj) {
         }
     }
 }
-// const appName = 'JKDev/jkOrder';
-export function startApp(appName, ui) {
+export function startApp(ui) {
     return __awaiter(this, void 0, void 0, function* () {
         convertUIKeyToLowercase(ui);
-        let cApp = new (ui && ui.CApp || CApp)(appName, ui || { uqs: {} });
+        let cApp = new (ui && ui.CApp || CApp)(ui);
         yield cApp.start();
     });
 }

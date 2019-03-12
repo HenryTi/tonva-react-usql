@@ -13,7 +13,7 @@ import { List, LMR, FA } from 'tonva-react-form';
 import { CUq } from './uq';
 import { centerApi } from '../centerApi';
 export class CApp extends Controller {
-    constructor(tonvaApp, ui) {
+    constructor(ui) {
         super(resLang(ui && ui.res));
         this.cImportUqs = {};
         this.cUqCollection = {};
@@ -30,19 +30,25 @@ export class CApp extends Controller {
             return React.createElement(Page, { header: "\u9009\u62E9\u5C0F\u53F7", logout: true },
                 React.createElement(List, { items: this.appUnits, item: { render: this.renderRow, onClick: this.onRowClick } }));
         };
+        let tonvaApp = ui.appName;
+        if (tonvaApp === undefined) {
+            throw 'appName like "owner/app" must be defined in UI';
+        }
         let parts = tonvaApp.split('/');
         if (parts.length !== 2) {
             throw 'tonvaApp name must be / separated, owner/app';
         }
         this.appOwner = parts[0];
         this.appName = parts[1];
-        this.ui = ui || { uqs: {} };
+        if (ui.uqs === undefined)
+            ui.uqs = {};
+        this.ui = ui;
         this.caption = this.res.caption || 'Tonva';
     }
     startDebug() {
         return __awaiter(this, void 0, void 0, function* () {
             let appName = this.appOwner + '/' + this.appName;
-            let cApp = new CApp(appName, { uqs: {} });
+            let cApp = new CApp({ appName: appName, uqs: {} });
             let keepNavBackButton = true;
             yield cApp.start(keepNavBackButton);
         });
@@ -56,7 +62,7 @@ export class CApp extends Controller {
             this.id = id;
             let promises = [];
             let promiseChecks = [];
-            let roleAppUI = this.buildRoleAppUI();
+            let roleAppUI = yield this.buildRoleAppUI();
             for (let appUq of uqs) {
                 let { id: uqId, uqOwner, uqName, access } = appUq;
                 let uq = uqOwner + '/' + uqName;
@@ -89,20 +95,25 @@ export class CApp extends Controller {
         });
     }
     buildRoleAppUI() {
-        if (!this.ui)
-            return undefined;
-        let { hashParam } = nav;
-        if (!hashParam)
-            return this.ui;
-        let { roles } = this.ui;
-        let ret = {};
-        for (let i in this.ui) {
-            if (i === 'roles')
-                continue;
-            ret[i] = _.cloneDeep(this.ui[i]);
-        }
-        _.merge(ret, roles && roles[hashParam]);
-        return ret;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.ui)
+                return undefined;
+            let { hashParam } = nav;
+            if (!hashParam)
+                return this.ui;
+            let { roles } = this.ui;
+            let ret = {};
+            for (let i in this.ui) {
+                if (i === 'roles')
+                    continue;
+                ret[i] = _.cloneDeep(this.ui[i]);
+            }
+            let roleAppUI = roles && roles[hashParam];
+            if (typeof roleAppUI === 'function')
+                roleAppUI = yield roleAppUI();
+            _.merge(ret, roleAppUI);
+            return ret;
+        });
     }
     getImportUq(uqOwner, uqName) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -217,17 +228,34 @@ export class CApp extends Controller {
         this.openPage(React.createElement(Page, { header: "APP\u65E0\u6CD5\u8FD0\u884C", logout: true },
             React.createElement("div", { className: "m-3 text-danger container" },
                 React.createElement("div", { className: "form-group row" },
-                    React.createElement("div", { className: "col-2" },
-                        React.createElement(FA, { name: "exclamation-triangle" })),
-                    React.createElement("div", { className: "col" },
-                        "\u7528\u6237\u4E0D\u652F\u6301APP, unit=",
-                        unit)),
-                React.createElement("div", { className: "form-group row" },
-                    React.createElement("div", { className: "col-2" }, "\u7528\u6237: "),
+                    React.createElement("div", { className: "col-2" }, "\u767B\u5F55\u7528\u6237: "),
                     React.createElement("div", { className: "col" }, userName)),
                 React.createElement("div", { className: "form-group row" },
                     React.createElement("div", { className: "col-2" }, "App:"),
-                    React.createElement("div", { className: "col" }, `${this.appOwner}/${this.appName}`)))));
+                    React.createElement("div", { className: "col" }, `${this.appOwner}/${this.appName}`)),
+                React.createElement("div", { className: "form-group row" },
+                    React.createElement("div", { className: "col-2" }, "\u5C0F\u53F7:"),
+                    React.createElement("div", { className: "col" }, unit || React.createElement("small", { className: "text-muted" }, "[\u65E0\u5C0F\u53F7]"))),
+                React.createElement("div", { className: "form-group row" },
+                    React.createElement("div", { className: "col-2" },
+                        React.createElement(FA, { name: "exclamation-triangle" })),
+                    React.createElement("div", { className: "col" },
+                        React.createElement("div", { className: "text-muted" }, "\u65E0\u6CD5\u8FD0\u884C\u53EF\u80FD\u539F\u56E0\uFF1A"),
+                        React.createElement("ul", { className: "p-0" },
+                            React.createElement("li", null,
+                                "\u6CA1\u6709\u5C0F\u53F7\u8FD0\u884C ",
+                                this.ui.appName),
+                            React.createElement("li", null,
+                                "\u7528\u6237 ",
+                                React.createElement("b", null, userName),
+                                " \u6CA1\u6709\u52A0\u5165\u4EFB\u4F55\u4E00\u4E2A\u8FD0\u884C",
+                                this.ui.appName,
+                                "\u7684\u5C0F\u53F7"),
+                            React.createElement("li", null,
+                                "\u7528\u6237 ",
+                                React.createElement("b", null, userName),
+                                " \u6CA1\u6709\u52A0\u5165\u5C0F\u53F7 unit=",
+                                unit)))))));
     }
     showMainPage() {
         return __awaiter(this, void 0, void 0, function* () {

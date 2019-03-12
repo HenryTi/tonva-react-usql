@@ -5,13 +5,14 @@ export interface RoleAppUI {
     CUq?: typeof CUq;
     main?: TypeVPage<CApp>;
     uqs: {
-        [uq: string]: UqUI;
+        [uq: string]: UqUI | (() => Promise<UqUI>);
     };
     res?: any;
 }
 export interface AppUI extends RoleAppUI {
+    appName: string;
     roles?: {
-        [role: string]: RoleAppUI;
+        [role: string]: RoleAppUI | (() => Promise<RoleAppUI>);
     };
 }
 export declare class CApp extends Controller {
@@ -21,7 +22,7 @@ export declare class CApp extends Controller {
     protected ui: AppUI;
     id: number;
     appUnits: any[];
-    constructor(tonvaApp: string, ui?: AppUI);
+    constructor(ui: AppUI);
     readonly caption: string;
     cUqCollection: {
         [uq: string]: CUq;
