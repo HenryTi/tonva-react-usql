@@ -15,11 +15,12 @@ export declare abstract class Entity {
     constructor(entities: Entities, name: string, typeId: number);
     face: any;
     protected readonly tvApi: import("tonva-tools").UqApi;
-    getApiFrom(): Promise<import("tonva-tools").UqApi>;
+    getApiFrom(): import("tonva-tools").UqApi;
     private fieldMaps;
     fieldMap(arr?: string): FieldMap;
     loadSchema(): Promise<void>;
     setSchema(schema: any): void;
+    buildFieldsTuid(): void;
     schemaStringify(): string;
     tuidFromField(field: Field): Tuid;
     tuidFromName(fieldName: string, arrName?: string): Tuid;
@@ -31,7 +32,7 @@ export declare abstract class Entity {
     private packArr;
     unpackSheet(data: string): any;
     unpackReturns(data: string): any;
-    private unpackRow;
+    protected unpackRow(ret: any, fields: Field[], data: string, p: number): number;
     private to;
     private unpackArr;
 }

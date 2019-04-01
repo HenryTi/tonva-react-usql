@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, meInFrame, Controller, VPage, resLang, getExHash, isDevelopment } from 'tonva-tools';
+import { Page, loadAppUqs, nav, appInFrame, Controller, VPage, resLang, getExHash, isDevelopment } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq } from './uq';
 import { centerApi } from '../centerApi';
@@ -23,13 +23,14 @@ export class CApp extends Controller {
                 React.createElement("div", null, nick || name));
         };
         this.onRowClick = (item) => __awaiter(this, void 0, void 0, function* () {
-            meInFrame.unit = item.id; // 25;
+            appInFrame.unit = item.id; // 25;
             yield this.start();
         });
         this.selectUnitPage = () => {
             return React.createElement(Page, { header: "\u9009\u62E9\u5C0F\u53F7", logout: true },
                 React.createElement(List, { items: this.appUnits, item: { render: this.renderRow, onClick: this.onRowClick } }));
         };
+        nav.setSettings(ui);
         let tonvaApp = ui.appName;
         if (tonvaApp === undefined) {
             throw 'appName like "owner/app" must be defined in UI';
@@ -53,16 +54,17 @@ export class CApp extends Controller {
             yield cApp.start(keepNavBackButton);
         });
     }
-    loadUqs() {
+    loadUqs(app) {
         return __awaiter(this, void 0, void 0, function* () {
             let retErrors = [];
-            let unit = meInFrame.unit;
-            let app = yield loadAppUqs(this.appOwner, this.appName);
+            let unit = appInFrame.unit;
+            //let app = await loadAppUqs(this.appOwner, this.appName);
             let { id, uqs } = app;
             this.id = id;
             let promises = [];
             let promiseChecks = [];
             let roleAppUI = yield this.buildRoleAppUI();
+            this.ui = roleAppUI;
             for (let appUq of uqs) {
                 let { id: uqId, uqOwner, uqName, access } = appUq;
                 let uq = uqOwner + '/' + uqName;
@@ -102,13 +104,15 @@ export class CApp extends Controller {
             if (!hashParam)
                 return this.ui;
             let { roles } = this.ui;
+            let roleAppUI = roles && roles[hashParam];
+            if (!roleAppUI)
+                return this.ui;
             let ret = {};
             for (let i in this.ui) {
                 if (i === 'roles')
                     continue;
-                ret[i] = _.cloneDeep(this.ui[i]);
+                ret[i] = this.ui[i];
             }
-            let roleAppUI = roles && roles[hashParam];
             if (typeof roleAppUI === 'function')
                 roleAppUI = yield roleAppUI();
             _.merge(ret, roleAppUI);
@@ -116,22 +120,23 @@ export class CApp extends Controller {
         });
     }
     getImportUq(uqOwner, uqName) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let uq = uqOwner + '/' + uqName;
-            let cUq = this.cImportUqs[uq];
-            if (cUq !== undefined)
-                return cUq;
-            let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
-            let uqId = -1; // unknown
-            this.cImportUqs[uq] = cUq = this.newCUq(uq, uqId, undefined, ui || {});
-            let retError = yield cUq.loadSchema();
-            if (retError !== undefined) {
-                console.error(retError);
-                debugger;
-                return;
-            }
+        let uq = uqOwner + '/' + uqName;
+        let cUq = this.cImportUqs[uq];
+        if (cUq !== undefined)
             return cUq;
-        });
+        let ui = this.ui && this.ui.uqs && this.ui.uqs[uq];
+        let uqId = -1; // unknown
+        this.cImportUqs[uq] = cUq = this.getCUq(uq);
+        //this.newCUq(uq, uqId, undefined, ui || {});
+        /*
+        let retError = await cUq.loadSchema();
+        if (retError !== undefined) {
+            console.error(retError);
+            debugger;
+            return;
+        }
+        */
+        return cUq;
     }
     newCUq(uq, uqId, access, ui) {
         let cUq = new (this.ui.CUq || CUq)(this, uq, this.id, uqId, access, ui);
@@ -145,37 +150,37 @@ export class CApp extends Controller {
         }
         return ret;
     }
-    getCUq(apiName) {
-        return this.cUqCollection[apiName];
+    getCUq(uq) {
+        return this.cUqCollection[uq];
     }
     get VAppMain() { return (this.ui && this.ui.main) || VAppMain; }
     beforeStart() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let { unit } = meInFrame;
+                let app = yield loadAppUqs(this.appOwner, this.appName);
                 if (isDevelopment === true) {
-                    let app = yield loadAppUqs(this.appOwner, this.appName);
+                    let { predefinedUnit } = appInFrame;
                     let { id } = app;
                     this.id = id;
                     let { user } = nav;
                     if (user !== undefined && user.id > 0) {
-                        yield this.loadAppUnits();
+                        this.appUnits = yield centerApi.userAppUnits(this.id);
                         switch (this.appUnits.length) {
                             case 0:
-                                this.showUnsupport(unit);
+                                this.showUnsupport(predefinedUnit);
                                 return false;
                             case 1:
                                 let appUnit = this.appUnits[0].id;
                                 if (appUnit === undefined || appUnit < 0 ||
-                                    unit !== undefined && appUnit != unit) {
-                                    this.showUnsupport(unit);
+                                    predefinedUnit !== undefined && appUnit != predefinedUnit) {
+                                    this.showUnsupport(predefinedUnit);
                                     return false;
                                 }
-                                meInFrame.unit = appUnit;
+                                appInFrame.unit = appUnit;
                                 break;
                             default:
-                                if (unit > 0 && this.appUnits.find(v => v.id === unit) !== undefined) {
-                                    meInFrame.unit = unit;
+                                if (predefinedUnit > 0 && this.appUnits.find(v => v.id === predefinedUnit) !== undefined) {
+                                    appInFrame.unit = predefinedUnit;
                                     break;
                                 }
                                 nav.push(React.createElement(this.selectUnitPage, null));
@@ -183,7 +188,7 @@ export class CApp extends Controller {
                         }
                     }
                 }
-                let retErrors = yield this.loadUqs();
+                let retErrors = yield this.loadUqs(app);
                 if (retErrors !== undefined) {
                     this.openPage(React.createElement(Page, { header: "ERROR" },
                         React.createElement("div", { className: "m-3" },
@@ -208,11 +213,6 @@ export class CApp extends Controller {
             yield this.showMainPage();
         });
     }
-    load() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield this.beforeStart();
-        });
-    }
     render() {
         return this.renderView(this.VAppMain);
     }
@@ -221,7 +221,7 @@ export class CApp extends Controller {
     clearPrevPages() {
         nav.clear();
     }
-    showUnsupport(unit) {
+    showUnsupport(predefinedUnit) {
         this.clearPrevPages();
         let { user } = nav;
         let userName = user ? user.name : '[未登录]';
@@ -234,8 +234,8 @@ export class CApp extends Controller {
                     React.createElement("div", { className: "col-2" }, "App:"),
                     React.createElement("div", { className: "col" }, `${this.appOwner}/${this.appName}`)),
                 React.createElement("div", { className: "form-group row" },
-                    React.createElement("div", { className: "col-2" }, "\u5C0F\u53F7:"),
-                    React.createElement("div", { className: "col" }, unit || React.createElement("small", { className: "text-muted" }, "[\u65E0\u5C0F\u53F7]"))),
+                    React.createElement("div", { className: "col-2" }, "\u9884\u8BBE\u5C0F\u53F7:"),
+                    React.createElement("div", { className: "col" }, predefinedUnit || React.createElement("small", { className: "text-muted" }, "[\u65E0\u9884\u8BBE\u5C0F\u53F7]"))),
                 React.createElement("div", { className: "form-group row" },
                     React.createElement("div", { className: "col-2" },
                         React.createElement(FA, { name: "exclamation-triangle" })),
@@ -251,11 +251,19 @@ export class CApp extends Controller {
                                 " \u6CA1\u6709\u52A0\u5165\u4EFB\u4F55\u4E00\u4E2A\u8FD0\u884C",
                                 this.ui.appName,
                                 "\u7684\u5C0F\u53F7"),
-                            React.createElement("li", null,
-                                "\u7528\u6237 ",
-                                React.createElement("b", null, userName),
-                                " \u6CA1\u6709\u52A0\u5165\u5C0F\u53F7 unit=",
-                                unit)))))));
+                            predefinedUnit &&
+                                React.createElement("li", null,
+                                    "\u9884\u8BBE\u5C0F\u53F7 ",
+                                    React.createElement("b", null, predefinedUnit),
+                                    " \u6CA1\u6709\u8FD0\u884CApp ",
+                                    this.ui.appName)))),
+                predefinedUnit ||
+                    React.createElement("div", { className: "form-group row" },
+                        React.createElement("div", { className: "col-2" }),
+                        React.createElement("div", { className: "col" },
+                            "\u9884\u8BBE\u5C0F\u53F7\u5B9A\u4E49\u5728 public/unit.json \u6587\u4EF6\u4E2D\u3002 \u5B9A\u4E49\u4E86\u8FD9\u4E2A\u6587\u4EF6\u7684\u7A0B\u5E8F\uFF0C\u53EA\u80FD\u7531url\u76F4\u63A5\u542F\u52A8\u3002 \u7528\u6237\u7B2C\u4E00\u6B21\u8BBF\u95EEapp\u4E4B\u540E\uFF0C\u4F1A\u7F13\u5B58\u5728localStorage\u91CC\u3002",
+                            React.createElement("br", null),
+                            "\u5982\u679C\u8981\u5220\u53BB\u7F13\u5B58\u7684\u9884\u5B9A\u4E49Unit\uFF0Clogout\u7136\u540E\u518Dlogin\u3002")))));
     }
     showMainPage() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -292,16 +300,6 @@ export class CApp extends Controller {
         }
         return;
     }
-    loadAppUnits() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield centerApi.userAppUnits(this.id);
-            this.appUnits = ret;
-            /*
-            if (ret.length === 1) {
-                meInFrame.unit = ret[0].id;
-            }*/
-        });
-    }
 }
 class VAppMain extends VPage {
     constructor() {
@@ -330,7 +328,7 @@ class VAppMain extends VPage {
     }
     appPage() {
         let { caption } = this.controller;
-        return React.createElement(Page, { header: caption, logout: () => __awaiter(this, void 0, void 0, function* () { meInFrame.unit = undefined; }) }, this.appContent());
+        return React.createElement(Page, { header: caption, logout: () => __awaiter(this, void 0, void 0, function* () { appInFrame.unit = undefined; }) }, this.appContent());
     }
 }
 //# sourceMappingURL=CApp.js.map

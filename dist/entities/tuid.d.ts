@@ -31,6 +31,7 @@ export declare abstract class Tuid extends Entity {
     getTuidContent(): React.FunctionComponent<any>;
     getIdFromObj(item: any): number;
     setSchema(schema: any): void;
+    buildFieldsTuid(): void;
     private moveToHead;
     valueFromId(id: number | BoxId): any;
     getCacheValue(id: number): any;
@@ -40,6 +41,8 @@ export declare abstract class Tuid extends Entity {
     proxied(name: string, id: number): Promise<any>;
     cacheValue(val: any): boolean;
     protected afterCacheId(tuidValue: any): void;
+    from(): TuidMain;
+    private unpackTuidIds;
     cacheIds(): Promise<void>;
     protected cacheDivIds(): Promise<void>;
     load(id: number): Promise<any>;
@@ -60,22 +63,18 @@ export declare class TuidMain extends Tuid {
     divs: {
         [name: string]: TuidDiv;
     };
-    proxies: {
-        [name: string]: TuidMain;
-    };
     setSchema(schema: any): void;
     protected getDiv(divName: string): TuidDiv;
     protected cacheDivIds(): Promise<void>;
-    cUqFrom(): Promise<CUq>;
-    getApiFrom(): Promise<import("tonva-tools").UqApi>;
-    from(): Promise<TuidMain>;
-    cFrom(): Promise<CTuidMain>;
-    cEditFrom(): Promise<CTuidEdit>;
-    cInfoFrom(): Promise<CTuidInfo>;
-    cSelectFrom(): Promise<CTuidSelect>;
-    protected afterCacheId(tuidValue: any): void;
+    cUqFrom(): CUq;
+    getApiFrom(): import("tonva-tools").UqApi;
+    from(): TuidMain;
+    cFrom(): CTuidMain;
+    cEditFrom(): CTuidEdit;
+    cInfoFrom(): CTuidInfo;
+    cSelectFrom(): CTuidSelect;
 }
 export declare class TuidDiv extends Tuid {
     readonly Main: TuidMain;
-    getApiFrom(): Promise<import("tonva-tools").UqApi>;
+    getApiFrom(): import("tonva-tools").UqApi;
 }

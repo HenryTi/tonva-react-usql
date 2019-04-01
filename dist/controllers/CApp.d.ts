@@ -1,4 +1,4 @@
-import { Controller, TypeVPage } from 'tonva-tools';
+import { Controller, TypeVPage, NavSettings, App } from 'tonva-tools';
 import { CUq, UqUI } from './uq';
 export interface RoleAppUI {
     CApp?: typeof CApp;
@@ -9,7 +9,7 @@ export interface RoleAppUI {
     };
     res?: any;
 }
-export interface AppUI extends RoleAppUI {
+export interface AppUI extends RoleAppUI, NavSettings {
     appName: string;
     roles?: {
         [role: string]: RoleAppUI | (() => Promise<RoleAppUI>);
@@ -28,22 +28,20 @@ export declare class CApp extends Controller {
         [uq: string]: CUq;
     };
     startDebug(): Promise<void>;
-    protected loadUqs(): Promise<string[]>;
+    protected loadUqs(app: App): Promise<string[]>;
     private buildRoleAppUI;
-    getImportUq(uqOwner: string, uqName: string): Promise<CUq>;
+    getImportUq(uqOwner: string, uqName: string): CUq;
     protected newCUq(uq: string, uqId: number, access: string, ui: any): CUq;
     readonly cUqArr: CUq[];
-    getCUq(apiName: string): CUq;
+    getCUq(uq: string): CUq;
     protected readonly VAppMain: TypeVPage<CApp>;
     protected beforeStart(): Promise<boolean>;
     protected internalStart(param: any): Promise<void>;
-    load(): Promise<void>;
     render(): JSX.Element;
     protected clearPrevPages(): void;
     private showUnsupport;
     private showMainPage;
     private getCUqFromId;
-    private loadAppUnits;
     renderRow: (item: any, index: number) => JSX.Element;
     onRowClick: (item: any) => Promise<void>;
     protected selectUnitPage: () => JSX.Element;

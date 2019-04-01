@@ -37,8 +37,8 @@ export class CTuid extends CEntity {
 export class CTuidMain extends CTuid {
     constructor(cUq, entity, ui, res) {
         super(cUq, entity, ui, res);
-        let tuid = this.entity;
-        this.proxies = tuid.proxies;
+        //let tuid = this.entity;
+        //this.proxies = tuid.proxies;
         if (this.proxies !== undefined) {
             this.proxyLinks = [];
             for (let i in this.proxies) {
@@ -48,35 +48,25 @@ export class CTuidMain extends CTuid {
         }
     }
     from() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let ret = yield this.entity.cFrom();
-            if (ret === undefined)
-                return this;
-            return ret;
-        });
+        let ret = this.entity.cFrom();
+        if (ret === undefined)
+            return this;
+        return ret;
     }
     cUqFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.entity.cUqFrom();
-        });
+        return this.entity.cUqFrom();
     }
     cEditFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.entity.cUqFrom();
-            return yield cUq.cTuidEditFromName(this.entity.name);
-        });
+        let cUq = this.entity.cUqFrom();
+        return cUq.cTuidEditFromName(this.entity.name);
     }
     cInfoFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.entity.cUqFrom();
-            return yield cUq.cTuidInfoFromName(this.entity.name);
-        });
+        let cUq = this.entity.cUqFrom();
+        return cUq.cTuidInfoFromName(this.entity.name);
     }
     cSelectFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.entity.cUqFrom();
-            return yield cUq.cTuidSelectFromName(this.entity.name);
-        });
+        let cUq = this.entity.cUqFrom();
+        return cUq.cTuidSelectFromName(this.entity.name);
     }
     getLable(tuid) {
         if (tuid === this.entity)

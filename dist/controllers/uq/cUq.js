@@ -6,7 +6,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { UqApi, Controller, UnitxApi, meInFrame, resLang } from 'tonva-tools';
+import { UqApi, Controller, UnitxApi, appInFrame, resLang } from 'tonva-tools';
 import { Entities } from '../../entities';
 import { CLink } from '../link';
 import { CBook } from '../book';
@@ -86,7 +86,7 @@ export class CUq extends Controller /* implements Uq*/ {
         if (uq === '$$$/$unitx') {
             // 这里假定，点击home link之后，已经设置unit了
             // 调用 UnitxApi会自动搜索绑定 unitx service
-            uqApi = new UnitxApi(meInFrame.unit);
+            uqApi = new UnitxApi(appInFrame.unit);
         }
         else {
             uqApi = new UqApi(baseUrl, uqOwner, uqName, acc, true);
@@ -129,8 +129,6 @@ export class CUq extends Controller /* implements Uq*/ {
             catch (err) {
                 console.error(err);
                 return this.error = err;
-                //debugger;
-                //return err.message;
             }
         });
     }

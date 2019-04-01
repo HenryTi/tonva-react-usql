@@ -18,9 +18,7 @@ export class Entity {
     }
     get sName() { return this.jName || this.name; }
     get tvApi() { return this.entities.uqApi; }
-    getApiFrom() {
-        return __awaiter(this, void 0, void 0, function* () { return this.entities.uqApi; });
-    }
+    getApiFrom() { return this.entities.uqApi; }
     fieldMap(arr) {
         if (arr === undefined)
             arr = '$';
@@ -54,6 +52,7 @@ export class Entity {
                 return;
             let schema = yield this.entities.uqApi.schema(this.name);
             this.setSchema(schema);
+            this.buildFieldsTuid();
         });
     }
     setSchema(schema) {
@@ -62,9 +61,13 @@ export class Entity {
         if (this.schema !== undefined)
             return;
         this.schema = schema;
-        let { name, fields, arrs, returns } = schema;
+        let { name } = schema;
         if (name !== this.name)
             this.jName = name;
+        //this.buildFieldsTuid();
+    }
+    buildFieldsTuid() {
+        let { fields, arrs, returns } = this.schema;
         this.entities.buildFieldTuid(this.fields = fields);
         this.entities.buildArrFieldsTuid(this.arrFields = arrs, fields);
         this.entities.buildArrFieldsTuid(this.returns = returns, fields);
@@ -253,30 +256,38 @@ export class Entity {
             ch = data.charCodeAt(p);
             if (ch === 9) {
                 let f = fields[i];
+                let { name } = f;
                 if (ch0 !== 8) {
                     if (p > c) {
                         let v = data.substring(c, p);
-                        ret[f.name] = this.to(ret, v, f);
+                        ret[name] = this.to(ret, v, f);
                     }
                 }
                 else {
-                    ret[f.name] = null;
+                    ret[name] = null;
                 }
                 c = p + 1;
                 ++i;
-                if (i >= fLen)
+                if (i >= fLen) {
+                    p = data.indexOf('\n', c);
+                    if (p >= 0)
+                        ++p;
+                    else
+                        p = len;
                     break;
+                }
             }
             else if (ch === 10) {
                 let f = fields[i];
+                let { name } = f;
                 if (ch0 !== 8) {
                     if (p > c) {
                         let v = data.substring(c, p);
-                        ret[f.name] = this.to(ret, v, f);
+                        ret[name] = this.to(ret, v, f);
                     }
                 }
                 else {
-                    ret[f.name] = null;
+                    ret[name] = null;
                 }
                 ++p;
                 ++i;
@@ -293,6 +304,7 @@ export class Entity {
             case 'time':
                 let date = new Date(Number(v));
                 return date;
+            case 'id':
             case 'tinyint':
             case 'smallint':
             case 'int':

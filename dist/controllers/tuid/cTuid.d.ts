@@ -32,11 +32,11 @@ export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
 }
 export declare class CTuidMain extends CTuid<TuidMain> {
     constructor(cUq: CUq, entity: TuidMain, ui: TuidUI, res: any);
-    from(): Promise<CTuidMain>;
-    cUqFrom(): Promise<CUq>;
-    cEditFrom(): Promise<CTuidEdit>;
-    cInfoFrom(): Promise<CTuidInfo>;
-    cSelectFrom(): Promise<CTuidSelect>;
+    from(): CTuidMain;
+    cUqFrom(): CUq;
+    cEditFrom(): CTuidEdit;
+    cInfoFrom(): CTuidInfo;
+    cSelectFrom(): CTuidSelect;
     getLable(tuid: Tuid): string;
     proxies: {
         [name: string]: TuidMain;

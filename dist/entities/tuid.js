@@ -26,7 +26,7 @@ export class Tuid extends Entity {
         this.BoxId = function () { };
         let prototype = this.BoxId.prototype;
         Object.defineProperty(prototype, '_$tuid', {
-            value: this,
+            value: this.from(),
             writable: false,
             enumerable: false,
         });
@@ -68,6 +68,20 @@ export class Tuid extends Entity {
         this.unique = unique;
         this.schemaFrom = this.schema.from;
     }
+    buildFieldsTuid() {
+        super.buildFieldsTuid();
+        let { mainFields } = this.schema;
+        if (this.name === 'address')
+            debugger;
+        if (mainFields !== undefined) {
+            for (let mf of mainFields) {
+                let f = this.fields.find(v => v.name === mf.name);
+                if (f === undefined)
+                    continue;
+                mf._tuid = f._tuid;
+            }
+        }
+    }
     moveToHead(id) {
         let index = this.queue.findIndex(v => v === id);
         this.queue.splice(index, 1);
@@ -96,6 +110,8 @@ export class Tuid extends Entity {
     }
     valueFromFieldName(fieldName, obj) {
         if (obj === undefined)
+            return;
+        if (this.fields === undefined)
             return;
         let f = this.fields.find(v => v.name === fieldName);
         if (f === undefined)
@@ -186,11 +202,42 @@ export class Tuid extends Entity {
         return true;
     }
     afterCacheId(tuidValue) {
+        if (this.fields === undefined)
+            return;
         for (let f of this.fields) {
             let { _tuid } = f;
             if (_tuid === undefined)
                 continue;
             _tuid.useId(tuidValue[f.name]);
+        }
+    }
+    from() { return; }
+    unpackTuidIds(values) {
+        if (this.schemaFrom === undefined) {
+            if (this.name === 'address' || this.name === 'Address')
+                debugger;
+            let { mainFields } = this.schema;
+            if (mainFields === undefined)
+                return values;
+            let ret = [];
+            let len = values.length;
+            let p = 0;
+            while (p < len) {
+                let ch = values.charCodeAt(p);
+                if (ch === 10) {
+                    ++p;
+                    break;
+                }
+                let row = {};
+                p = this.unpackRow(row, mainFields, values, p);
+                ret.push(row);
+            }
+            return ret;
+        }
+        else {
+            let tuidMain = this.from();
+            let ret = tuidMain.unpackTuidIds(values);
+            return ret;
         }
     }
     cacheIds() {
@@ -205,8 +252,11 @@ export class Tuid extends Entity {
                 name = this.owner.name;
                 arr = this.name;
             }
-            let api = yield this.getApiFrom();
+            let api = this.getApiFrom();
             let tuids = yield api.tuidIds(name, arr, this.waitingIds);
+            if (this.name.toLowerCase() === 'address')
+                debugger;
+            tuids = this.unpackTuidIds(tuids);
             for (let tuidValue of tuids) {
                 if (this.cacheValue(tuidValue) === false)
                     continue;
@@ -224,7 +274,7 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === undefined || id === 0)
                 return;
-            let api = yield this.getApiFrom();
+            let api = this.getApiFrom();
             let values = yield api.tuidGet(this.name, id);
             if (values === undefined)
                 return;
@@ -299,7 +349,7 @@ export class Tuid extends Entity {
                 name = this.name;
                 arr = undefined;
             }
-            let api = yield this.getApiFrom();
+            let api = this.getApiFrom();
             let ret = yield api.tuidSearch(name, arr, owner, key, pageStart, pageSize);
             for (let row of ret) {
                 this.cacheFieldsInValue(row, fields);
@@ -313,7 +363,7 @@ export class Tuid extends Entity {
         return __awaiter(this, void 0, void 0, function* () {
             if (id === undefined || id === 0)
                 return;
-            let api = yield this.getApiFrom();
+            let api = this.getApiFrom();
             return yield api.tuidArrGet(this.name, arr, owner, id);
         });
     }
@@ -347,6 +397,7 @@ export class TuidMain extends Tuid {
     get Main() { return this; }
     get uqApi() { return this.entities.uqApi; }
     ;
+    //proxies: {[name:string]: TuidMain};
     setSchema(schema) {
         super.setSchema(schema);
         let { arrs } = schema;
@@ -381,85 +432,64 @@ export class TuidMain extends Tuid {
         });
     }
     cUqFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (this.schemaFrom === undefined)
-                return this.entities.cUq;
-            let { owner, uq: uq } = this.schemaFrom;
-            let cUq = yield this.entities.cUq;
-            let cApp = cUq.cApp;
-            if (cApp === undefined)
-                return cUq;
-            let cUqFrm = yield cApp.getImportUq(owner, uq);
-            if (cUqFrm === undefined) {
-                console.error(`${owner}/${uq} 不存在`);
-                debugger;
-                return cUq;
-            }
-            let retErrors = yield cUqFrm.loadSchema();
-            if (retErrors !== undefined) {
-                console.error('cUq.loadSchema: ' + retErrors);
-                debugger;
-                return cUq;
-            }
-            return cUqFrm;
-        });
+        if (this.schemaFrom === undefined)
+            return this.entities.cUq;
+        let { owner, uq } = this.schemaFrom;
+        let cUq = this.entities.cUq;
+        let cApp = cUq.cApp;
+        if (cApp === undefined)
+            return cUq;
+        let cUqFrm = cApp.getImportUq(owner, uq);
+        if (cUqFrm === undefined) {
+            console.error(`${owner}/${uq} 不存在`);
+            debugger;
+            return cUq;
+        }
+        /*
+        let retErrors = await cUqFrm.loadSchema();
+        if (retErrors !== undefined) {
+            console.error('cUq.loadSchema: ' + retErrors);
+            debugger;
+            return cUq;
+        }*/
+        return cUqFrm;
     }
     getApiFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let from = yield this.from();
-            if (from !== undefined) {
-                return from.entities.uqApi;
-            }
-            return this.entities.uqApi;
-        });
+        let from = this.from();
+        if (from !== undefined) {
+            return from.entities.uqApi;
+        }
+        return this.entities.uqApi;
     }
     from() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.cUqFrom();
-            return cUq.tuid(this.name);
-        });
+        if (this.schemaFrom === undefined)
+            return this;
+        let cUq = this.cUqFrom();
+        return cUq.tuid(this.name);
     }
     cFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.cUqFrom();
-            return cUq.cTuidMainFromName(this.name);
-        });
+        let cUq = this.cUqFrom();
+        return cUq.cTuidMainFromName(this.name);
     }
     cEditFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.cUqFrom();
-            return cUq.cTuidEditFromName(this.name);
-        });
+        let cUq = this.cUqFrom();
+        return cUq.cTuidEditFromName(this.name);
     }
     cInfoFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.cUqFrom();
-            return cUq.cTuidInfoFromName(this.name);
-        });
+        let cUq = this.cUqFrom();
+        return cUq.cTuidInfoFromName(this.name);
     }
     cSelectFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let cUq = yield this.cUqFrom();
-            if (cUq === undefined)
-                return;
-            return cUq.cTuidSelectFromName(this.name);
-        });
-    }
-    afterCacheId(tuidValue) {
-        super.afterCacheId(tuidValue);
-        if (this.proxies === undefined)
+        let cUq = this.cUqFrom();
+        if (cUq === undefined)
             return;
-        let { type, $proxy } = tuidValue;
-        let pTuid = this.proxies[type];
-        pTuid.useId($proxy);
+        return cUq.cTuidSelectFromName(this.name);
     }
 }
 export class TuidDiv extends Tuid {
     get Main() { return this.owner; }
     getApiFrom() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return yield this.owner.getApiFrom();
-        });
+        return this.owner.getApiFrom();
     }
 }
 //# sourceMappingURL=tuid.js.map

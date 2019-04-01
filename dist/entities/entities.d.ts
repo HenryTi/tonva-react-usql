@@ -8,7 +8,7 @@ import { UqApi } from 'tonva-tools';
 import { Map } from './map';
 import { Pending } from './pending';
 import { CUq } from '../controllers';
-export declare type FieldType = 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' | 'datetime' | 'date' | 'time';
+export declare type FieldType = 'id' | 'tinyint' | 'smallint' | 'int' | 'bigint' | 'dec' | 'char' | 'text' | 'datetime' | 'date' | 'time';
 export declare function fieldDefaultValue(type: FieldType): 0 | "" | "2000-1-1" | "0:00";
 export interface Field {
     name: string;
