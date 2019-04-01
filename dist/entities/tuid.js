@@ -71,8 +71,6 @@ export class Tuid extends Entity {
     buildFieldsTuid() {
         super.buildFieldsTuid();
         let { mainFields } = this.schema;
-        if (this.name === 'address')
-            debugger;
         if (mainFields !== undefined) {
             for (let mf of mainFields) {
                 let f = this.fields.find(v => v.name === mf.name);
@@ -214,8 +212,6 @@ export class Tuid extends Entity {
     from() { return; }
     unpackTuidIds(values) {
         if (this.schemaFrom === undefined) {
-            if (this.name === 'address' || this.name === 'Address')
-                debugger;
             let { mainFields } = this.schema;
             if (mainFields === undefined)
                 return values;
@@ -254,8 +250,6 @@ export class Tuid extends Entity {
             }
             let api = this.getApiFrom();
             let tuids = yield api.tuidIds(name, arr, this.waitingIds);
-            if (this.name.toLowerCase() === 'address')
-                debugger;
             tuids = this.unpackTuidIds(tuids);
             for (let tuidValue of tuids) {
                 if (this.cacheValue(tuidValue) === false)

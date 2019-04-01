@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as React from 'react';
 import _ from 'lodash';
-import { Page, loadAppUqs, nav, appInFrame, Controller, VPage, resLang, getExHash, isDevelopment } from 'tonva-tools';
+import { Page, loadAppUqs, nav, appInFrame, Controller, VPage, resLang, getExHash } from 'tonva-tools';
 import { List, LMR, FA } from 'tonva-react-form';
 import { CUq } from './uq';
 import { centerApi } from '../centerApi';
@@ -158,36 +158,37 @@ export class CApp extends Controller {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 let app = yield loadAppUqs(this.appOwner, this.appName);
-                if (isDevelopment === true) {
-                    let { predefinedUnit } = appInFrame;
-                    let { id } = app;
-                    this.id = id;
-                    let { user } = nav;
-                    if (user !== undefined && user.id > 0) {
-                        this.appUnits = yield centerApi.userAppUnits(this.id);
-                        switch (this.appUnits.length) {
-                            case 0:
+                // if (isDevelopment === true) {
+                // 这段代码原本打算只是在程序员调试方式下使用，实际上，也可以开放给普通用户，production方式下
+                let { predefinedUnit } = appInFrame;
+                let { id } = app;
+                this.id = id;
+                let { user } = nav;
+                if (user !== undefined && user.id > 0) {
+                    this.appUnits = yield centerApi.userAppUnits(this.id);
+                    switch (this.appUnits.length) {
+                        case 0:
+                            this.showUnsupport(predefinedUnit);
+                            return false;
+                        case 1:
+                            let appUnit = this.appUnits[0].id;
+                            if (appUnit === undefined || appUnit < 0 ||
+                                predefinedUnit !== undefined && appUnit != predefinedUnit) {
                                 this.showUnsupport(predefinedUnit);
                                 return false;
-                            case 1:
-                                let appUnit = this.appUnits[0].id;
-                                if (appUnit === undefined || appUnit < 0 ||
-                                    predefinedUnit !== undefined && appUnit != predefinedUnit) {
-                                    this.showUnsupport(predefinedUnit);
-                                    return false;
-                                }
-                                appInFrame.unit = appUnit;
+                            }
+                            appInFrame.unit = appUnit;
+                            break;
+                        default:
+                            if (predefinedUnit > 0 && this.appUnits.find(v => v.id === predefinedUnit) !== undefined) {
+                                appInFrame.unit = predefinedUnit;
                                 break;
-                            default:
-                                if (predefinedUnit > 0 && this.appUnits.find(v => v.id === predefinedUnit) !== undefined) {
-                                    appInFrame.unit = predefinedUnit;
-                                    break;
-                                }
-                                nav.push(React.createElement(this.selectUnitPage, null));
-                                return false;
-                        }
+                            }
+                            nav.push(React.createElement(this.selectUnitPage, null));
+                            return false;
                     }
                 }
+                //}
                 let retErrors = yield this.loadUqs(app);
                 if (retErrors !== undefined) {
                     this.openPage(React.createElement(Page, { header: "ERROR" },
