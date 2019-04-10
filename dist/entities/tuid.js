@@ -50,6 +50,8 @@ export class Tuid extends Entity {
         prototype.toJSON = function () { return this.id; };
     }
     boxId(id) {
+        if (typeof id === 'object')
+            return id;
         this.useId(id);
         let ret = new this.BoxId();
         ret.id = id;
@@ -313,7 +315,8 @@ export class Tuid extends Entity {
             let params = _.clone(props);
             params["$id"] = id;
             let ret = yield this.tvApi.tuidSave(this.name, params);
-            let { id: retId, inId } = ret;
+            /*
+            let {id:retId, inId} = ret;
             if (retId === undefined) {
                 params.id = id;
                 this.cacheValue(params);
@@ -322,6 +325,7 @@ export class Tuid extends Entity {
                 params.id = retId;
                 this.cacheValue(params);
             }
+            */
             return ret;
         });
     }

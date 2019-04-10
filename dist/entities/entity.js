@@ -64,7 +64,7 @@ export class Entity {
         let { name } = schema;
         if (name !== this.name)
             this.jName = name;
-        //this.buildFieldsTuid();
+        this.buildFieldsTuid();
     }
     buildFieldsTuid() {
         let { fields, arrs, returns } = this.schema;

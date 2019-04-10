@@ -53,7 +53,7 @@ const Tv = observer(({ tuidValue, ui, x, nullUI }) => {
                 tuidValue);
     }
     if (nullUI === undefined)
-        return React.createElement(React.Fragment, null, "null");
+        return React.createElement(React.Fragment, null, ".");
     return nullUI();
 });
 export const tv = (tuidValue, ui, x, nullUI) => {

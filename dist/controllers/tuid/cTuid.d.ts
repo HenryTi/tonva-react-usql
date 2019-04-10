@@ -30,9 +30,9 @@ export declare abstract class CTuid<T extends Tuid> extends CEntity<T, TuidUI> {
     searchMain(key: string): Promise<void>;
     getDivItems(ownerId: number): Promise<any[]>;
 }
-export declare class CTuidMain extends CTuid<TuidMain> {
+export declare abstract class CTuidBase extends CTuid<TuidMain> {
     constructor(cUq: CUq, entity: TuidMain, ui: TuidUI, res: any);
-    from(): CTuidMain;
+    from(): CTuidBase;
     cUqFrom(): CUq;
     cEditFrom(): CTuidEdit;
     cInfoFrom(): CTuidInfo;
@@ -48,13 +48,19 @@ export declare class CTuidMain extends CTuid<TuidMain> {
     protected readonly VTuidList: typeof VTuidMainList;
     protected internalStart(param?: any): Promise<void>;
     protected onEvent(type: string, value: any): Promise<void>;
-    protected edit(id: number): Promise<void>;
+    private edit;
+    private onNew;
+    private onList;
+    protected onEdit(id: number): Promise<void>;
     private itemChanged;
 }
-export declare class CTuidEdit extends CTuidMain {
+export declare class CTuidMain extends CTuidBase {
+    protected internalStart(param?: any): Promise<void>;
+}
+export declare class CTuidEdit extends CTuidBase {
     protected internalStart(id: number): Promise<void>;
 }
-export declare class CTuidList extends CTuidMain {
+export declare class CTuidList extends CTuidBase {
     protected internalStart(id: number): Promise<void>;
 }
 export declare class CTuidDiv extends CTuid<TuidDiv> {

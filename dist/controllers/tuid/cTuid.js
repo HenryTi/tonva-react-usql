@@ -34,7 +34,7 @@ export class CTuid extends CEntity {
         });
     }
 }
-export class CTuidMain extends CTuid {
+export class CTuidBase extends CTuid {
     constructor(cUq, entity, ui, res) {
         super(cUq, entity, ui, res);
         //let tuid = this.entity;
@@ -94,17 +94,17 @@ export class CTuidMain extends CTuid {
     }
     onEvent(type, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            let v;
+            //let v: TypeVPage<CTuidMain>;
             switch (type) {
                 default: return;
                 case 'new':
-                    v = this.VTuidEdit;
+                    yield this.onNew();
                     break;
                 case 'list':
-                    v = this.VTuidList;
+                    yield this.onList();
                     break;
                 case 'edit':
-                    yield this.edit(value);
+                    yield this.onEdit(value);
                     return;
                 case 'item-changed':
                     this.itemChanged(value);
@@ -114,17 +114,44 @@ export class CTuidMain extends CTuid {
                     yield cTuidInfo.start(value);
                     return;
             }
-            yield this.openVPage(v, value);
+            //await this.openVPage(v, value);
         });
     }
-    edit(id) {
+    edit(values) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cTuidEdit = this.ui && this.ui.CTuidEdit;
+            if (cTuidEdit === undefined) {
+                yield this.openVPage(this.VTuidEdit, values);
+            }
+            else {
+                yield (new cTuidEdit(this.cUq, this.entity, this.ui, this.res)).start(values);
+            }
+        });
+    }
+    onNew() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.edit(undefined);
+        });
+    }
+    onList() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let cTuidList = this.ui && this.ui.CTuidList;
+            if (cTuidList === undefined) {
+                yield this.openVPage(this.VTuidList, undefined);
+            }
+            else {
+                yield (new cTuidList(this.cUq, this.entity, this.ui, this.res)).start(undefined);
+            }
+        });
+    }
+    onEdit(id) {
         return __awaiter(this, void 0, void 0, function* () {
             let values = undefined;
             if (id !== undefined) {
                 values = yield this.entity.load(id);
             }
-            let v = this.VTuidEdit;
-            yield this.openVPage(v, values);
+            this.edit(values);
+            //await this.openVPage(this.VTuidEdit, values);
         });
     }
     itemChanged({ id, values }) {
@@ -137,16 +164,26 @@ export class CTuidMain extends CTuid {
         }
     }
 }
-export class CTuidEdit extends CTuidMain {
-    internalStart(id) {
+export class CTuidMain extends CTuidBase {
+    internalStart(param) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.edit(id);
+            this.isFrom = this.entity.schemaFrom !== undefined;
+            yield this.openVPage(this.VTuidMain);
         });
     }
 }
-export class CTuidList extends CTuidMain {
+export class CTuidEdit extends CTuidBase {
     internalStart(id) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.isFrom = this.entity.schemaFrom !== undefined;
+            yield this.onEdit(id);
+        });
+    }
+}
+export class CTuidList extends CTuidBase {
+    internalStart(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.isFrom = this.entity.schemaFrom !== undefined;
             yield this.openVPage(this.VTuidList);
         });
     }
