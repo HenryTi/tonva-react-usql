@@ -128,7 +128,7 @@ export abstract class CTuidBase extends CTuid<TuidMain> {
         //await this.openVPage(v, value);
     }
 
-    private async edit(values:any) {
+    protected async edit(values:any) {
         let cTuidEdit = this.ui && this.ui.CTuidEdit;
         if (cTuidEdit === undefined) {
             await this.openVPage(this.VTuidEdit, values);
@@ -183,6 +183,10 @@ export class CTuidEdit extends CTuidBase {
     protected async internalStart(id:number):Promise<void> {
         this.isFrom = this.entity.schemaFrom !== undefined;
         await this.onEdit(id);
+    }
+
+    protected async edit(values:any) {
+        await this.openVPage(this.VTuidEdit, values);
     }
 }
 
