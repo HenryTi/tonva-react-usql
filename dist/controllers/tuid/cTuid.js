@@ -179,6 +179,11 @@ export class CTuidEdit extends CTuidBase {
             yield this.onEdit(id);
         });
     }
+    edit(values) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.openVPage(this.VTuidEdit, values);
+        });
+    }
 }
 export class CTuidList extends CTuidBase {
     internalStart(id) {

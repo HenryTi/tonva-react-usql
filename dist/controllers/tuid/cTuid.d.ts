@@ -48,7 +48,7 @@ export declare abstract class CTuidBase extends CTuid<TuidMain> {
     protected readonly VTuidList: typeof VTuidMainList;
     protected internalStart(param?: any): Promise<void>;
     protected onEvent(type: string, value: any): Promise<void>;
-    private edit;
+    protected edit(values: any): Promise<void>;
     private onNew;
     private onList;
     protected onEdit(id: number): Promise<void>;
@@ -59,6 +59,7 @@ export declare class CTuidMain extends CTuidBase {
 }
 export declare class CTuidEdit extends CTuidBase {
     protected internalStart(id: number): Promise<void>;
+    protected edit(values: any): Promise<void>;
 }
 export declare class CTuidList extends CTuidBase {
     protected internalStart(id: number): Promise<void>;
