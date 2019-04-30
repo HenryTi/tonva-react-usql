@@ -26,6 +26,7 @@ export declare class Sheet extends Entity {
     getStateSheets(state: string, pageStart: number, pageSize: number): Promise<any[]>;
     createPageStateItems<T>(): PageStateItems<T>;
     stateSheetCount(): Promise<StateCount[]>;
+    mySheets(state: string, pageStart: number, pageSize: number): Promise<any[]>;
 }
 export declare class PageStateItems<T> extends PageItems<T> {
     private sheet;

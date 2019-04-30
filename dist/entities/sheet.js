@@ -131,6 +131,13 @@ export class Sheet extends Entity {
             });
         });
     }
+    mySheets(state, pageStart, pageSize) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadSchema();
+            let ret = yield this.tvApi.mySheets(this.name, { state: state, pageStart: pageStart, pageSize: pageSize });
+            return ret;
+        });
+    }
 }
 export class PageStateItems extends PageItems {
     constructor(sheet) {

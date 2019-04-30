@@ -176,7 +176,12 @@ export class CTuidEdit extends CTuidBase {
     internalStart(id) {
         return __awaiter(this, void 0, void 0, function* () {
             this.isFrom = this.entity.schemaFrom !== undefined;
-            yield this.onEdit(id);
+            if (typeof (id) === 'number') {
+                yield this.onEdit(id);
+            }
+            else {
+                yield this.edit(id);
+            }
         });
     }
     edit(values) {
