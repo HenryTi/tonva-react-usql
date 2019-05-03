@@ -305,6 +305,10 @@ export class CApp extends Controller {
 class VAppMain extends VPage {
     constructor() {
         super(...arguments);
+        this.appPage = () => {
+            let { caption } = this.controller;
+            return React.createElement(Page, { header: caption, logout: () => __awaiter(this, void 0, void 0, function* () { appInFrame.unit = undefined; }) }, this.appContent());
+        };
         this.appContent = () => {
             let { cUqArr } = this.controller;
             let content;
@@ -326,10 +330,6 @@ class VAppMain extends VPage {
     }
     render(param) {
         return this.appContent();
-    }
-    appPage() {
-        let { caption } = this.controller;
-        return React.createElement(Page, { header: caption, logout: () => __awaiter(this, void 0, void 0, function* () { appInFrame.unit = undefined; }) }, this.appContent());
     }
 }
 //# sourceMappingURL=CApp.js.map
