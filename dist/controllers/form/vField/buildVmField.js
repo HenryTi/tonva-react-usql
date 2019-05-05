@@ -1,4 +1,4 @@
-import { VIntField, VDecField, VStringField, VTextField, VDateTimeField } from './vField';
+import { VIntField, VDecField, VStringField, VTextField, VDateTimeField, VDateField } from './vField';
 export function buildVField(form, field, fieldUI, fieldRes) {
     let vField;
     switch (field.type) {
@@ -25,6 +25,9 @@ export function buildVField(form, field, fieldUI, fieldRes) {
             break;
         case 'datetime':
             vField = VDateTimeField;
+            break;
+        case 'date':
+            vField = VDateField;
             break;
     }
     return new vField(form, field, fieldUI, fieldRes);

@@ -68,3 +68,5 @@ export declare class VTextField extends VStringField {
 }
 export declare class VDateTimeField extends VStringField {
 }
+export declare class VDateField extends VStringField {
+}
