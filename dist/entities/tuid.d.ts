@@ -24,7 +24,7 @@ export declare abstract class Tuid extends Entity {
         owner: string;
         uq: string;
     };
-    constructor(entities: Entities, name: string, typeId: number);
+    constructor(entities: Entities, owner: TuidMain, name: string, typeId: number);
     abstract readonly Main: Tuid;
     private buildIdBoxer;
     boxId(id: number): BoxId;
@@ -41,12 +41,12 @@ export declare abstract class Tuid extends Entity {
     proxied(name: string, id: number): Promise<any>;
     cacheValue(val: any): boolean;
     protected afterCacheId(tuidValue: any): void;
-    from(): TuidMain;
+    from(): Tuid;
     private unpackTuidIds;
     cacheIds(): Promise<void>;
     protected cacheDivIds(): Promise<void>;
     load(id: number): Promise<any>;
-    protected getDiv(divName: string): TuidDiv;
+    getDiv(divName: string): TuidDiv;
     private cacheTuidFieldValues;
     private cacheFieldsInValue;
     save(id: number, props: any): Promise<any>;
@@ -64,7 +64,7 @@ export declare class TuidMain extends Tuid {
         [name: string]: TuidDiv;
     };
     setSchema(schema: any): void;
-    protected getDiv(divName: string): TuidDiv;
+    getDiv(divName: string): TuidDiv;
     protected cacheDivIds(): Promise<void>;
     cUqFrom(): CUq;
     getApiFrom(): import("tonva-tools").UqApi;
@@ -76,5 +76,6 @@ export declare class TuidMain extends Tuid {
 }
 export declare class TuidDiv extends Tuid {
     readonly Main: TuidMain;
+    from(): Tuid;
     getApiFrom(): import("tonva-tools").UqApi;
 }

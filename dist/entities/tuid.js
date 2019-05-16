@@ -14,19 +14,22 @@ export class BoxId {
 }
 const maxCacheSize = 1000;
 export class Tuid extends Entity {
-    constructor(entities, name, typeId) {
+    constructor(entities, owner, name, typeId) {
         super(entities, name, typeId);
         this.queue = []; // 每次使用，都排到队头
         this.waitingIds = []; // 等待loading的
         this.cache = observable.map({}, { deep: false }); // 已经缓冲的
-        this.buildIdBoxer();
+        this.owner = owner;
+        //this.buildIdBoxer();
     }
     get typeName() { return 'tuid'; }
     buildIdBoxer() {
+        if (this.BoxId !== undefined)
+            return;
         this.BoxId = function () { };
         let prototype = this.BoxId.prototype;
         Object.defineProperty(prototype, '_$tuid', {
-            value: this.from(),
+            value: this,
             writable: false,
             enumerable: false,
         });
@@ -53,6 +56,7 @@ export class Tuid extends Entity {
         if (typeof id === 'object')
             return id;
         this.useId(id);
+        this.buildIdBoxer();
         let ret = new this.BoxId();
         ret.id = id;
         return ret;
@@ -403,8 +407,7 @@ export class TuidMain extends Tuid {
             this.divs = {};
             for (let arr of arrs) {
                 let { name } = arr;
-                let tuidDiv = new TuidDiv(this.entities, name, this.typeId);
-                tuidDiv.owner = this;
+                let tuidDiv = new TuidDiv(this.entities, this, name, this.typeId);
                 this.divs[name] = tuidDiv;
                 tuidDiv.setSchema(arr);
             }
@@ -486,6 +489,10 @@ export class TuidMain extends Tuid {
 }
 export class TuidDiv extends Tuid {
     get Main() { return this.owner; }
+    from() {
+        let from = this.owner.from();
+        return from.getDiv(this.name);
+    }
     getApiFrom() {
         return this.owner.getApiFrom();
     }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { PureJSONContent } from '../controllers';
+import { FA } from 'tonva-react-form';
 function boxIdContent(bi, ui, x) {
     if (typeof bi === 'number')
         return React.createElement(React.Fragment, null, bi);
@@ -16,8 +17,21 @@ function boxIdContent(bi, ui, x) {
         com = bi._$com = t.getTuidContent();
     }
     let val = t.valueFromId(id);
-    if (typeof val === 'number')
-        val = { id: val };
+    if (val === undefined) {
+        return React.createElement(React.Fragment, null,
+            "[",
+            React.createElement(FA, { className: "text-danger", name: "bug" }),
+            " no ",
+            t.name,
+            " on id=",
+            id,
+            "]");
+    }
+    switch (typeof val) {
+        case 'number':
+            val = { id: val };
+            break;
+    }
     if (ui !== undefined) {
         let ret = ui(val, x);
         if (ret !== undefined)
@@ -27,6 +41,16 @@ function boxIdContent(bi, ui, x) {
     return React.createElement(com, val);
 }
 const Tv = observer(({ tuidValue, ui, x, nullUI }) => {
+    if (tuidValue === undefined) {
+        if (nullUI === undefined)
+            return React.createElement(React.Fragment, null, "[undefined]");
+        return nullUI();
+    }
+    if (tuidValue === null) {
+        if (nullUI === undefined)
+            return React.createElement(React.Fragment, null, "[null]");
+        return nullUI();
+    }
     let ttv = typeof tuidValue;
     switch (ttv) {
         default:
@@ -41,20 +65,13 @@ const Tv = observer(({ tuidValue, ui, x, nullUI }) => {
                     return ret;
                 return React.createElement(React.Fragment, null, tuidValue);
             }
-        case 'undefined':
-            break;
         case 'object':
-            if (tuidValue !== null)
-                return boxIdContent(tuidValue, ui, x);
-            break;
+            return boxIdContent(tuidValue, ui, x);
         case 'number':
             return React.createElement(React.Fragment, null,
                 "id...",
                 tuidValue);
     }
-    if (nullUI === undefined)
-        return React.createElement(React.Fragment, null, ".");
-    return nullUI();
 });
 export const tv = (tuidValue, ui, x, nullUI) => {
     return React.createElement(Tv, { tuidValue: tuidValue, ui: ui, x: x, nullUI: nullUI });

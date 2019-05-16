@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { BoxId, Tuid } from "../entities";
 import { PureJSONContent } from '../controllers';
+import { FA } from 'tonva-react-form';
 
 type TvTemplet = (values?:any, x?:any) => JSX.Element;
 
@@ -25,7 +26,12 @@ function boxIdContent(bi: number|BoxId, ui:TvTemplet, x:any) {
         com = bi._$com = t.getTuidContent();
     }
     let val = t.valueFromId(id);
-    if (typeof val === 'number') val = {id: val};
+    if (val === undefined) {
+        return <>[<FA className="text-danger" name="bug" /> no {t.name} on id={id}]</>;
+    }
+    switch (typeof val) {
+        case 'number': val = {id: val}; break;
+    }
     if (ui !== undefined) {
         let ret = ui(val, x);
         if (ret !== undefined) return ret;
