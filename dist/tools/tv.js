@@ -6,6 +6,8 @@ function boxIdContent(bi, ui, x) {
     if (typeof bi === 'number')
         return React.createElement(React.Fragment, null, bi);
     let { id, _$tuid, _$com } = bi;
+    if (id === undefined || id === null)
+        return;
     let t = _$tuid;
     if (t === undefined) {
         if (ui !== undefined)
@@ -66,7 +68,10 @@ const Tv = observer(({ tuidValue, ui, x, nullUI }) => {
                 return React.createElement(React.Fragment, null, tuidValue);
             }
         case 'object':
-            return boxIdContent(tuidValue, ui, x);
+            let divObj = boxIdContent(tuidValue, ui, x);
+            if (divObj !== undefined)
+                return divObj;
+            return nullUI();
         case 'number':
             return React.createElement(React.Fragment, null,
                 "id...",

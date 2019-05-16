@@ -16,6 +16,7 @@ interface Props {
 function boxIdContent(bi: number|BoxId, ui:TvTemplet, x:any) {
     if (typeof bi === 'number') return <>{bi}</>;
     let {id, _$tuid, _$com} = bi as BoxId;
+    if (id === undefined || id === null) return;
     let t:Tuid = _$tuid;
     if (t === undefined) {
         if (ui !== undefined) return ui(bi, x);
@@ -60,7 +61,9 @@ const Tv = observer(({tuidValue, ui, x, nullUI}:Props) => {
                 return <>{tuidValue}</>;
             }
         case 'object':
-            return boxIdContent(tuidValue, ui, x);
+            let divObj = boxIdContent(tuidValue, ui, x);
+            if (divObj !== undefined) return divObj;
+            return nullUI();
         case 'number':
             return <>id...{tuidValue}</>;
     }
