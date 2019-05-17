@@ -278,7 +278,17 @@ export class Tuid extends Entity {
             let values = yield api.tuidGet(this.name, id);
             if (values === undefined)
                 return;
-            values._$tuid = this;
+            for (let f of this.schema.fields) {
+                let { tuid } = f;
+                if (tuid === undefined)
+                    continue;
+                let t = this.entities.getTuid(tuid);
+                if (t === undefined)
+                    continue;
+                let n = f.name;
+                values[n] = t.boxId(values[n]);
+            }
+            //values._$tuid = this;
             this.cacheValue(values);
             this.cacheTuidFieldValues(values);
             return values;
