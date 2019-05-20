@@ -1,8 +1,9 @@
 {
-  "name": "tonva-react-uq",
+  "name": "@henryti/tonva-react-uq",
   "version": "1.0.0",
   "description": "react uq ui from Tonva",
-  "private": true,
+  "repository": "henryti/tonva-react-uq",
+  "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

@@ -76,6 +76,11 @@ export class Entities {
                 return sheet;
         }
     }
+    init() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.uqApi.init();
+        });
+    }
     loadAccess() {
         return __awaiter(this, void 0, void 0, function* () {
             let accesses = yield this.uqApi.loadAccess();

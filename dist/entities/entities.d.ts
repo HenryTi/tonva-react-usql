@@ -63,6 +63,7 @@ export declare class Entities {
     mapArr: Map[];
     historyArr: History[];
     pendingArr: Pending[];
+    init(): Promise<void>;
     loadAccess(): Promise<void>;
     loadEntities(): Promise<void>;
     private buildEntities;
